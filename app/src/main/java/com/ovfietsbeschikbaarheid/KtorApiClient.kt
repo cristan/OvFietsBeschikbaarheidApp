@@ -29,9 +29,8 @@ class KtorApiClient {
         }
     }
 
-    suspend fun getLocations(): List<Location> {
-        val locationsDto = httpClient.get("http://fiets.openov.nl/locaties.json").body<LocationsDTO>()
-        return locationsDto.locaties.values.toList()
+    suspend fun getLocations(): LocationsDTO {
+        return httpClient.get("http://fiets.openov.nl/locaties.json").body<LocationsDTO>()
     }
 
     suspend fun getDetails(detailUri: String): DetailsDTO {

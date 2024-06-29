@@ -10,6 +10,7 @@ import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.ui.screen.DetailScreen
 import com.ovfietsbeschikbaarheid.ui.screen.HomeScreen
 
@@ -29,12 +30,12 @@ private fun NavController() {
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
             HomeScreen {
-                navController.navigate("detail", Bundle().apply { putString("detailUri", it.link.uri) })
+                navController.navigate("detail", Bundle().apply { putParcelable("overviewModel", it) })
             }
         }
         composable("detail") { backStackEntry ->
-            val detailUri = backStackEntry.arguments?.getString("detailUri")!!
-            DetailScreen(detailUri) {
+            val overviewModel = backStackEntry.arguments?.getParcelable<LocationOverviewModel>("overviewModel")!!
+            DetailScreen(overviewModel) {
                 navController.popBackStack()
             }
         }

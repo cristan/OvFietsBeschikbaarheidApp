@@ -29,9 +29,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.ovfietsbeschikbaarheid.LocationsViewModel
+import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 
 @Composable
-fun HomeScreen(viewModel: LocationsViewModel = viewModel(), onLocationClick: (Location) -> Unit) {
+fun HomeScreen(viewModel: LocationsViewModel = viewModel(), onLocationClick: (LocationOverviewModel) -> Unit) {
     OVFietsBeschikbaarheidTheme {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
@@ -81,7 +82,7 @@ fun HomeScreen(viewModel: LocationsViewModel = viewModel(), onLocationClick: (Lo
 }
 
 @Composable
-fun LocationCard(location: Location, onClick: () -> Unit) {
+fun LocationCard(location: LocationOverviewModel, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -89,7 +90,7 @@ fun LocationCard(location: Location, onClick: () -> Unit) {
             .clickable { onClick() }
     ) {
         Text(
-            "${location.description} ${location.extra.rentalBikes ?: 0}",
+            "${location.title} ${location.rentalBikesAvailable?.toString() ?: "?"}",
             modifier = Modifier.padding(16.dp)
         )
     }

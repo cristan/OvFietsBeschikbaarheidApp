@@ -16,7 +16,7 @@ data class Location(
     val houseNumber: String? = null,
     val postalCode: String? = null,
     // `Yes` or `No`
-    val open: String,
+    val open: OpenDTO,
 //    val lat: BigDecimal,
 //    val lng: BigDecimal,
     val extra: LocationExtra,
@@ -36,5 +36,5 @@ data class LocationExtra(
     val rentalBikes: Int? = null,
 //    "type": "OV_FIETS",
     val fetchTime: Long,
-//    "locationCode": "bet001"
+    val locationCode: String,
 )

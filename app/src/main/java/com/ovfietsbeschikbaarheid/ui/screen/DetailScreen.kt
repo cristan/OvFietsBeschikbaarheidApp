@@ -3,7 +3,6 @@ package com.ovfietsbeschikbaarheid.ui.screen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -11,8 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,25 +36,24 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.ovfietsbeschikbaarheid.DetailsViewModel
 import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationModel
+import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 
 @Composable
-fun DetailScreen(detailUri: String, onBackClicked: () -> Unit) {
+fun DetailScreen(overviewModel: LocationOverviewModel, onBackClicked: () -> Unit) {
     val viewModel = viewModel<DetailsViewModel>()
-    viewModel.setDetailUrl(detailUri)
+    viewModel.setDetailUrl(overviewModel.uri)
 
     OVFietsBeschikbaarheidTheme {
         val details by viewModel.detailsPayload.collectAsState()
-        details?.let {
-            DetailsView(it, onBackClicked)
-        }
+        DetailsView(overviewModel.title, details, onBackClicked)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DetailsView(details: DetailsModel, onBackClicked: () -> Unit) {
+private fun DetailsView(title: String, details: DetailsModel?, onBackClicked: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -66,7 +62,7 @@ private fun DetailsView(details: DetailsModel, onBackClicked: () -> Unit) {
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 title = {
-                    Text(details.description)
+                    Text(title)
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClicked) {
@@ -76,64 +72,66 @@ private fun DetailsView(details: DetailsModel, onBackClicked: () -> Unit) {
             )
         },
     ) { innerPadding ->
-        Column(
-            Modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Row {
-                Text("OV-fietsen beschikbaar:")
-            }
-            val amount = details.rentalBikesAvailable?.toString() ?: "Onbekend"
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = amount,
-                    fontSize = 48.sp
-                )
-            }
-            details.serviceType?.let {
-                Text(it)
-            }
-
-            Row {
-                when (details.open) {
-                    true -> Text(text = "Open")
-                    false -> Text(text = "Gesloten")
-                }
-            }
-            if (details.openingHours.isNotEmpty()) {
-                Text("Openingstijden", style = MaterialTheme.typography.headlineMedium)
-            }
-            details.openingHours.forEach {
-                Row(Modifier.fillMaxWidth()) {
-                    Text(it.dayOfWeek, Modifier.weight(1f))
-                    Text("${it.startTime} - ${it.endTime}", Modifier.weight(2f))
-                }
-            }
-            if (details.location != null) {
-                Text("Adres", style = MaterialTheme.typography.headlineMedium)
-                Text("${details.location.street} ${details.location.houseNumber}")
-                Text("${details.location.postalCode} ${details.location.city}")
-            }
-            val cameraPositionState = rememberCameraPositionState {
-                position = CameraPosition.fromLatLngZoom(details.coordinates, 16f)
-            }
-            GoogleMap(
-                modifier = Modifier.height(280.dp),
-                cameraPositionState = cameraPositionState
+        details?.let {
+            Column(
+                Modifier
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
             ) {
-                Marker(
+                Row {
+                    Text("OV-fietsen beschikbaar:")
+                }
+                val amount = details.rentalBikesAvailable?.toString() ?: "Onbekend"
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = amount,
+                        fontSize = 48.sp
+                    )
+                }
+                details.serviceType?.let {
+                    Text(it)
+                }
+
+                Row {
+                    when (details.open) {
+                        true -> Text(text = "Open")
+                        false -> Text(text = "Gesloten")
+                    }
+                }
+                if (details.openingHours.isNotEmpty()) {
+                    Text("Openingstijden", style = MaterialTheme.typography.headlineMedium)
+                }
+                details.openingHours.forEach {
+                    Row(Modifier.fillMaxWidth()) {
+                        Text(it.dayOfWeek, Modifier.weight(1f))
+                        Text("${it.startTime} - ${it.endTime}", Modifier.weight(2f))
+                    }
+                }
+                if (details.location != null) {
+                    Text("Adres", style = MaterialTheme.typography.headlineMedium)
+                    Text("${details.location.street} ${details.location.houseNumber}")
+                    Text("${details.location.postalCode} ${details.location.city}")
+                }
+                val cameraPositionState = rememberCameraPositionState {
+                    position = CameraPosition.fromLatLngZoom(details.coordinates, 16f)
+                }
+                GoogleMap(
+                    modifier = Modifier.height(280.dp),
+                    cameraPositionState = cameraPositionState
+                ) {
+                    Marker(
 //                    icon = Icons.Filled.,
-                    state = MarkerState(position = details.coordinates),
-                    title = details.description,
-                    snippet = "${details.rentalBikesAvailable ?: "??"} beschikbaar"
-                )
-            }
-            if (details.directions != null) {
-                Text("\n" + details.directions)
-            }
-            if (details.about != null) {
-                Text("\n" + details.about)
+                        state = MarkerState(position = details.coordinates),
+                        title = details.description,
+                        snippet = "${details.rentalBikesAvailable ?: "??"} beschikbaar"
+                    )
+                }
+                if (details.directions != null) {
+                    Text("\n" + details.directions)
+                }
+                if (details.about != null) {
+                    Text("\n" + details.about)
+                }
             }
         }
     }
@@ -157,6 +155,7 @@ fun DetailsPreview() {
         postalCode = "1211 EX",
     )
     DetailsView(
+        "Hilversum",
         DetailsModel(
             "Hilversum",
             true,

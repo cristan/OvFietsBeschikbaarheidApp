@@ -2,7 +2,7 @@ package com.ovfietsbeschikbaarheid.mapper
 
 import com.google.android.gms.maps.model.LatLng
 import com.ovfietsbeschikbaarheid.dto.DetailsDTO
-import com.ovfietsbeschikbaarheid.dto.Open
+import com.ovfietsbeschikbaarheid.dto.OpenDTO
 import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationModel
 import com.ovfietsbeschikbaarheid.model.OpeningHoursModel
@@ -31,7 +31,7 @@ object DetailsMapper {
 
         return DetailsModel(
             description = payload.description,
-            open = payload.open == Open.Yes,
+            open = payload.open == OpenDTO.Yes,
             openingHours = openingHoursModels,
             rentalBikesAvailable = payload.extra.rentalBikes,
             serviceType = payload.extra.serviceType,

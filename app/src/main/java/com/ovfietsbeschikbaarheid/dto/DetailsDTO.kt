@@ -1,17 +1,13 @@
 package com.ovfietsbeschikbaarheid.dto
 
-import com.ovfietsbeschikbaarheid.BigDecimalSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.UseSerializers
 
 @Serializable
 data class DetailsDTO(
     val payload: DetailsPayload
 )
 
-enum class Open {
-    Yes, No
-}
+
 
 @Serializable
 data class DetailsPayload(
@@ -21,7 +17,7 @@ data class DetailsPayload(
     val lng: Double,
 
     // `Yes` or `No`
-    val open: Open,
+    val open: OpenDTO,
 
     // These 4 aren't nullable, but can be an empty string
     val city: String,
