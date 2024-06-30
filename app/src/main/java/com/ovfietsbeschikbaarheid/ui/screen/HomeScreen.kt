@@ -1,7 +1,6 @@
 package com.ovfietsbeschikbaarheid.ui.screen
 
 import androidx.compose.ui.unit.dp
-import com.ovfietsbeschikbaarheid.dto.Location
 import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -24,11 +23,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import com.ovfietsbeschikbaarheid.LocationsViewModel
+import com.ovfietsbeschikbaarheid.viewmodel.LocationsViewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 
 @Composable
@@ -90,7 +86,7 @@ fun LocationCard(location: LocationOverviewModel, onClick: () -> Unit) {
             .clickable { onClick() }
     ) {
         Text(
-            "${location.entry.title} ${location.entry.rentalBikesAvailable?.toString() ?: "?"}",
+            "${location.title} ${location.rentalBikesAvailable?.toString() ?: "?"}",
             modifier = Modifier.padding(16.dp)
         )
     }

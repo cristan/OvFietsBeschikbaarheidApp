@@ -11,7 +11,7 @@ data class DetailsModel(
     val directions: String?,
     val location: LocationModel?,
     val coordinates: LatLng,
-    val alternatives: List<LocationEntryModel>,
+    val alternatives: List<LocationOverviewModel>,
 )
 
 data class LocationModel(

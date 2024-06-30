@@ -16,6 +16,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -33,27 +34,29 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.ovfietsbeschikbaarheid.DetailsViewModel
+import com.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
+import java.util.Locale
 
 @Composable
-fun DetailScreen(overviewModel: LocationOverviewModel, onBackClicked: () -> Unit) {
+fun DetailScreen(locationCode: String, onAlternativeClicked: (LocationOverviewModel) -> Unit, onBackClicked: () -> Unit) {
     val viewModel = viewModel<DetailsViewModel>()
-    viewModel.setOverviewModel(overviewModel)
+    viewModel.setLocationCode(locationCode)
 
     OVFietsBeschikbaarheidTheme {
+        val title by viewModel.title.collectAsState()
         val details by viewModel.detailsPayload.collectAsState()
-        DetailsView(overviewModel.entry.title, details, onBackClicked)
+        DetailsView(title, details, onAlternativeClicked, onBackClicked)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DetailsView(title: String, details: DetailsModel?, onBackClicked: () -> Unit) {
+private fun DetailsView(title: String, details: DetailsModel?, onAlternativeClicked: (LocationOverviewModel) -> Unit, onBackClicked: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -89,7 +92,7 @@ private fun DetailsView(title: String, details: DetailsModel?, onBackClicked: ()
                     )
                 }
                 details.serviceType?.let {
-                    Text(it)
+                    Text("Type: ${it.lowercase(Locale.UK)}")
                 }
 
                 if (details.openingHours.isNotEmpty()) {
@@ -129,7 +132,11 @@ private fun DetailsView(title: String, details: DetailsModel?, onBackClicked: ()
                 if (details.alternatives.isNotEmpty()) {
                     Text("Bij ditzelfde station", style = MaterialTheme.typography.headlineMedium)
                     details.alternatives.forEach {
-                        Text(it.title)
+                        TextButton(
+                            onClick = { onAlternativeClicked(it) }
+                        ) {
+                            Text(it.title)
+                        }
                     }
                 }
             }
@@ -165,7 +172,9 @@ fun DetailsPreview() {
             directions,
             locationModel,
             LatLng(52.22626, 5.18076),
-            emptyList()
-        ), {}
+            listOf(LocationOverviewModel("Hilversum Sportpark", "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-nvd001","nvd001","HVS", 10, true))
+        ),
+        {},
+        {}
     )
 }

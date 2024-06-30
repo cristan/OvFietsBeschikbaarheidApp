@@ -3,7 +3,6 @@ package com.ovfietsbeschikbaarheid.mapper
 import com.ovfietsbeschikbaarheid.dto.Location
 import com.ovfietsbeschikbaarheid.dto.LocationsDTO
 import com.ovfietsbeschikbaarheid.dto.OpenDTO
-import com.ovfietsbeschikbaarheid.model.LocationEntryModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 
 object LocationsMapper {
@@ -21,25 +20,15 @@ object LocationsMapper {
             .filter { !nonExistingLocations.contains(it.extra.locationCode) }
 
         return locations.map { toMap ->
-            val locationsInSameStation = locations
-                .filter { it.stationCode == toMap.stationCode && it != toMap }
-                .map(::mapLocation)
-
+            val description = if (toMap.description == "s-Hertogenbosch") "'s-Hertogenbosch" else toMap.description
             LocationOverviewModel(
-                mapLocation(toMap),
-                locationsInSameStation
+                title = description,
+                uri = toMap.link.uri,
+                locationCode = toMap.extra.locationCode,
+                stationCode = toMap.stationCode,
+                rentalBikesAvailable = toMap.extra.rentalBikes,
+                open = (toMap.open == OpenDTO.Yes || toMap.open == OpenDTO.Unknown)
             )
-        }.sortedBy { it.entry.title }
-    }
-
-    private fun mapLocation(toMap: Location): LocationEntryModel {
-        val description = if (toMap.description == "s-Hertogenbosch") "'s-Hertogenbosch" else toMap.description
-
-        return LocationEntryModel(
-            description,
-            toMap.link.uri,
-            toMap.extra.rentalBikes,
-            toMap.open == OpenDTO.Yes
-        )
+        }.sortedBy { it.title }
     }
 }

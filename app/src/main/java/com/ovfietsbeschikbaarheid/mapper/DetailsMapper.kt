@@ -6,11 +6,11 @@ import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.OpeningHoursModel
+import com.ovfietsbeschikbaarheid.repository.OverviewRepository
 
 object DetailsMapper {
     fun convert(
         detailsDTO: DetailsDTO,
-        locationOverviewModel: LocationOverviewModel
     ): DetailsModel {
         val payload = detailsDTO.payload
 
@@ -37,6 +37,8 @@ object DetailsMapper {
             )
         }
 
+        val alternatives = OverviewRepository.allLocations.value.filter { it.stationCode == payload.stationCode && it.locationCode != payload.extra.locationCode }
+
         return DetailsModel(
             description = payload.description,
             openingHours = openingHoursModels,
@@ -46,7 +48,7 @@ object DetailsMapper {
             about = about,
             location = location,
             coordinates = LatLng(payload.lat, payload.lng),
-            alternatives = locationOverviewModel.alternatives
+            alternatives = alternatives
         )
     }
 

@@ -4,9 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
-import androidx.navigation.NavOptions
-import androidx.navigation.Navigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -30,26 +27,18 @@ private fun NavController() {
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
             HomeScreen {
-                navController.navigate("detail", Bundle().apply { putParcelable("overviewModel", it) })
+                navController.navigate("detail/${it.locationCode}")
             }
         }
-        composable("detail") { backStackEntry ->
-            val overviewModel = backStackEntry.arguments?.getParcelable<LocationOverviewModel>("overviewModel")!!
-            DetailScreen(overviewModel) {
+        composable("detail/{locationCode}") { backStackEntry ->
+            val locationCode = backStackEntry.arguments?.getString("locationCode")!!
+            DetailScreen(locationCode, {alternative ->
+                run {
+                    navController.navigate("detail/${alternative.locationCode}")
+                }
+            }) {
                 navController.popBackStack()
             }
         }
-    }
-}
-
-fun NavController.navigate(
-    route: String,
-    args: Bundle,
-    navOptions: NavOptions? = null,
-    navigatorExtras: Navigator.Extras? = null
-) {
-    val nodeId = graph.findNode(route = route)?.id
-    if (nodeId != null) {
-        navigate(nodeId, args, navOptions, navigatorExtras)
     }
 }
