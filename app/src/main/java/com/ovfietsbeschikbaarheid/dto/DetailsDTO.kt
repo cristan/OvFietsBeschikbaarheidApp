@@ -16,18 +16,18 @@ data class DetailsPayload(
     val lat: Double,
     val lng: Double,
 
-    // `Yes` or `No`
+    // Not really trustable: Enkhuizen says it's closed, but it's a box which is therefore open 24/7
     val open: OpenDTO,
 
-    // These 4 aren't nullable, but can be an empty string
-    val city: String,
-    val street: String,
-    val houseNumber: String,
-    val postalCode: String,
+    // These 4 are nullable (Enkhuizen), but can also be an empty string (Veenendaal-De klomp)
+    val city: String? = null,
+    val street: String? = null,
+    val houseNumber: String? = null,
+    val postalCode: String? = null,
 
     val extra: PayloadExtra,
 
-    val openingHours: List<OpeningHours>,
+    val openingHours: List<OpeningHours>? = null,
     val infoImages: List<InfoImage>,
 )
 

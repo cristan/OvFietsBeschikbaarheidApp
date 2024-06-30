@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.ovfietsbeschikbaarheid.dto.DetailsPayload
 import com.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import com.ovfietsbeschikbaarheid.model.DetailsModel
+import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -16,10 +17,10 @@ class DetailsViewModel : ViewModel() {
 
     private val client = KtorApiClient()
 
-    fun setDetailUrl(detailUri: String) {
+    fun setOverviewModel(locationOverviewModel: LocationOverviewModel) {
         viewModelScope.launch {
-            val details = client.getDetails(detailUri)
-            _detailsPayload.value = DetailsMapper.convert(details)
+            val details = client.getDetails(locationOverviewModel.entry.uri)
+            _detailsPayload.value = DetailsMapper.convert(details, locationOverviewModel)
         }
     }
 

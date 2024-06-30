@@ -19,7 +19,7 @@ class LocationsViewModel : ViewModel() {
         if (searchTerm.isEmpty()) {
             allLocations
         }else{
-            allLocations.filter { it.title.contains(searchTerm.trim(), ignoreCase = true) }
+            allLocations.filter { it.entry.title.contains(searchTerm.trim(), ignoreCase = true) }
         }
     }
 

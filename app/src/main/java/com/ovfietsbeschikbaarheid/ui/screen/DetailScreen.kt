@@ -43,11 +43,11 @@ import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 @Composable
 fun DetailScreen(overviewModel: LocationOverviewModel, onBackClicked: () -> Unit) {
     val viewModel = viewModel<DetailsViewModel>()
-    viewModel.setDetailUrl(overviewModel.uri)
+    viewModel.setOverviewModel(overviewModel)
 
     OVFietsBeschikbaarheidTheme {
         val details by viewModel.detailsPayload.collectAsState()
-        DetailsView(overviewModel.title, details, onBackClicked)
+        DetailsView(overviewModel.entry.title, details, onBackClicked)
     }
 }
 
@@ -92,12 +92,6 @@ private fun DetailsView(title: String, details: DetailsModel?, onBackClicked: ()
                     Text(it)
                 }
 
-                Row {
-                    when (details.open) {
-                        true -> Text(text = "Open")
-                        false -> Text(text = "Gesloten")
-                    }
-                }
                 if (details.openingHours.isNotEmpty()) {
                     Text("Openingstijden", style = MaterialTheme.typography.headlineMedium)
                 }
@@ -132,6 +126,12 @@ private fun DetailsView(title: String, details: DetailsModel?, onBackClicked: ()
                 if (details.about != null) {
                     Text("\n" + details.about)
                 }
+                if (details.alternatives.isNotEmpty()) {
+                    Text("Bij ditzelfde station", style = MaterialTheme.typography.headlineMedium)
+                    details.alternatives.forEach {
+                        Text(it.title)
+                    }
+                }
             }
         }
     }
@@ -158,14 +158,14 @@ fun DetailsPreview() {
         "Hilversum",
         DetailsModel(
             "Hilversum",
-            true,
             openingHours,
             144,
             "Bemenst",
             about,
             directions,
             locationModel,
-            LatLng(52.22626, 5.18076)
+            LatLng(52.22626, 5.18076),
+            emptyList()
         ), {}
     )
 }

@@ -1,11 +1,9 @@
 package com.ovfietsbeschikbaarheid.model
 
 import com.google.android.gms.maps.model.LatLng
-import java.math.BigDecimal
 
 data class DetailsModel(
     val description: String,
-    val open: Boolean,
     val openingHours: List<OpeningHoursModel>,
     val rentalBikesAvailable: Int?,
     val serviceType: String?,
@@ -13,6 +11,7 @@ data class DetailsModel(
     val directions: String?,
     val location: LocationModel?,
     val coordinates: LatLng,
+    val alternatives: List<LocationEntryModel>,
 )
 
 data class LocationModel(

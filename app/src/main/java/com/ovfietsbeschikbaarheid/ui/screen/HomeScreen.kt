@@ -90,7 +90,7 @@ fun LocationCard(location: LocationOverviewModel, onClick: () -> Unit) {
             .clickable { onClick() }
     ) {
         Text(
-            "${location.title} ${location.rentalBikesAvailable?.toString() ?: "?"}",
+            "${location.entry.title} ${location.entry.rentalBikesAvailable?.toString() ?: "?"}",
             modifier = Modifier.padding(16.dp)
         )
     }

@@ -2,26 +2,34 @@ package com.ovfietsbeschikbaarheid.mapper
 
 import com.google.android.gms.maps.model.LatLng
 import com.ovfietsbeschikbaarheid.dto.DetailsDTO
-import com.ovfietsbeschikbaarheid.dto.OpenDTO
 import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationModel
+import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.OpeningHoursModel
 
 object DetailsMapper {
-    fun convert(detailsDTO: DetailsDTO): DetailsModel {
+    fun convert(
+        detailsDTO: DetailsDTO,
+        locationOverviewModel: LocationOverviewModel
+    ): DetailsModel {
         val payload = detailsDTO.payload
 
         val directions = payload.infoImages.find { it.title == "Routebeschrijving" }?.body
         val about = payload.infoImages.find { it.title == "Bijzonderheden" }?.body
 
-        val location = if (payload.city == "") null else LocationModel(
-            city = payload.city,
-            street = payload.street,
-            houseNumber = payload.houseNumber,
-            postalCode = payload.postalCode,
-        )
+        val location =
+            if (payload.city == "" || payload.city == null || payload.street == null || payload.houseNumber == null || payload.postalCode == null) {
+                null
+            } else {
+                LocationModel(
+                    city = payload.city,
+                    street = payload.street,
+                    houseNumber = payload.houseNumber,
+                    postalCode = payload.postalCode,
+                )
+            }
 
-        val openingHoursModels = payload.openingHours.map {
+        val openingHoursModels = (payload.openingHours ?: emptyList()).map {
             OpeningHoursModel(
                 dayOfWeek = getDayName(it.dayOfWeek),
                 startTime = it.startTime,
@@ -31,7 +39,6 @@ object DetailsMapper {
 
         return DetailsModel(
             description = payload.description,
-            open = payload.open == OpenDTO.Yes,
             openingHours = openingHoursModels,
             rentalBikesAvailable = payload.extra.rentalBikes,
             serviceType = payload.extra.serviceType,
@@ -39,6 +46,7 @@ object DetailsMapper {
             about = about,
             location = location,
             coordinates = LatLng(payload.lat, payload.lng),
+            alternatives = locationOverviewModel.alternatives
         )
     }
 
