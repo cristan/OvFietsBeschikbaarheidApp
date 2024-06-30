@@ -45,7 +45,7 @@ fun HomeScreen(viewModel: LocationsViewModel = viewModel(), onLocationClick: (Lo
                         viewModel.onSearchTermChanged(it)
                     },
                     label = { Text("Zoekterm") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(12.dp),
                     singleLine = true,
                     trailingIcon = {
                         if(searchTerm.isNotEmpty()) {

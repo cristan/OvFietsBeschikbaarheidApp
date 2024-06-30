@@ -81,61 +81,75 @@ private fun DetailsView(title: String, details: DetailsModel?, onAlternativeClic
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState())
             ) {
-                Row {
-                    Text("OV-fietsen beschikbaar:")
-                }
-                val amount = details.rentalBikesAvailable?.toString() ?: "Onbekend"
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = amount,
-                        fontSize = 48.sp
-                    )
-                }
-                details.serviceType?.let {
-                    Text("Type: ${it.lowercase(Locale.UK)}")
-                }
-
-                if (details.openingHours.isNotEmpty()) {
-                    Text("Openingstijden", style = MaterialTheme.typography.headlineMedium)
-                }
-                details.openingHours.forEach {
-                    Row(Modifier.fillMaxWidth()) {
-                        Text(it.dayOfWeek, Modifier.weight(1f))
-                        Text("${it.startTime} - ${it.endTime}", Modifier.weight(2f))
+                Column(Modifier.padding(20.dp)) {
+                    Row {
+                        Text("OV-fietsen beschikbaar:")
                     }
-                }
-                if (details.location != null) {
-                    Text("Adres", style = MaterialTheme.typography.headlineMedium)
-                    Text("${details.location.street} ${details.location.houseNumber}")
-                    Text("${details.location.postalCode} ${details.location.city}")
-                }
-                val cameraPositionState = rememberCameraPositionState {
-                    position = CameraPosition.fromLatLngZoom(details.coordinates, 16f)
-                }
-                GoogleMap(
-                    modifier = Modifier.height(280.dp),
-                    cameraPositionState = cameraPositionState
-                ) {
-                    Marker(
-//                    icon = Icons.Filled.,
-                        state = MarkerState(position = details.coordinates),
-                        title = details.description,
-                        snippet = "${details.rentalBikesAvailable ?: "??"} beschikbaar"
-                    )
-                }
-                if (details.directions != null) {
-                    Text("\n" + details.directions)
-                }
-                if (details.about != null) {
-                    Text("\n" + details.about)
-                }
-                if (details.alternatives.isNotEmpty()) {
-                    Text("Bij ditzelfde station", style = MaterialTheme.typography.headlineMedium)
-                    details.alternatives.forEach {
-                        TextButton(
-                            onClick = { onAlternativeClicked(it) }
-                        ) {
-                            Text(it.title)
+                    val amount = details.rentalBikesAvailable?.toString() ?: "Onbekend"
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = amount,
+                            fontSize = 48.sp
+                        )
+                    }
+                    details.serviceType?.let {
+                        Text("Type: ${it.lowercase(Locale.UK)}")
+                    }
+
+                    if (details.openingHours.isNotEmpty()) {
+                        Text(
+                            text = "Openingstijden",
+                            style = MaterialTheme.typography.headlineMedium,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+                    details.openingHours.forEach {
+                        Row(Modifier.fillMaxWidth()) {
+                            Text(it.dayOfWeek, Modifier.weight(1f))
+                            Text("${it.startTime} - ${it.endTime}", Modifier.weight(2f))
+                        }
+                    }
+                    if (details.location != null) {
+                        Text(
+                            text = "Adres",
+                            style = MaterialTheme.typography.headlineMedium,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                        Text("${details.location.street} ${details.location.houseNumber}")
+                        Text("${details.location.postalCode} ${details.location.city}")
+                    }
+                    val cameraPositionState = rememberCameraPositionState {
+                        position = CameraPosition.fromLatLngZoom(details.coordinates, 16f)
+                    }
+                    GoogleMap(
+                        modifier = Modifier.height(280.dp),
+                        cameraPositionState = cameraPositionState
+                    ) {
+                        Marker(
+    //                    icon = Icons.Filled.,
+                            state = MarkerState(position = details.coordinates),
+                            title = details.description,
+                            snippet = "${details.rentalBikesAvailable ?: "??"} beschikbaar"
+                        )
+                    }
+                    if (details.directions != null) {
+                        Text("\n" + details.directions)
+                    }
+                    if (details.about != null) {
+                        Text("\n" + details.about)
+                    }
+                    if (details.alternatives.isNotEmpty()) {
+                        Text(
+                            text = "Bij ditzelfde station",
+                            style = MaterialTheme.typography.headlineMedium,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                        details.alternatives.forEach {
+                            TextButton(
+                                onClick = { onAlternativeClicked(it) }
+                            ) {
+                                Text(it.title)
+                            }
                         }
                     }
                 }
