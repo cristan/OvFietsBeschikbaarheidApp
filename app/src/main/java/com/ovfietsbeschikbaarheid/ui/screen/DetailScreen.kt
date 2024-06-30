@@ -1,5 +1,9 @@
 package com.ovfietsbeschikbaarheid.ui.screen
 
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +29,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,29 +41,61 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.ovfietsbeschikbaarheid.R
 import com.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
+import java.net.URLEncoder
 import java.util.Locale
 
 @Composable
-fun DetailScreen(locationCode: String, onAlternativeClicked: (LocationOverviewModel) -> Unit, onBackClicked: () -> Unit) {
+fun DetailScreen(
+    locationCode: String,
+    onAlternativeClicked: (LocationOverviewModel) -> Unit,
+    onBackClicked: () -> Unit
+) {
     val viewModel = viewModel<DetailsViewModel>()
     viewModel.setLocationCode(locationCode)
+
+    val context = LocalContext.current
+    val onLocationClicked: (LocationModel) -> Unit = { locationModel ->
+        val intent = Intent(Intent.ACTION_VIEW)
+        val address =
+            "${locationModel.street} ${locationModel.houseNumber} ${locationModel.postalCode} ${locationModel.city}"
+        intent.data = Uri.parse(
+            "https://www.google.com/maps/dir/?api=1&destination=${
+                URLEncoder.encode(
+                    address,
+                    "UTF-8"
+                )
+            }"
+        )
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        if (intent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(intent)
+        }
+    }
 
     OVFietsBeschikbaarheidTheme {
         val title by viewModel.title.collectAsState()
         val details by viewModel.detailsPayload.collectAsState()
-        DetailsView(title, details, onAlternativeClicked, onBackClicked)
+        DetailsView(title, details, onLocationClicked, onAlternativeClicked, onBackClicked)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DetailsView(title: String, details: DetailsModel?, onAlternativeClicked: (LocationOverviewModel) -> Unit, onBackClicked: () -> Unit) {
+private fun DetailsView(
+    title: String,
+    details: DetailsModel?,
+    onLocationClicked: (LocationModel) -> Unit,
+    onAlternativeClicked: (LocationOverviewModel) -> Unit,
+    onBackClicked: () -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -83,75 +122,152 @@ private fun DetailsView(title: String, details: DetailsModel?, onAlternativeClic
             ) {
                 Column(Modifier.padding(20.dp)) {
                     Row {
-                        Text("OV-fietsen beschikbaar:")
+                        Text("Aantal beschikbaar")
                     }
                     val amount = details.rentalBikesAvailable?.toString() ?: "Onbekend"
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 40.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text(
                             text = amount,
-                            fontSize = 48.sp
+                            fontSize = if (details.rentalBikesAvailable != null) 88.sp else 40.sp
                         )
-                    }
-                    details.serviceType?.let {
-                        Text("Type: ${it.lowercase(Locale.UK)}")
                     }
 
-                    if (details.openingHours.isNotEmpty()) {
-                        Text(
-                            text = "Openingstijden",
-                            style = MaterialTheme.typography.headlineMedium,
-                            modifier = Modifier.padding(top = 8.dp)
-                        )
+                    if (details.location != null) {
+                        Address(details.location, onLocationClicked)
                     }
-                    details.openingHours.forEach {
-                        Row(Modifier.fillMaxWidth()) {
-                            Text(it.dayOfWeek, Modifier.weight(1f))
-                            Text("${it.startTime} - ${it.endTime}", Modifier.weight(2f))
+
+                    Card(Modifier.padding(top = 8.dp)) {
+                        val cameraPositionState = rememberCameraPositionState {
+                            position = CameraPosition.fromLatLngZoom(details.coordinates, 16f)
+                        }
+                        GoogleMap(
+                            modifier = Modifier.height(280.dp),
+                            cameraPositionState = cameraPositionState
+                        ) {
+                            Marker(
+                                //                    icon = Icons.Filled.,
+                                state = MarkerState(position = details.coordinates),
+                                title = details.description,
+                                snippet = "${details.rentalBikesAvailable ?: "??"} beschikbaar"
+                            )
                         }
                     }
-                    if (details.location != null) {
-                        Text(
-                            text = "Adres",
-                            style = MaterialTheme.typography.headlineMedium,
-                            modifier = Modifier.padding(top = 8.dp)
-                        )
-                        Text("${details.location.street} ${details.location.houseNumber}")
-                        Text("${details.location.postalCode} ${details.location.city}")
-                    }
-                    val cameraPositionState = rememberCameraPositionState {
-                        position = CameraPosition.fromLatLngZoom(details.coordinates, 16f)
-                    }
-                    GoogleMap(
-                        modifier = Modifier.height(280.dp),
-                        cameraPositionState = cameraPositionState
-                    ) {
-                        Marker(
-    //                    icon = Icons.Filled.,
-                            state = MarkerState(position = details.coordinates),
-                            title = details.description,
-                            snippet = "${details.rentalBikesAvailable ?: "??"} beschikbaar"
-                        )
-                    }
-                    if (details.directions != null) {
-                        Text("\n" + details.directions)
-                    }
-                    if (details.about != null) {
-                        Text("\n" + details.about)
-                    }
-                    if (details.alternatives.isNotEmpty()) {
-                        Text(
-                            text = "Bij ditzelfde station",
-                            style = MaterialTheme.typography.headlineMedium,
-                            modifier = Modifier.padding(top = 8.dp)
-                        )
-                        details.alternatives.forEach {
-                            TextButton(
-                                onClick = { onAlternativeClicked(it) }
-                            ) {
-                                Text(it.title)
+
+                    if (details.serviceType != null || details.directions != null || details.about != null) {
+                        Card(
+                            Modifier
+                                .padding(top = 8.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Column(Modifier.padding(16.dp)) {
+                                details.serviceType?.let {
+                                    Text("Type: ${it.lowercase(Locale.UK)}")
+                                }
+                                if (details.directions != null) {
+                                    Text("\n" + details.directions)
+                                }
+                                if (details.about != null) {
+                                    Text("\n" + details.about)
+                                }
                             }
                         }
                     }
+
+                    if (details.openingHours.isNotEmpty()) {
+                        OpeningHours(details)
+                    }
+
+                    if (details.alternatives.isNotEmpty()) {
+                        Alternatives(details, onAlternativeClicked)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Alternatives(
+    details: DetailsModel,
+    onAlternativeClicked: (LocationOverviewModel) -> Unit
+) {
+    Card(
+        Modifier
+            .padding(top = 8.dp)
+            .fillMaxWidth()
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Text(
+                text = "Bij ditzelfde station",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            details.alternatives.forEach {
+                TextButton(
+                    onClick = { onAlternativeClicked(it) }
+                ) {
+                    Text(it.title)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Address(location: LocationModel, onNavigateClicked: (LocationModel) -> Unit) {
+    Card(
+        modifier = Modifier
+            .padding(top = 8.dp)
+            .fillMaxWidth()
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Text(
+                text = "Adres",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onNavigateClicked(location) },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    Text("${location.street} ${location.houseNumber}")
+                    Text("${location.postalCode} ${location.city}")
+                }
+                Icon(
+                    painter = painterResource(id = R.drawable.directions),
+                    contentDescription = "Navigeer"
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun OpeningHours(details: DetailsModel) {
+    Card(
+        Modifier
+            .padding(top = 8.dp)
+            .fillMaxWidth()
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Text(
+                text = "Openingstijden",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            details.openingHours.forEach {
+                Row(Modifier.fillMaxWidth()) {
+                    Text(it.dayOfWeek, Modifier.weight(1f))
+                    Text("${it.startTime} - ${it.endTime}", Modifier.weight(1f))
                 }
             }
         }
@@ -186,8 +302,18 @@ fun DetailsPreview() {
             directions,
             locationModel,
             LatLng(52.22626, 5.18076),
-            listOf(LocationOverviewModel("Hilversum Sportpark", "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-nvd001","nvd001","HVS", 10, true))
+            listOf(
+                LocationOverviewModel(
+                    "Hilversum Sportpark",
+                    "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-nvd001",
+                    "nvd001",
+                    "HVS",
+                    10,
+                    true
+                )
+            )
         ),
+        {},
         {},
         {}
     )

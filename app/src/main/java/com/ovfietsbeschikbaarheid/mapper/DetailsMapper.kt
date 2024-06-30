@@ -22,10 +22,10 @@ object DetailsMapper {
                 null
             } else {
                 LocationModel(
-                    city = payload.city,
-                    street = payload.street,
-                    houseNumber = payload.houseNumber,
-                    postalCode = payload.postalCode,
+                    city = payload.city.trim(),
+                    street = payload.street.trim(),
+                    houseNumber = payload.houseNumber.trim(),
+                    postalCode = payload.postalCode.trim(),
                 )
             }
 
@@ -37,13 +37,24 @@ object DetailsMapper {
             )
         }
 
-        val alternatives = OverviewRepository.allLocations.value.filter { it.stationCode == payload.stationCode && it.locationCode != payload.extra.locationCode }
+        val alternatives = OverviewRepository.allLocations.value.filter {
+            // Find others with the same station code
+            it.stationCode == payload.stationCode &&
 
+                    // Except BSLC. This isn't a station, these are self service stations
+                    it.stationCode != "BSLC" &&
+
+                    // Don't pick yourself
+                    it.locationCode != payload.extra.locationCode
+        }
+
+        val serviceType = payload.extra.serviceType
+            ?: if (detailsDTO.self.uri.contains("Zelfservice")) "Zelfservice" else null
         return DetailsModel(
             description = payload.description,
             openingHours = openingHoursModels,
             rentalBikesAvailable = payload.extra.rentalBikes,
-            serviceType = payload.extra.serviceType,
+            serviceType = serviceType,
             directions = if (directions != "") directions else null,
             about = about,
             location = location,

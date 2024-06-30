@@ -4,7 +4,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DetailsDTO(
-    val payload: DetailsPayload
+    val payload: DetailsPayload,
+    val self: Self
+)
+
+@Serializable
+data class Self(
+    val uri: String
 )
 
 @Serializable

@@ -13,6 +13,8 @@ object LocationsMapper {
         "UTVR002",
         "ehv004",
         "gvc021",
+        "ed001",
+        "had002",
     )
 
     fun map(locationsDTO: LocationsDTO): List<LocationOverviewModel> {
@@ -22,7 +24,7 @@ object LocationsMapper {
         return locations.map { toMap ->
             val description = if (toMap.description == "s-Hertogenbosch") "'s-Hertogenbosch" else toMap.description
             LocationOverviewModel(
-                title = description,
+                title = description.trim(),
                 uri = toMap.link.uri,
                 locationCode = toMap.extra.locationCode,
                 stationCode = toMap.stationCode,
