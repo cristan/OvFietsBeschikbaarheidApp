@@ -7,9 +7,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -105,14 +107,14 @@ fun LocationCard(location: LocationOverviewModel, onClick: () -> Unit) {
     ) {
         Text(
             location.title,
-            modifier = Modifier.weight(10f)
+            modifier = Modifier.weight(1f)
         )
         Row(
-            modifier = Modifier.weight(2f)
+            modifier = Modifier.defaultMinSize(minWidth = 60.dp)
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.pedal_bike_24px),
-                tint = Color.Black,
+                tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
                 contentDescription = "Navigeer",
                 modifier = Modifier.padding(end = 6.dp)
             )
