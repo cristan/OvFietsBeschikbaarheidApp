@@ -244,7 +244,7 @@ private fun Address(location: LocationModel, onNavigateClicked: (LocationModel) 
                     Text("${location.postalCode} ${location.city}")
                 }
                 Icon(
-                    painter = painterResource(id = R.drawable.directions),
+                    painter = painterResource(id = R.drawable.directions_24px),
                     contentDescription = "Navigeer"
                 )
             }

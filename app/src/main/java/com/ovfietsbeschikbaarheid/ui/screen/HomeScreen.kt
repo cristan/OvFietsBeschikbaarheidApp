@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,8 +24,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.ovfietsbeschikbaarheid.R
 import com.ovfietsbeschikbaarheid.TestData
 import com.ovfietsbeschikbaarheid.viewmodel.LocationsViewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
@@ -93,16 +97,29 @@ private fun HomeView(
 
 @Composable
 fun LocationCard(location: LocationOverviewModel, onClick: () -> Unit) {
-    Card(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
             .clickable { onClick() }
+            .padding(16.dp)
     ) {
         Text(
-            "${location.title} ${location.rentalBikesAvailable?.toString() ?: "?"}",
-            modifier = Modifier.padding(16.dp)
+            location.title,
+            modifier = Modifier.weight(10f)
         )
+        Row(
+            modifier = Modifier.weight(2f)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.pedal_bike_24px),
+                tint = Color.Black,
+                contentDescription = "Navigeer",
+                modifier = Modifier.padding(end = 6.dp)
+            )
+            Text(
+                location.rentalBikesAvailable?.toString() ?: "?"
+            )
+        }
     }
 }
 
