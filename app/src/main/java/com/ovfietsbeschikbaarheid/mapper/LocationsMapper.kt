@@ -1,6 +1,5 @@
 package com.ovfietsbeschikbaarheid.mapper
 
-import com.ovfietsbeschikbaarheid.dto.Location
 import com.ovfietsbeschikbaarheid.dto.LocationsDTO
 import com.ovfietsbeschikbaarheid.dto.OpenDTO
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel

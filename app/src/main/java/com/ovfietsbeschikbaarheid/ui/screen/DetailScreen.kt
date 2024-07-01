@@ -42,6 +42,7 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.ovfietsbeschikbaarheid.R
+import com.ovfietsbeschikbaarheid.TestData
 import com.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationModel
@@ -303,14 +304,7 @@ fun DetailsPreview() {
             locationModel,
             LatLng(52.22626, 5.18076),
             listOf(
-                LocationOverviewModel(
-                    "Hilversum Sportpark",
-                    "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-nvd001",
-                    "nvd001",
-                    "HVS",
-                    10,
-                    true
-                )
+                TestData.testLocationOverviewModel
             )
         ),
         {},

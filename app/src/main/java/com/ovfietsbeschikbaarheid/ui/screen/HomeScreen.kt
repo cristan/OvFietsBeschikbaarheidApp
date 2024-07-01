@@ -24,38 +24,53 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.tooling.preview.Preview
+import com.ovfietsbeschikbaarheid.TestData
 import com.ovfietsbeschikbaarheid.viewmodel.LocationsViewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 
 @Composable
 fun HomeScreen(viewModel: LocationsViewModel = viewModel(), onLocationClick: (LocationOverviewModel) -> Unit) {
+    val searchTerm by viewModel.searchTerm.collectAsState()
+    val locations by viewModel.filteredLocations.collectAsState(emptyList())
+    
+    HomeView(searchTerm, locations, viewModel::onSearchTermChanged, onLocationClick)
+}
+
+@Composable
+private fun HomeView(
+    searchTerm: String,
+    locations: List<LocationOverviewModel>,
+    onSearchTermChanged: (String) -> Unit,
+    onLocationClick: (LocationOverviewModel) -> Unit
+) {
     OVFietsBeschikbaarheidTheme {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                val searchTerm by viewModel.searchTerm.collectAsState()
                 val keyboardController = LocalSoftwareKeyboardController.current
                 OutlinedTextField(
                     value = searchTerm,
                     onValueChange = {
-                        viewModel.onSearchTermChanged(it)
+                        onSearchTermChanged(it)
                     },
                     label = { Text("Zoekterm") },
-                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
                     singleLine = true,
                     trailingIcon = {
-                        if(searchTerm.isNotEmpty()) {
+                        if (searchTerm.isNotEmpty()) {
                             Icon(
                                 Icons.Default.Clear,
                                 contentDescription = "clear text",
                                 modifier = Modifier
                                     .clickable {
                                         keyboardController?.hide()
-                                        viewModel.onSearchTermChanged("")
+                                        onSearchTermChanged("")
                                     }
                             )
                         }
@@ -64,7 +79,6 @@ fun HomeScreen(viewModel: LocationsViewModel = viewModel(), onLocationClick: (Lo
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                val locations by viewModel.filteredLocations.collectAsState(emptyList())
                 LazyColumn {
                     items(locations) { location ->
                         LocationCard(location) {
@@ -90,4 +104,14 @@ fun LocationCard(location: LocationOverviewModel, onClick: () -> Unit) {
             modifier = Modifier.padding(16.dp)
         )
     }
+}
+
+@Preview
+@Composable
+fun HomePreview() {
+    val locations = listOf(
+        TestData.testLocationOverviewModel.copy(title = "Amsterdam Zuid Mahlerplein", rentalBikesAvailable = 49),
+        TestData.testLocationOverviewModel.copy(title = "Amsterdam Zuid Zuidplein", rentalBikesAvailable = 148),
+    )
+    HomeView("Amsterdam Zuid", locations, {}, {})
 }
