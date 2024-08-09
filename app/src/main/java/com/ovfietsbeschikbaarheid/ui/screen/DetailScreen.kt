@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +29,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -89,7 +92,8 @@ fun DetailScreen(
     OVFietsBeschikbaarheidTheme {
         val title by viewModel.title.collectAsState()
         val details by viewModel.detailsPayload.collectAsState()
-        DetailsView(title, details, onLocationClicked, onAlternativeClicked, onBackClicked)
+        val isRefreshing by viewModel.isRefreshing.collectAsState()
+        DetailsView(title, details, isRefreshing, viewModel::refresh, onLocationClicked, onAlternativeClicked, onBackClicked)
     }
 }
 
@@ -98,10 +102,14 @@ fun DetailScreen(
 private fun DetailsView(
     title: String,
     details: DetailsModel?,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     onLocationClicked: (LocationModel) -> Unit,
     onAlternativeClicked: (LocationOverviewModel) -> Unit,
     onBackClicked: () -> Unit
 ) {
+    val state = rememberPullToRefreshState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -120,86 +128,103 @@ private fun DetailsView(
             )
         },
     ) { innerPadding ->
-        Surface(
-            Modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState()),
-            //color = if (isSystemInDarkTheme()) Color.DarkGray else Color(0xFFF0F0F0)
+        PullToRefreshBox(
+            state = state,
+//            modifier = Modifier.padding(innerPadding),
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
         ) {
-            details?.let {
-                Column(Modifier.padding(20.dp)) {
-                    DetailsCard {
-                        Row {
-                            Text("Aantal beschikbaar")
-                        }
-                        val amount = details.rentalBikesAvailable?.toString() ?: "Onbekend"
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 40.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = amount,
-                                fontSize = if (details.rentalBikesAvailable != null) 88.sp else 40.sp
-                            )
-                        }
-                    }
+            ActualDetails(innerPadding, details, onLocationClicked, onAlternativeClicked)
+        }
+    }
+}
 
-                    if (details.location != null) {
-                        Address(details.location, onLocationClicked)
+@Composable
+private fun ActualDetails(
+    innerPadding: PaddingValues,
+    details: DetailsModel?,
+    onLocationClicked: (LocationModel) -> Unit,
+    onAlternativeClicked: (LocationOverviewModel) -> Unit
+) {
+    Surface(
+        Modifier
+            .padding(innerPadding)
+            .verticalScroll(rememberScrollState()),
+        //color = if (isSystemInDarkTheme()) Color.DarkGray else Color(0xFFF0F0F0)
+    ) {
+        details?.let {
+            Column(Modifier.padding(20.dp)) {
+                DetailsCard {
+                    Row {
+                        Text("Aantal beschikbaar")
                     }
-
-                    Card(Modifier.padding(top = 8.dp)) {
-                        val cameraPositionState = rememberCameraPositionState {
-                            position = CameraPosition.fromLatLngZoom(details.coordinates, 16f)
-                        }
-                        GoogleMap(
-                            modifier = Modifier.height(280.dp),
-                            cameraPositionState = cameraPositionState
-                        ) {
-                            Marker(
-                                //                    icon = Icons.Filled.,
-                                state = MarkerState(position = details.coordinates),
-                                title = details.description,
-                                snippet = "${details.rentalBikesAvailable ?: "??"} beschikbaar"
-                            )
-                        }
+                    val amount = details.rentalBikesAvailable?.toString() ?: "Onbekend"
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 40.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = amount,
+                            fontSize = if (details.rentalBikesAvailable != null) 88.sp else 40.sp
+                        )
                     }
+                }
 
-                    if (details.serviceType != null || details.directions != null || details.about != null) {
-                        Card(
-                            Modifier
-                                .padding(top = 8.dp)
-                                .fillMaxWidth(),
-                            colors = CardDefaults.cardColors(
-                                containerColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White,
-                            ),
-                            elevation = CardDefaults.cardElevation(
-                                defaultElevation = 2.dp
-                            ),
-                        ) {
-                            Column(Modifier.padding(16.dp)) {
-                                details.serviceType?.let {
-                                    Text("Type: ${it.lowercase(Locale.UK)}")
-                                }
-                                if (details.directions != null) {
-                                    Text("\n" + details.directions)
-                                }
-                                if (details.about != null) {
-                                    Text("\n" + details.about)
-                                }
+                if (details.location != null) {
+                    Address(details.location, onLocationClicked)
+                }
+
+                Card(Modifier.padding(top = 8.dp)) {
+                    val cameraPositionState = rememberCameraPositionState {
+                        position = CameraPosition.fromLatLngZoom(details.coordinates, 16f)
+                    }
+                    GoogleMap(
+                        modifier = Modifier.height(280.dp),
+                        cameraPositionState = cameraPositionState
+                    ) {
+                        Marker(
+                            //                    icon = Icons.Filled.,
+                            state = MarkerState(position = details.coordinates),
+                            title = details.description,
+                            snippet = "${details.rentalBikesAvailable ?: "??"} beschikbaar"
+                        )
+                    }
+                }
+
+                if (details.serviceType != null || details.directions != null || details.about != null) {
+                    Card(
+                        Modifier
+                            .padding(top = 8.dp)
+                            .fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White,
+                        ),
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 2.dp
+                        ),
+                    ) {
+                        Column(Modifier.padding(16.dp)) {
+                            details.serviceType?.let {
+                                Text("Type: ${it.lowercase(Locale.UK)}")
+                            }
+                            if (details.directions != null) {
+                                Text("\n" + details.directions)
+                            }
+                            if (details.about != null) {
+                                Text("\n" + details.about)
                             }
                         }
                     }
+                }
 
-                    if (details.openingHours.isNotEmpty()) {
-                        OpeningHours(details)
-                    }
+                if (details.openingHours.isNotEmpty()) {
+                    OpeningHours(details)
+                }
 
-                    if (details.alternatives.isNotEmpty()) {
-                        Alternatives(details, onAlternativeClicked)
-                    }
+                if (details.alternatives.isNotEmpty()) {
+                    Alternatives(details, onAlternativeClicked)
                 }
             }
         }
@@ -322,6 +347,8 @@ fun DetailsPreview() {
                 TestData.testLocationOverviewModel
             )
         ),
+        false,
+        {},
         {},
         {},
         {}
