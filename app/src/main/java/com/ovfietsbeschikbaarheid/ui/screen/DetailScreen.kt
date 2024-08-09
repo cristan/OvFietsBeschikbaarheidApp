@@ -3,9 +3,11 @@ package com.ovfietsbeschikbaarheid.ui.screen
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,11 +17,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -29,6 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -115,27 +120,30 @@ private fun DetailsView(
             )
         },
     ) { innerPadding ->
-        details?.let {
-            Column(
-                Modifier
-                    .padding(innerPadding)
-                    .verticalScroll(rememberScrollState())
-            ) {
+        Surface(
+            Modifier
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState()),
+            //color = if (isSystemInDarkTheme()) Color.DarkGray else Color(0xFFF0F0F0)
+        ) {
+            details?.let {
                 Column(Modifier.padding(20.dp)) {
-                    Row {
-                        Text("Aantal beschikbaar")
-                    }
-                    val amount = details.rentalBikesAvailable?.toString() ?: "Onbekend"
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 40.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = amount,
-                            fontSize = if (details.rentalBikesAvailable != null) 88.sp else 40.sp
-                        )
+                    DetailsCard {
+                        Row {
+                            Text("Aantal beschikbaar")
+                        }
+                        val amount = details.rentalBikesAvailable?.toString() ?: "Onbekend"
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 40.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = amount,
+                                fontSize = if (details.rentalBikesAvailable != null) 88.sp else 40.sp
+                            )
+                        }
                     }
 
                     if (details.location != null) {
@@ -163,7 +171,13 @@ private fun DetailsView(
                         Card(
                             Modifier
                                 .padding(top = 8.dp)
-                                .fillMaxWidth()
+                                .fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White,
+                            ),
+                            elevation = CardDefaults.cardElevation(
+                                defaultElevation = 2.dp
+                            ),
                         ) {
                             Column(Modifier.padding(16.dp)) {
                                 details.serviceType?.let {
@@ -197,23 +211,17 @@ private fun Alternatives(
     details: DetailsModel,
     onAlternativeClicked: (LocationOverviewModel) -> Unit
 ) {
-    Card(
-        Modifier
-            .padding(top = 8.dp)
-            .fillMaxWidth()
-    ) {
-        Column(Modifier.padding(16.dp)) {
-            Text(
-                text = "Bij ditzelfde station",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            details.alternatives.forEach {
-                TextButton(
-                    onClick = { onAlternativeClicked(it) }
-                ) {
-                    Text(it.title)
-                }
+    DetailsCard {
+        Text(
+            text = "Bij ditzelfde station",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        details.alternatives.forEach {
+            TextButton(
+                onClick = { onAlternativeClicked(it) }
+            ) {
+                Text(it.title)
             }
         }
     }
@@ -221,57 +229,64 @@ private fun Alternatives(
 
 @Composable
 private fun Address(location: LocationModel, onNavigateClicked: (LocationModel) -> Unit) {
-    Card(
+    DetailsCard(
         modifier = Modifier
-            .padding(top = 8.dp)
-            .fillMaxWidth()
+            .clickable { onNavigateClicked(location) }
     ) {
-        Column(Modifier.padding(16.dp)) {
-            Text(
-                text = "Adres",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onNavigateClicked(location) },
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text("${location.street} ${location.houseNumber}")
-                    Text("${location.postalCode} ${location.city}")
-                }
-                Icon(
-                    painter = painterResource(id = R.drawable.directions_24px),
-                    contentDescription = "Navigeer"
-                )
+        Text(
+            text = "Adres",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text("${location.street} ${location.houseNumber}")
+                Text("${location.postalCode} ${location.city}")
             }
+            Icon(
+                painter = painterResource(id = R.drawable.directions_24px),
+                contentDescription = "Navigeer"
+            )
         }
     }
 }
 
 @Composable
 private fun OpeningHours(details: DetailsModel) {
-    Card(
-        Modifier
-            .padding(top = 8.dp)
-            .fillMaxWidth()
-    ) {
-        Column(Modifier.padding(16.dp)) {
-            Text(
-                text = "Openingstijden",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            details.openingHours.forEach {
-                Row(Modifier.fillMaxWidth()) {
-                    Text(it.dayOfWeek, Modifier.weight(1f))
-                    Text("${it.startTime} - ${it.endTime}", Modifier.weight(1f))
-                }
+    DetailsCard {
+        Text(
+            text = "Openingstijden",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        details.openingHours.forEach {
+            Row(Modifier.fillMaxWidth()) {
+                Text(it.dayOfWeek, Modifier.weight(1f))
+                Text("${it.startTime} - ${it.endTime}", Modifier.weight(1f))
             }
         }
+    }
+}
+
+
+@Composable
+fun DetailsCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+    Card(
+        modifier = modifier
+            .padding(top = 8.dp)
+            .fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 2.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White,
+        ),
+    ) {
+        Column(Modifier.padding(16.dp), content = content)
     }
 }
 
