@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -130,25 +129,23 @@ private fun DetailsView(
     ) { innerPadding ->
         PullToRefreshBox(
             state = state,
-//            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier.padding(innerPadding),
             isRefreshing = isRefreshing,
             onRefresh = onRefresh,
         ) {
-            ActualDetails(innerPadding, details, onLocationClicked, onAlternativeClicked)
+            ActualDetails(details, onLocationClicked, onAlternativeClicked)
         }
     }
 }
 
 @Composable
 private fun ActualDetails(
-    innerPadding: PaddingValues,
     details: DetailsModel?,
     onLocationClicked: (LocationModel) -> Unit,
     onAlternativeClicked: (LocationOverviewModel) -> Unit
 ) {
     Surface(
         Modifier
-            .padding(innerPadding)
             .verticalScroll(rememberScrollState()),
         //color = if (isSystemInDarkTheme()) Color.DarkGray else Color(0xFFF0F0F0)
     ) {

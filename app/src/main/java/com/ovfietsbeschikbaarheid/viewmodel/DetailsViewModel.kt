@@ -8,8 +8,11 @@ import com.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.repository.OverviewRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+
+private const val MIN_REFRESH_TIME = 350
 
 class DetailsViewModel : ViewModel() {
 
@@ -29,16 +32,27 @@ class DetailsViewModel : ViewModel() {
     fun setLocationCode(locationCode: String) {
         overviewModel = OverviewRepository.allLocations.value.find { it.locationCode == locationCode }!!
         _title.value = overviewModel.title
+        _isRefreshing.value = true
         refresh()
+        _isRefreshing.value = false
     }
 
     fun refresh() {
         viewModelScope.launch {
             _isRefreshing.value = true
-            val details = client.getDetails(overviewModel.uri)
-            _detailsPayload.value = DetailsMapper.convert(details)
+            val before = System.currentTimeMillis()
+            doRefresh()
+            val timeElapsed = System.currentTimeMillis() - before
+            if (timeElapsed < MIN_REFRESH_TIME) {
+                delay(MIN_REFRESH_TIME - timeElapsed)
+            }
             _isRefreshing.value = false
         }
+    }
+
+    private suspend fun doRefresh() {
+        val details = client.getDetails(overviewModel.uri)
+        _detailsPayload.value = DetailsMapper.convert(details)
     }
 
     override fun onCleared() {
