@@ -11,6 +11,7 @@ import com.ovfietsbeschikbaarheid.repository.OverviewRepository
 object DetailsMapper {
     fun convert(
         detailsDTO: DetailsDTO,
+        allLocations: List<LocationOverviewModel>
     ): DetailsModel {
         val payload = detailsDTO.payload
 
@@ -37,7 +38,7 @@ object DetailsMapper {
             )
         }
 
-        val alternatives = OverviewRepository.allLocations.value.filter {
+        val alternatives = allLocations.filter {
             // Find others with the same station code
             it.stationCode == payload.stationCode &&
 

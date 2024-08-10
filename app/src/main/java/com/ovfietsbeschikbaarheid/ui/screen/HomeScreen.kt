@@ -127,10 +127,7 @@ fun LocationCard(location: LocationOverviewModel, onClick: () -> Unit) {
             .clickable { onClick() }
             .padding(16.dp)
     ) {
-        Text(
-            location.title,
-            modifier = Modifier.weight(1f)
-        )
+
         Row(
             modifier = Modifier.defaultMinSize(minWidth = 60.dp)
         ) {
@@ -138,10 +135,10 @@ fun LocationCard(location: LocationOverviewModel, onClick: () -> Unit) {
                 painter = painterResource(id = R.drawable.pedal_bike_24px),
                 tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
                 contentDescription = "Navigeer",
-                modifier = Modifier.padding(end = 6.dp)
+                modifier = Modifier.padding(end = 8.dp)
             )
             Text(
-                location.rentalBikesAvailable?.toString() ?: "?"
+                location.title,
             )
         }
     }

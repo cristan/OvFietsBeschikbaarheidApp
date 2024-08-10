@@ -1,8 +1,9 @@
 package com.ovfietsbeschikbaarheid.viewmodel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import androidx.lifecycle.ViewModel
 import com.ovfietsbeschikbaarheid.KtorApiClient
 import com.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import com.ovfietsbeschikbaarheid.model.DetailsModel
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 private const val MIN_REFRESH_TIME = 350
 
-class DetailsViewModel : ViewModel() {
+class DetailsViewModel(private val application: Application) : AndroidViewModel(application) {
 
     private val _detailsPayload = MutableStateFlow<DetailsModel?>(null)
     val detailsPayload: StateFlow<DetailsModel?> = _detailsPayload
@@ -29,8 +30,10 @@ class DetailsViewModel : ViewModel() {
 
     private lateinit var overviewModel: LocationOverviewModel
 
+    private val allLocationsFlow = OverviewRepository.getAllLocations(application)
+
     fun setLocationCode(locationCode: String) {
-        overviewModel = OverviewRepository.allLocations.value.find { it.locationCode == locationCode }!!
+        overviewModel = allLocationsFlow.value.find { it.locationCode == locationCode }!!
         _title.value = overviewModel.title
         _isRefreshing.value = true
         refresh()
@@ -52,7 +55,7 @@ class DetailsViewModel : ViewModel() {
 
     private suspend fun doRefresh() {
         val details = client.getDetails(overviewModel.uri)
-        _detailsPayload.value = DetailsMapper.convert(details)
+        _detailsPayload.value = DetailsMapper.convert(details, allLocationsFlow.value)
     }
 
     override fun onCleared() {

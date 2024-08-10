@@ -1,6 +1,7 @@
 package com.ovfietsbeschikbaarheid
 
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.util.Log
 import com.ovfietsbeschikbaarheid.dto.DetailsDTO
 import com.ovfietsbeschikbaarheid.dto.DetailsPayload
@@ -18,19 +19,24 @@ import kotlin.math.log
 
 class KtorApiClient {
 
+    private val json = Json {
+        ignoreUnknownKeys = true
+    }
+
     private val httpClient = HttpClient {
         install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-            })
+            json(json)
         }
         install(Logging) {
             level = LogLevel.ALL
         }
     }
 
-    suspend fun getLocations(): LocationsDTO {
-        return httpClient.get("http://fiets.openov.nl/locaties.json").body<LocationsDTO>()
+    fun getLocations(context: Context): LocationsDTO {
+        val locationsStream = context.resources.openRawResource(R.raw.locaties)
+        val inputAsString = locationsStream.bufferedReader().use { it.readText() }
+        return json.decodeFromString<LocationsDTO>(inputAsString)
+//        return httpClient.get("http://fiets.openov.nl/locaties.json").body<LocationsDTO>()
     }
 
     suspend fun getDetails(detailUri: String): DetailsDTO {
