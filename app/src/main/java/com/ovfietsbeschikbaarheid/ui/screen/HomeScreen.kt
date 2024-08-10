@@ -41,6 +41,7 @@ import com.ovfietsbeschikbaarheid.R
 import com.ovfietsbeschikbaarheid.TestData
 import com.ovfietsbeschikbaarheid.viewmodel.LocationsViewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
+import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
 
 @Composable
 fun HomeScreen(viewModel: LocationsViewModel = viewModel(), onLocationClick: (LocationOverviewModel) -> Unit) {
@@ -65,7 +66,7 @@ private fun HomeView(
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = Yellow50,
                 ),
                 title = {
                     Text(stringResource(R.string.app_name))

@@ -56,6 +56,7 @@ import com.ovfietsbeschikbaarheid.model.LocationModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
+import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import java.net.URLEncoder
 import java.util.Locale
 
@@ -88,12 +89,18 @@ fun DetailScreen(
         }
     }
 
-    OVFietsBeschikbaarheidTheme {
-        val title by viewModel.title.collectAsState()
-        val details by viewModel.detailsPayload.collectAsState()
-        val isRefreshing by viewModel.isRefreshing.collectAsState()
-        DetailsView(title, details, isRefreshing, viewModel::refresh, onLocationClicked, onAlternativeClicked, onBackClicked)
-    }
+    val title by viewModel.title.collectAsState()
+    val details by viewModel.detailsPayload.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    DetailsView(
+        title,
+        details,
+        isRefreshing,
+        viewModel::refresh,
+        onLocationClicked,
+        onAlternativeClicked,
+        onBackClicked
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -109,31 +116,34 @@ private fun DetailsView(
 ) {
     val state = rememberPullToRefreshState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = {
-                    Text(title)
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClicked) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
-                    }
-                },
-            )
-        },
-    ) { innerPadding ->
-        PullToRefreshBox(
-            state = state,
-            modifier = Modifier.padding(innerPadding),
-            isRefreshing = isRefreshing,
-            onRefresh = onRefresh,
-        ) {
-            ActualDetails(details, onLocationClicked, onAlternativeClicked)
+    OVFietsBeschikbaarheidTheme {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = Yellow50,
+                        navigationIconContentColor = Yellow50
+                    ),
+                    title = {
+                        Text(title)
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBackClicked) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Terug")
+                        }
+                    },
+                )
+            },
+        ) { innerPadding ->
+            PullToRefreshBox(
+                state = state,
+                modifier = Modifier.padding(innerPadding),
+                isRefreshing = isRefreshing,
+                onRefresh = onRefresh,
+            ) {
+                ActualDetails(details, onLocationClicked, onAlternativeClicked)
+            }
         }
     }
 }
