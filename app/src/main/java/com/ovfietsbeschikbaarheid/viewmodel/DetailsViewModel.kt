@@ -9,6 +9,7 @@ import com.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.repository.OverviewRepository
+import com.ovfietsbeschikbaarheid.repository.StationRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -55,7 +56,8 @@ class DetailsViewModel(private val application: Application) : AndroidViewModel(
 
     private suspend fun doRefresh() {
         val details = client.getDetails(overviewModel.uri)
-        _detailsPayload.value = DetailsMapper.convert(details, allLocationsFlow.value)
+        val allStations = StationRepository.getAllStations(application)
+        _detailsPayload.value = DetailsMapper.convert(details, allLocationsFlow.value, allStations)
     }
 
     override fun onCleared() {

@@ -11,7 +11,8 @@ import com.ovfietsbeschikbaarheid.repository.OverviewRepository
 object DetailsMapper {
     fun convert(
         detailsDTO: DetailsDTO,
-        allLocations: List<LocationOverviewModel>
+        allLocations: List<LocationOverviewModel>,
+        allStations: Map<String, String>
     ): DetailsModel {
         val payload = detailsDTO.payload
 
@@ -60,6 +61,7 @@ object DetailsMapper {
             about = about,
             location = location,
             coordinates = LatLng(payload.lat, payload.lng),
+            stationName = allStations[payload.stationCode],
             alternatives = alternatives
         )
     }

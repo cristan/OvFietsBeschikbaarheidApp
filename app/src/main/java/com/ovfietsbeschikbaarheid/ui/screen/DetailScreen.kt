@@ -245,7 +245,7 @@ private fun Alternatives(
 ) {
     DetailsCard {
         Text(
-            text = "Bij ditzelfde station",
+            text = if (details.stationName != null) "Op ${details.stationName}" else "Op deze locatie",
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )
@@ -350,6 +350,7 @@ fun DetailsPreview() {
             directions,
             locationModel,
             LatLng(52.22626, 5.18076),
+            "Amsterdam Zuid",
             listOf(
                 TestData.testLocationOverviewModel
             )
