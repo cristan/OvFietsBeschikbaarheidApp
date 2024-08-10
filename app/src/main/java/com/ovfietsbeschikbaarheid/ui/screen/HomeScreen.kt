@@ -19,16 +19,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.ovfietsbeschikbaarheid.R
 import com.ovfietsbeschikbaarheid.TestData
@@ -43,6 +50,7 @@ fun HomeScreen(viewModel: LocationsViewModel = viewModel(), onLocationClick: (Lo
     HomeView(searchTerm, locations, viewModel::onSearchTermChanged, onLocationClick)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeView(
     searchTerm: String,
@@ -51,7 +59,20 @@ private fun HomeView(
     onLocationClick: (LocationOverviewModel) -> Unit
 ) {
     OVFietsBeschikbaarheidTheme {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+                title = {
+                    Text(stringResource(R.string.app_name))
+                },
+            )
+        },
+        ) { innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
