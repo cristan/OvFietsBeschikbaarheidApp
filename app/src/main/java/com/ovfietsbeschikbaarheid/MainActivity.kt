@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -37,7 +38,9 @@ private fun NavController() {
                     navController.navigate("detail/${alternative.locationCode}")
                 }
             }) {
-                navController.popBackStack()
+                navController.navigate("home") {
+                    popUpTo(0)
+                }
             }
         }
     }
