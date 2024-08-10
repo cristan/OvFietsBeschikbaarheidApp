@@ -7,13 +7,13 @@ import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 object LocationsMapper {
     private val nonExistingLocations = listOf(
         "asb003",
-        "UTVR002",
         "ut018",
         "UTVR002",
         "ehv004",
         "gvc021",
-        "ed001",
         "had002",
+        "ed001",
+        "ed002",
     )
 
     fun map(locationsDTO: LocationsDTO): List<LocationOverviewModel> {
