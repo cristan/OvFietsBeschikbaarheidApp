@@ -27,7 +27,7 @@ object DetailsMapper {
                     city = payload.city.trim(),
                     street = payload.street.trim(),
                     houseNumber = payload.houseNumber.trim(),
-                    postalCode = payload.postalCode.trim(),
+                    postalCode = payload.postalCode.trim().replace("  ", " "),
                 )
             }
 
