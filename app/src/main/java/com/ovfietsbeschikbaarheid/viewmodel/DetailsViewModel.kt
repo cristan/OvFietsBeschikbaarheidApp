@@ -37,7 +37,9 @@ class DetailsViewModel(private val application: Application) : AndroidViewModel(
         overviewModel = allLocationsFlow.value.find { it.locationCode == locationCode }!!
         _title.value = overviewModel.title
         _isRefreshing.value = true
-        refresh()
+        viewModelScope.launch {
+            doRefresh()
+        }
         _isRefreshing.value = false
     }
 
