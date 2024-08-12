@@ -9,6 +9,8 @@ import com.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import com.ovfietsbeschikbaarheid.repository.OverviewRepository
 
 object DetailsMapper {
+    val newLinesAtEnd = Regex("[\\\\n\\s]*\$")
+
     fun convert(
         detailsDTO: DetailsDTO,
         allLocations: List<LocationOverviewModel>,
@@ -16,8 +18,8 @@ object DetailsMapper {
     ): DetailsModel {
         val payload = detailsDTO.payload
 
-        val directions = payload.infoImages.find { it.title == "Routebeschrijving" }?.body
-        val about = payload.infoImages.find { it.title == "Bijzonderheden" }?.body
+        val directions = payload.infoImages.find { it.title == "Routebeschrijving" }?.body?.replace(newLinesAtEnd, "")
+        val about = payload.infoImages.find { it.title == "Bijzonderheden" }?.body?.replace(newLinesAtEnd, "")
 
         val location =
             if (payload.city == "" || payload.city == null || payload.street == null || payload.houseNumber == null || payload.postalCode == null) {
