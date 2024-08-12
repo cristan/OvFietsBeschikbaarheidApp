@@ -206,27 +206,15 @@ private fun ActualDetails(
                 }
 
                 if (details.serviceType != null || details.directions != null || details.about != null) {
-                    Card(
-                        Modifier
-                            .padding(top = 8.dp)
-                            .fillMaxWidth(),
-                        colors = CardDefaults.cardColors(
-                            containerColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White,
-                        ),
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 2.dp
-                        ),
-                    ) {
-                        Column(Modifier.padding(16.dp)) {
-                            details.serviceType?.let {
-                                Text("Type: ${it.lowercase(Locale.UK)}")
-                            }
-                            if (details.directions != null) {
-                                Text("\n" + details.directions)
-                            }
-                            if (details.about != null) {
-                                Text("\n" + details.about)
-                            }
+                    DetailsCard {
+                        details.serviceType?.let {
+                            Text("Type: ${it.lowercase(Locale.UK)}")
+                        }
+                        if (details.directions != null) {
+                            Text("\n" + details.directions)
+                        }
+                        if (details.about != null) {
+                            Text("\n" + details.about)
                         }
                     }
                 }
