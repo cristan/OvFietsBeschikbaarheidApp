@@ -183,13 +183,18 @@ private fun ActualDetails(
                     Address(details.location, onLocationClicked)
                 }
 
-                Card(Modifier.padding(top = 8.dp)) {
+                Card(
+                    modifier = Modifier.padding(top = 8.dp),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 2.dp
+                    )
+                ) {
                     val cameraPositionState = rememberCameraPositionState {
                         position = CameraPosition.fromLatLngZoom(details.coordinates, 16f)
                     }
                     GoogleMap(
                         modifier = Modifier.height(280.dp),
-                        cameraPositionState = cameraPositionState
+                        cameraPositionState = cameraPositionState,
                     ) {
                         Marker(
                             //                    icon = Icons.Filled.,
