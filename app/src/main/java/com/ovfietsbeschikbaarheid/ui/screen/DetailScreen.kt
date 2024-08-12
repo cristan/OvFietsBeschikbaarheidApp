@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -160,7 +161,7 @@ private fun ActualDetails(
         //color = if (isSystemInDarkTheme()) Color.DarkGray else Color(0xFFF0F0F0)
     ) {
         details?.let {
-            Column(Modifier.padding(20.dp)) {
+            Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
                 DetailsCard {
                     Row {
                         Text("Aantal beschikbaar")
@@ -179,39 +180,12 @@ private fun ActualDetails(
                     }
                 }
 
-                if (details.location != null) {
-                    Address(details.location, onLocationClicked)
-                }
+                Location(details, onLocationClicked)
 
-                Card(
-                    modifier = Modifier.padding(top = 8.dp),
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 2.dp
-                    )
-                ) {
-                    val cameraPositionState = rememberCameraPositionState {
-                        position = CameraPosition.fromLatLngZoom(details.coordinates, 16f)
-                    }
-                    GoogleMap(
-                        modifier = Modifier.height(280.dp),
-                        cameraPositionState = cameraPositionState,
-                    ) {
-                        Marker(
-                            //                    icon = Icons.Filled.,
-                            state = MarkerState(position = details.coordinates),
-                            title = details.description,
-                            snippet = "${details.rentalBikesAvailable ?: "??"} beschikbaar"
-                        )
-                    }
-                }
-
-                if (details.serviceType != null || details.directions != null || details.about != null) {
+                if (details.serviceType != null || details.about != null) {
                     DetailsCard {
                         details.serviceType?.let {
                             Text("Type: ${it.lowercase(Locale.UK)}")
-                        }
-                        if (details.directions != null) {
-                            Text("\n" + details.directions)
                         }
                         if (details.about != null) {
                             Text("\n" + details.about)
@@ -253,28 +227,54 @@ private fun Alternatives(
 }
 
 @Composable
-private fun Address(location: LocationModel, onNavigateClicked: (LocationModel) -> Unit) {
+private fun Location(details: DetailsModel, onNavigateClicked: (LocationModel) -> Unit) {
     DetailsCard(
-        modifier = Modifier
-            .clickable { onNavigateClicked(location) }
+        contentPadding = 0.dp
     ) {
         Text(
-            text = "Adres",
+            text = "Locatie",
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
         )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column {
-                Text("${location.street} ${location.houseNumber}")
-                Text("${location.postalCode} ${location.city}")
+        details.location?.let { location ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onNavigateClicked(details.location) }
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    Text("${location.street} ${location.houseNumber}")
+                    Text("${location.postalCode} ${location.city}")
+                }
+                Icon(
+                    painter = painterResource(id = R.drawable.directions_24px),
+                    contentDescription = "Navigeer"
+                )
             }
-            Icon(
-                painter = painterResource(id = R.drawable.directions_24px),
-                contentDescription = "Navigeer"
+        }
+
+        if (details.directions != null) {
+            Text(
+                text = details.directions,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+            )
+        }
+
+        val cameraPositionState = rememberCameraPositionState {
+            position = CameraPosition.fromLatLngZoom(details.coordinates, 16f)
+        }
+        GoogleMap(
+            modifier = Modifier.height(260.dp),
+            cameraPositionState = cameraPositionState,
+        ) {
+            Marker(
+                //                    icon = Icons.Filled.,
+                state = MarkerState(position = details.coordinates),
+                title = details.description,
+                snippet = "${details.rentalBikesAvailable ?: "??"} beschikbaar"
             )
         }
     }
@@ -299,10 +299,14 @@ private fun OpeningHours(details: DetailsModel) {
 
 
 @Composable
-fun DetailsCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+fun DetailsCard(
+    modifier: Modifier = Modifier,
+    contentPadding: Dp = 16.dp,
+    content: @Composable ColumnScope.() -> Unit
+) {
     Card(
         modifier = modifier
-            .padding(top = 8.dp)
+            .padding(top = 16.dp)
             .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 2.dp
@@ -311,7 +315,7 @@ fun DetailsCard(modifier: Modifier = Modifier, content: @Composable ColumnScope.
             containerColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White,
         ),
     ) {
-        Column(Modifier.padding(16.dp), content = content)
+        Column(Modifier.padding(contentPadding), content = content)
     }
 }
 
