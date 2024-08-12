@@ -21,6 +21,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -44,11 +46,11 @@ import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
 
 @Composable
-fun HomeScreen(viewModel: LocationsViewModel = viewModel(), onLocationClick: (LocationOverviewModel) -> Unit) {
+fun HomeScreen(viewModel: LocationsViewModel = viewModel(), onInfoClicked: () -> Unit, onLocationClick: (LocationOverviewModel) -> Unit) {
     val searchTerm by viewModel.searchTerm.collectAsState()
     val locations by viewModel.filteredLocations.collectAsState(emptyList())
     
-    HomeView(searchTerm, locations, viewModel::onSearchTermChanged, onLocationClick)
+    HomeView(searchTerm, locations, viewModel::onSearchTermChanged, onInfoClicked, onLocationClick)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,6 +59,7 @@ private fun HomeView(
     searchTerm: String,
     locations: List<LocationOverviewModel>,
     onSearchTermChanged: (String) -> Unit,
+    onInfoClicked: () -> Unit,
     onLocationClick: (LocationOverviewModel) -> Unit
 ) {
     OVFietsBeschikbaarheidTheme {
@@ -66,11 +69,20 @@ private fun HomeView(
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    actionIconContentColor = Yellow50,
                     titleContentColor = Yellow50,
                 ),
                 title = {
                     Text(stringResource(R.string.app_name))
                 },
+                actions = {
+                    IconButton(onClick = onInfoClicked) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "Info",
+                        )
+                    }
+                }
             )
         },
         ) { innerPadding ->
@@ -151,5 +163,5 @@ fun HomePreview() {
         TestData.testLocationOverviewModel.copy(title = "Amsterdam Zuid Mahlerplein", rentalBikesAvailable = 49),
         TestData.testLocationOverviewModel.copy(title = "Amsterdam Zuid Zuidplein", rentalBikesAvailable = 148),
     )
-    HomeView("Amsterdam Zuid", locations, {}, {})
+    HomeView("Amsterdam Zuid", locations, {}, {}, {})
 }

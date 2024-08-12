@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
+import com.ovfietsbeschikbaarheid.ui.screen.AboutScreen
 import com.ovfietsbeschikbaarheid.ui.screen.DetailScreen
 import com.ovfietsbeschikbaarheid.ui.screen.HomeScreen
 
@@ -27,13 +28,21 @@ private fun NavController() {
 
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
-            HomeScreen {
-                navController.navigate("detail/${it.locationCode}")
-            }
+            HomeScreen(
+                onInfoClicked = { navController.navigate("info") },
+                onLocationClick = { navController.navigate("detail/${it.locationCode}") }
+            )
+        }
+        composable("info") {
+            AboutScreen(onBackClicked = {
+                navController.navigate("home") {
+                    popUpTo(0)
+                }
+            })
         }
         composable("detail/{locationCode}") { backStackEntry ->
             val locationCode = backStackEntry.arguments?.getString("locationCode")!!
-            DetailScreen(locationCode, {alternative ->
+            DetailScreen(locationCode, { alternative ->
                 run {
                     navController.navigate("detail/${alternative.locationCode}")
                 }

@@ -3,11 +3,9 @@ package com.ovfietsbeschikbaarheid.ui.screen
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,8 +14,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,11 +31,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -56,6 +50,7 @@ import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.OpeningHoursModel
+import com.ovfietsbeschikbaarheid.ui.components.OvCard
 import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import java.net.URLEncoder
@@ -162,7 +157,7 @@ private fun ActualDetails(
     ) {
         details?.let {
             Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
-                DetailsCard {
+                OvCard {
                     Row {
                         Text("Aantal beschikbaar")
                     }
@@ -183,7 +178,7 @@ private fun ActualDetails(
                 Location(details, onLocationClicked)
 
                 if (details.serviceType != null || details.about != null) {
-                    DetailsCard {
+                    OvCard {
                         details.serviceType?.let {
                             Text("Type: ${it.lowercase(Locale.UK)}")
                         }
@@ -210,7 +205,7 @@ private fun Alternatives(
     details: DetailsModel,
     onAlternativeClicked: (LocationOverviewModel) -> Unit
 ) {
-    DetailsCard {
+    OvCard {
         Text(
             text = if (details.stationName != null) "Op ${details.stationName}" else "Op deze locatie",
             style = MaterialTheme.typography.headlineMedium,
@@ -228,7 +223,7 @@ private fun Alternatives(
 
 @Composable
 private fun Location(details: DetailsModel, onNavigateClicked: (LocationModel) -> Unit) {
-    DetailsCard(
+    OvCard(
         contentPadding = 0.dp
     ) {
         Text(
@@ -282,7 +277,7 @@ private fun Location(details: DetailsModel, onNavigateClicked: (LocationModel) -
 
 @Composable
 private fun OpeningHours(details: DetailsModel) {
-    DetailsCard {
+    OvCard {
         Text(
             text = "Openingstijden",
             style = MaterialTheme.typography.headlineMedium,
@@ -294,28 +289,6 @@ private fun OpeningHours(details: DetailsModel) {
                 Text("${it.startTime} - ${it.endTime}", Modifier.weight(1f))
             }
         }
-    }
-}
-
-
-@Composable
-fun DetailsCard(
-    modifier: Modifier = Modifier,
-    contentPadding: Dp = 16.dp,
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Card(
-        modifier = modifier
-            .padding(top = 16.dp)
-            .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp
-        ),
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSystemInDarkTheme()) Color.Unspecified else Color.White,
-        ),
-    ) {
-        Column(Modifier.padding(contentPadding), content = content)
     }
 }
 
