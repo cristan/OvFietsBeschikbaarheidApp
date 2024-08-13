@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -261,16 +262,20 @@ private fun Location(details: DetailsModel, onNavigateClicked: (LocationModel) -
         val cameraPositionState = rememberCameraPositionState {
             position = CameraPosition.fromLatLngZoom(details.coordinates, 16f)
         }
-        GoogleMap(
-            modifier = Modifier.height(260.dp),
-            cameraPositionState = cameraPositionState,
+        Card(
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
-            Marker(
-                //                    icon = Icons.Filled.,
-                state = MarkerState(position = details.coordinates),
-                title = details.description,
-                snippet = "${details.rentalBikesAvailable ?: "??"} beschikbaar"
-            )
+            GoogleMap(
+                modifier = Modifier.height(260.dp),
+                cameraPositionState = cameraPositionState,
+            ) {
+                Marker(
+                    //                    icon = Icons.Filled.,
+                    state = MarkerState(position = details.coordinates),
+                    title = details.description,
+                    snippet = "${details.rentalBikesAvailable ?: "??"} beschikbaar"
+                )
+            }
         }
     }
 }
