@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -67,10 +70,8 @@ fun DetailScreen(
     viewModel.setLocationCode(locationCode)
 
     val context = LocalContext.current
-    val onLocationClicked: (LocationModel) -> Unit = { locationModel ->
+    val onLocationClicked: (String) -> Unit = { address ->
         val intent = Intent(Intent.ACTION_VIEW)
-        val address =
-            "${locationModel.street} ${locationModel.houseNumber} ${locationModel.postalCode} ${locationModel.city}"
         intent.data = Uri.parse(
             "https://www.google.com/maps/dir/?api=1&destination=${
                 URLEncoder.encode(
@@ -107,7 +108,7 @@ private fun DetailsView(
     details: DetailsModel?,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
-    onLocationClicked: (LocationModel) -> Unit,
+    onLocationClicked: (String) -> Unit,
     onAlternativeClicked: (LocationOverviewModel) -> Unit,
     onBackClicked: () -> Unit
 ) {
@@ -148,7 +149,7 @@ private fun DetailsView(
 @Composable
 private fun ActualDetails(
     details: DetailsModel?,
-    onLocationClicked: (LocationModel) -> Unit,
+    onLocationClicked: (String) -> Unit,
     onAlternativeClicked: (LocationOverviewModel) -> Unit
 ) {
     Surface(
@@ -223,7 +224,7 @@ private fun Alternatives(
 }
 
 @Composable
-private fun Location(details: DetailsModel, onNavigateClicked: (LocationModel) -> Unit) {
+private fun Location(details: DetailsModel, onNavigateClicked: (String) -> Unit) {
     OvCard(
         contentPadding = 0.dp
     ) {
@@ -232,24 +233,47 @@ private fun Location(details: DetailsModel, onNavigateClicked: (LocationModel) -
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
         )
-        details.location?.let { location ->
+        val onAddressClick = {
+            if (details.location != null) {
+                val location = details.location
+                val address =
+                    "${location.street} ${location.houseNumber} ${location.postalCode} ${location.city}"
+                onNavigateClicked(address)
+            } else {
+                onNavigateClicked("${details.coordinates.latitude}, ${details.coordinates.longitude}")
+            }
+        }
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onAddressClick)
+            .padding(horizontal = 16.dp)
+        ) {
+            HorizontalDivider(Modifier.padding(vertical = 16.dp))
+
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onNavigateClicked(details.location) }
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column {
-                    Text("${location.street} ${location.houseNumber}")
-                    Text("${location.postalCode} ${location.city}")
+                val location = details.location
+
+                Column(modifier = Modifier.weight(1f)) {
+                    if (location != null) {
+                        Text("${location.street} ${location.houseNumber}")
+                        Text("${location.postalCode} ${location.city}")
+                    } else {
+                        Text("<Onbekend adres>")
+                    }
                 }
+
                 Icon(
                     painter = painterResource(id = R.drawable.directions_24px),
-                    contentDescription = "Navigeer"
+                    contentDescription = "Navigeer",
+                    modifier = Modifier.size(24.dp)
                 )
             }
+
+            HorizontalDivider(Modifier.padding(vertical = 16.dp))
         }
 
         if (details.directions != null) {
