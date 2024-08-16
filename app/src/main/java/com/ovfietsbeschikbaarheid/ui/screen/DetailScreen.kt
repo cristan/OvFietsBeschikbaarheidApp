@@ -284,7 +284,7 @@ private fun Location(details: DetailsModel, onNavigateClicked: (String) -> Unit)
         }
 
         val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(details.coordinates, 16f)
+            position = CameraPosition.fromLatLngZoom(details.coordinates, 15f)
         }
         Card(
             modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
