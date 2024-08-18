@@ -41,7 +41,7 @@ data class PayloadExtra(
     // a string containing an Int. Weirdly nullable (see Raalte)
     val rentalBikes: Int? = null,
 
-    // Can be Bemenst, Kluizen, Sleutelautomaat
+    // Can be Bemenst, Kluizen, Sleutelautomaat, Box (Enkhuizen)
     val serviceType: String? = null,
 
     val locationCode: String,

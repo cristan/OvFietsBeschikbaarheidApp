@@ -1,7 +1,6 @@
 package com.ovfietsbeschikbaarheid.dto
 
 import kotlinx.serialization.Serializable
-import java.math.BigDecimal
 
 @Serializable
 data class LocationsDTO(
