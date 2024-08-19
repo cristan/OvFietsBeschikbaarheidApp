@@ -53,7 +53,7 @@ fun FullPageError(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun FullPageErrorPreview() {
     OVFietsBeschikbaarheidTheme {

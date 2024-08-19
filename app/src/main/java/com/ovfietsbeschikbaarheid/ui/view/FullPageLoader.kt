@@ -24,7 +24,7 @@ fun FullPageLoader() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun FullPageLoaderPreview() {
     FullPageLoader()
