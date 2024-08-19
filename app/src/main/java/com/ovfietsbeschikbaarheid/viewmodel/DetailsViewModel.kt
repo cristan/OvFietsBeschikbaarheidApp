@@ -10,6 +10,8 @@ import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.repository.OverviewRepository
 import com.ovfietsbeschikbaarheid.repository.StationRepository
+import com.ovfietsbeschikbaarheid.state.ScreenState
+import com.ovfietsbeschikbaarheid.state.setRefreshing
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,11 +20,8 @@ private const val MIN_REFRESH_TIME = 350
 
 class DetailsViewModel(private val application: Application) : AndroidViewModel(application) {
 
-    private val _detailsPayload = MutableStateFlow<DetailsModel?>(null)
-    val detailsPayload: StateFlow<DetailsModel?> = _detailsPayload
-
-    private val _isRefreshing = MutableStateFlow(false)
-    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+    private val _screenState = MutableStateFlow<ScreenState<DetailsModel>>(ScreenState.Loading)
+    val screenState: StateFlow<ScreenState<DetailsModel>> = _screenState
 
     private val _title = MutableStateFlow("")
     val title: StateFlow<String> = _title
@@ -36,30 +35,39 @@ class DetailsViewModel(private val application: Application) : AndroidViewModel(
     fun setLocationCode(locationCode: String) {
         overviewModel = allLocationsFlow.value.find { it.locationCode == locationCode }!!
         _title.value = overviewModel.title
-        _isRefreshing.value = true
         viewModelScope.launch {
             doRefresh()
         }
-        _isRefreshing.value = false
     }
 
     fun refresh() {
         viewModelScope.launch {
-            _isRefreshing.value = true
+            _screenState.setRefreshing(true)
             val before = System.currentTimeMillis()
             doRefresh()
             val timeElapsed = System.currentTimeMillis() - before
             if (timeElapsed < MIN_REFRESH_TIME) {
                 delay(MIN_REFRESH_TIME - timeElapsed)
             }
-            _isRefreshing.value = false
+        }
+    }
+
+    fun onRetryClick() {
+        _screenState.value = ScreenState.Loading
+        viewModelScope.launch {
+            doRefresh()
         }
     }
 
     private suspend fun doRefresh() {
-        val details = client.getDetails(overviewModel.uri)
-        val allStations = StationRepository.getAllStations(application)
-        _detailsPayload.value = DetailsMapper.convert(details, allLocationsFlow.value, allStations)
+        try {
+            val details = client.getDetails(overviewModel.uri)
+            val allStations = StationRepository.getAllStations(application)
+            val data = DetailsMapper.convert(details, allLocationsFlow.value, allStations)
+            _screenState.value = ScreenState.Loaded(data)
+        } catch (e: Exception) {
+            _screenState.value = ScreenState.FullPageError
+        }
     }
 
     override fun onCleared() {

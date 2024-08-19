@@ -16,7 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -54,9 +53,12 @@ import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.OpeningHoursModel
+import com.ovfietsbeschikbaarheid.state.ScreenState
 import com.ovfietsbeschikbaarheid.ui.components.OvCard
 import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
+import com.ovfietsbeschikbaarheid.ui.view.FullPageError
+import com.ovfietsbeschikbaarheid.ui.view.FullPageLoader
 import java.net.URLEncoder
 import java.util.Locale
 
@@ -88,12 +90,11 @@ fun DetailScreen(
     }
 
     val title by viewModel.title.collectAsState()
-    val details by viewModel.detailsPayload.collectAsState()
-    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val details by viewModel.screenState.collectAsState()
     DetailsView(
         title,
         details,
-        isRefreshing,
+        viewModel::onRetryClick,
         viewModel::refresh,
         onLocationClicked,
         onAlternativeClicked,
@@ -105,8 +106,8 @@ fun DetailScreen(
 @Composable
 private fun DetailsView(
     title: String,
-    details: DetailsModel?,
-    isRefreshing: Boolean,
+    details: ScreenState<DetailsModel>,
+    onRetry: () -> Unit,
     onRefresh: () -> Unit,
     onLocationClicked: (String) -> Unit,
     onAlternativeClicked: (LocationOverviewModel) -> Unit,
@@ -134,13 +135,19 @@ private fun DetailsView(
                 )
             },
         ) { innerPadding ->
-            PullToRefreshBox(
-                state = state,
-                modifier = Modifier.padding(innerPadding),
-                isRefreshing = isRefreshing,
-                onRefresh = onRefresh,
-            ) {
-                ActualDetails(details, onLocationClicked, onAlternativeClicked)
+            when(details) {
+                ScreenState.FullPageError -> FullPageError(onRetry)
+                ScreenState.Loading -> FullPageLoader()
+                is ScreenState.Loaded<DetailsModel> -> {
+                    PullToRefreshBox(
+                        state = state,
+                        modifier = Modifier.padding(innerPadding),
+                        isRefreshing = details.isRefreshing,
+                        onRefresh = onRefresh,
+                    ) {
+                        ActualDetails(details.data, onLocationClicked, onAlternativeClicked)
+                    }
+                }
             }
         }
     }
@@ -148,55 +155,51 @@ private fun DetailsView(
 
 @Composable
 private fun ActualDetails(
-    details: DetailsModel?,
+    details: DetailsModel,
     onLocationClicked: (String) -> Unit,
     onAlternativeClicked: (LocationOverviewModel) -> Unit
 ) {
     Surface(
-        Modifier
-            .verticalScroll(rememberScrollState()),
-        //color = if (isSystemInDarkTheme()) Color.DarkGray else Color(0xFFF0F0F0)
+        Modifier.verticalScroll(rememberScrollState())
     ) {
-        details?.let {
-            Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
+        Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
+            OvCard {
+                Row {
+                    Text("Aantal beschikbaar")
+                }
+                val amount = details.rentalBikesAvailable?.toString() ?: "Onbekend"
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 40.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = amount,
+                        fontSize = if (details.rentalBikesAvailable != null) 88.sp else 40.sp
+                    )
+                }
+            }
+
+            Location(details, onLocationClicked)
+
+            if (details.serviceType != null || details.about != null) {
                 OvCard {
-                    Row {
-                        Text("Aantal beschikbaar")
+                    details.serviceType?.let {
+                        Text("Type: ${it.lowercase(Locale.UK)}")
                     }
-                    val amount = details.rentalBikesAvailable?.toString() ?: "Onbekend"
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 40.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = amount,
-                            fontSize = if (details.rentalBikesAvailable != null) 88.sp else 40.sp
-                        )
+                    if (details.about != null) {
+                        Text("\n" + details.about)
                     }
                 }
+            }
 
-                Location(details, onLocationClicked)
+            if (details.openingHours.isNotEmpty()) {
+                OpeningHours(details)
+            }
 
-                if (details.serviceType != null || details.about != null) {
-                    OvCard {
-                        details.serviceType?.let {
-                            Text("Type: ${it.lowercase(Locale.UK)}")
-                        }
-                        if (details.about != null) {
-                            Text("\n" + details.about)
-                        }
-                    }
-                }
-
-                if (details.openingHours.isNotEmpty()) {
-                    OpeningHours(details)
-                }
-
-                if (details.alternatives.isNotEmpty()) {
-                    Alternatives(details, onAlternativeClicked)
-                }
+            if (details.alternatives.isNotEmpty()) {
+                Alternatives(details, onAlternativeClicked)
             }
         }
     }
@@ -243,10 +246,11 @@ private fun Location(details: DetailsModel, onNavigateClicked: (String) -> Unit)
                 onNavigateClicked("${details.coordinates.latitude}, ${details.coordinates.longitude}")
             }
         }
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onAddressClick)
-            .padding(horizontal = 16.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onAddressClick)
+                .padding(horizontal = 16.dp)
         ) {
             HorizontalDivider(Modifier.padding(vertical = 16.dp))
 
@@ -338,23 +342,24 @@ fun DetailsPreview() {
         houseNumber = "1",
         postalCode = "1211 EX",
     )
+    val details = DetailsModel(
+        "Hilversum",
+        openingHours,
+        144,
+        "Bemenst",
+        about,
+        directions,
+        locationModel,
+        LatLng(52.22626, 5.18076),
+        "Amsterdam Zuid",
+        listOf(
+            TestData.testLocationOverviewModel
+        )
+    )
     DetailsView(
         "Hilversum",
-        DetailsModel(
-            "Hilversum",
-            openingHours,
-            144,
-            "Bemenst",
-            about,
-            directions,
-            locationModel,
-            LatLng(52.22626, 5.18076),
-            "Amsterdam Zuid",
-            listOf(
-                TestData.testLocationOverviewModel
-            )
-        ),
-        false,
+        ScreenState.Loaded(details),
+        {},
         {},
         {},
         {},
