@@ -6,11 +6,11 @@ import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.ovfietsbeschikbaarheid.R
 import java.util.Locale
 
-object StationRepository {
+class StationRepository(private val context: Context) {
     private var cachedStations: Map<String, String>? = null
 
     // allLocations will be empty after app is recreated. This works around that, but there's probably a nicer way to do this.
-    fun getAllStations(context: Context): Map<String, String> {
+    fun getAllStations(): Map<String, String> {
         val allStations = cachedStations
         if (allStations != null) {
             return allStations

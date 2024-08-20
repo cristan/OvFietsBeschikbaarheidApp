@@ -1,7 +1,5 @@
 package com.ovfietsbeschikbaarheid.ui.screen
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -16,7 +14,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
@@ -33,8 +30,6 @@ import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
 fun AboutScreen(
     onBackClicked: () -> Unit
 ) {
-    val context = LocalContext.current
-
     AboutView(
         onBackClicked
     )

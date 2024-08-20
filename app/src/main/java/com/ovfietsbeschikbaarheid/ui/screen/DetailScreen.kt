@@ -39,7 +39,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -61,14 +60,16 @@ import com.ovfietsbeschikbaarheid.ui.view.FullPageError
 import com.ovfietsbeschikbaarheid.ui.view.FullPageLoader
 import java.net.URLEncoder
 import java.util.Locale
+import org.koin.androidx.compose.koinViewModel
+
 
 @Composable
 fun DetailScreen(
     locationCode: String,
+    viewModel: DetailsViewModel = koinViewModel(),
     onAlternativeClicked: (LocationOverviewModel) -> Unit,
     onBackClicked: () -> Unit
 ) {
-    val viewModel = viewModel<DetailsViewModel>()
     viewModel.setLocationCode(locationCode)
 
     val context = LocalContext.current

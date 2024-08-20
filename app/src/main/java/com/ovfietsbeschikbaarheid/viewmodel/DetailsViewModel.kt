@@ -1,7 +1,6 @@
 package com.ovfietsbeschikbaarheid.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import com.ovfietsbeschikbaarheid.KtorApiClient
@@ -18,7 +17,10 @@ import kotlinx.coroutines.flow.StateFlow
 
 private const val MIN_REFRESH_TIME = 350
 
-class DetailsViewModel(private val application: Application) : AndroidViewModel(application) {
+class DetailsViewModel(
+    overviewRepository: OverviewRepository,
+    private val stationRepository: StationRepository
+) : ViewModel() {
 
     private val _screenState = MutableStateFlow<ScreenState<DetailsModel>>(ScreenState.Loading)
     val screenState: StateFlow<ScreenState<DetailsModel>> = _screenState
@@ -30,7 +32,7 @@ class DetailsViewModel(private val application: Application) : AndroidViewModel(
 
     private lateinit var overviewModel: LocationOverviewModel
 
-    private val allLocationsFlow = OverviewRepository.getAllLocations(application)
+    private val allLocationsFlow = overviewRepository.getAllLocations()
 
     fun setLocationCode(locationCode: String) {
         overviewModel = allLocationsFlow.value.find { it.locationCode == locationCode }!!
@@ -62,7 +64,7 @@ class DetailsViewModel(private val application: Application) : AndroidViewModel(
     private suspend fun doRefresh() {
         try {
             val details = client.getDetails(overviewModel.uri)
-            val allStations = StationRepository.getAllStations(application)
+            val allStations = stationRepository.getAllStations()
             val data = DetailsMapper.convert(details, allLocationsFlow.value, allStations)
             _screenState.value = ScreenState.Loaded(data)
         } catch (e: Exception) {

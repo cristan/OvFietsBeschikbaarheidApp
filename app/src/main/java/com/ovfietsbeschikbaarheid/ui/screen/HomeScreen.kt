@@ -5,7 +5,6 @@ import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -19,11 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,9 +40,10 @@ import com.ovfietsbeschikbaarheid.TestData
 import com.ovfietsbeschikbaarheid.viewmodel.LocationsViewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun HomeScreen(viewModel: LocationsViewModel = viewModel(), onInfoClicked: () -> Unit, onLocationClick: (LocationOverviewModel) -> Unit) {
+fun HomeScreen(viewModel: LocationsViewModel = koinViewModel(), onInfoClicked: () -> Unit, onLocationClick: (LocationOverviewModel) -> Unit) {
     val searchTerm by viewModel.searchTerm.collectAsState()
     val locations by viewModel.filteredLocations.collectAsState(emptyList())
     
