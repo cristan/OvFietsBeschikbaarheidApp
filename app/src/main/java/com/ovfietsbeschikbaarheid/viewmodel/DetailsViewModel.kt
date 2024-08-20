@@ -42,7 +42,7 @@ class DetailsViewModel(private val application: Application) : AndroidViewModel(
 
     fun refresh() {
         viewModelScope.launch {
-            _screenState.setRefreshing(true)
+            _screenState.setRefreshing()
             val before = System.currentTimeMillis()
             doRefresh()
             val timeElapsed = System.currentTimeMillis() - before
