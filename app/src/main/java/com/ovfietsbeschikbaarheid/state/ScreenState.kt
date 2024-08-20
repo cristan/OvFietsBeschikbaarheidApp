@@ -15,9 +15,6 @@ sealed class ScreenState<out T> {
 }
 
 fun <T> MutableStateFlow<ScreenState<T>>.setRefreshing(isRefreshing: Boolean) {
-    // Check if the status is loaded, because it could also be FullPageError
-    val loadedState = value as? ScreenState.Loaded?
-    loadedState?.let {
-        value = loadedState.copy(isRefreshing = isRefreshing)
-    }
+    val loadedState = value as ScreenState.Loaded
+    value = loadedState.copy(isRefreshing = isRefreshing)
 }
