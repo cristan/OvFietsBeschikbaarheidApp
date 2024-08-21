@@ -267,7 +267,7 @@ private fun Location(details: DetailsModel, onNavigateClicked: (String) -> Unit)
                         Text("${location.street} ${location.houseNumber}")
                         Text("${location.postalCode} ${location.city}")
                     } else {
-                        Text("<Onbekend adres>")
+                        Text("Coördinaten: ${details.coordinates.latitude}, ${details.coordinates.longitude}")
                     }
                 }
 
