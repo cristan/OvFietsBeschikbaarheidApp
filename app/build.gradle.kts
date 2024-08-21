@@ -15,6 +15,9 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        // Only include resources for supported languages
+        resourceConfigurations += listOf("nl", "en")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
