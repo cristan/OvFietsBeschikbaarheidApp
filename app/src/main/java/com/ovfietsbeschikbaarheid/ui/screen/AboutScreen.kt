@@ -107,7 +107,7 @@ private fun AboutView(
                 }
                 OvCard {
                     Text(
-                        text = "Niet-kloppende data",
+                        text = "Bij niet-kloppende data",
                         style = MaterialTheme.typography.headlineMedium,
                     )
                     Text(
