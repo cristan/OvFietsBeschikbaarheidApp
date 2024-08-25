@@ -114,31 +114,7 @@ private fun HomeView(
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                val keyboardController = LocalSoftwareKeyboardController.current
-                OutlinedTextField(
-                    value = searchTerm,
-                    onValueChange = {
-                        onSearchTermChanged(it)
-                    },
-                    label = { Text("Zoekterm") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
-                    singleLine = true,
-                    trailingIcon = {
-                        if (searchTerm.isNotEmpty()) {
-                            Icon(
-                                Icons.Default.Clear,
-                                contentDescription = "clear text",
-                                modifier = Modifier
-                                    .clickable {
-                                        keyboardController?.hide()
-                                        onSearchTermChanged("")
-                                    }
-                            )
-                        }
-                    }
-                )
+                SearchField(searchTerm, onSearchTermChanged)
 
                 when (screen) {
                     HomeContent.InitialEmpty -> Unit
@@ -220,6 +196,38 @@ private fun HomeView(
             }
         }
     }
+}
+
+@Composable
+private fun SearchField(
+    searchTerm: String,
+    onSearchTermChanged: (String) -> Unit
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    OutlinedTextField(
+        value = searchTerm,
+        onValueChange = {
+            onSearchTermChanged(it)
+        },
+        label = { Text("Zoekterm") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(12.dp),
+        singleLine = true,
+        trailingIcon = {
+            if (searchTerm.isNotEmpty()) {
+                Icon(
+                    Icons.Default.Clear,
+                    contentDescription = "clear text",
+                    modifier = Modifier
+                        .clickable {
+                            keyboardController?.hide()
+                            onSearchTermChanged("")
+                        }
+                )
+            }
+        }
+    )
 }
 
 @Composable
