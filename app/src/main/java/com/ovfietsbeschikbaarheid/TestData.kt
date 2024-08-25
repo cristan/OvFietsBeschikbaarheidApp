@@ -9,6 +9,8 @@ object TestData {
         "nvd001",
         "HVS",
         10,
-        true
+        true,
+        latitude = 52.36599,
+        longitude = 6.469563,
     )
 }

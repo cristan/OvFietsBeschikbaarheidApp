@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 private const val MIN_REFRESH_TIME = 350
 
 class DetailsViewModel(
-    overviewRepository: OverviewRepository,
+    private val overviewRepository: OverviewRepository,
     private val stationRepository: StationRepository
 ) : ViewModel() {
 
@@ -32,10 +32,9 @@ class DetailsViewModel(
 
     private lateinit var overviewModel: LocationOverviewModel
 
-    private val allLocationsFlow = overviewRepository.getAllLocations()
 
     fun setLocationCode(locationCode: String) {
-        overviewModel = allLocationsFlow.value.find { it.locationCode == locationCode }!!
+        overviewModel = overviewRepository.getAllLocations().find { it.locationCode == locationCode }!!
         _title.value = overviewModel.title
         viewModelScope.launch {
             doRefresh()
@@ -65,7 +64,7 @@ class DetailsViewModel(
         try {
             val details = client.getDetails(overviewModel.uri)
             val allStations = stationRepository.getAllStations()
-            val data = DetailsMapper.convert(details, allLocationsFlow.value, allStations)
+            val data = DetailsMapper.convert(details, overviewRepository.getAllLocations(), allStations)
             _screenState.value = ScreenState.Loaded(data)
         } catch (e: Exception) {
             _screenState.value = ScreenState.FullPageError

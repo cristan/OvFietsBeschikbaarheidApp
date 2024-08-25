@@ -63,6 +63,10 @@ dependencies {
     implementation(libs.google.maps.compose)
     implementation(libs.csv)
 
+    implementation(libs.compass.geolocation)
+    implementation(libs.compass.geolocation.mobile)
+    implementation(libs.compass.permissions.mobile)
+
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)

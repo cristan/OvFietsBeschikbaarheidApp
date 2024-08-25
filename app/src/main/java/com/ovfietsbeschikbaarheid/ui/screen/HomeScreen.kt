@@ -2,7 +2,6 @@ package com.ovfietsbeschikbaarheid.ui.screen
 
 import androidx.compose.ui.unit.dp
 import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.clickable
@@ -15,11 +14,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Place
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +32,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -40,22 +44,39 @@ import com.ovfietsbeschikbaarheid.TestData
 import com.ovfietsbeschikbaarheid.viewmodel.LocationsViewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
+import com.ovfietsbeschikbaarheid.viewmodel.HomeContent
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun HomeScreen(viewModel: LocationsViewModel = koinViewModel(), onInfoClicked: () -> Unit, onLocationClick: (LocationOverviewModel) -> Unit) {
-    val searchTerm by viewModel.searchTerm.collectAsState()
-    val locations by viewModel.filteredLocations.collectAsState(emptyList())
-    
-    HomeView(searchTerm, locations, viewModel::onSearchTermChanged, onInfoClicked, onLocationClick)
+fun HomeScreen(
+    viewModel: LocationsViewModel = koinViewModel(),
+    onInfoClicked: () -> Unit,
+    onLocationClick: (LocationOverviewModel) -> Unit
+) {
+    val searchTerm by viewModel.searchTerm
+    val screen by viewModel.content
+
+    LaunchedEffect(Unit) {
+        viewModel.checkPermission()
+    }
+
+    HomeView(
+        searchTerm,
+        screen,
+        viewModel::onSearchTermChanged,
+        viewModel::fetchLocation,
+        onInfoClicked,
+        onLocationClick
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeView(
     searchTerm: String,
-    locations: List<LocationOverviewModel>,
+    screen: HomeContent,
     onSearchTermChanged: (String) -> Unit,
+    onRequestLocationClicked: () -> Unit,
     onInfoClicked: () -> Unit,
     onLocationClick: (LocationOverviewModel) -> Unit
 ) {
@@ -63,25 +84,25 @@ private fun HomeView(
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    actionIconContentColor = Yellow50,
-                    titleContentColor = Yellow50,
-                ),
-                title = {
-                    Text(stringResource(R.string.app_name))
-                },
-                actions = {
-                    IconButton(onClick = onInfoClicked) {
-                        Icon(
-                            imageVector = Icons.Outlined.Info,
-                            contentDescription = "Info",
-                        )
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        actionIconContentColor = Yellow50,
+                        titleContentColor = Yellow50,
+                    ),
+                    title = {
+                        Text(stringResource(R.string.app_name))
+                    },
+                    actions = {
+                        IconButton(onClick = onInfoClicked) {
+                            Icon(
+                                imageVector = Icons.Outlined.Info,
+                                contentDescription = "Info",
+                            )
+                        }
                     }
-                }
-            )
-        },
+                )
+            },
         ) { innerPadding ->
             Column(
                 modifier = Modifier
@@ -116,10 +137,46 @@ private fun HomeView(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                LazyColumn {
-                    items(locations) { location ->
-                        LocationCard(location) {
-                            onLocationClick(location)
+                when (screen) {
+                    HomeContent.InitialEmpty -> Unit
+                    HomeContent.AskForGpsPermission -> {
+                        Button(onClick = onRequestLocationClicked) {
+                            Text("OV Fiets locaties in je buurt")
+                        }
+                    }
+
+                    is HomeContent.GpsError -> {
+                        Text(screen.message)
+                    }
+
+                    HomeContent.LoadingGpsLocation -> {
+                        Text("GPS aan het laden.")
+                    }
+
+                    is HomeContent.GpsContent -> {
+                        Column {
+                            Text("In de buurt")
+                        }
+                        LazyColumn {
+                            items(screen.locations) { location ->
+                                LocationCard(location.location, location.distance) {
+                                    onLocationClick(location.location)
+                                }
+                            }
+                        }
+                    }
+
+                    is HomeContent.NoSearchResults -> {
+                        Text("Geen zoekresultaten voor \"${screen.searchTerm}\"")
+                    }
+
+                    is HomeContent.SearchTermContent -> {
+                        LazyColumn {
+                            items(screen.locations) { location ->
+                                LocationCard(location) {
+                                    onLocationClick(location)
+                                }
+                            }
                         }
                     }
                 }
@@ -129,25 +186,34 @@ private fun HomeView(
 }
 
 @Composable
-fun LocationCard(location: LocationOverviewModel, onClick: () -> Unit) {
+fun LocationCard(location: LocationOverviewModel, distance: String? = null, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
             .padding(16.dp)
     ) {
+        // Bike icon at the start
+        Icon(
+            painter = painterResource(id = R.drawable.pedal_bike_24px),
+            tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
+            contentDescription = null,
+            modifier = Modifier.padding(end = 8.dp)
+        )
 
-        Row(
-            modifier = Modifier.defaultMinSize(minWidth = 60.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.pedal_bike_24px),
-                tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
-                contentDescription = "Navigeer",
-                modifier = Modifier.padding(end = 8.dp)
-            )
+        // Location title with weight to take up available space
+        Text(
+            text = location.title,
+            modifier = Modifier.weight(1f)
+        )
+
+        // Row to align location icon and distance to the end
+        if (distance != null) {
             Text(
-                location.title,
+                modifier = Modifier
+                    .wrapContentWidth(Alignment.End)
+                    .padding(horizontal = 8.dp),
+                text = distance
             )
         }
     }
@@ -157,8 +223,14 @@ fun LocationCard(location: LocationOverviewModel, onClick: () -> Unit) {
 @Composable
 fun HomePreview() {
     val locations = listOf(
-        TestData.testLocationOverviewModel.copy(title = "Amsterdam Zuid Mahlerplein", rentalBikesAvailable = 49),
-        TestData.testLocationOverviewModel.copy(title = "Amsterdam Zuid Zuidplein", rentalBikesAvailable = 148),
+        TestData.testLocationOverviewModel.copy(
+            title = "Amsterdam Zuid Mahlerplein",
+            rentalBikesAvailable = 49
+        ),
+        TestData.testLocationOverviewModel.copy(
+            title = "Amsterdam Zuid Zuidplein",
+            rentalBikesAvailable = 148
+        ),
     )
-    HomeView("Amsterdam Zuid", locations, {}, {}, {})
+    HomeView("Amsterdam Zuid", HomeContent.SearchTermContent(locations), {}, {}, {}, {})
 }

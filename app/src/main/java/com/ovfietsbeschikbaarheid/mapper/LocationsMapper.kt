@@ -28,6 +28,8 @@ object LocationsMapper {
                 locationCode = toMap.extra.locationCode,
                 stationCode = toMap.stationCode,
                 rentalBikesAvailable = toMap.extra.rentalBikes,
+                latitude = toMap.lat,
+                longitude = toMap.lng,
                 open = (toMap.open == OpenDTO.Yes || toMap.open == OpenDTO.Unknown)
             )
         }.sortedBy { it.title }

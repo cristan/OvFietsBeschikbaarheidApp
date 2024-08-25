@@ -7,4 +7,11 @@ data class LocationOverviewModel(
     val stationCode: String,
     val rentalBikesAvailable: Int?,
     val open: Boolean,
+    val latitude: Double,
+    val longitude: Double,
+)
+
+data class LocationOverviewWithDistanceModel(
+    val distance: String,
+    val location: LocationOverviewModel
 )

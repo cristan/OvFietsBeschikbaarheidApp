@@ -15,10 +15,9 @@ data class Location(
     val houseNumber: String? = null,
     val postalCode: String? = null,
     val stationCode: String,
-    // `Yes` or `No`
     val open: OpenDTO,
-//    val lat: BigDecimal,
-//    val lng: BigDecimal,
+    val lat: Double,
+    val lng: Double,
     val extra: LocationExtra,
     val link: Link
 )
