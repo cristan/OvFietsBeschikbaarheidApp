@@ -251,6 +251,11 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
     }
 }
 
+@Composable
+fun TestHomeView(searchTerm: String, content: HomeContent) {
+    HomeView(searchTerm, content, {}, {}, {}, {})
+}
+
 @Preview
 @Composable
 fun SearchResultsPreview() {
@@ -264,25 +269,25 @@ fun SearchResultsPreview() {
             rentalBikesAvailable = 148
         ),
     )
-    HomeView("Amsterdam Zuid", HomeContent.SearchTermContent(locations), {}, {}, {}, {})
+    TestHomeView("Amsterdam Zuid", HomeContent.SearchTermContent(locations))
 }
 
 @Preview
 @Composable
 fun NoResultsPreview() {
-    HomeView("notFound", HomeContent.NoSearchResults("notFound"), {}, {}, {}, {})
+    TestHomeView("notFound", HomeContent.NoSearchResults("notFound"))
 }
 
 @Preview
 @Composable
 fun AskForGpsPermissionPreview() {
-    HomeView("", HomeContent.AskForGpsPermission, {}, {}, {}, {})
+    TestHomeView("", HomeContent.AskForGpsPermission)
 }
 
 @Preview
 @Composable
 fun LoadingGpsPreview() {
-    HomeView("", HomeContent.LoadingGpsLocation, {}, {}, {}, {})
+    TestHomeView("", HomeContent.LoadingGpsLocation)
 }
 
 @Preview
@@ -304,5 +309,5 @@ fun GpsResultsPreview() {
             )
         ),
     )
-    HomeView("", HomeContent.GpsContent(locations), {}, {}, {}, {})
+    TestHomeView("", HomeContent.GpsContent(locations))
 }
