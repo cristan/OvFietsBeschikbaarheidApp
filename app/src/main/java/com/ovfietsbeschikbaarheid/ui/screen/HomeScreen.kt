@@ -1,5 +1,6 @@
 package com.ovfietsbeschikbaarheid.ui.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.ui.unit.dp
 import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import androidx.compose.runtime.getValue
@@ -9,7 +10,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -43,6 +42,7 @@ import com.ovfietsbeschikbaarheid.R
 import com.ovfietsbeschikbaarheid.TestData
 import com.ovfietsbeschikbaarheid.viewmodel.LocationsViewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
+import com.ovfietsbeschikbaarheid.ui.theme.Indigo05
 import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import com.ovfietsbeschikbaarheid.viewmodel.HomeContent
 import org.koin.androidx.compose.koinViewModel
@@ -154,10 +154,17 @@ private fun HomeView(
                     }
 
                     is HomeContent.GpsContent -> {
-                        Column {
-                            Text("In de buurt")
-                        }
                         LazyColumn {
+                            item {
+                                Text(
+                                    text = "In de buurt",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(Indigo05)
+                                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                                )
+                            }
                             items(screen.locations) { location ->
                                 LocationCard(location.location, location.distance) {
                                     onLocationClick(location.location)
@@ -167,7 +174,10 @@ private fun HomeView(
                     }
 
                     is HomeContent.NoSearchResults -> {
-                        Text("Geen zoekresultaten voor \"${screen.searchTerm}\"")
+                        Text(
+                            text = "Geen zoekresultaten voor \"${screen.searchTerm}\"",
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
                     }
 
                     is HomeContent.SearchTermContent -> {
@@ -212,7 +222,7 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
             Text(
                 modifier = Modifier
                     .wrapContentWidth(Alignment.End)
-                    .padding(horizontal = 8.dp),
+                    .padding(start = 8.dp),
                 text = distance
             )
         }
