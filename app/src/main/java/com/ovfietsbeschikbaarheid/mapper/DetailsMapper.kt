@@ -6,10 +6,9 @@ import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.OpeningHoursModel
-import com.ovfietsbeschikbaarheid.repository.OverviewRepository
 
 object DetailsMapper {
-    val newLinesAtEnd = Regex("[\\\\n\\s]*\$")
+    private val newLinesAtEnd = Regex("[\\\\n\\s]*\$")
 
     fun convert(
         detailsDTO: DetailsDTO,
@@ -18,7 +17,10 @@ object DetailsMapper {
     ): DetailsModel {
         val payload = detailsDTO.payload
 
-        val directions = payload.infoImages.find { it.title == "Routebeschrijving" }?.body?.replace(newLinesAtEnd, "")
+        val directions = payload.infoImages.find { it.title == "Routebeschrijving" }?.body
+            ?.replace(newLinesAtEnd, "")
+            // Just for Rotterdam Kralingse Zoom
+            ?.replace("&amp;", "&")
         val about = payload.infoImages.find { it.title == "Bijzonderheden" }?.body?.replace(newLinesAtEnd, "")
 
         val location =
