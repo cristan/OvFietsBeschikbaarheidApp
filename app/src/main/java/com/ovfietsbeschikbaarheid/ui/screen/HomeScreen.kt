@@ -47,6 +47,8 @@ import com.ovfietsbeschikbaarheid.TestData
 import com.ovfietsbeschikbaarheid.viewmodel.LocationsViewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
+import com.ovfietsbeschikbaarheid.ui.theme.Gray80
+import com.ovfietsbeschikbaarheid.ui.theme.Gray90
 import com.ovfietsbeschikbaarheid.ui.theme.Indigo05
 import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import com.ovfietsbeschikbaarheid.viewmodel.HomeContent
@@ -167,7 +169,9 @@ private fun HomeView(
                                     style = MaterialTheme.typography.titleMedium,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .background(Indigo05)
+                                        .background(
+                                            if (isSystemInDarkTheme()) Gray80 else Indigo05
+                                        )
                                         .padding(horizontal = 16.dp, vertical = 8.dp)
                                 )
                             }
