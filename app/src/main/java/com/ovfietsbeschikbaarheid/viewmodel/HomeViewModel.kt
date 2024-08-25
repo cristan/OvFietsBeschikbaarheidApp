@@ -86,7 +86,7 @@ class LocationsViewModel(
 }
 
 sealed class HomeContent {
-    // Initial empty state while we set things up
+    // Initial empty state while we set things up.
     data object InitialEmpty : HomeContent()
 
     data object AskForGpsPermission : HomeContent()

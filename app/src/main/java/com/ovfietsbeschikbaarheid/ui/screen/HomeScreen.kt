@@ -1,5 +1,6 @@
 package com.ovfietsbeschikbaarheid.ui.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.ui.unit.dp
 import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
@@ -7,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,20 +16,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -42,6 +50,7 @@ import com.ovfietsbeschikbaarheid.R
 import com.ovfietsbeschikbaarheid.TestData
 import com.ovfietsbeschikbaarheid.viewmodel.LocationsViewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
+import com.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import com.ovfietsbeschikbaarheid.ui.theme.Indigo05
 import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import com.ovfietsbeschikbaarheid.viewmodel.HomeContent
@@ -135,13 +144,26 @@ private fun HomeView(
                     }
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
-
                 when (screen) {
                     HomeContent.InitialEmpty -> Unit
                     HomeContent.AskForGpsPermission -> {
-                        Button(onClick = onRequestLocationClicked) {
-                            Text("OV Fiets locaties in je buurt")
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.map_white_background),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .padding(bottom = 16.dp)
+                                    .width(260.dp)
+                            )
+                            Button(onClick = onRequestLocationClicked,
+                                modifier = Modifier.padding(bottom = 64.dp)) {
+                                Icon(Icons.Outlined.Place, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
+                                Text(text = "OV Fiets locaties in je buurt", style = MaterialTheme.typography.bodyLarge)
+                            }
                         }
                     }
 
@@ -231,7 +253,7 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
 
 @Preview
 @Composable
-fun HomePreview() {
+fun SearchResultsPreview() {
     val locations = listOf(
         TestData.testLocationOverviewModel.copy(
             title = "Amsterdam Zuid Mahlerplein",
@@ -243,4 +265,44 @@ fun HomePreview() {
         ),
     )
     HomeView("Amsterdam Zuid", HomeContent.SearchTermContent(locations), {}, {}, {}, {})
+}
+
+@Preview
+@Composable
+fun NoResultsPreview() {
+    HomeView("notFound", HomeContent.NoSearchResults("notFound"), {}, {}, {}, {})
+}
+
+@Preview
+@Composable
+fun AskForGpsPermissionPreview() {
+    HomeView("", HomeContent.AskForGpsPermission, {}, {}, {}, {})
+}
+
+@Preview
+@Composable
+fun LoadingGpsPreview() {
+    HomeView("", HomeContent.LoadingGpsLocation, {}, {}, {}, {})
+}
+
+@Preview
+@Composable
+fun GpsResultsPreview() {
+    val locations = listOf(
+        LocationOverviewWithDistanceModel(
+            "800 m",
+            TestData.testLocationOverviewModel.copy(
+                title = "Amsterdam Zuid Mahlerplein",
+                rentalBikesAvailable = 49
+            )
+        ),
+        LocationOverviewWithDistanceModel(
+            "1,1 km",
+            TestData.testLocationOverviewModel.copy(
+                title = "Amsterdam Zuid Zuidplein",
+                rentalBikesAvailable = 148
+            )
+        ),
+    )
+    HomeView("", HomeContent.GpsContent(locations), {}, {}, {}, {})
 }

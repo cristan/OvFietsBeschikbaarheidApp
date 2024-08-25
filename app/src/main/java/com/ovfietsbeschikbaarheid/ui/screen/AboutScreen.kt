@@ -102,6 +102,32 @@ private fun AboutView(
                         text = "Deze app is ontwikkeld op eigen initiatief en heeft dan ook geen enkele band met de Nederlandse Spoorwegen (de exploitant van de OV fiets).\n\nDe data komt van OpenOV, maar de bron hiervan is wel weer de NS, dus als er hier iets mis mee is, neem dan op met de NS klantenservice."
                     )
                 }
+                OvCard {
+                    Text(
+                        text = "Credits",
+                        style = MaterialTheme.typography.headlineMedium,
+                    )
+                    val annotatedString = buildAnnotatedString {
+                        append("Kaart icoon gemaakt door ")
+                        withLink(
+                            LinkAnnotation.Url(
+                                url = "https://www.freepik.com/free-vector/map-white-background_4485469.htm", styles = TextLinkStyles(
+                                    style = SpanStyle(
+                                        color = MaterialTheme.colorScheme.primary,
+                                        textDecoration = TextDecoration.Underline
+                                    )
+                                )
+                            )
+                        ) {
+                            append("brgfx op Freepik")
+                        }
+                        append(".")
+                    }
+                    Text(
+                        modifier = Modifier.padding(top = 4.dp),
+                        text = annotatedString
+                    )
+                }
             }
         }
     }
