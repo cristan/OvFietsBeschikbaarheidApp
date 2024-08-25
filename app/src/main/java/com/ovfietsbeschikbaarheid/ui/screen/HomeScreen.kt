@@ -48,7 +48,6 @@ import com.ovfietsbeschikbaarheid.viewmodel.LocationsViewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import com.ovfietsbeschikbaarheid.ui.theme.Gray80
-import com.ovfietsbeschikbaarheid.ui.theme.Gray90
 import com.ovfietsbeschikbaarheid.ui.theme.Indigo05
 import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import com.ovfietsbeschikbaarheid.viewmodel.HomeContent
