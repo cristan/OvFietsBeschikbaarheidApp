@@ -140,7 +140,10 @@ private fun HomeView(
                     }
 
                     is HomeContent.GpsError -> {
-                        Text(screen.message)
+                        Text(
+                            text = screen.message,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
                     }
 
                     HomeContent.LoadingGpsLocation -> {
@@ -301,6 +304,12 @@ fun AskForGpsPermissionPreview() {
 @Composable
 fun LoadingGpsPreview() {
     TestHomeView("", HomeContent.LoadingGpsLocation)
+}
+
+@Preview
+@Composable
+fun GpsErrorPreview() {
+    TestHomeView("", HomeContent.GpsError("Geef de app toegang tot je locatie om OV fietsen in je buurt te zien."))
 }
 
 @Preview

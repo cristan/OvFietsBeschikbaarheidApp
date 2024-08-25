@@ -49,7 +49,8 @@ class LocationsViewModel(
     private fun getGpsContent(geolocatorResult: GeolocatorResult): HomeContent {
         when (geolocatorResult) {
             is GeolocatorResult.Error -> {
-                return HomeContent.GpsError(geolocatorResult.message)
+                val message = getErrorMessage(geolocatorResult)
+                return HomeContent.GpsError(message)
             }
 
             is GeolocatorResult.Success -> {
@@ -58,6 +59,40 @@ class LocationsViewModel(
                 return HomeContent.GpsContent(locationsWithDistance)
             }
         }
+    }
+
+    private fun getErrorMessage(geolocatorResult: GeolocatorResult.Error): String {
+        val error =
+            // Caused by https://github.com/jordond/compass/issues/97. This code can go
+            if (geolocatorResult.message == "Parameter specified as non-null is null: method dev.jordond.compass.geolocation.mobile.internal.MapperKt.toModel, parameter <this>") {
+                GeolocatorResult.NotFound
+            } else {
+                geolocatorResult
+            }
+        val message = when (error) {
+            GeolocatorResult.NotFound -> "Geen locatie gevonden"
+            GeolocatorResult.NotSupported -> "GPS moet aanstaan om OV fietsen in de buurt te vinden."
+            is GeolocatorResult.GeolocationFailed -> {
+                Log.w(TAG, "Geo location failed: ${error.message}")
+                "Locatie ophalen mislukt"
+            }
+
+            is GeolocatorResult.PermissionError -> {
+                Log.w(TAG, "Permission error: ${error.message}")
+                "Locatie ophalen mislukt"
+            }
+
+            is GeolocatorResult.PermissionDenied -> {
+                if (error.forever) {
+                    "Geef de app toegang tot je locatie om OV fietsen in je buurt te zien."
+                } else {
+                    "De app heeft toestemming nodig om OV fietsen in de buurt te laten zien."
+                }
+            }
+            // This is a limitation of the smart cast: all cases of GeolocatorResult.Error have been covered
+            else -> throw Exception("Unexpected error: $error")
+        }
+        return message
     }
 
     fun onSearchTermChanged(searchTerm: String) {
@@ -93,7 +128,6 @@ sealed class HomeContent {
 
     data object LoadingGpsLocation : HomeContent()
 
-    // TODO: split into the possible values of GeolocatorResult
     data class GpsError(val message: String) : HomeContent()
 
     data class GpsContent(val locations: List<LocationOverviewWithDistanceModel>) : HomeContent()
