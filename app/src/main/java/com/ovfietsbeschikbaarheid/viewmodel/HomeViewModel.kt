@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import com.ovfietsbeschikbaarheid.repository.OverviewRepository
+import com.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.geolocation.GeolocatorResult
 import dev.jordond.compass.geolocation.hasPermission
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 private const val TAG = "LocationsViewModel"
 
 class LocationsViewModel(
-    private val overviewRepository: OverviewRepository
+    private val overviewRepository: OverviewRepository,
+    private val locationPermissionHelper: LocationPermissionHelper
 ) : ViewModel() {
 
     private val _searchTerm = mutableStateOf("")
@@ -103,7 +105,11 @@ class LocationsViewModel(
     private fun loadData(searchTerm: String) {
         if (searchTerm.isBlank()) {
             if (!geolocator.hasPermission()) {
-                _content.value = HomeContent.AskForGpsPermission
+                if (locationPermissionHelper.shouldShowLocationRationale()) {
+                    _content.value = HomeContent.AskForGpsPermission
+                } else {
+                    fetchLocation()
+                }
             } else {
                 fetchLocation()
             }
