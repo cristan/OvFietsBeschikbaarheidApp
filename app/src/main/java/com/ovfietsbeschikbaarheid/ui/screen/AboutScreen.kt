@@ -2,6 +2,8 @@ package com.ovfietsbeschikbaarheid.ui.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -63,6 +65,7 @@ private fun AboutView(
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
                     .padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)
             ) {
                 OvCard {
@@ -99,7 +102,17 @@ private fun AboutView(
                     )
                     Text(
                         modifier = Modifier.padding(top = 4.dp),
-                        text = "Deze app is ontwikkeld op eigen initiatief en heeft dan ook geen enkele band met de Nederlandse Spoorwegen (de exploitant van de OV fiets).\n\nDe data komt van OpenOV, maar de bron hiervan is wel weer de NS, dus als er hier iets mis mee is, neem dan op met de NS klantenservice."
+                        text = "Deze app is ontwikkeld op eigen initiatief en is dan ook niet gelieerd aan de Nederlandse Spoorwegen (de exploitant van de OV fiets)."
+                    )
+                }
+                OvCard {
+                    Text(
+                        text = "Niet-kloppende data",
+                        style = MaterialTheme.typography.headlineMedium,
+                    )
+                    Text(
+                        modifier = Modifier.padding(top = 4.dp),
+                        text = "De data van deze app komt van OpenOV, maar de bron hiervan is de NS. Als er iets mis is met data als het aantal beschikbare OV fietsen, de openingstijden of het adres, neem dan op met de NS klantenservice."
                     )
                 }
                 OvCard {
