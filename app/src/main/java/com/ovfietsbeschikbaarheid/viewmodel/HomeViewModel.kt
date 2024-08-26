@@ -63,14 +63,7 @@ class LocationsViewModel(
         }
     }
 
-    private fun getErrorMessage(geolocatorResult: GeolocatorResult.Error): String {
-        val error =
-            // Caused by https://github.com/jordond/compass/issues/97. This code can go
-            if (geolocatorResult.message == "Parameter specified as non-null is null: method dev.jordond.compass.geolocation.mobile.internal.MapperKt.toModel, parameter <this>") {
-                GeolocatorResult.NotFound
-            } else {
-                geolocatorResult
-            }
+    private fun getErrorMessage(error: GeolocatorResult.Error): String {
         val message = when (error) {
             GeolocatorResult.NotFound -> "Geen locatie gevonden"
             GeolocatorResult.NotSupported -> "GPS moet aanstaan om OV fietsen in de buurt te vinden."
