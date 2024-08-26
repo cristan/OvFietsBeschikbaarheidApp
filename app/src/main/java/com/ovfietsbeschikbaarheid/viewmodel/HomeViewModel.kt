@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import com.ovfietsbeschikbaarheid.repository.OverviewRepository
@@ -12,13 +13,13 @@ import com.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.geolocation.GeolocatorResult
 import dev.jordond.compass.geolocation.hasPermission
-import dev.jordond.compass.geolocation.mobile
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 private const val TAG = "LocationsViewModel"
 
 class LocationsViewModel(
+    private val geolocator: Geolocator,
     private val overviewRepository: OverviewRepository,
     private val locationPermissionHelper: LocationPermissionHelper
 ) : ViewModel() {
@@ -29,8 +30,6 @@ class LocationsViewModel(
     // The initial value doesn't really matter: it gets overwritten right away anyway
     private val _content = mutableStateOf<HomeContent>(HomeContent.InitialEmpty)
     val content: State<HomeContent> = _content
-
-    private val geolocator: Geolocator = Geolocator.mobile()
 
     fun checkPermission() {
         loadData(_searchTerm.value)
@@ -57,7 +56,7 @@ class LocationsViewModel(
 
             is GeolocatorResult.Success -> {
                 val coordinates = geolocatorResult.data.coordinates
-                val locationsWithDistance = overviewRepository.getLocationsWithDistance(coordinates)
+                val locationsWithDistance = LocationsMapper.withDistance(overviewRepository.getAllLocations(), coordinates)
                 return HomeContent.GpsContent(locationsWithDistance)
             }
         }

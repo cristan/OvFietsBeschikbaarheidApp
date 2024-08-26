@@ -2,7 +2,6 @@ package com.ovfietsbeschikbaarheid.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import com.ovfietsbeschikbaarheid.KtorApiClient
 import com.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import com.ovfietsbeschikbaarheid.model.DetailsModel
@@ -14,10 +13,12 @@ import com.ovfietsbeschikbaarheid.state.setRefreshing
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 private const val MIN_REFRESH_TIME = 350
 
 class DetailsViewModel(
+    private val client: KtorApiClient,
     private val overviewRepository: OverviewRepository,
     private val stationRepository: StationRepository
 ) : ViewModel() {
@@ -28,10 +29,7 @@ class DetailsViewModel(
     private val _title = MutableStateFlow("")
     val title: StateFlow<String> = _title
 
-    private val client = KtorApiClient()
-
     private lateinit var overviewModel: LocationOverviewModel
-
 
     fun setLocationCode(locationCode: String) {
         overviewModel = overviewRepository.getAllLocations().find { it.locationCode == locationCode }!!

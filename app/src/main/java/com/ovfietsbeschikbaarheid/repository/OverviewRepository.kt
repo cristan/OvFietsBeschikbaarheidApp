@@ -1,44 +1,31 @@
 package com.ovfietsbeschikbaarheid.repository
 
 import android.content.Context
-import com.ovfietsbeschikbaarheid.KtorApiClient
-import com.ovfietsbeschikbaarheid.ext.distanceTo
+import com.ovfietsbeschikbaarheid.R
+import com.ovfietsbeschikbaarheid.dto.LocationsDTO
 import com.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
-import com.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
-import dev.jordond.compass.Coordinates
-import java.text.DecimalFormat
-import kotlin.math.roundToInt
+import kotlinx.serialization.json.Json
 
 class OverviewRepository(private val context: Context) {
-    private val client = KtorApiClient()
-
     private var allLocations = listOf<LocationOverviewModel>()
 
-    // allLocations will be empty after app is recreated. This works around that, but there's probably a nicer way to do this.
+    private val json = Json {
+        ignoreUnknownKeys = true
+    }
+
+    private fun loadLocations(context: Context): LocationsDTO {
+        val locationsStream = context.resources.openRawResource(R.raw.locaties)
+        val inputAsString = locationsStream.bufferedReader().use { it.readText() }
+        return json.decodeFromString<LocationsDTO>(inputAsString)
+//        return httpClient.get("http://fiets.openov.nl/locaties.json").body<LocationsDTO>()
+    }
+
     fun getAllLocations(): List<LocationOverviewModel> {
         if (allLocations.isEmpty()) {
-            val response = client.getLocations(context)
+            val response = loadLocations(context)
             allLocations = LocationsMapper.map(response)
         }
         return allLocations
-    }
-
-    fun getLocationsWithDistance(currentCoordinates: Coordinates): List<LocationOverviewWithDistanceModel> {
-        val kmFormat = DecimalFormat().apply {
-            minimumFractionDigits = 1
-            maximumFractionDigits = 1
-        }
-        return getAllLocations()
-            .sortedBy { it.distanceTo(currentCoordinates) }
-            .map {
-                val distance = it.distanceTo(currentCoordinates)
-                val formattedDistance = if (distance < 1000) {
-                    "${distance.roundToInt()} m"
-                } else {
-                    "${kmFormat.format(distance / 1000)} km"
-                }
-                LocationOverviewWithDistanceModel(formattedDistance, it)
-            }
     }
 }
