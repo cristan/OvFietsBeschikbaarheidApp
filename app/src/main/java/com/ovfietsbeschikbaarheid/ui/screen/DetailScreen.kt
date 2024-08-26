@@ -30,6 +30,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +40,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -68,7 +73,9 @@ fun DetailScreen(
     onAlternativeClicked: (LocationOverviewModel) -> Unit,
     onBackClicked: () -> Unit
 ) {
-    viewModel.setLocationCode(locationCode)
+    LaunchedEffect(Unit) {
+        viewModel.setLocationCode(locationCode)
+    }
 
     val context = LocalContext.current
     val onLocationClicked: (String) -> Unit = { address ->
@@ -85,6 +92,22 @@ fun DetailScreen(
 
         if (intent.resolveActivity(context.packageManager) != null) {
             context.startActivity(intent)
+        }
+    }
+
+    // Refresh the screen on multitasking back to it
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.onResumeTriggered()
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 

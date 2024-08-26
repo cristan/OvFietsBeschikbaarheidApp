@@ -15,7 +15,7 @@ import com.ovfietsbeschikbaarheid.state.setRefreshing
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private const val MIN_REFRESH_TIME = 350
+private const val MIN_REFRESH_TIME = 350L
 
 class DetailsViewModel(
     private val client: KtorApiClient,
@@ -42,12 +42,7 @@ class DetailsViewModel(
     fun refresh() {
         viewModelScope.launch {
             _screenState.setRefreshing()
-            val before = System.currentTimeMillis()
-            doRefresh()
-            val timeElapsed = System.currentTimeMillis() - before
-            if (timeElapsed < MIN_REFRESH_TIME) {
-                delay(MIN_REFRESH_TIME - timeElapsed)
-            }
+            doRefresh(MIN_REFRESH_TIME)
         }
     }
 
@@ -58,11 +53,30 @@ class DetailsViewModel(
         }
     }
 
-    private suspend fun doRefresh() {
+    private var firstOnResumeTriggered = false
+    fun onResumeTriggered() {
+        // Refresh the screen when multitasking back. No need to do it when we first enter the screen though,
+        // data is already loaded at setLocationCode
+        if (!firstOnResumeTriggered) {
+            firstOnResumeTriggered = true
+            return
+        }
+
+        if (screenState.value is ScreenState.Loaded) {
+            refresh()
+        }
+    }
+
+    private suspend fun doRefresh(minDelay: Long = 0L) {
         try {
+            val before = System.currentTimeMillis()
             val details = client.getDetails(overviewModel.uri)
             val allStations = stationRepository.getAllStations()
             val data = DetailsMapper.convert(details, overviewRepository.getAllLocations(), allStations)
+            val timeElapsed = System.currentTimeMillis() - before
+            if (timeElapsed < minDelay) {
+                delay(minDelay - timeElapsed)
+            }
             _screenState.value = ScreenState.Loaded(data)
         } catch (e: Exception) {
             _screenState.value = ScreenState.FullPageError

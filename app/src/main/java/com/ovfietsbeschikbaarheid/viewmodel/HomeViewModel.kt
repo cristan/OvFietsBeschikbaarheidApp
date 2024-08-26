@@ -32,6 +32,7 @@ class LocationsViewModel(
     val content: State<HomeContent> = _content
 
     fun checkPermission() {
+        Log.d(TAG, "checkPermission called")
         loadData(_searchTerm.value)
     }
 
