@@ -90,8 +90,8 @@ fun DetailScreen(
         }
     }
 
-    val title by viewModel.title.collectAsState()
-    val details by viewModel.screenState.collectAsState()
+    val title by viewModel.title
+    val details by viewModel.screenState
     DetailsView(
         title,
         details,

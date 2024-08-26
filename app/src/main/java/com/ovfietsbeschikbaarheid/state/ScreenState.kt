@@ -1,6 +1,6 @@
 package com.ovfietsbeschikbaarheid.state
 
-import kotlinx.coroutines.flow.MutableStateFlow
+import androidx.compose.runtime.MutableState
 
 sealed class ScreenState<out T> {
     data object Loading : ScreenState<Nothing>()
@@ -13,7 +13,7 @@ sealed class ScreenState<out T> {
     data object FullPageError : ScreenState<Nothing>()
 }
 
-fun <T> MutableStateFlow<ScreenState<T>>.setRefreshing() {
+fun <T> MutableState<ScreenState<T>>.setRefreshing() {
     val loadedState = value as ScreenState.Loaded
     value = loadedState.copy(isRefreshing = true)
 }

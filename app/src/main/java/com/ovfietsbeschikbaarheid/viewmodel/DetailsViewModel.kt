@@ -1,5 +1,7 @@
 package com.ovfietsbeschikbaarheid.viewmodel
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ovfietsbeschikbaarheid.KtorApiClient
@@ -11,8 +13,6 @@ import com.ovfietsbeschikbaarheid.repository.StationRepository
 import com.ovfietsbeschikbaarheid.state.ScreenState
 import com.ovfietsbeschikbaarheid.state.setRefreshing
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 private const val MIN_REFRESH_TIME = 350
@@ -23,11 +23,11 @@ class DetailsViewModel(
     private val stationRepository: StationRepository
 ) : ViewModel() {
 
-    private val _screenState = MutableStateFlow<ScreenState<DetailsModel>>(ScreenState.Loading)
-    val screenState: StateFlow<ScreenState<DetailsModel>> = _screenState
+    private val _screenState = mutableStateOf<ScreenState<DetailsModel>>(ScreenState.Loading)
+    val screenState: State<ScreenState<DetailsModel>> = _screenState
 
-    private val _title = MutableStateFlow("")
-    val title: StateFlow<String> = _title
+    private val _title = mutableStateOf("")
+    val title: State<String> = _title
 
     private lateinit var overviewModel: LocationOverviewModel
 
