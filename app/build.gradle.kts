@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.ktor.client.logging)
 
     testImplementation(libs.junit)
+    testImplementation(libs.koin.test.junit4)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

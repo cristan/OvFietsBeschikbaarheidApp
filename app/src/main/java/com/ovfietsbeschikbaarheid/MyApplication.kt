@@ -1,18 +1,12 @@
 package com.ovfietsbeschikbaarheid
 
 import android.app.Application
+import com.ovfietsbeschikbaarheid.di.appModule
 import com.ovfietsbeschikbaarheid.ext.createActivityLifecycleObserver
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.module
-import org.koin.core.context.startKoin
-import org.koin.core.module.dsl.viewModelOf
-import com.ovfietsbeschikbaarheid.repository.OverviewRepository
-import com.ovfietsbeschikbaarheid.repository.StationRepository
 import com.ovfietsbeschikbaarheid.util.LocationPermissionHelper
-import com.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
-import com.ovfietsbeschikbaarheid.viewmodel.LocationsViewModel
 import org.koin.android.ext.android.inject
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 class MyApplication : Application() {
 
@@ -32,14 +26,7 @@ class MyApplication : Application() {
         startKoin {
             androidContext(this@MyApplication)
             modules(
-                module {
-                    singleOf(::OverviewRepository)
-                    singleOf(::StationRepository)
-                    singleOf(::LocationPermissionHelper)
-
-                    viewModelOf(::DetailsViewModel)
-                    viewModelOf(::LocationsViewModel)
-                }
+                appModule()
             )
         }
     }

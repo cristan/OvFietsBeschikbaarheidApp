@@ -41,6 +41,7 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 google-maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "googleMaps"}
 csv = { group = "com.github.doyaaaaaken", name = "kotlin-csv-jvm", version.ref = "csv"}
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
+koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4" }
 koin-android = { module = "io.insert-koin:koin-android" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose" }
 
