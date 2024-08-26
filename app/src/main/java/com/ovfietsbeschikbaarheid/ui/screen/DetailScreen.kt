@@ -45,6 +45,7 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
 import com.ovfietsbeschikbaarheid.R
 import com.ovfietsbeschikbaarheid.TestData
 import com.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
@@ -300,7 +301,7 @@ private fun Location(details: DetailsModel, onNavigateClicked: (String) -> Unit)
             ) {
                 Marker(
                     //                    icon = Icons.Filled.,
-                    state = MarkerState(position = details.coordinates),
+                    state = rememberMarkerState(position = details.coordinates),
                     title = details.description,
                     snippet = "${details.rentalBikesAvailable ?: "??"} beschikbaar"
                 )
