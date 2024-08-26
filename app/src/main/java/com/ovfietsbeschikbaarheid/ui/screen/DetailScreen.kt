@@ -30,7 +30,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,12 +42,10 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import com.ovfietsbeschikbaarheid.R
 import com.ovfietsbeschikbaarheid.TestData
-import com.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
@@ -59,10 +56,10 @@ import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import com.ovfietsbeschikbaarheid.ui.view.FullPageError
 import com.ovfietsbeschikbaarheid.ui.view.FullPageLoader
+import com.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
+import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
 import java.util.Locale
-import org.koin.androidx.compose.koinViewModel
-
 
 @Composable
 fun DetailScreen(
