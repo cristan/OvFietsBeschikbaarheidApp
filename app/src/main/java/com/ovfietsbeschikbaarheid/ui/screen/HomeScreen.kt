@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovfietsbeschikbaarheid.R
@@ -51,6 +52,7 @@ import com.ovfietsbeschikbaarheid.ui.theme.Gray80
 import com.ovfietsbeschikbaarheid.ui.theme.Indigo05
 import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
+import com.ovfietsbeschikbaarheid.viewmodel.AskPermissionState
 import com.ovfietsbeschikbaarheid.viewmodel.HomeContent
 import com.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -76,7 +78,8 @@ fun HomeScreen(
         searchTerm,
         screen,
         viewModel::onSearchTermChanged,
-        viewModel::requestGpsPermissions,
+        viewModel::onRequestPermissionsClicked,
+        viewModel::onTurnOnGpsClicked,
         viewModel::refreshGps,
         onInfoClicked,
         onLocationClick,
@@ -88,7 +91,8 @@ private fun HomeView(
     searchTerm: String,
     screen: HomeContent,
     onSearchTermChanged: (String) -> Unit,
-    onRequestLocationClicked: () -> Unit,
+    onRequestLocationClicked: (AskPermissionState) -> Unit,
+    onTurnOnGpsClicked: () -> Unit,
     onGpsRefresh: () -> Unit,
     onInfoClicked: () -> Unit,
     onLocationClick: (LocationOverviewModel) -> Unit
@@ -109,8 +113,17 @@ private fun HomeView(
 
                 when (screen) {
                     HomeContent.InitialEmpty -> Unit
-                    HomeContent.AskForGpsPermission -> {
-                        AskForGpsPermission(onRequestLocationClicked)
+                    is HomeContent.AskGpsPermission -> {
+                        AskForGpsPermission(screen.state, onRequestLocationClicked)
+                    }
+
+                    HomeContent.GpsTurnedOff -> {
+                        GpsRequestSomething(
+                            "GPS is nodig om OV Fiets locaties in de buurt te tonen",
+                            "Zet GPS aan",
+                            false,
+                            onTurnOnGpsClicked
+                        )
                     }
 
                     is HomeContent.GpsError -> {
@@ -222,7 +235,30 @@ private fun GpsContent(
 }
 
 @Composable
-private fun AskForGpsPermission(onRequestLocationClicked: () -> Unit) {
+private fun AskForGpsPermission(state: AskPermissionState, onRequestLocationClicked: (AskPermissionState) -> Unit) {
+    val rationaleText = when (state) {
+        AskPermissionState.Initial -> null
+        AskPermissionState.Denied -> "Toestemming is nodig om OV Fiets locaties in de buurt te tonen"
+        AskPermissionState.DeniedPermanently -> "Toestemming is nodig om OV Fiets locaties in de buurt te tonen. Geef deze in de app instellingen."
+    }
+
+    val buttonText = when(state) {
+        AskPermissionState.Initial -> "OV Fiets locaties in je buurt"
+        AskPermissionState.Denied -> "Geef toestemming"
+        AskPermissionState.DeniedPermanently -> "Naar de app instellingen"
+    }
+
+    val showButtonIcon = state == AskPermissionState.Initial
+    GpsRequestSomething(rationaleText, buttonText, showButtonIcon) { onRequestLocationClicked(state) }
+}
+
+@Composable
+private fun GpsRequestSomething(
+    rationaleText: String?,
+    buttonText: String,
+    showButtonIcon: Boolean,
+    onDoTheThingClicked: () -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -235,16 +271,29 @@ private fun AskForGpsPermission(onRequestLocationClicked: () -> Unit) {
                 .padding(bottom = 16.dp)
                 .width(260.dp)
         )
+
+        if (rationaleText != null) {
+            Text(
+                text = rationaleText,
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .padding(bottom = 8.dp),
+                textAlign = TextAlign.Center
+            )
+        }
         Button(
-            onClick = onRequestLocationClicked,
+            onClick = onDoTheThingClicked,
             modifier = Modifier.padding(bottom = 64.dp)
         ) {
-            Icon(
-                Icons.Outlined.Place,
-                contentDescription = null,
-                modifier = Modifier.padding(end = 8.dp)
-            )
-            Text(text = "OV Fiets locaties in je buurt", style = MaterialTheme.typography.bodyLarge)
+            if (showButtonIcon) {
+                Icon(
+                    Icons.Outlined.Place,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+            }
+
+            Text(text = buttonText, style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
@@ -317,7 +366,7 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
 
 @Composable
 fun TestHomeView(searchTerm: String, content: HomeContent) {
-    HomeView(searchTerm, content, {}, {}, {}, {}, {})
+    HomeView(searchTerm, content, {}, {}, {}, {}, {}, {})
 }
 
 @Preview
@@ -345,7 +394,19 @@ fun NoResultsPreview() {
 @Preview
 @Composable
 fun AskForGpsPermissionPreview() {
-    TestHomeView("", HomeContent.AskForGpsPermission)
+    TestHomeView("", HomeContent.AskGpsPermission(AskPermissionState.Initial))
+}
+
+@Preview
+@Composable
+fun AskForGpsPermissionWithRationalePreview() {
+    TestHomeView("", HomeContent.AskGpsPermission(AskPermissionState.Denied))
+}
+
+@Preview
+@Composable
+fun NoGpsPreview() {
+    TestHomeView("", HomeContent.GpsTurnedOff)
 }
 
 @Preview
@@ -357,7 +418,7 @@ fun LoadingGpsPreview() {
 @Preview
 @Composable
 fun GpsErrorPreview() {
-    TestHomeView("", HomeContent.GpsError("Geef de app toegang tot je locatie om OV fietsen in je buurt te zien."))
+    TestHomeView("", HomeContent.GpsError("Geen locatie gevonden"))
 }
 
 @Preview

@@ -14,7 +14,6 @@ import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.geolocation.GeolocatorResult
 import dev.jordond.compass.geolocation.hasPermission
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val TAG = "HomeViewModel"
@@ -32,8 +31,18 @@ class HomeViewModel(
     private val _content = mutableStateOf<HomeContent>(HomeContent.InitialEmpty)
     val content: State<HomeContent> = _content
 
+    fun screenLaunched() {
+        Log.d(TAG, "screenLaunched called")
+        loadData(_searchTerm.value)
+    }
+
     fun onReturnedToScreen() {
-        val gpsContent = _content.value as? HomeContent.GpsContent
+        val currentlyShown = _content.value
+        if (currentlyShown is HomeContent.GpsTurnedOff) {
+            // Check if the situation has changed: maybe the GPS is on now
+            loadLocation()
+        }
+        val gpsContent = currentlyShown as? HomeContent.GpsContent
         gpsContent?.let {
             _content.value = gpsContent.copy(isRefreshing = true)
             fetchLocation()
@@ -41,76 +50,26 @@ class HomeViewModel(
     }
 
     fun refreshGps() {
-        _content.value = (_content.value as HomeContent.GpsContent).copy(isRefreshing = true)
         Log.d(TAG, "refreshGps called")
+        _content.value = (_content.value as HomeContent.GpsContent).copy(isRefreshing = true)
         fetchLocation()
     }
 
-    fun screenLaunched() {
-        Log.d(TAG, "screenLaunched called")
-        loadData(_searchTerm.value)
+    fun onTurnOnGpsClicked() {
+        locationPermissionHelper.turnOnGps()
     }
 
-    fun requestGpsPermissions() {
+    fun onRequestPermissionsClicked(currentState: AskPermissionState) {
         Log.d(TAG, "requestGpsPermissions called")
-        _content.value = HomeContent.LoadingGpsLocation
-        fetchLocation()
-    }
 
-    private var loadLocationJob: Job? = null
-    private fun fetchLocation() {
-        loadLocationJob?.let {
-            Log.d(TAG, "fetchLocation: Cancelling location job")
-            it.cancel()
+        if (currentState == AskPermissionState.DeniedPermanently) {
+            locationPermissionHelper.openAppSettings()
+        } else {
+            // Either the initial state (where we don't know whether permission is denied permanently)
+            // or the denied once state, after which `geolocator.current()` will ask for permission again
+            _content.value = HomeContent.LoadingGpsLocation
+            fetchLocation()
         }
-        loadLocationJob = viewModelScope.launch {
-            delay(1000)
-            val geolocatorResult = geolocator.current()
-            _content.value = getGpsContent(geolocatorResult)
-        }
-    }
-
-    private fun getGpsContent(geolocatorResult: GeolocatorResult): HomeContent {
-        when (geolocatorResult) {
-            is GeolocatorResult.Error -> {
-                val message = getErrorMessage(geolocatorResult)
-                return HomeContent.GpsError(message)
-            }
-
-            is GeolocatorResult.Success -> {
-                val coordinates = geolocatorResult.data.coordinates
-                val locationsWithDistance =
-                    LocationsMapper.withDistance(overviewRepository.getAllLocations(), coordinates)
-                return HomeContent.GpsContent(locationsWithDistance)
-            }
-        }
-    }
-
-    private fun getErrorMessage(error: GeolocatorResult.Error): String {
-        val message = when (error) {
-            GeolocatorResult.NotFound -> "Geen locatie gevonden"
-            GeolocatorResult.NotSupported -> "GPS moet aanstaan om OV fietsen in de buurt te vinden."
-            is GeolocatorResult.GeolocationFailed -> {
-                Log.w(TAG, "Geo location failed: ${error.message}")
-                "Locatie ophalen mislukt"
-            }
-
-            is GeolocatorResult.PermissionError -> {
-                Log.w(TAG, "Permission error: ${error.message}")
-                "Locatie ophalen mislukt"
-            }
-
-            is GeolocatorResult.PermissionDenied -> {
-                if (error.forever) {
-                    "Geef de app toegang tot je locatie om OV fietsen in je buurt te zien."
-                } else {
-                    "De app heeft toestemming nodig om OV fietsen in de buurt te laten zien."
-                }
-            }
-            // This is a limitation of the smart cast: all cases of GeolocatorResult.Error have been covered
-            else -> throw Exception("Unexpected error: $error")
-        }
-        return message
     }
 
     fun onSearchTermChanged(searchTerm: String) {
@@ -120,18 +79,7 @@ class HomeViewModel(
 
     private fun loadData(searchTerm: String) {
         if (searchTerm.isBlank()) {
-            if (!geolocator.hasPermission()) {
-                val shouldShowLocationRationale = locationPermissionHelper.shouldShowLocationRationale()
-                if (shouldShowLocationRationale) {
-                    _content.value = HomeContent.AskForGpsPermission
-                } else {
-                    _content.value = HomeContent.LoadingGpsLocation
-                    fetchLocation()
-                }
-            } else {
-                _content.value = HomeContent.LoadingGpsLocation
-                fetchLocation()
-            }
+            loadLocation()
         } else {
             val allLocations = overviewRepository.getAllLocations()
             val filteredLocations =
@@ -143,15 +91,73 @@ class HomeViewModel(
             }
         }
     }
+
+    private fun loadLocation() {
+        if (!locationPermissionHelper.isGpsTurnedOn()) {
+            _content.value = HomeContent.GpsTurnedOff
+        } else if (!geolocator.hasPermission()) {
+            val showRationale = locationPermissionHelper.shouldShowLocationRationale()
+            val state = if (!showRationale) AskPermissionState.Initial else AskPermissionState.Denied
+            _content.value = HomeContent.AskGpsPermission(state)
+        } else {
+            _content.value = HomeContent.LoadingGpsLocation
+            fetchLocation()
+        }
+    }
+
+    private var loadLocationJob: Job? = null
+    private fun fetchLocation() {
+        loadLocationJob?.let {
+            Log.d(TAG, "fetchLocation: Cancelling location job")
+            it.cancel()
+        }
+        loadLocationJob = viewModelScope.launch {
+            Log.d(TAG, "fetchLocation: Fetching location")
+            val geolocatorResult = geolocator.current()
+            _content.value = geolocatorResult.toHomeContent()
+        }
+    }
+
+    private fun GeolocatorResult.toHomeContent(): HomeContent {
+        return when (this) {
+            is GeolocatorResult.PermissionDenied -> {
+                val state = if (forever) AskPermissionState.DeniedPermanently else AskPermissionState.Denied
+                return HomeContent.AskGpsPermission(state)
+            }
+            is GeolocatorResult.NotSupported -> {
+                return HomeContent.GpsTurnedOff
+            }
+            // Both are unexpected errors which shouldn't happen. Just show the error
+            is GeolocatorResult.PermissionError, is GeolocatorResult.GeolocationFailed -> {
+                return HomeContent.GpsError((this as GeolocatorResult.Error).message)
+            }
+            is GeolocatorResult.NotFound -> HomeContent.GpsError("Geen locatie gevonden")
+            is GeolocatorResult.Success -> {
+                val coordinates = data.coordinates
+                val locationsWithDistance =
+                    LocationsMapper.withDistance(overviewRepository.getAllLocations(), coordinates)
+                return HomeContent.GpsContent(locationsWithDistance)
+            }
+            else -> throw Exception("Unexpected error: $this")
+        }
+    }
+}
+
+enum class AskPermissionState {
+    Initial,
+    Denied,
+    DeniedPermanently
 }
 
 sealed class HomeContent {
     // Initial empty state while we set things up.
     data object InitialEmpty : HomeContent()
 
-    data object AskForGpsPermission : HomeContent()
+    data class AskGpsPermission(val state: AskPermissionState) : HomeContent()
 
     data object LoadingGpsLocation : HomeContent()
+
+    data object GpsTurnedOff : HomeContent()
 
     data class GpsError(val message: String) : HomeContent()
 
