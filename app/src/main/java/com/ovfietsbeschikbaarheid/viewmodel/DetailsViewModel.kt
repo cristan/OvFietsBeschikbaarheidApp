@@ -53,15 +53,7 @@ class DetailsViewModel(
         }
     }
 
-    private var firstOnResumeTriggered = false
-    fun onResumeTriggered() {
-        // Refresh the screen when multitasking back. No need to do it when we first enter the screen though,
-        // data is already loaded at setLocationCode
-        if (!firstOnResumeTriggered) {
-            firstOnResumeTriggered = true
-            return
-        }
-
+    fun onReturnToScreenTriggered() {
         if (screenState.value is ScreenState.Loaded) {
             refresh()
         }
