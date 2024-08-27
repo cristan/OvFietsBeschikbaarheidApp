@@ -5,7 +5,7 @@ import com.ovfietsbeschikbaarheid.repository.OverviewRepository
 import com.ovfietsbeschikbaarheid.repository.StationRepository
 import com.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import com.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
-import com.ovfietsbeschikbaarheid.viewmodel.LocationsViewModel
+import com.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
 import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.geolocation.mobile
 import org.koin.core.module.dsl.factoryOf
@@ -22,5 +22,5 @@ fun appModule() = module {
     singleOf(::LocationPermissionHelper)
 
     viewModelOf(::DetailsViewModel)
-    viewModelOf(::LocationsViewModel)
+    viewModelOf(::HomeViewModel)
 }

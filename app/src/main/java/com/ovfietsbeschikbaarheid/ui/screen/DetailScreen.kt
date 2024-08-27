@@ -119,8 +119,6 @@ private fun DetailsView(
     onAlternativeClicked: (LocationOverviewModel) -> Unit,
     onBackClicked: () -> Unit
 ) {
-    val state = rememberPullToRefreshState()
-
     OVFietsBeschikbaarheidTheme {
         Scaffold(
             topBar = {
@@ -146,7 +144,7 @@ private fun DetailsView(
                 ScreenState.Loading -> FullPageLoader()
                 is ScreenState.Loaded<DetailsModel> -> {
                     PullToRefreshBox(
-                        state = state,
+                        state = rememberPullToRefreshState(),
                         modifier = Modifier.padding(innerPadding),
                         isRefreshing = details.isRefreshing,
                         onRefresh = onRefresh,

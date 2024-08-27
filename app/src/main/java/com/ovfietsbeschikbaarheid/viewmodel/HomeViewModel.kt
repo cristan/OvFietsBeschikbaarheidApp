@@ -14,11 +14,12 @@ import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.geolocation.GeolocatorResult
 import dev.jordond.compass.geolocation.hasPermission
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-private const val TAG = "LocationsViewModel"
+private const val TAG = "HomeViewModel"
 
-class LocationsViewModel(
+class HomeViewModel(
     private val geolocator: Geolocator,
     private val overviewRepository: OverviewRepository,
     private val locationPermissionHelper: LocationPermissionHelper
@@ -31,18 +32,39 @@ class LocationsViewModel(
     private val _content = mutableStateOf<HomeContent>(HomeContent.InitialEmpty)
     val content: State<HomeContent> = _content
 
-    fun checkPermission() {
-        Log.d(TAG, "checkPermission called")
+    fun onReturnedToScreen() {
+        val gpsContent = _content.value as? HomeContent.GpsContent
+        gpsContent?.let {
+            _content.value = gpsContent.copy(isRefreshing = true)
+            fetchLocation()
+        }
+    }
+
+    fun refreshGps() {
+        _content.value = (_content.value as HomeContent.GpsContent).copy(isRefreshing = true)
+        Log.d(TAG, "refreshGps called")
+        fetchLocation()
+    }
+
+    fun screenLaunched() {
+        Log.d(TAG, "screenLaunched called")
         loadData(_searchTerm.value)
     }
 
-    private var loadLocationJob: Job? = null
-
-    fun fetchLocation() {
+    fun requestGpsPermissions() {
+        Log.d(TAG, "requestGpsPermissions called")
         _content.value = HomeContent.LoadingGpsLocation
-        Log.d(TAG, "fetchLocation: Cancelling location job")
-        loadLocationJob?.cancel()
+        fetchLocation()
+    }
+
+    private var loadLocationJob: Job? = null
+    private fun fetchLocation() {
+        loadLocationJob?.let {
+            Log.d(TAG, "fetchLocation: Cancelling location job")
+            it.cancel()
+        }
         loadLocationJob = viewModelScope.launch {
+            delay(1000)
             val geolocatorResult = geolocator.current()
             _content.value = getGpsContent(geolocatorResult)
         }
@@ -57,7 +79,8 @@ class LocationsViewModel(
 
             is GeolocatorResult.Success -> {
                 val coordinates = geolocatorResult.data.coordinates
-                val locationsWithDistance = LocationsMapper.withDistance(overviewRepository.getAllLocations(), coordinates)
+                val locationsWithDistance =
+                    LocationsMapper.withDistance(overviewRepository.getAllLocations(), coordinates)
                 return HomeContent.GpsContent(locationsWithDistance)
             }
         }
@@ -98,12 +121,15 @@ class LocationsViewModel(
     private fun loadData(searchTerm: String) {
         if (searchTerm.isBlank()) {
             if (!geolocator.hasPermission()) {
-                if (locationPermissionHelper.shouldShowLocationRationale()) {
+                val shouldShowLocationRationale = locationPermissionHelper.shouldShowLocationRationale()
+                if (shouldShowLocationRationale) {
                     _content.value = HomeContent.AskForGpsPermission
                 } else {
+                    _content.value = HomeContent.LoadingGpsLocation
                     fetchLocation()
                 }
             } else {
+                _content.value = HomeContent.LoadingGpsLocation
                 fetchLocation()
             }
         } else {
@@ -129,7 +155,10 @@ sealed class HomeContent {
 
     data class GpsError(val message: String) : HomeContent()
 
-    data class GpsContent(val locations: List<LocationOverviewWithDistanceModel>) : HomeContent()
+    data class GpsContent(
+        val locations: List<LocationOverviewWithDistanceModel>,
+        val isRefreshing: Boolean = false
+    ) : HomeContent()
 
     data class SearchTermContent(val locations: List<LocationOverviewModel>) : HomeContent()
 

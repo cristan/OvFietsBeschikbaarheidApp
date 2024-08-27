@@ -9,8 +9,9 @@ class LocationPermissionHelper {
     private lateinit var _activity: WeakReference<ComponentActivity>
     fun shouldShowLocationRationale(): Boolean {
         return _activity.get()?.let {
-            ActivityCompat.shouldShowRequestPermissionRationale(it, Manifest.permission.ACCESS_COARSE_LOCATION) ||
+            val shouldShow = ActivityCompat.shouldShowRequestPermissionRationale(it, Manifest.permission.ACCESS_COARSE_LOCATION) ||
                     ActivityCompat.shouldShowRequestPermissionRationale(it, Manifest.permission.ACCESS_FINE_LOCATION)
+            shouldShow
         } ?: false
     }
 

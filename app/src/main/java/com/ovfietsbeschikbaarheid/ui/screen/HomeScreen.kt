@@ -29,6 +29,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -50,12 +52,12 @@ import com.ovfietsbeschikbaarheid.ui.theme.Indigo05
 import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import com.ovfietsbeschikbaarheid.viewmodel.HomeContent
-import com.ovfietsbeschikbaarheid.viewmodel.LocationsViewModel
+import com.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: LocationsViewModel = koinViewModel(),
+    viewModel: HomeViewModel = koinViewModel(),
     onInfoClicked: () -> Unit,
     onLocationClick: (LocationOverviewModel) -> Unit
 ) {
@@ -63,30 +65,31 @@ fun HomeScreen(
     val screen by viewModel.content
 
     LaunchedEffect(Unit) {
-        viewModel.checkPermission()
+        viewModel.screenLaunched()
     }
     // Check if permissions changed after returning to the screen
     OnReturnToScreenEffect {
-        viewModel.checkPermission()
+        viewModel.onReturnedToScreen()
     }
 
     HomeView(
         searchTerm,
         screen,
         viewModel::onSearchTermChanged,
-        viewModel::fetchLocation,
+        viewModel::requestGpsPermissions,
+        viewModel::refreshGps,
         onInfoClicked,
-        onLocationClick
+        onLocationClick,
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeView(
     searchTerm: String,
     screen: HomeContent,
     onSearchTermChanged: (String) -> Unit,
     onRequestLocationClicked: () -> Unit,
+    onGpsRefresh: () -> Unit,
     onInfoClicked: () -> Unit,
     onLocationClick: (LocationOverviewModel) -> Unit
 ) {
@@ -94,24 +97,7 @@ private fun HomeView(
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        actionIconContentColor = Yellow50,
-                        titleContentColor = Yellow50,
-                    ),
-                    title = {
-                        Text(stringResource(R.string.app_name))
-                    },
-                    actions = {
-                        IconButton(onClick = onInfoClicked) {
-                            Icon(
-                                imageVector = Icons.Outlined.Info,
-                                contentDescription = "Info",
-                            )
-                        }
-                    }
-                )
+                HomeTopAppBar(onInfoClicked)
             },
         ) { innerPadding ->
             Column(
@@ -124,24 +110,7 @@ private fun HomeView(
                 when (screen) {
                     HomeContent.InitialEmpty -> Unit
                     HomeContent.AskForGpsPermission -> {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.map_white_background),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .padding(bottom = 16.dp)
-                                    .width(260.dp)
-                            )
-                            Button(onClick = onRequestLocationClicked,
-                                modifier = Modifier.padding(bottom = 64.dp)) {
-                                Icon(Icons.Outlined.Place, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
-                                Text(text = "OV Fiets locaties in je buurt", style = MaterialTheme.typography.bodyLarge)
-                            }
-                        }
+                        AskForGpsPermission(onRequestLocationClicked)
                     }
 
                     is HomeContent.GpsError -> {
@@ -153,37 +122,23 @@ private fun HomeView(
 
                     HomeContent.LoadingGpsLocation -> {
                         Column(
-                            modifier = Modifier.fillMaxSize().padding(bottom = 80.dp),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(bottom = 80.dp),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             CircularProgressIndicator(
-                                modifier = Modifier.width(64.dp).padding(16.dp),
+                                modifier = Modifier
+                                    .width(64.dp)
+                                    .padding(16.dp),
                             )
                             Text("GPS aan het laden.")
                         }
                     }
 
                     is HomeContent.GpsContent -> {
-                        LazyColumn {
-                            item {
-                                Text(
-                                    text = "In de buurt",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(
-                                            if (isSystemInDarkTheme()) Gray80 else Indigo05
-                                        )
-                                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                                )
-                            }
-                            items(screen.locations) { location ->
-                                LocationCard(location.location, location.distance) {
-                                    onLocationClick(location.location)
-                                }
-                            }
-                        }
+                        GpsContent(screen, onLocationClick, onGpsRefresh)
                     }
 
                     is HomeContent.NoSearchResults -> {
@@ -204,6 +159,92 @@ private fun HomeView(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun HomeTopAppBar(onInfoClicked: () -> Unit) {
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            actionIconContentColor = Yellow50,
+            titleContentColor = Yellow50,
+        ),
+        title = {
+            Text(stringResource(R.string.app_name))
+        },
+        actions = {
+            IconButton(onClick = onInfoClicked) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "Info",
+                )
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun GpsContent(
+    gpsContent: HomeContent.GpsContent,
+    onLocationClick: (LocationOverviewModel) -> Unit,
+    onRefresh: () -> Unit
+) {
+    val state = rememberPullToRefreshState()
+    PullToRefreshBox(
+        state = state,
+        isRefreshing = gpsContent.isRefreshing,
+        onRefresh = onRefresh,
+    ) {
+        LazyColumn {
+            item {
+                Text(
+                    text = "In de buurt",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            if (isSystemInDarkTheme()) Gray80 else Indigo05
+                        )
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+            }
+            items(gpsContent.locations) { location ->
+                LocationCard(location.location, location.distance) {
+                    onLocationClick(location.location)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AskForGpsPermission(onRequestLocationClicked: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.map_white_background),
+            contentDescription = null,
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .width(260.dp)
+        )
+        Button(
+            onClick = onRequestLocationClicked,
+            modifier = Modifier.padding(bottom = 64.dp)
+        ) {
+            Icon(
+                Icons.Outlined.Place,
+                contentDescription = null,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text(text = "OV Fiets locaties in je buurt", style = MaterialTheme.typography.bodyLarge)
         }
     }
 }
@@ -276,7 +317,7 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
 
 @Composable
 fun TestHomeView(searchTerm: String, content: HomeContent) {
-    HomeView(searchTerm, content, {}, {}, {}, {})
+    HomeView(searchTerm, content, {}, {}, {}, {}, {})
 }
 
 @Preview
