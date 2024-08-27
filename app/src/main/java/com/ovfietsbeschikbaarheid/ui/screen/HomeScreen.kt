@@ -42,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ovfietsbeschikbaarheid.R
 import com.ovfietsbeschikbaarheid.TestData
+import com.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import com.ovfietsbeschikbaarheid.ui.theme.Gray80
@@ -62,6 +63,10 @@ fun HomeScreen(
     val screen by viewModel.content
 
     LaunchedEffect(Unit) {
+        viewModel.checkPermission()
+    }
+    // Check if permissions changed after returning to the screen
+    OnReturnToScreenEffect {
         viewModel.checkPermission()
     }
 
