@@ -14,7 +14,7 @@ googleMaps = "6.1.1"
 material3 = "1.3.0-rc01"
 csv = "1.10.0"
 koin-bom = "4.0.0-RC1"
-compass = "1.2.1"
+compass = "1.2.2"
 timber = "5.0.1"
 
 
