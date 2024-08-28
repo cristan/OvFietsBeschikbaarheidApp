@@ -1,6 +1,5 @@
 package com.ovfietsbeschikbaarheid.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -15,8 +14,7 @@ import dev.jordond.compass.geolocation.GeolocatorResult
 import dev.jordond.compass.geolocation.hasPermission
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-
-private const val TAG = "HomeViewModel"
+import timber.log.Timber
 
 class HomeViewModel(
     private val geolocator: Geolocator,
@@ -32,7 +30,7 @@ class HomeViewModel(
     val content: State<HomeContent> = _content
 
     fun screenLaunched() {
-        Log.d(TAG, "screenLaunched called")
+        Timber.d("screenLaunched called")
         loadData(_searchTerm.value)
     }
 
@@ -50,7 +48,7 @@ class HomeViewModel(
     }
 
     fun refreshGps() {
-        Log.d(TAG, "refreshGps called")
+        Timber.d("refreshGps called")
         _content.value = (_content.value as HomeContent.GpsContent).copy(isRefreshing = true)
         fetchLocation()
     }
@@ -60,7 +58,7 @@ class HomeViewModel(
     }
 
     fun onRequestPermissionsClicked(currentState: AskPermissionState) {
-        Log.d(TAG, "requestGpsPermissions called")
+        Timber.d("requestGpsPermissions called")
 
         if (currentState == AskPermissionState.DeniedPermanently) {
             locationPermissionHelper.openAppSettings()
@@ -108,11 +106,11 @@ class HomeViewModel(
     private var loadLocationJob: Job? = null
     private fun fetchLocation() {
         loadLocationJob?.let {
-            Log.d(TAG, "fetchLocation: Cancelling location job")
+            Timber.d("fetchLocation: Cancelling location job")
             it.cancel()
         }
         loadLocationJob = viewModelScope.launch {
-            Log.d(TAG, "fetchLocation: Fetching location")
+            Timber.d("fetchLocation: Fetching location")
             val geolocatorResult = geolocator.current()
             _content.value = geolocatorResult.toHomeContent()
         }

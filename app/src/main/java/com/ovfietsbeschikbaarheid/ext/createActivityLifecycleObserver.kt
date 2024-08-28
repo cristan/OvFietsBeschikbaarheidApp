@@ -3,8 +3,8 @@ package com.ovfietsbeschikbaarheid.ext
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
+import timber.log.Timber
 
 fun createActivityLifecycleObserver(
     block: (ComponentActivity) -> Unit,
@@ -14,10 +14,7 @@ fun createActivityLifecycleObserver(
             if (activity is ComponentActivity) {
                 block(activity)
             } else {
-                Log.e(
-                    "LifeCycleExt",
-                    "Activity is not a ComponentActivity. Cannot attach lifecycle observer."
-                )
+                Timber.e("Activity is not a ComponentActivity. Cannot attach lifecycle observer.")
             }
         }
 

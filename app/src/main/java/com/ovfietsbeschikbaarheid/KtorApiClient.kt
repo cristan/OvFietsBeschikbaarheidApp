@@ -1,7 +1,5 @@
 package com.ovfietsbeschikbaarheid
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import com.ovfietsbeschikbaarheid.dto.DetailsDTO
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -11,6 +9,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import timber.log.Timber
 
 class KtorApiClient {
 
@@ -28,7 +27,7 @@ class KtorApiClient {
     }
 
     suspend fun getDetails(detailUri: String): DetailsDTO {
-        Log.i(TAG, "Loading $detailUri")
+        Timber.i("Loading $detailUri")
         return httpClient.get(detailUri).body<DetailsDTO>()
     }
 
