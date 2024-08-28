@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,6 +52,7 @@ import com.google.maps.android.compose.rememberMarkerState
 import com.ovfietsbeschikbaarheid.R
 import com.ovfietsbeschikbaarheid.TestData
 import com.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
+import com.ovfietsbeschikbaarheid.ext.withStyledLink
 import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
@@ -196,16 +198,7 @@ private fun ActualDetails(
 
             Location(details, onLocationClicked)
 
-            OvCard {
-                details.serviceType?.let {
-                    Text("Type: ${it.lowercase(Locale.UK)}", Modifier.padding(bottom = 8.dp))
-                }
-                val bottomPadding = if (details.about != null) 8.dp else 0.dp
-                Text("Totale capaciteit: ${details.capacity}", modifier = Modifier.padding(bottom = 8.dp))
-                if (details.about != null) {
-                    Text(details.about)
-                }
-            }
+            ExtraInfo(details)
 
             if (details.openingHours.isNotEmpty()) {
                 OpeningHours(details)
@@ -213,27 +206,6 @@ private fun ActualDetails(
 
             if (details.alternatives.isNotEmpty()) {
                 Alternatives(details, onAlternativeClicked)
-            }
-        }
-    }
-}
-
-@Composable
-private fun Alternatives(
-    details: DetailsModel,
-    onAlternativeClicked: (LocationOverviewModel) -> Unit
-) {
-    OvCard {
-        Text(
-            text = if (details.stationName != null) "Op ${details.stationName}" else "Op deze locatie",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        details.alternatives.forEach {
-            TextButton(
-                onClick = { onAlternativeClicked(it) }
-            ) {
-                Text(it.title)
             }
         }
     }
@@ -323,6 +295,36 @@ private fun Location(details: DetailsModel, onNavigateClicked: (String) -> Unit)
 }
 
 @Composable
+private fun ExtraInfo(details: DetailsModel) {
+    OvCard {
+        details.serviceType?.let {
+            Text("Type: ${it.lowercase(Locale.UK)}", Modifier.padding(bottom = 8.dp))
+        }
+
+        val bottomPadding = if (details.about != null) 8.dp else 0.dp
+        Text("Totale capaciteit: ${details.capacity}", modifier = Modifier.padding(bottom = bottomPadding))
+
+        if (details.about != null) {
+            val urlText = "ov-fiets.nl/slot"
+            if (details.about.contains(urlText)) {
+                val parts = details.about.split(urlText)
+                val annotatedString = buildAnnotatedString {
+                    append(parts[0])
+                    withStyledLink(urlText, "https://$urlText")
+
+                    if (parts.size > 1) {
+                        append(parts[1])
+                    }
+                }
+                Text(annotatedString)
+            } else {
+                Text(details.about)
+            }
+        }
+    }
+}
+
+@Composable
 private fun OpeningHours(details: DetailsModel) {
     OvCard {
         Text(
@@ -334,6 +336,27 @@ private fun OpeningHours(details: DetailsModel) {
             Row(Modifier.fillMaxWidth()) {
                 Text(it.dayOfWeek, Modifier.weight(1f))
                 Text("${it.startTime} - ${it.endTime}", Modifier.weight(1f))
+            }
+        }
+    }
+}
+
+@Composable
+private fun Alternatives(
+    details: DetailsModel,
+    onAlternativeClicked: (LocationOverviewModel) -> Unit
+) {
+    OvCard {
+        Text(
+            text = if (details.stationName != null) "Op ${details.stationName}" else "Op deze locatie",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        details.alternatives.forEach {
+            TextButton(
+                onClick = { onAlternativeClicked(it) }
+            ) {
+                Text(it.title)
             }
         }
     }

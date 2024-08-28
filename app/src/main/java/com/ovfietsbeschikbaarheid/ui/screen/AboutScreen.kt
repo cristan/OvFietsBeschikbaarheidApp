@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ovfietsbeschikbaarheid.ext.withStyledLink
 import com.ovfietsbeschikbaarheid.ui.components.OvCard
 import com.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import com.ovfietsbeschikbaarheid.ui.theme.Yellow50
@@ -75,18 +76,7 @@ private fun AboutView(
                     )
                     val annotatedString = buildAnnotatedString {
                         append("Met je OV-chipkaart kun je een OV-fiets huren. Je hebt hiervoor een abonnement nodig dat je gratis online kunt afsluiten. Meer informatie vind je op ")
-                        withLink(
-                            LinkAnnotation.Url(
-                                url = "https://ns.nl/ov-fiets", styles = TextLinkStyles(
-                                    style = SpanStyle(
-                                        color = MaterialTheme.colorScheme.primary,
-                                        textDecoration = TextDecoration.Underline
-                                    )
-                                )
-                            )
-                        ) {
-                            append("ns.nl/ov-fiets")
-                        }
+                        withStyledLink(text = "ns.nl/ov-fiets", url = "https://ns.nl/ov-fiets")
                         append(".")
                     }
 
