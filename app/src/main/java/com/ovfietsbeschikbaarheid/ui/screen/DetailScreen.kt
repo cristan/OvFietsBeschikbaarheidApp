@@ -172,7 +172,7 @@ private fun ActualDetails(
         Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
             OvCard {
                 Row {
-                    Text("OV Fietsen beschikbaar:")
+                    Text("OV Fietsen beschikbaar")
                 }
                 val amount = details.rentalBikesAvailable?.toString() ?: "Onbekend"
                 Box(
