@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -283,7 +285,8 @@ private fun Location(details: DetailsModel, onNavigateClicked: (String) -> Unit)
                 }
 
                 Icon(
-                    painter = painterResource(id = R.drawable.directions_24px),
+                    painter = painterResource(id = R.drawable.baseline_directions_24),
+                    tint = MaterialTheme.colorScheme.primary,
                     contentDescription = "Navigeer",
                     modifier = Modifier.size(24.dp)
                 )
