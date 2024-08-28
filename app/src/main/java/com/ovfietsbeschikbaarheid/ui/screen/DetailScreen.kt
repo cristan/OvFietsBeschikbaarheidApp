@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,7 +36,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -202,10 +200,11 @@ private fun ActualDetails(
                 details.serviceType?.let {
                     Text("Type: ${it.lowercase(Locale.UK)}", Modifier.padding(bottom = 8.dp))
                 }
+                val bottomPadding = if (details.about != null) 8.dp else 0.dp
+                Text("Totale capaciteit: ${details.capacity}", modifier = Modifier.padding(bottom = 8.dp))
                 if (details.about != null) {
-                    Text(details.about, Modifier.padding(bottom = 8.dp))
+                    Text(details.about)
                 }
-                Text("Totale capaciteit: ${details.capacity}")
             }
 
             if (details.openingHours.isNotEmpty()) {
