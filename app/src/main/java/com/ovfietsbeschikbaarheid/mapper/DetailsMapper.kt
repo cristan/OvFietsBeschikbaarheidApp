@@ -7,6 +7,7 @@ import com.ovfietsbeschikbaarheid.model.LocationModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import timber.log.Timber
+import java.util.Locale
 import kotlin.math.max
 
 object DetailsMapper {
@@ -57,7 +58,7 @@ object DetailsMapper {
                     it.locationCode != payload.extra.locationCode
         }
 
-        val foundCapacity = capacities[payload.extra.locationCode]
+        val foundCapacity = capacities[payload.extra.locationCode.lowercase(Locale.UK)]
         if (foundCapacity == null) {
             Timber.w("No capacity found for ${payload.extra.locationCode}!")
         }

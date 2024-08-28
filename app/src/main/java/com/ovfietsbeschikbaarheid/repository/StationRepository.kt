@@ -28,7 +28,8 @@ class StationRepository(private val context: Context) {
     }
 
     /**
-     * Returns a map between station code and the station's capacity
+     * Returns a map between location code and the station's capacity.
+     * Note that the location code is always lowercase here, which it isn't always at other instances (Prinsendam is has the code Rtd003 for example)
      */
     fun getCapacities(): Map<String, Int> {
         cachedCapacities?.let {
