@@ -6,6 +6,8 @@ import com.ovfietsbeschikbaarheid.model.DetailsModel
 import com.ovfietsbeschikbaarheid.model.LocationModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.OpeningHoursModel
+import timber.log.Timber
+import kotlin.math.max
 
 object DetailsMapper {
     private val newLinesAtEnd = Regex("[\\\\n\\s]*\$")
@@ -13,7 +15,8 @@ object DetailsMapper {
     fun convert(
         detailsDTO: DetailsDTO,
         allLocations: List<LocationOverviewModel>,
-        allStations: Map<String, String>
+        allStations: Map<String, String>,
+        capacities: Map<String, Int>
     ): DetailsModel {
         val payload = detailsDTO.payload
 
@@ -54,12 +57,20 @@ object DetailsMapper {
                     it.locationCode != payload.extra.locationCode
         }
 
+        val foundCapacity = capacities[payload.extra.locationCode]
+        if (foundCapacity == null) {
+            Timber.w("No capacity found for ${payload.extra.locationCode}!")
+        }
+        val rentalBikesAvailable = payload.extra.rentalBikes
+        val maxCapacity = foundCapacity ?: rentalBikesAvailable ?: 0
+
         val serviceType = payload.extra.serviceType
             ?: if (detailsDTO.self.uri.contains("Zelfservice")) "Zelfservice" else null
         return DetailsModel(
             description = payload.description,
             openingHours = openingHoursModels,
-            rentalBikesAvailable = payload.extra.rentalBikes,
+            rentalBikesAvailable = rentalBikesAvailable,
+            capacity = max(rentalBikesAvailable ?: 0, maxCapacity),
             serviceType = serviceType,
             directions = if (directions != "") directions else null,
             about = about,

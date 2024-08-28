@@ -6,6 +6,7 @@ data class DetailsModel(
     val description: String,
     val openingHours: List<OpeningHoursModel>,
     val rentalBikesAvailable: Int?,
+    val capacity: Int,
     val serviceType: String?,
     val about: String?,
     val directions: String?,

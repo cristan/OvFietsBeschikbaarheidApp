@@ -7,21 +7,51 @@ import java.util.Locale
 
 class StationRepository(private val context: Context) {
     private var cachedStations: Map<String, String>? = null
+    private var cachedCapacities: Map<String, Int>? = null
 
-    // allLocations will be empty after app is recreated. This works around that, but there's probably a nicer way to do this.
+    /**
+     * Returns a map between station code and station name
+     */
     fun getAllStations(): Map<String, String> {
-        val allStations = cachedStations
-        if (allStations != null) {
-            return allStations
+        cachedStations?.let {
+            return it
         }
         val stationsStream = context.resources.openRawResource(R.raw.stations_nl_2015_08)
         val stations = HashMap<String, String>()
-        csvReader{delimiter = ';'}.readAll(stationsStream).forEach {
+        csvReader { delimiter = ';' }.readAll(stationsStream).forEach {
             val code = it[1].uppercase(Locale.UK)
             val stationName = it[3]
             stations[code] = stationName
         }
         cachedStations = stations
         return stations
+    }
+
+    /**
+     * Returns a map between station code and the station's capacity
+     */
+    fun getCapacities(): Map<String, Int> {
+        cachedCapacities?.let {
+            return it
+        }
+        val maxAvailableStream = context.resources.openRawResource(R.raw.max_2017_2023)
+        val capabilities = HashMap<String, Int>()
+        csvReader { delimiter = ';' }.readAll(maxAvailableStream)
+            .drop(1)
+            .forEach { line ->
+                val code = line[0]
+                val maxAvailabilities = line
+                    .drop(2)
+                    .map { maxAvailability ->
+                        if (maxAvailability.isEmpty()) {
+                            0
+                        } else {
+                            maxAvailability.toInt()
+                        }
+                    }
+                capabilities[code] = maxAvailabilities.max()
+            }
+        cachedCapacities = capabilities
+        return capabilities
     }
 }

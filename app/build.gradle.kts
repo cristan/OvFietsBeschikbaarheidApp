@@ -62,6 +62,7 @@ dependencies {
 
     implementation(libs.google.maps.compose)
     implementation(libs.csv)
+    implementation(libs.timber)
 
     implementation(libs.compass.geolocation)
     implementation(libs.compass.geolocation.mobile)

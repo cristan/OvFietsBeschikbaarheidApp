@@ -14,6 +14,7 @@ import com.ovfietsbeschikbaarheid.state.ScreenState
 import com.ovfietsbeschikbaarheid.state.setRefreshing
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 private const val MIN_REFRESH_TIME = 350L
 
@@ -64,13 +65,15 @@ class DetailsViewModel(
             val before = System.currentTimeMillis()
             val details = client.getDetails(overviewModel.uri)
             val allStations = stationRepository.getAllStations()
-            val data = DetailsMapper.convert(details, overviewRepository.getAllLocations(), allStations)
+            val capabilities = stationRepository.getCapacities()
+            val data = DetailsMapper.convert(details, overviewRepository.getAllLocations(), allStations, capabilities)
             val timeElapsed = System.currentTimeMillis() - before
             if (timeElapsed < minDelay) {
                 delay(minDelay - timeElapsed)
             }
             _screenState.value = ScreenState.Loaded(data)
         } catch (e: Exception) {
+            Timber.e(e)
             _screenState.value = ScreenState.FullPageError
         }
     }

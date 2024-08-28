@@ -1,6 +1,7 @@
 package com.ovfietsbeschikbaarheid.ui.screen
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -34,6 +36,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -139,7 +142,7 @@ private fun DetailsView(
                 )
             },
         ) { innerPadding ->
-            when(details) {
+            when (details) {
                 ScreenState.FullPageError -> FullPageError(onRetry)
                 ScreenState.Loading -> FullPageLoader()
                 is ScreenState.Loaded<DetailsModel> -> {
@@ -175,27 +178,32 @@ private fun ActualDetails(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 40.dp),
+                        .padding(vertical = 24.dp),
                     contentAlignment = Alignment.Center
                 ) {
+                    val progress =
+                        if (details.rentalBikesAvailable == null) 0f else details.rentalBikesAvailable.toFloat() / details.capacity
+                    CircularProgressIndicator(progress = { progress }, modifier = Modifier.size(220.dp),
+                        strokeWidth = 36.dp,
+                        strokeCap = StrokeCap.Butt,
+                        gapSize = 0.dp)
                     Text(
                         text = amount,
-                        fontSize = if (details.rentalBikesAvailable != null) 88.sp else 40.sp
+                        fontSize = if (details.rentalBikesAvailable != null) 60.sp else 24.sp
                     )
                 }
             }
 
             Location(details, onLocationClicked)
 
-            if (details.serviceType != null || details.about != null) {
-                OvCard {
-                    details.serviceType?.let {
-                        Text("Type: ${it.lowercase(Locale.UK)}")
-                    }
-                    if (details.about != null) {
-                        Text("\n" + details.about)
-                    }
+            OvCard {
+                details.serviceType?.let {
+                    Text("Type: ${it.lowercase(Locale.UK)}", Modifier.padding(bottom = 8.dp))
                 }
+                if (details.about != null) {
+                    Text(details.about, Modifier.padding(bottom = 8.dp))
+                }
+                Text("Totale capaciteit: ${details.capacity}")
             }
 
             if (details.openingHours.isNotEmpty()) {
@@ -330,6 +338,7 @@ private fun OpeningHours(details: DetailsModel) {
 }
 
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark mode")
 @Composable
 fun DetailsPreview() {
     val dayNames =
@@ -350,6 +359,7 @@ fun DetailsPreview() {
         "Hilversum",
         openingHours,
         144,
+        200,
         "Bemenst",
         about,
         directions,
@@ -358,7 +368,7 @@ fun DetailsPreview() {
         "Amsterdam Zuid",
         listOf(
             TestData.testLocationOverviewModel
-        )
+        ),
     )
     DetailsView(
         "Hilversum",
