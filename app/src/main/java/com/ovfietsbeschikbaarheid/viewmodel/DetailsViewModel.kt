@@ -40,7 +40,16 @@ class DetailsViewModel(
         }
     }
 
-    fun refresh() {
+    fun onReturnToScreenTriggered() {
+        if (screenState.value is ScreenState.Loaded) {
+            _screenState.setRefreshing()
+            viewModelScope.launch {
+                doRefresh()
+            }
+        }
+    }
+
+    fun onPullToRefresh() {
         viewModelScope.launch {
             _screenState.setRefreshing()
             doRefresh(MIN_REFRESH_TIME)
@@ -51,12 +60,6 @@ class DetailsViewModel(
         _screenState.value = ScreenState.Loading
         viewModelScope.launch {
             doRefresh()
-        }
-    }
-
-    fun onReturnToScreenTriggered() {
-        if (screenState.value is ScreenState.Loaded) {
-            refresh()
         }
     }
 

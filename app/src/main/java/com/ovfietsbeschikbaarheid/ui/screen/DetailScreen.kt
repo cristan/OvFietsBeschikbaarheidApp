@@ -106,7 +106,7 @@ fun DetailScreen(
         title,
         details,
         viewModel::onRetryClick,
-        viewModel::refresh,
+        viewModel::onPullToRefresh,
         onLocationClicked,
         onAlternativeClicked,
         onBackClicked
@@ -119,7 +119,7 @@ private fun DetailsView(
     title: String,
     details: ScreenState<DetailsModel>,
     onRetry: () -> Unit,
-    onRefresh: () -> Unit,
+    onPullToRefresh: () -> Unit,
     onLocationClicked: (String) -> Unit,
     onAlternativeClicked: (LocationOverviewModel) -> Unit,
     onBackClicked: () -> Unit
@@ -152,7 +152,7 @@ private fun DetailsView(
                         state = rememberPullToRefreshState(),
                         modifier = Modifier.padding(innerPadding),
                         isRefreshing = details.isRefreshing,
-                        onRefresh = onRefresh,
+                        onRefresh = onPullToRefresh,
                     ) {
                         ActualDetails(details.data, onLocationClicked, onAlternativeClicked)
                     }
