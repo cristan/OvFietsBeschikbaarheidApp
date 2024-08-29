@@ -103,38 +103,30 @@ class HomeViewModel(
         } else {
             val allLocations = overviewRepository.getAllLocations()
             val filteredLocations = allLocations.filter { it.title.contains(searchTerm, ignoreCase = true) }
-            val geoCoderAvailable = geocoder.isAvailable()
-            if (filteredLocations.isNotEmpty()) {
-                _content.value = HomeContent.SearchTermContent(filteredLocations, searchTerm, null)
-            } else {
-                _content.value = HomeContent.NoSearchResults(searchTerm)
+            val currentContent = _content.value
+            if (currentContent is HomeContent.SearchTermContent) {
+                // Update the search results right away, but load the nearby locations in another thread to avoid flicker
+                _content.value = currentContent.copy(locations = filteredLocations)
             }
-            if (geoCoderAvailable) {
-                findNearby(searchTerm)
-            }
-        }
-    }
 
-    private fun findNearby(searchTerm: String) {
-        geoCoderJob?.cancel()
-        geoCoderJob = viewModelScope.launch {
-            val nearbyLocations = findNearbyLocations(searchTerm)
-            if (nearbyLocations != null) {
-                val currentContent = _content.value
-                if (currentContent is HomeContent.SearchTermContent) {
-                    _content.value = currentContent.copy(nearbyLocations = nearbyLocations)
-                } else if (currentContent is HomeContent.NoSearchResults) {
-                    _content.value = HomeContent.SearchTermContent(
-                        locations = emptyList(),
-                        searchTerm = searchTerm,
-                        nearbyLocations = nearbyLocations
-                    )
+            geoCoderJob?.cancel()
+            geoCoderJob = viewModelScope.launch {
+                val nearbyLocations = findNearbyLocations(searchTerm)
+                if (nearbyLocations == null && filteredLocations.isEmpty()) {
+                    _content.value = HomeContent.NoSearchResults(searchTerm)
+                } else {
+                    _content.value = HomeContent.SearchTermContent(filteredLocations, searchTerm, nearbyLocations)
                 }
             }
         }
     }
 
     private suspend fun findNearbyLocations(searchTerm: String): List<LocationOverviewWithDistanceModel>? {
+        val geoCoderAvailable = geocoder.isAvailable()
+        if (!geoCoderAvailable) {
+            return null
+        }
+
         val coordinates = geocoder.forward(searchTerm)
         val foundCoordinates = coordinates.getOrNull()?.get(0)
 
