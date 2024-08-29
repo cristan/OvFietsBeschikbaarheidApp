@@ -9,6 +9,7 @@ import com.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import com.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import com.ovfietsbeschikbaarheid.repository.OverviewRepository
 import com.ovfietsbeschikbaarheid.util.LocationPermissionHelper
+import dev.jordond.compass.geocoder.Geocoder
 import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.geolocation.GeolocatorResult
 import dev.jordond.compass.geolocation.hasPermission
@@ -20,6 +21,7 @@ import timber.log.Timber
 
 class HomeViewModel(
     private val geolocator: Geolocator,
+    private val geocoder: Geocoder,
     private val overviewRepository: OverviewRepository,
     private val locationPermissionHelper: LocationPermissionHelper
 ) : ViewModel() {
@@ -30,6 +32,8 @@ class HomeViewModel(
     // The initial value doesn't really matter: it gets overwritten right away anyway
     private val _content = mutableStateOf<HomeContent>(HomeContent.InitialEmpty)
     val content: State<HomeContent> = _content
+
+    private var geoCoderJob: Job? = null
 
     fun screenLaunched() {
         Timber.d("screenLaunched called")
@@ -43,10 +47,12 @@ class HomeViewModel(
                 // The GPS is on now
                 loadLocation()
             }
+
             currentlyShown is HomeContent.GpsError -> {
                 // Let's try again
                 loadLocation()
             }
+
             currentlyShown is HomeContent.AskGpsPermission
                     && currentlyShown.state == AskPermissionState.DeniedPermanently
                     && geolocator.hasPermission() -> {
@@ -54,6 +60,7 @@ class HomeViewModel(
                 _content.value = HomeContent.LoadingGpsLocation
                 fetchLocation()
             }
+
             currentlyShown is HomeContent.GpsContent -> {
                 // Do basically a pull to refresh when re-entering this screen
                 _content.value = currentlyShown.copy(isRefreshing = true)
@@ -95,13 +102,46 @@ class HomeViewModel(
             loadLocation()
         } else {
             val allLocations = overviewRepository.getAllLocations()
-            val filteredLocations =
-                allLocations.filter { it.title.contains(searchTerm, ignoreCase = true) }
+            val filteredLocations = allLocations.filter { it.title.contains(searchTerm, ignoreCase = true) }
+            val geoCoderAvailable = geocoder.isAvailable()
             if (filteredLocations.isNotEmpty()) {
-                _content.value = HomeContent.SearchTermContent(filteredLocations)
+                _content.value = HomeContent.SearchTermContent(filteredLocations, searchTerm, null)
             } else {
                 _content.value = HomeContent.NoSearchResults(searchTerm)
             }
+            if (geoCoderAvailable) {
+                findNearby(searchTerm)
+            }
+        }
+    }
+
+    private fun findNearby(searchTerm: String) {
+        geoCoderJob?.cancel()
+        geoCoderJob = viewModelScope.launch {
+            val nearbyLocations = findNearbyLocations(searchTerm)
+            if (nearbyLocations != null) {
+                val currentContent = _content.value
+                if (currentContent is HomeContent.SearchTermContent) {
+                    _content.value = currentContent.copy(nearbyLocations = nearbyLocations)
+                } else if (currentContent is HomeContent.NoSearchResults) {
+                    _content.value = HomeContent.SearchTermContent(
+                        locations = emptyList(),
+                        searchTerm = searchTerm,
+                        nearbyLocations = nearbyLocations
+                    )
+                }
+            }
+        }
+    }
+
+    private suspend fun findNearbyLocations(searchTerm: String): List<LocationOverviewWithDistanceModel>? {
+        val coordinates = geocoder.forward(searchTerm)
+        val foundCoordinates = coordinates.getOrNull()?.get(0)
+
+        return if (foundCoordinates != null) {
+            LocationsMapper.withDistance(overviewRepository.getAllLocations(), foundCoordinates)
+        } else {
+            null
         }
     }
 
@@ -138,6 +178,7 @@ class HomeViewModel(
                 val state = if (forever) AskPermissionState.DeniedPermanently else AskPermissionState.Denied
                 return HomeContent.AskGpsPermission(state)
             }
+
             is GeolocatorResult.NotSupported -> {
                 return HomeContent.GpsTurnedOff
             }
@@ -145,6 +186,7 @@ class HomeViewModel(
             is GeolocatorResult.PermissionError, is GeolocatorResult.GeolocationFailed -> {
                 return HomeContent.GpsError((this as GeolocatorResult.Error).message)
             }
+
             is GeolocatorResult.NotFound -> HomeContent.GpsError("Geen locatie gevonden")
             is GeolocatorResult.Success -> {
                 val coordinates = data.coordinates
@@ -152,6 +194,7 @@ class HomeViewModel(
                     LocationsMapper.withDistance(overviewRepository.getAllLocations(), coordinates)
                 return HomeContent.GpsContent(locationsWithDistance)
             }
+
             else -> throw Exception("Unexpected error: $this")
         }
     }
@@ -180,7 +223,11 @@ sealed class HomeContent {
         val isRefreshing: Boolean = false
     ) : HomeContent()
 
-    data class SearchTermContent(val locations: List<LocationOverviewModel>) : HomeContent()
+    data class SearchTermContent(
+        val locations: List<LocationOverviewModel>,
+        val searchTerm: String,
+        val nearbyLocations: List<LocationOverviewWithDistanceModel>?
+    ) : HomeContent()
 
     data class NoSearchResults(val searchTerm: String) : HomeContent()
 }

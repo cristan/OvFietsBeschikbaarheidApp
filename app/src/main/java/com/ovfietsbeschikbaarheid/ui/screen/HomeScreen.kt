@@ -168,6 +168,16 @@ private fun HomeView(
                                     onLocationClick(location)
                                 }
                             }
+                            screen.nearbyLocations?.let { nearbyLocations ->
+                                item {
+                                    HorizontalBar("In de buurt van ${screen.searchTerm}")
+                                }
+                                items(nearbyLocations) { location ->
+                                    LocationCard(location.location, location.distance) {
+                                        onLocationClick(location.location)
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -214,16 +224,7 @@ private fun GpsContent(
     ) {
         LazyColumn {
             item {
-                Text(
-                    text = "In de buurt",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            if (isSystemInDarkTheme()) Gray80 else Indigo05
-                        )
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                )
+                HorizontalBar("In de buurt")
             }
             items(gpsContent.locations) { location ->
                 LocationCard(location.location, location.distance) {
@@ -235,6 +236,20 @@ private fun GpsContent(
 }
 
 @Composable
+private fun HorizontalBar(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.titleMedium,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                if (isSystemInDarkTheme()) Gray80 else Indigo05
+            )
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    )
+}
+
+@Composable
 private fun AskForGpsPermission(state: AskPermissionState, onRequestLocationClicked: (AskPermissionState) -> Unit) {
     val rationaleText = when (state) {
         AskPermissionState.Initial -> null
@@ -242,7 +257,7 @@ private fun AskForGpsPermission(state: AskPermissionState, onRequestLocationClic
         AskPermissionState.DeniedPermanently -> "Toestemming is nodig om OV Fiets locaties in de buurt te tonen. Geef deze in de app instellingen."
     }
 
-    val buttonText = when(state) {
+    val buttonText = when (state) {
         AskPermissionState.Initial -> "OV Fiets locaties in je buurt"
         AskPermissionState.Denied -> "Geef toestemming"
         AskPermissionState.DeniedPermanently -> "Naar de app instellingen"
@@ -382,7 +397,55 @@ fun SearchResultsPreview() {
             rentalBikesAvailable = 148
         ),
     )
-    TestHomeView("Amsterdam Zuid", HomeContent.SearchTermContent(locations))
+    TestHomeView("Amsterdam Zuid", HomeContent.SearchTermContent(locations, "Amsterdam Zuid", null))
+}
+
+@Preview
+@Composable
+fun SearchResultsLoadingNearbyPreview() {
+    val locations = listOf(
+        TestData.testLocationOverviewModel.copy(
+            title = "Amsterdam Zuid Mahlerplein",
+            rentalBikesAvailable = 49
+        ),
+        TestData.testLocationOverviewModel.copy(
+            title = "Amsterdam Zuid Zuidplein",
+            rentalBikesAvailable = 148
+        ),
+    )
+    TestHomeView("Amsterdam Zuid", HomeContent.SearchTermContent(locations, "Amsterdam Zuid", null))
+}
+
+@Preview
+@Composable
+fun SearchResultsNearbyPreview() {
+    val locations = listOf(
+        TestData.testLocationOverviewModel.copy(
+            title = "Amsterdam Zuid Mahlerplein",
+            rentalBikesAvailable = 49
+        ),
+        TestData.testLocationOverviewModel.copy(
+            title = "Amsterdam Zuid Zuidplein",
+            rentalBikesAvailable = 148
+        ),
+    )
+    val gpsLocations = listOf(
+        LocationOverviewWithDistanceModel(
+            "800 m",
+            TestData.testLocationOverviewModel.copy(
+                title = "Amsterdam Zuid Mahlerplein",
+                rentalBikesAvailable = 49
+            )
+        ),
+        LocationOverviewWithDistanceModel(
+            "1,1 km",
+            TestData.testLocationOverviewModel.copy(
+                title = "Amsterdam Zuid Zuidplein",
+                rentalBikesAvailable = 148
+            )
+        ),
+    )
+    TestHomeView("Amsterdam Zuid", HomeContent.SearchTermContent(locations, "Amsterdam Zuid", gpsLocations))
 }
 
 @Preview
