@@ -36,14 +36,23 @@ class HomeViewModel(
 
     fun onReturnedToScreen() {
         val currentlyShown = _content.value
-        if (currentlyShown is HomeContent.GpsTurnedOff) {
-            // Check if the situation has changed: maybe the GPS is on now
-            loadLocation()
-        }
-        val gpsContent = currentlyShown as? HomeContent.GpsContent
-        gpsContent?.let {
-            _content.value = gpsContent.copy(isRefreshing = true)
-            fetchLocation()
+        when {
+            currentlyShown is HomeContent.GpsTurnedOff && locationPermissionHelper.isGpsTurnedOn() -> {
+                // The GPS is on now
+                loadLocation()
+            }
+            currentlyShown is HomeContent.AskGpsPermission
+                    && currentlyShown.state == AskPermissionState.DeniedPermanently
+                    && geolocator.hasPermission() -> {
+                // The user went to the app settings and granted the location permission manually
+                _content.value = HomeContent.LoadingGpsLocation
+                fetchLocation()
+            }
+            currentlyShown is HomeContent.GpsContent -> {
+                // Do basically a pull to refresh when re-entering this screen
+                _content.value = currentlyShown.copy(isRefreshing = true)
+                fetchLocation()
+            }
         }
     }
 
