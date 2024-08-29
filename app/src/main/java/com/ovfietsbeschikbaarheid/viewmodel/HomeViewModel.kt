@@ -43,6 +43,10 @@ class HomeViewModel(
                 // The GPS is on now
                 loadLocation()
             }
+            currentlyShown is HomeContent.GpsError -> {
+                // Let's try again
+                loadLocation()
+            }
             currentlyShown is HomeContent.AskGpsPermission
                     && currentlyShown.state == AskPermissionState.DeniedPermanently
                     && geolocator.hasPermission() -> {
