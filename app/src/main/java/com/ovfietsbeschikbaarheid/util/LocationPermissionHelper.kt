@@ -4,12 +4,10 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
-import android.net.Uri
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.core.app.ActivityCompat
 import java.lang.ref.WeakReference
-
 
 class LocationPermissionHelper(
     private val context: Context
@@ -25,15 +23,6 @@ class LocationPermissionHelper(
 
     fun setActivity(activity: ComponentActivity) {
         this._activity = WeakReference(activity)
-    }
-
-    fun openAppSettings() {
-        _activity.get()?.apply {
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            val uri = Uri.fromParts("package", packageName, null)
-            intent.setData(uri)
-            startActivity(intent)
-        }
     }
 
     fun isGpsTurnedOn(): Boolean {

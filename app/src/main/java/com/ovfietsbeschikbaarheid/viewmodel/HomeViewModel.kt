@@ -12,6 +12,8 @@ import com.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.geolocation.GeolocatorResult
 import dev.jordond.compass.geolocation.hasPermission
+import dev.jordond.compass.permissions.LocationPermissionController
+import dev.jordond.compass.permissions.mobile.openSettings
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -70,7 +72,7 @@ class HomeViewModel(
         Timber.d("requestGpsPermissions called")
 
         if (currentState == AskPermissionState.DeniedPermanently) {
-            locationPermissionHelper.openAppSettings()
+            LocationPermissionController.openSettings()
         } else {
             // Either the initial state (where we don't know whether permission is denied permanently)
             // or the denied once state, after which `geolocator.current()` will ask for permission again
@@ -100,6 +102,7 @@ class HomeViewModel(
     }
 
     private fun loadLocation() {
+        // TODO: replace with geolocator.isAvailable() when this is no longer a suspend fun: https://github.com/jordond/compass/issues/101
         if (!locationPermissionHelper.isGpsTurnedOn()) {
             _content.value = HomeContent.GpsTurnedOff
         } else if (!geolocator.hasPermission()) {
