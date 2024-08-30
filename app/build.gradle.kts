@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.ovfietsbeschikbaarheid"
+    namespace = "nl.ovfietsbeschikbaarheid"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.ovfietsbeschikbaarheid"
+        applicationId = "nl.ovfietsbeschikbaarheid"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

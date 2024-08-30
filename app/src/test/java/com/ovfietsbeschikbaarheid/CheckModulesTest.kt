@@ -1,7 +1,7 @@
-package com.ovfietsbeschikbaarheid
+package nl.ovfietsbeschikbaarheid
 
 import android.content.Context
-import com.ovfietsbeschikbaarheid.di.appModule
+import nl.ovfietsbeschikbaarheid.di.appModule
 import org.junit.Test
 import org.koin.test.KoinTest
 import org.koin.test.verify.verify
