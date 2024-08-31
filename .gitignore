@@ -5,6 +5,9 @@ build/
 # Local configuration file (sdk path, etc)
 local.properties
 
+# macOS files
+.DS_Store
+
 # Log/OS Files
 *.log
 
