@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -57,6 +59,7 @@ import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.LocationModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
+import nl.ovfietsbeschikbaarheid.model.ServiceType
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
@@ -66,7 +69,6 @@ import nl.ovfietsbeschikbaarheid.ui.view.FullPageLoader
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
-import java.util.Locale
 
 @Composable
 fun DetailScreen(
@@ -298,11 +300,27 @@ private fun Location(details: DetailsModel, onNavigateClicked: (String) -> Unit)
 private fun ExtraInfo(details: DetailsModel) {
     OvCard {
         details.serviceType?.let {
-            Text("Type: ${it.lowercase(Locale.UK)}", Modifier.padding(bottom = 8.dp))
+            Row {
+                Icon(
+                    painter = painterResource(id = it.icon),
+                    tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(it.text)
+            }
         }
 
         val bottomPadding = if (details.about != null) 8.dp else 0.dp
-        Text("Totale capaciteit: ${details.capacity}", modifier = Modifier.padding(bottom = bottomPadding))
+        Row(Modifier.padding(bottom = bottomPadding)) {
+            Icon(
+                painter = painterResource(id = R.drawable.pedal_bike_24px),
+                tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                contentDescription = null,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text("Totale capaciteit: ${details.capacity}")
+        }
 
         if (details.about != null) {
             val urlText = "ov-fiets.nl/slot"
@@ -385,7 +403,7 @@ fun DetailsPreview() {
         openingHours,
         144,
         200,
-        "Bemenst",
+        ServiceType.Bemenst,
         about,
         directions,
         locationModel,

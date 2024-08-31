@@ -6,6 +6,7 @@ import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.LocationModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
+import nl.ovfietsbeschikbaarheid.model.ServiceType
 import timber.log.Timber
 import java.util.Locale
 import kotlin.math.max
@@ -65,8 +66,19 @@ object DetailsMapper {
         val rentalBikesAvailable = payload.extra.rentalBikes
         val maxCapacity = foundCapacity ?: rentalBikesAvailable ?: 0
 
-        val serviceType = payload.extra.serviceType
-            ?: if (detailsDTO.self.uri.contains("Zelfservice")) "Zelfservice" else null
+
+        val serviceType = when(payload.extra.serviceType) {
+            "Bemenst" -> ServiceType.Bemenst
+            "Kluizen" -> ServiceType.Kluizen
+            "Sleutelautomaat" -> ServiceType.Sleutelautomaat
+            "Box" -> ServiceType.Box
+            null -> if (detailsDTO.self.uri.contains("Zelfservice", ignoreCase = true)) ServiceType.Zelfservice else null
+            else -> {
+                Timber.w("Unknown service type: ${payload.extra.serviceType}")
+                null
+            }
+        }
+
         return DetailsModel(
             description = payload.description,
             openingHours = openingHoursModels,
