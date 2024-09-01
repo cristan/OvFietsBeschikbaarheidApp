@@ -4,7 +4,7 @@ import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 
 object TestData {
     val testLocationOverviewModel = LocationOverviewModel(
-        "Hilversum Sportpark",
+        "Amersfoort Centraal",
         "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-nvd001",
         "nvd001",
         "HVS",

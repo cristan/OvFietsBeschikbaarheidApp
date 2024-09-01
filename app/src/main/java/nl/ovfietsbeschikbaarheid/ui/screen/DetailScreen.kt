@@ -424,43 +424,43 @@ private fun Alternatives(
     }
 }
 
-@Preview
+@Preview(heightDp = 1800)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark mode")
 @Composable
 fun DetailsPreview() {
     val dayNames =
         listOf("Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag")
     val openingHours = dayNames.map { day ->
-        OpeningHoursModel(day, "04:45", "01:00")
+        OpeningHoursModel(day, "04:45", "01:15")
     }
     val about =
-        "Je huurt hier zelf een OV-fiets met het nieuwe OV-fietsslot, waarbij je OV-chipkaart de sleutel is. Meer informatie vind je op ov-fiets.nl/slot."
-    val directions = "U vindt de stationsstalling nabij spoor 1, de ingang is in de tunnel."
+        "Je huurt hier een OV-fiets met het nieuwe OV-fietsslot, waarbij je OV-chipkaart de sleutel is. Meer informatie vind je op ov-fiets.nl/slot.\r\n\r\nAan de andere kant van het station vind je de bemenste fietsenstalling. Ook hier kun je een OV-fiets huren."
+    val directions = "Volg vanaf het station de borden Mondriaanplein. U vindt de stalling recht voor de uitgang van het station."
     val locationModel = LocationModel(
-        city = "Hilversum",
-        street = "Stationsplein",
+        city = "Amersfoort",
+        street = "Piet Mondriaanplein",
         houseNumber = "1",
-        postalCode = "1211 EX",
+        postalCode = "3812 GZ",
     )
     val details = DetailsModel(
-        "Hilversum",
-        OpenState.Open247,
-        null,
+        "Amersfoort Mondriaanplein",
+        OpenState.Open("01:20"),
+        "Dit OV-fiets uitgiftepunt is open van een kwartier voor vertrek van de eerste trein tot een kwartier na aankomst van de laatste trein.",
         openingHours,
-        144,
-        200,
-        ServiceType.Bemenst,
+        68,
+        105,
+        ServiceType.Sleutelautomaat,
         about,
         directions,
         locationModel,
-        LatLng(52.22626, 5.18076),
+        LatLng(52.15446, 5.37339),
         "Amsterdam Zuid",
         listOf(
             TestData.testLocationOverviewModel
         ),
     )
     DetailsView(
-        "Hilversum",
+        "Amersfoort Mondriaanplein",
         ScreenState.Loaded(details),
         {},
         {},
