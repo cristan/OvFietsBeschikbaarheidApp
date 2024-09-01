@@ -24,6 +24,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -58,11 +59,15 @@ import nl.ovfietsbeschikbaarheid.ext.withStyledLink
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.LocationModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
+import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
+import nl.ovfietsbeschikbaarheid.ui.theme.Green50
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
+import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
+import nl.ovfietsbeschikbaarheid.ui.theme.Red50
 import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
 import nl.ovfietsbeschikbaarheid.ui.view.FullPageLoader
@@ -174,29 +179,7 @@ private fun ActualDetails(
         Modifier.verticalScroll(rememberScrollState())
     ) {
         Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
-            OvCard {
-                Row {
-                    Text("OV-fietsen beschikbaar")
-                }
-                val amount = details.rentalBikesAvailable?.toString() ?: "Onbekend"
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 24.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    val progress =
-                        if (details.rentalBikesAvailable == null) 0f else details.rentalBikesAvailable.toFloat() / details.capacity
-                    CircularProgressIndicator(progress = { progress }, modifier = Modifier.size(220.dp),
-                        strokeWidth = 36.dp,
-                        strokeCap = StrokeCap.Butt,
-                        gapSize = 0.dp)
-                    Text(
-                        text = amount,
-                        fontSize = if (details.rentalBikesAvailable != null) 60.sp else 24.sp
-                    )
-                }
-            }
+            MainInfo(details)
 
             Location(details, onLocationClicked)
 
@@ -208,6 +191,65 @@ private fun ActualDetails(
 
             if (details.alternatives.isNotEmpty()) {
                 Alternatives(details, onAlternativeClicked)
+            }
+        }
+    }
+}
+
+@Composable
+private fun MainInfo(details: DetailsModel) {
+    OvCard {
+        Text("OV-fietsen beschikbaar")
+        val rentalBikesAvailable = details.rentalBikesAvailable
+        val amount = rentalBikesAvailable?.toString() ?: "Onbekend"
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 24.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            val progress = if (rentalBikesAvailable == null) 0f else rentalBikesAvailable.toFloat() / details.capacity
+            val color =
+                when (details.openState) {
+                    is OpenState.Closed -> Red50
+                    is OpenState.Closing -> Orange50
+                    else -> ProgressIndicatorDefaults.circularColor
+                }
+            CircularProgressIndicator(
+                progress = { progress }, modifier = Modifier.size(220.dp),
+                color = color,
+                strokeWidth = 36.dp,
+                strokeCap = StrokeCap.Butt,
+                gapSize = 0.dp
+            )
+            Text(
+                text = amount,
+                fontSize = if (rentalBikesAvailable != null) 60.sp else 24.sp
+            )
+        }
+        details.openState?.let { openState ->
+            Row(Modifier.align(Alignment.End)) {
+                when (openState) {
+                    is OpenState.Closed -> {
+                        Text(text = "Gesloten", color = Red50)
+                        if (openState.openDay != null) {
+                            Text(text = " • Gaat ${openState.openDay} open om ${openState.openTime}")
+                        } else {
+                            Text(text = " • Gaat open om ${openState.openTime}")
+                        }
+                    }
+
+                    is OpenState.Closing -> {
+                        Text(text = "Sluit snel", color = Orange50)
+                        Text(" • Sluit om ${openState.closingTime}")
+                    }
+
+                    is OpenState.Open -> {
+                        Text("Open tot ${openState.closingTime}")
+                    }
+
+                    OpenState.Open247 -> Text(text = "24/7 open")
+                }
             }
         }
     }
@@ -400,6 +442,7 @@ fun DetailsPreview() {
     )
     val details = DetailsModel(
         "Hilversum",
+        OpenState.Open247,
         openingHours,
         144,
         200,

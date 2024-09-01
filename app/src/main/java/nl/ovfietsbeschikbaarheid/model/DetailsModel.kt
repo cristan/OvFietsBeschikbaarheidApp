@@ -6,6 +6,7 @@ import nl.ovfietsbeschikbaarheid.R
 
 data class DetailsModel(
     val description: String,
+    val openState: OpenState?,
     val openingHours: List<OpeningHoursModel>,
     val rentalBikesAvailable: Int?,
     val capacity: Int,
@@ -30,6 +31,13 @@ data class OpeningHoursModel(
     val startTime: String,
     val endTime: String,
 )
+
+sealed class OpenState {
+    data object Open247 : OpenState()
+    data class Open(val closingTime: String) : OpenState()
+    data class Closing(val closingTime: String) : OpenState()
+    data class Closed(val openDay: String?, val openTime: String) : OpenState()
+}
 
 enum class ServiceType(val text: String, @DrawableRes val icon: Int) {
     Bemenst("Bemenst", R.drawable.baseline_person_24),

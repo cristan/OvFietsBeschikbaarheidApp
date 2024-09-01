@@ -8,7 +8,9 @@ import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
 import timber.log.Timber
+import java.time.LocalDateTime
 import java.util.Locale
+import java.util.TimeZone
 import kotlin.math.max
 
 object DetailsMapper {
@@ -67,7 +69,7 @@ object DetailsMapper {
         val maxCapacity = foundCapacity ?: rentalBikesAvailable ?: 0
 
 
-        val serviceType = when(payload.extra.serviceType) {
+        val serviceType = when (payload.extra.serviceType) {
             "Bemenst" -> ServiceType.Bemenst
             "Kluizen" -> ServiceType.Kluizen
             "Sleutelautomaat" -> ServiceType.Sleutelautomaat
@@ -90,11 +92,16 @@ object DetailsMapper {
             location = location,
             coordinates = LatLng(payload.lat, payload.lng),
             stationName = allStations[payload.stationCode],
-            alternatives = alternatives
+            alternatives = alternatives,
+            openState = payload.openingHours?.let {
+                OpenStateMapper.getOpenState(
+                    it, LocalDateTime.now(TimeZone.getTimeZone("Europe/Amsterdam").toZoneId())
+                )
+            },
         )
     }
 
-    private fun getDayName(dayOfWeek: Int): String {
+    fun getDayName(dayOfWeek: Int): String {
         return when (dayOfWeek) {
             1 -> "Maandag"
             2 -> "Dinsdag"
