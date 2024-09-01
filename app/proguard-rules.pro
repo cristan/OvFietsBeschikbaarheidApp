@@ -19,3 +19,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# No idea what this does, but building throws an error when this isn't added
+-dontwarn org.slf4j.impl.StaticLoggerBinder
