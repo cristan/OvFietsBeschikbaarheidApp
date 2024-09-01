@@ -64,7 +64,6 @@ import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
-import nl.ovfietsbeschikbaarheid.ui.theme.Green50
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
 import nl.ovfietsbeschikbaarheid.ui.theme.Red50
@@ -361,7 +360,7 @@ private fun ExtraInfo(details: DetailsModel) {
                 contentDescription = null,
                 modifier = Modifier.padding(end = 8.dp)
             )
-            Text("Totale capaciteit: ${details.capacity}")
+            Text("Max aantal: ${details.capacity}")
         }
 
         if (details.about != null) {
