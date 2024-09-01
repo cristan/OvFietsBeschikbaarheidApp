@@ -29,6 +29,8 @@ object DetailsMapper {
             // Just for Rotterdam Kralingse Zoom
             ?.replace("&amp;", "&")
         val about = payload.infoImages.find { it.title == "Bijzonderheden" }?.body?.replace(newLinesAtEnd, "")
+        // Filled in example Leiden Centraal, Centrumzijde
+        val openingHoursInfo = payload.infoImages.find { it.title == "Info openingstijden" }?.body
 
         val location =
             if (payload.city == "" || payload.city == null || payload.street == null || payload.houseNumber == null || payload.postalCode == null) {
@@ -83,6 +85,7 @@ object DetailsMapper {
 
         return DetailsModel(
             description = payload.description,
+            openingHoursInfo = openingHoursInfo,
             openingHours = openingHoursModels,
             rentalBikesAvailable = rentalBikesAvailable,
             capacity = max(rentalBikesAvailable ?: 0, maxCapacity),

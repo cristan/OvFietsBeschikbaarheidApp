@@ -391,6 +391,9 @@ private fun OpeningHours(details: DetailsModel) {
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )
+        details.openingHoursInfo?.let {
+            Text(it, Modifier.padding(bottom = 8.dp))
+        }
         details.openingHours.forEach {
             Row(Modifier.fillMaxWidth()) {
                 Text(it.dayOfWeek, Modifier.weight(1f))
@@ -442,6 +445,7 @@ fun DetailsPreview() {
     val details = DetailsModel(
         "Hilversum",
         OpenState.Open247,
+        null,
         openingHours,
         144,
         200,

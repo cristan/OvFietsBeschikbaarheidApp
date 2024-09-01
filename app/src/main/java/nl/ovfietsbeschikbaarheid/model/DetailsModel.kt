@@ -7,6 +7,7 @@ import nl.ovfietsbeschikbaarheid.R
 data class DetailsModel(
     val description: String,
     val openState: OpenState?,
+    val openingHoursInfo: String?,
     val openingHours: List<OpeningHoursModel>,
     val rentalBikesAvailable: Int?,
     val capacity: Int,
