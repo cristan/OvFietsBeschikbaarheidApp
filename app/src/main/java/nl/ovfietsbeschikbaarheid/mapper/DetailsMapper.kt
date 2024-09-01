@@ -68,7 +68,15 @@ object DetailsMapper {
             Timber.w("No capacity found for ${payload.extra.locationCode}!")
         }
         val rentalBikesAvailable = payload.extra.rentalBikes
-        val maxCapacity = foundCapacity ?: rentalBikesAvailable ?: 0
+        val maxCapacity =
+            if (foundCapacity != null && rentalBikesAvailable != null) {
+                if (foundCapacity > rentalBikesAvailable) {
+                    Timber.w("Found capacity $foundCapacity is greater than rental bikes available $rentalBikesAvailable!")
+                    foundCapacity
+                } else {
+                    rentalBikesAvailable
+                }
+            } else foundCapacity ?: rentalBikesAvailable ?: 0
 
 
         val serviceType = when (payload.extra.serviceType) {
