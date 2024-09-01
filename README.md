@@ -1,4 +1,4 @@
-# OV-Fiets beschikbaarheid
+# OV-fiets beschikbaarheid
 [![Build Status](https://github.com/cristan/OvFietsBeschikbaarheidApp/actions/workflows/android_ci.yml/badge.svg)](https://github.com/cristan/OvFietsBeschikbaarheidApp/actions/workflows/android_ci.yml)
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-%20-blue?logo=kotlin)](http://kotlinlang.org)
@@ -9,7 +9,7 @@
 [![Compass](https://img.shields.io/badge/Compass-%20-F5F5F5)](https://github.com/jordond/compass/)
 [![Google Maps](https://img.shields.io/badge/Google%20Maps-%20-blue?logo=google-maps)](https://github.com/googlemaps/android-maps-compose)
 
-This app is designed to find how many OV-Fiets bikes are available as quick as possible.
+This app is designed to find how many OV-fiets bikes are available as quick as possible.
 
 <div align="center">
 <img src="./screenshots/screenshot1.png" alt="Screenshot 1" width="45%"> <img src="./screenshots/screenshot2.png" alt="Screenshot 2" width="45%">
@@ -34,7 +34,7 @@ Contributions, comments, and suggestions are welcome! Developing should be quite
 
 ## License
 The license is the GPLv3, except for these exceptions:
-* You are writing software unrelated to the OV-Fiets
+* You are writing software unrelated to the OV-fiets
 * You are training AI models
 * You are writing software for the NS
 

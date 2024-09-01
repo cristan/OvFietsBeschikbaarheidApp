@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "OV Fiets beschikbaarheid"
+rootProject.name = "OV-fiets Beschikbaarheid"
 include(":app")
  

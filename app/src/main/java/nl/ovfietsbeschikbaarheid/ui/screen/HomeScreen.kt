@@ -119,7 +119,7 @@ private fun HomeView(
 
                     HomeContent.GpsTurnedOff -> {
                         GpsRequestSomething(
-                            "GPS is nodig om OV Fiets locaties in de buurt te tonen",
+                            "GPS is nodig om OV-fiets locaties in de buurt te tonen",
                             "Zet GPS aan",
                             false,
                             onTurnOnGpsClicked
@@ -253,12 +253,12 @@ private fun HorizontalBar(text: String) {
 private fun AskForGpsPermission(state: AskPermissionState, onRequestLocationClicked: (AskPermissionState) -> Unit) {
     val rationaleText = when (state) {
         AskPermissionState.Initial -> null
-        AskPermissionState.Denied -> "Toestemming is nodig om OV Fiets locaties in de buurt te tonen"
-        AskPermissionState.DeniedPermanently -> "Toestemming is nodig om OV Fiets locaties in de buurt te tonen. Geef deze in de app instellingen."
+        AskPermissionState.Denied -> "Toestemming is nodig om OV-fiets locaties in de buurt te tonen"
+        AskPermissionState.DeniedPermanently -> "Toestemming is nodig om OV-fiets locaties in de buurt te tonen. Geef deze in de app instellingen."
     }
 
     val buttonText = when (state) {
-        AskPermissionState.Initial -> "OV Fiets locaties in je buurt"
+        AskPermissionState.Initial -> "OV-fiets locaties in je buurt"
         AskPermissionState.Denied -> "Geef toestemming"
         AskPermissionState.DeniedPermanently -> "Naar de app instellingen"
     }
