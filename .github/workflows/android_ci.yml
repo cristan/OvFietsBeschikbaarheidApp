@@ -18,4 +18,4 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
       - name: Run Unit Tests
-        run: ./gradlew test
+        run: ./gradlew testDebugUnitTest
