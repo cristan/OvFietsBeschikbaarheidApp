@@ -454,7 +454,7 @@ fun DetailsPreview() {
         directions,
         locationModel,
         LatLng(52.15446, 5.37339),
-        "Amsterdam Zuid",
+        "Amersfoort",
         listOf(
             TestData.testLocationOverviewModel
         ),
