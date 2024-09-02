@@ -13,7 +13,7 @@ android {
         applicationId = "nl.ovfietsbeschikbaarheid"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
 
         // Only include resources for supported languages
