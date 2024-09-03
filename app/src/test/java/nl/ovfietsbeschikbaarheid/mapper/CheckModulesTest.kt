@@ -1,4 +1,4 @@
-package nl.ovfietsbeschikbaarheid
+package nl.ovfietsbeschikbaarheid.mapper
 
 import android.content.Context
 import nl.ovfietsbeschikbaarheid.di.appModule
