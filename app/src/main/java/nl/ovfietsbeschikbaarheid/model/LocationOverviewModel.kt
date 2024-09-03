@@ -5,8 +5,6 @@ data class LocationOverviewModel(
     val uri: String,
     val locationCode: String,
     val stationCode: String,
-    val rentalBikesAvailable: Int?,
-    val open: Boolean,
     val latitude: Double,
     val longitude: Double,
 )

@@ -1,11 +1,10 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
+import dev.jordond.compass.Coordinates
 import nl.ovfietsbeschikbaarheid.dto.LocationsDTO
-import nl.ovfietsbeschikbaarheid.dto.OpenDTO
 import nl.ovfietsbeschikbaarheid.ext.distanceTo
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
-import dev.jordond.compass.Coordinates
 import java.text.DecimalFormat
 import kotlin.math.roundToInt
 
@@ -32,10 +31,8 @@ object LocationsMapper {
                 uri = toMap.link.uri,
                 locationCode = toMap.extra.locationCode,
                 stationCode = toMap.stationCode,
-                rentalBikesAvailable = toMap.extra.rentalBikes,
                 latitude = toMap.lat,
                 longitude = toMap.lng,
-                open = (toMap.open == OpenDTO.Yes || toMap.open == OpenDTO.Unknown)
             )
         }.sortedBy { it.title }
     }

@@ -390,11 +390,9 @@ fun SearchResultsPreview() {
     val locations = listOf(
         TestData.testLocationOverviewModel.copy(
             title = "Amsterdam Zuid Mahlerplein",
-            rentalBikesAvailable = 49
         ),
         TestData.testLocationOverviewModel.copy(
             title = "Amsterdam Zuid Zuidplein",
-            rentalBikesAvailable = 148
         ),
     )
     TestHomeView("Amsterdam Zuid", HomeContent.SearchTermContent(locations, "Amsterdam Zuid", null))
@@ -406,11 +404,9 @@ fun SearchResultsLoadingNearbyPreview() {
     val locations = listOf(
         TestData.testLocationOverviewModel.copy(
             title = "Amsterdam Zuid Mahlerplein",
-            rentalBikesAvailable = 49
         ),
         TestData.testLocationOverviewModel.copy(
             title = "Amsterdam Zuid Zuidplein",
-            rentalBikesAvailable = 148
         ),
     )
     TestHomeView("Amsterdam Zuid", HomeContent.SearchTermContent(locations, "Amsterdam Zuid", null))
@@ -422,11 +418,9 @@ fun SearchResultsNearbyPreview() {
     val locations = listOf(
         TestData.testLocationOverviewModel.copy(
             title = "Amsterdam Zuid Mahlerplein",
-            rentalBikesAvailable = 49
         ),
         TestData.testLocationOverviewModel.copy(
             title = "Amsterdam Zuid Zuidplein",
-            rentalBikesAvailable = 148
         ),
     )
     val gpsLocations = listOf(
@@ -434,14 +428,12 @@ fun SearchResultsNearbyPreview() {
             "800 m",
             TestData.testLocationOverviewModel.copy(
                 title = "Amsterdam Zuid Mahlerplein",
-                rentalBikesAvailable = 49
             )
         ),
         LocationOverviewWithDistanceModel(
             "1,1 km",
             TestData.testLocationOverviewModel.copy(
                 title = "Amsterdam Zuid Zuidplein",
-                rentalBikesAvailable = 148
             )
         ),
     )
@@ -492,14 +484,12 @@ fun GpsResultsPreview() {
             "800 m",
             TestData.testLocationOverviewModel.copy(
                 title = "Amsterdam Zuid Mahlerplein",
-                rentalBikesAvailable = 49
             )
         ),
         LocationOverviewWithDistanceModel(
             "1,1 km",
             TestData.testLocationOverviewModel.copy(
                 title = "Amsterdam Zuid Zuidplein",
-                rentalBikesAvailable = 148
             )
         ),
     )
