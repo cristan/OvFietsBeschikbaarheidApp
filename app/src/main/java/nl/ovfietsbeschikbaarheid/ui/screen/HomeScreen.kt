@@ -324,7 +324,7 @@ private fun SearchField(
         onValueChange = {
             onSearchTermChanged(it)
         },
-        label = { Text("Zoekterm") },
+        label = { Text("Locatie") },
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp),
