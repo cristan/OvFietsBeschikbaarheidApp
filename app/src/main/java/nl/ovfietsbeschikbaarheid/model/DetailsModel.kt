@@ -13,6 +13,7 @@ data class DetailsModel(
     val capacity: Int,
     val serviceType: ServiceType?,
     val about: String?,
+    val disruptions: String?,
     val directions: String?,
     val location: LocationModel?,
     val coordinates: LatLng,

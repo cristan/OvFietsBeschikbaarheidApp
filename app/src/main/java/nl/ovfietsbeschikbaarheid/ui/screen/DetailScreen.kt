@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -180,6 +181,10 @@ private fun ActualDetails(
         Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
             MainInfo(details)
 
+            details?.disruptions?.let {
+                Disruptions(it)
+            }
+
             Location(details, onLocationClicked)
 
             ExtraInfo(details)
@@ -250,6 +255,23 @@ private fun MainInfo(details: DetailsModel) {
                     OpenState.Open247 -> Text(text = "24/7 open")
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun Disruptions(disruptions: String) {
+    Card(
+        modifier = Modifier.padding(top = 16.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 2.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = Red50,
+        ),
+    ) {
+        Column(Modifier.padding(16.dp)) {
+            Text(disruptions, color = Color.White)
         }
     }
 }
@@ -451,6 +473,7 @@ fun DetailsPreview() {
         105,
         ServiceType.Sleutelautomaat,
         about,
+        "Helaas kunt u hier op dit moment geen OV-fiets huren. Onze excuses voor dit ongemak. Raadpleeg de NS Reisplanner app of website (ns.nl/ov-fiets) voor de dichtstbijzijnde OV-fiets verhuurlocatie.",
         directions,
         locationModel,
         LatLng(52.15446, 5.37339),

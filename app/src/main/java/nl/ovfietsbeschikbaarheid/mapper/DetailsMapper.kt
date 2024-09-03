@@ -31,6 +31,7 @@ object DetailsMapper {
         val about = payload.infoImages.find { it.title == "Bijzonderheden" }?.body?.replace(newLinesAtEnd, "")
         // Filled in example Leiden Centraal, Centrumzijde
         val openingHoursInfo = payload.infoImages.find { it.title == "Info openingstijden" }?.body
+        val disruptions = payload.infoImages.find { it.title == "Storing" }?.body
 
         val location =
             if (payload.city == "" || payload.city == null || payload.street == null || payload.houseNumber == null || payload.postalCode == null) {
@@ -100,6 +101,7 @@ object DetailsMapper {
             serviceType = serviceType,
             directions = if (directions != "") directions else null,
             about = about,
+            disruptions = "Helaas kunt u hier op dit moment geen OV-fiets huren. Onze excuses voor dit ongemak. Raadpleeg de NS Reisplanner app of website (ns.nl/ov-fiets) voor de dichtstbijzijnde OV-fiets verhuurlocatie.",
             location = location,
             coordinates = LatLng(payload.lat, payload.lng),
             stationName = allStations[payload.stationCode],
