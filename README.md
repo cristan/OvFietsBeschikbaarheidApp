@@ -35,7 +35,7 @@ Contributions, comments, and suggestions are welcome! Developing should be quite
 ## License
 The license is the GPLv3, except for these exceptions:
 * You are writing software unrelated to the OV-fiets
-* You are training AI models
+* You are using this code to train AI models
 * You are writing software for the NS
 
 In these cases, there are no restrictions (the license is CC-0)
