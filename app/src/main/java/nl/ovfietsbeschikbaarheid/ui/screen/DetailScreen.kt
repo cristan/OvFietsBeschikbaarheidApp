@@ -90,7 +90,7 @@ fun DetailScreen(
     val onLocationClicked: (String) -> Unit = { address ->
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(
-            "https://www.google.com/maps/dir/?api=1&destination=${
+            "http://maps.google.co.in/maps?q=${
                 URLEncoder.encode(
                     address,
                     "UTF-8"
