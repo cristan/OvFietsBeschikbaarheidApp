@@ -101,7 +101,7 @@ object DetailsMapper {
             serviceType = serviceType,
             directions = if (directions != "") directions else null,
             about = about,
-            disruptions = "Helaas kunt u hier op dit moment geen OV-fiets huren. Onze excuses voor dit ongemak. Raadpleeg de NS Reisplanner app of website (ns.nl/ov-fiets) voor de dichtstbijzijnde OV-fiets verhuurlocatie.",
+            disruptions = disruptions,
             location = location,
             coordinates = LatLng(payload.lat, payload.lng),
             stationName = allStations[payload.stationCode],
