@@ -181,7 +181,7 @@ private fun ActualDetails(
         Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
             MainInfo(details)
 
-            details?.disruptions?.let {
+            details.disruptions?.let {
                 Disruptions(it)
             }
 
