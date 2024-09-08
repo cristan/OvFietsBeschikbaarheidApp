@@ -27,7 +27,7 @@ object LocationsMapper {
         return locations.map { toMap ->
             val description = if (toMap.description == "s-Hertogenbosch") "'s-Hertogenbosch" else toMap.description
             LocationOverviewModel(
-                title = description.trim(),
+                title = description.trim().replace("P + R Utrecht Science Park (De Uithof)", "Utrecht P+R Science Park (De Uithof)"),
                 uri = toMap.link.uri,
                 locationCode = toMap.extra.locationCode,
                 stationCode = toMap.stationCode,
