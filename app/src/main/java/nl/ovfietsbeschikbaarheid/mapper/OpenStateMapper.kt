@@ -66,7 +66,7 @@ object OpenStateMapper {
         if (todayOpen != null) {
             return OpenState.Closed(openDay = null, todayOpen.startTime)
         }
-        val nextDayInWeek = (today..7).firstNotNullOfOrNull { day ->
+        val nextDayInWeek = (today + 1..7).firstNotNullOfOrNull { day ->
             openingHours.find { it.dayOfWeek == day }
         }
         val monday = openingHours.find { it.dayOfWeek == 1 }

@@ -69,7 +69,7 @@ class OpenStateMapperTest {
     }
 
     @Test
-    fun `return closed when closed for a few days`() {
+    fun `return closed when closed for a few days - 1`() {
         // Best: open only 5 days a week and longer open on Friday
         val openingHours = listOf(
             OpeningHours(1, "06:00", "20:15", false),
@@ -80,6 +80,22 @@ class OpenStateMapperTest {
         )
 
         val saturdayAt5oClock = LocalDateTime.of(2024, Month.JULY, 6, 5, 0)
+
+        OpenStateMapper.getOpenState(openingHours, saturdayAt5oClock) shouldBeEqualTo OpenState.Closed("maandag", "06:00")
+    }
+
+    @Test
+    fun `return closed when closed for a few days - 2`() {
+        // Best: open only 5 days a week and longer open on Friday
+        val openingHours = listOf(
+            OpeningHours(1, "06:00", "20:15", false),
+            OpeningHours(2, "06:00", "20:15", false),
+            OpeningHours(3, "06:00", "20:15", false),
+            OpeningHours(4, "06:00", "20:15", false),
+            OpeningHours(5, "06:00", "21:45", false),
+        )
+
+        val saturdayAt5oClock = LocalDateTime.of(2024, Month.JULY, 5, 22, 0)
 
         OpenStateMapper.getOpenState(openingHours, saturdayAt5oClock) shouldBeEqualTo OpenState.Closed("maandag", "06:00")
     }
