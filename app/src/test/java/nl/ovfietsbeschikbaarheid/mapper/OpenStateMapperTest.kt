@@ -102,6 +102,10 @@ class OpenStateMapperTest {
 
         val wednesdayDuringTheDay = LocalDateTime.of(2024, Month.JULY, 3, 14, 0)
         OpenStateMapper.getOpenState(openingHours, wednesdayDuringTheDay) shouldBeEqualTo OpenState.Open("24:00")
+
+        // A case which isn't great yet, is a day like monday here. The app will say the station will be open until 24:00,
+        // but it will be open until day 4 at 07:00 hours.
+        // This is the only place where something like this happens, so I've decided I don't care.
     }
 
     @Test

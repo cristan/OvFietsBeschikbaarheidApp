@@ -50,6 +50,7 @@ object OpenStateMapper {
             }
         }
         if (todayOpeningHours != null) {
+            // Determine when it closes
             val endTime = if(todayOpeningHours.endTime == "24:00") LocalTime.MAX else LocalTime.parse(todayOpeningHours.endTime)
             val minutesUntilClosing = if (todayOpeningHours.closesNextDay) {
                 // Until the end of the day + the hours still open after 24:00 hours
