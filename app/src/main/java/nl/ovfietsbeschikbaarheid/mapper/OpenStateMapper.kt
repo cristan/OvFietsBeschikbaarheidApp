@@ -9,6 +9,7 @@ import java.util.Locale
 
 object OpenStateMapper {
     fun getOpenState(openingHours: List<OpeningHours>, dateTime: LocalDateTime): OpenState {
+        // Check for open 24/7
         if (
             openingHours.all { it.startTime == "00:00" && it.endTime == "24:00" } ||
             openingHours.all { it.startTime == "00:00" && it.endTime == "00:01" } ||
@@ -16,9 +17,11 @@ object OpenStateMapper {
         ) {
             return OpenState.Open247
         }
+
         // Monday is 1, Sunday is 7, same as what is returned from the API
         val today = dateTime.dayOfWeek.value
 
+        // Find the opening hours of yesterday in case it's still open
         val yesterdayOpeningHours = openingHours.find {
             val dayYesterday = if (today == 1) 7 else today - 1
             if (it.dayOfWeek == dayYesterday && it.closesNextDay && it.endTime != "24:00") {
@@ -36,6 +39,7 @@ object OpenStateMapper {
             }
         }
 
+        // Check if it's open now
         val todayOpeningHours = openingHours.find {
             if (it.dayOfWeek == today) {
                 val afterStartTime = it.startTime == "00:00" || dateTime.toLocalTime() >= LocalTime.parse(it.startTime)
@@ -60,12 +64,15 @@ object OpenStateMapper {
             }
         }
 
+        // Check if it will open today
         val todayOpen = openingHours.find {
             it.dayOfWeek == today && dateTime.toLocalTime() < LocalTime.parse(it.startTime)
         }
         if (todayOpen != null) {
             return OpenState.Closed(openDay = null, todayOpen.startTime)
         }
+
+        // It isn't open and won't open today as well. Find when the next time is that it opens.
         val nextDayInWeek = (today + 1..7).firstNotNullOfOrNull { day ->
             openingHours.find { it.dayOfWeek == day }
         }
