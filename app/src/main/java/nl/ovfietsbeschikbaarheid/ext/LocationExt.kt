@@ -1,13 +1,15 @@
 package nl.ovfietsbeschikbaarheid.ext
 
-import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import dev.jordond.compass.Coordinates
+import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
 fun LocationOverviewModel.distanceTo(coordinates: Coordinates) = getDistanceFromLatLon(latitude, longitude, coordinates.latitude, coordinates.longitude)
+
+fun Coordinates.isInTheNetherlands() = latitude in 50.803721015..53.5104033474 && longitude in 3.31497114423..7.09205325687
 
 /**
  * Returns the distance between the 2 coordinates in meters

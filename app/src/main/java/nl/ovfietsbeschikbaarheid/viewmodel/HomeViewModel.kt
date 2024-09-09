@@ -4,11 +4,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
-import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
-import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
-import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
-import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import dev.jordond.compass.geocoder.Geocoder
 import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.geolocation.GeolocatorResult
@@ -17,6 +12,12 @@ import dev.jordond.compass.permissions.LocationPermissionController
 import dev.jordond.compass.permissions.mobile.openSettings
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import nl.ovfietsbeschikbaarheid.ext.isInTheNetherlands
+import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
+import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
+import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
+import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
+import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import timber.log.Timber
 
 class HomeViewModel(
@@ -127,10 +128,10 @@ class HomeViewModel(
             return null
         }
 
-        val coordinates = geocoder.forward(searchTerm)
-        val foundCoordinates = coordinates.getOrNull()?.get(0)
+        val coordinates = geocoder.forward(searchTerm).getOrNull()
 
-        return if (foundCoordinates != null) {
+        return if (coordinates != null) {
+            val foundCoordinates = coordinates.find { it.isInTheNetherlands() } ?: coordinates[0]
             LocationsMapper.withDistance(overviewRepository.getAllLocations(), foundCoordinates)
         } else {
             null
