@@ -27,7 +27,7 @@ object LocationsCrawler {
 
     @JvmStatic
     fun main(args: Array<String>): Unit = runBlocking {
-        val loaded = httpClient.get("http://fiets.openov.nl/locations.json").body<LocationsDTO>()
+        val loaded = httpClient.get("http://fiets.openov.nl/locaties.json").body<LocationsDTO>()
         val asJson = json.encodeToString(loaded)
         val file = File("app/src/main/res/raw/locations.json")
         file.writeText(asJson)
