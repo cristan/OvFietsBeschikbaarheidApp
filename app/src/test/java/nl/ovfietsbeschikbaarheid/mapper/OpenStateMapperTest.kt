@@ -69,7 +69,7 @@ class OpenStateMapperTest {
     }
 
     @Test
-    fun `return closed when closed for a few days - 1`() {
+    fun `return closed when closed for a few days`() {
         // Best: open only 5 days a week and longer open on Friday
         val openingHours = listOf(
             OpeningHours(1, "06:00", "20:15", false),
@@ -80,24 +80,28 @@ class OpenStateMapperTest {
         )
 
         val saturdayAt5oClock = LocalDateTime.of(2024, Month.JULY, 6, 5, 0)
-
         OpenStateMapper.getOpenState(openingHours, saturdayAt5oClock) shouldBeEqualTo OpenState.Closed("maandag", "06:00")
+
+        val fridayAfterClosing = LocalDateTime.of(2024, Month.JULY, 5, 22, 0)
+        OpenStateMapper.getOpenState(openingHours, fridayAfterClosing) shouldBeEqualTo OpenState.Closed("maandag", "06:00")
     }
 
     @Test
-    fun `return closed when closed for a few days - 2`() {
-        // Best: open only 5 days a week and longer open on Friday
+    fun `handle almost 247`() {
+        // P + R Utrecht Science Park (De Uithof)
+        // This one is open 24/7 except for 1 day. That's probably incorrect, but the app should still be able to handle it
         val openingHours = listOf(
-            OpeningHours(1, "06:00", "20:15", false),
-            OpeningHours(2, "06:00", "20:15", false),
-            OpeningHours(3, "06:00", "20:15", false),
-            OpeningHours(4, "06:00", "20:15", false),
-            OpeningHours(5, "06:00", "21:45", false),
+            OpeningHours(1, "00:00", "24:00", true),
+            OpeningHours(2, "00:00", "24:00", true),
+            OpeningHours(3, "00:00", "24:00", false),
+            OpeningHours(4, "07:00", "24:00", true),
+            OpeningHours(5, "00:00", "24:00", true),
+            OpeningHours(6, "00:00", "24:00", true),
+            OpeningHours(7, "00:00", "24:00", true),
         )
 
-        val saturdayAt5oClock = LocalDateTime.of(2024, Month.JULY, 5, 22, 0)
-
-        OpenStateMapper.getOpenState(openingHours, saturdayAt5oClock) shouldBeEqualTo OpenState.Closed("maandag", "06:00")
+        val wednesdayDuringTheDay = LocalDateTime.of(2024, Month.JULY, 3, 14, 0)
+        OpenStateMapper.getOpenState(openingHours, wednesdayDuringTheDay) shouldBeEqualTo OpenState.Open("24:00")
     }
 
     @Test

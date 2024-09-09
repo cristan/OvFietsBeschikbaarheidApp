@@ -21,7 +21,7 @@ object OpenStateMapper {
 
         val yesterdayOpeningHours = openingHours.find {
             val dayYesterday = if (today == 1) 7 else today - 1
-            if (it.dayOfWeek == dayYesterday && it.closesNextDay) {
+            if (it.dayOfWeek == dayYesterday && it.closesNextDay && it.endTime != "24:00") {
                 dateTime.toLocalTime() < LocalTime.parse(it.endTime)
             } else {
                 false
