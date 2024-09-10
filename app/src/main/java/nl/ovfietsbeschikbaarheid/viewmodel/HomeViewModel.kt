@@ -106,8 +106,10 @@ class HomeViewModel(
             val filteredLocations = allLocations.filter { it.title.contains(searchTerm, ignoreCase = true) }
             val currentContent = _content.value
             if (currentContent is HomeContent.SearchTermContent) {
-                // Update the search results right away, but load the nearby locations in another thread to avoid flicker
+                // Update the search results right away, but keep the nearby locations and update them in another thread to avoid flicker
                 _content.value = currentContent.copy(locations = filteredLocations)
+            } else {
+                _content.value = HomeContent.SearchTermContent(filteredLocations, searchTerm, nearbyLocations = null)
             }
 
             geoCoderJob?.cancel()
