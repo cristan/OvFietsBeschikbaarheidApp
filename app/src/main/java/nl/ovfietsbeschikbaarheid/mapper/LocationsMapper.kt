@@ -24,8 +24,14 @@ object LocationsMapper {
         val locations = locationsDTO.locaties.values
             .filter { !nonExistingLocations.contains(it.extra.locationCode) }
 
+        val replacements = hashMapOf(
+            Pair("s-Hertogenbosch", "'s-Hertogenbosch"),
+            Pair("P + R Utrecht Science Park (De Uithof)", "Utrecht P+R Science Park (De Uithof)"),
+            Pair("Delft, Fietsenstalling", "Delft"),
+        )
+
         return locations.map { toMap ->
-            val description = if (toMap.description == "s-Hertogenbosch") "'s-Hertogenbosch" else toMap.description
+            val description = replacements[toMap.description] ?: toMap.description
             LocationOverviewModel(
                 title = description.trim().replace("P + R Utrecht Science Park (De Uithof)", "Utrecht P+R Science Park (De Uithof)"),
                 uri = toMap.link.uri,
