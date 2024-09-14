@@ -17,9 +17,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.ext.withStyledLink
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
@@ -48,11 +50,11 @@ private fun AboutView(
                         navigationIconContentColor = Yellow50
                     ),
                     title = {
-                        Text("Info")
+                        Text(stringResource(R.string.about_title))
                     },
                     navigationIcon = {
                         IconButton(onClick = onBackClicked) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Terug")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.content_description_back))
                         }
                     },
                 )
@@ -65,21 +67,21 @@ private fun AboutView(
                     .padding(20.dp)
             ) {
                 Text(
-                    text = "Over de OV-fiets",
+                    text = stringResource(R.string.about_ov_fiets_title),
                     style = MaterialTheme.typography.headlineLarge,
                 )
 
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
                     text = buildAnnotatedString {
-                        append("Met je OV-chipkaart kun je een OV-fiets huren. Je hebt hiervoor een abonnement nodig dat je gratis online kunt afsluiten. Meer informatie vind je op ")
+                        append(stringResource(R.string.about_ov_fiets_text_1))
                         withStyledLink(text = "ns.nl/ov-fiets", url = "https://ns.nl/ov-fiets")
-                        append(".")
+                        append(stringResource(R.string.about_ov_fiets_text_2))
                     }
                 )
 
                 Text(
-                    text = "Over deze app",
+                    text = stringResource(R.string.about_app_title),
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier.padding(top = 20.dp)
                 )
@@ -88,35 +90,35 @@ private fun AboutView(
                     text = buildAnnotatedString {
                         append("Deze app is open source! Bekijk de broncode op ")
                         withStyledLink(text = "github.com/cristan/OvFietsBeschikbaarheidApp", url = "https://github.com/cristan/OvFietsBeschikbaarheidApp")
-                        append(". De app is niet gelieerd aan de NS (de exploitant van de OV-fiets).")
+                        append(stringResource(R.string.about_app_text_2))
                     }
                 )
                 Text(
-                    text = "Credits",
+                    text = stringResource(R.string.about_credits_title),
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier.padding(top = 20.dp)
                 )
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
-                    text = "De data wordt geleverd door OpenOV, met de NS als uiteindelijke bron."
+                    text = stringResource(R.string.about_credits_text_1)
                 )
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
                     text = buildAnnotatedString {
-                        append("Het totale aantal fietsen per locatie komt van ")
+                        append(stringResource(R.string.about_credits_text_2))
                         withStyledLink(text = "ovfietsbeschikbaar.nl", url = "https://ovfietsbeschikbaar.nl")
-                        append(".")
+                        append(stringResource(R.string.about_credits_text_3))
                     }
                 )
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
                     text = buildAnnotatedString {
-                        append("Het kaarticoon is gemaakt door ")
+                        append(stringResource(R.string.about_credits_text_4))
                         withStyledLink(
-                            text = "brgfx op Freepik",
+                            text = stringResource(R.string.about_credits_text_5),
                             url = "https://www.freepik.com/free-vector/map-white-background_4485469.htm"
                         )
-                        append(".")
+                        append(stringResource(R.string.about_credits_text_6))
                     }
                 )
             }

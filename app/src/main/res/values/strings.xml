@@ -1,3 +1,69 @@
 <resources>
     <string name="app_name">OV-fiets Beschikbaarheid</string>
+
+    <string name="content_description_back">Terug</string>
+    <string name="content_description_clear_location">Locatie opschonen</string>
+    <string name="content_description_navigate">Navigeer</string>
+
+    <string name="full_page_error_title">Ophalen gegevens mislukt</string>
+    <string name="full_page_error_text">Controleer je verbinding en probeer opnieuw.</string>
+    <string name="full_page_error_retry">Probeer opnieuw</string>
+
+    <string name="about_title">Info</string>
+    <string name="about_ov_fiets_title">Over de OV-fiets</string>
+    <string name="about_ov_fiets_text_1">Met je OV-chipkaart kun je een OV-fiets huren. Je hebt hiervoor een abonnement nodig dat je gratis online kunt afsluiten. Meer informatie vind je op </string>
+    <string name="about_ov_fiets_text_2">.</string>
+    <string name="about_app_title">Over deze app</string>
+    <string name="about_app_text_1">Deze app is open source! Bekijk de broncode op </string>
+    <string name="about_app_text_2">. De app is niet gelieerd aan de NS (de exploitant van de OV-fiets).</string>
+    <string name="about_credits_title">Credits</string>
+    <string name="about_credits_text_1">De data wordt geleverd door OpenOV, met de NS als uiteindelijke bron.</string>
+    <string name="about_credits_text_2">Het totale aantal fietsen per locatie komt van </string>
+    <string name="about_credits_text_3">.</string>
+    <string name="about_credits_text_4">Het kaarticoon is gemaakt door </string>
+    <string name="about_credits_text_5">brgfx op Freepik</string>
+    <string name="about_credits_text_6">.</string>
+
+    <string name="gps_rationale_initial_button">OV-fiets locaties in je buurt</string>
+    <string name="gps_rationale_denied_rationale">Toestemming is nodig om OV-fiets locaties in de buurt te tonen</string>
+    <string name="gps_rationale_denied_button">Geef toestemming</string>
+    <string name="gps_rationale_denied_permanently_rationale">Toestemming is nodig om OV-fiets locaties in de buurt te tonen. Geef deze in de app instellingen.</string>
+    <string name="gps_rationale_denied_permanently_button">Naar de app instellingen</string>
+    <string name="gps_off_rationale">GPS is nodig om OV-fiets locaties in de buurt te tonen</string>
+    <string name="gps_off_button">Zet GPS aan</string>
+
+    <string name="gps_loading">GPS aan het laden.</string>
+
+    <string name="home_nearby">In de buurt</string>
+
+    <string name="home_no_search_results_for">Geen zoekresultaten voor \"%1$s\"</string>
+    <string name="home_search_results_for">In de buurt van \"%1$s\"</string>
+
+    <string name="details_amount_available">OV-fietsen beschikbaar</string>
+
+    <string name="details_capacity">Max aantal: %1$d</string>
+
+    <string name="open_state_closed">Gesloten</string>
+    <string name="open_state_opens_today_at">• Gaat open om %1$s</string>
+    <string name="open_state_opens_later_at">• Gaat %1$s open om %2$s</string>
+    <string name="open_state_closing_soon">Sluit snel</string>
+    <string name="open_state_closes_at">• Sluit om %1$s</string>
+    <string name="open_until">Open tot %1$s</string>
+    <string name="open_state_open_247">24/7 open</string>
+    <string name="opening_hours_title">Openingstijden</string>
+
+    <string name="service_type_manned">Bemenst</string>
+    <string name="service_type_lockers">Kluizen</string>
+    <string name="service_type_box">Box</string>
+    <string name="service_type_key_box">Sleutelautomaat</string>
+    <string name="service_type_key_selfservice">Zelfservice</string>
+
+    <string name="day_1">Maandag</string>
+    <string name="day_2">Dinsdag</string>
+    <string name="day_3">Woensdag</string>
+    <string name="day_4">Donderdag</string>
+    <string name="day_5">Donderdag</string>
+    <string name="day_6">Zaterdag</string>
+    <string name="day_7">Zondag</string>
+    <string name="day_tomorrow">morgen</string>
 </resources>

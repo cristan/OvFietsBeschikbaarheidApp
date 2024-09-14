@@ -1,6 +1,7 @@
 package nl.ovfietsbeschikbaarheid.model
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.google.android.gms.maps.model.LatLng
 import nl.ovfietsbeschikbaarheid.R
 
@@ -29,7 +30,8 @@ data class LocationModel(
 )
 
 data class OpeningHoursModel(
-    val dayOfWeek: String,
+    @StringRes
+    val dayOfWeek: Int,
     val startTime: String,
     val endTime: String,
 )
@@ -38,16 +40,16 @@ sealed class OpenState {
     data object Open247 : OpenState()
     data class Open(val closingTime: String) : OpenState()
     data class Closing(val closingTime: String) : OpenState()
-    data class Closed(val openDay: String?, val openTime: String) : OpenState()
+    data class Closed(@StringRes val openDay: Int?, val openTime: String) : OpenState()
 }
 
-enum class ServiceType(val text: String, @DrawableRes val icon: Int) {
-    Bemenst("Bemenst", R.drawable.baseline_person_24),
+enum class ServiceType(@StringRes val textRes: Int, @DrawableRes val icon: Int) {
+    Bemenst(R.string.service_type_manned, R.drawable.baseline_person_24),
     // See: https://www.ns.nl/fietsenstallingen/abonnementen/fietskluizen.html
-    Kluizen("Kluizen", R.drawable.fietskluizen_icon),
+    Kluizen(R.string.service_type_lockers, R.drawable.fietskluizen_icon),
     // No idea what this is, but there are only 2, so it doesn't matter that much
-    Box("Box", R.drawable.fietskluizen_icon),
-    Sleutelautomaat("Sleutelautomaat", R.drawable.baseline_key_24),
+    Box(R.string.service_type_box, R.drawable.fietskluizen_icon),
+    Sleutelautomaat(R.string.service_type_key_box, R.drawable.baseline_key_24),
     // Example: https://www.debeeldunie.nl/stock-photo-nederland-cuijk-14-07-2015-fietsenstalling-voor-ov-fietsen-op-reportage-image00157529.html
-    Zelfservice("Zelfservice", R.drawable.garage_home_24dp),
+    Zelfservice(R.string.service_type_key_selfservice, R.drawable.garage_home_24dp),
 }

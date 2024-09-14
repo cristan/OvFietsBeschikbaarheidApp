@@ -1,5 +1,6 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
+import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.dto.OpeningHours
 import nl.ovfietsbeschikbaarheid.model.OpenState
 import java.time.LocalDateTime
@@ -81,9 +82,9 @@ object OpenStateMapper {
         val nextDayOpen = nextDayInWeek ?: monday !!
         val opensTodayOrTomorrow = (today == 7 && nextDayOpen.dayOfWeek == 1) || (nextDayOpen.dayOfWeek == today) || (nextDayOpen.dayOfWeek - today == 1)
         return if (opensTodayOrTomorrow) {
-            OpenState.Closed(openDay = "morgen", nextDayOpen.startTime)
+            OpenState.Closed(openDay = R.string.day_tomorrow, nextDayOpen.startTime)
         } else {
-            OpenState.Closed(openDay = DetailsMapper.getDayName(nextDayOpen.dayOfWeek).lowercase(Locale.UK), nextDayOpen.startTime)
+            OpenState.Closed(openDay = DetailsMapper.getDayName(nextDayOpen.dayOfWeek), nextDayOpen.startTime)
         }
     }
 }

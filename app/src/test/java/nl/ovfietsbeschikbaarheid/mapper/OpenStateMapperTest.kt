@@ -1,5 +1,6 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
+import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.dto.OpeningHours
 import nl.ovfietsbeschikbaarheid.model.OpenState
 import org.amshove.kluent.shouldBeEqualTo
@@ -65,7 +66,7 @@ class OpenStateMapperTest {
 
         val thursdayAt18Past20 = LocalDateTime.of(2024, Month.JULY, 4, 20, 18)
 
-        OpenStateMapper.getOpenState(openingHours, thursdayAt18Past20) shouldBeEqualTo OpenState.Closed("morgen", "06:00")
+        OpenStateMapper.getOpenState(openingHours, thursdayAt18Past20) shouldBeEqualTo OpenState.Closed(R.string.day_tomorrow, "06:00")
     }
 
     @Test
@@ -80,10 +81,10 @@ class OpenStateMapperTest {
         )
 
         val saturdayAt5oClock = LocalDateTime.of(2024, Month.JULY, 6, 5, 0)
-        OpenStateMapper.getOpenState(openingHours, saturdayAt5oClock) shouldBeEqualTo OpenState.Closed("maandag", "06:00")
+        OpenStateMapper.getOpenState(openingHours, saturdayAt5oClock) shouldBeEqualTo OpenState.Closed(R.string.day_1, "06:00")
 
         val fridayAfterClosing = LocalDateTime.of(2024, Month.JULY, 5, 22, 0)
-        OpenStateMapper.getOpenState(openingHours, fridayAfterClosing) shouldBeEqualTo OpenState.Closed("maandag", "06:00")
+        OpenStateMapper.getOpenState(openingHours, fridayAfterClosing) shouldBeEqualTo OpenState.Closed(R.string.day_1, "06:00")
     }
 
     @Test

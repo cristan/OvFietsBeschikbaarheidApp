@@ -119,8 +119,8 @@ private fun HomeView(
 
                     HomeContent.GpsTurnedOff -> {
                         GpsRequestSomething(
-                            "GPS is nodig om OV-fiets locaties in de buurt te tonen",
-                            "Zet GPS aan",
+                            stringResource(R.string.gps_off_rationale),
+                            stringResource(R.string.gps_off_button),
                             false,
                             onTurnOnGpsClicked
                         )
@@ -146,7 +146,7 @@ private fun HomeView(
                                     .width(64.dp)
                                     .padding(16.dp),
                             )
-                            Text("GPS aan het laden.")
+                            Text(stringResource(R.string.gps_loading))
                         }
                     }
 
@@ -156,7 +156,7 @@ private fun HomeView(
 
                     is HomeContent.NoSearchResults -> {
                         Text(
-                            text = "Geen zoekresultaten voor \"${screen.searchTerm}\"",
+                            text = stringResource(R.string.home_no_search_results_for, screen.searchTerm),
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
                     }
@@ -170,7 +170,7 @@ private fun HomeView(
                             }
                             screen.nearbyLocations?.let { nearbyLocations ->
                                 item {
-                                    HorizontalBar("In de buurt van ${screen.searchTerm}")
+                                    HorizontalBar(stringResource(R.string.home_search_results_for, screen.searchTerm))
                                 }
                                 items(nearbyLocations) { location ->
                                     LocationCard(location.location, location.distance) {
@@ -224,7 +224,7 @@ private fun GpsContent(
     ) {
         LazyColumn {
             item {
-                HorizontalBar("In de buurt")
+                HorizontalBar(stringResource(R.string.home_nearby))
             }
             items(gpsContent.locations) { location ->
                 LocationCard(location.location, location.distance) {
@@ -253,14 +253,14 @@ private fun HorizontalBar(text: String) {
 private fun AskForGpsPermission(state: AskPermissionState, onRequestLocationClicked: (AskPermissionState) -> Unit) {
     val rationaleText = when (state) {
         AskPermissionState.Initial -> null
-        AskPermissionState.Denied -> "Toestemming is nodig om OV-fiets locaties in de buurt te tonen"
-        AskPermissionState.DeniedPermanently -> "Toestemming is nodig om OV-fiets locaties in de buurt te tonen. Geef deze in de app instellingen."
+        AskPermissionState.Denied -> stringResource(R.string.gps_rationale_denied_rationale)
+        AskPermissionState.DeniedPermanently -> stringResource(R.string.gps_rationale_denied_permanently_rationale)
     }
 
     val buttonText = when (state) {
-        AskPermissionState.Initial -> "OV-fiets locaties in je buurt"
-        AskPermissionState.Denied -> "Geef toestemming"
-        AskPermissionState.DeniedPermanently -> "Naar de app instellingen"
+        AskPermissionState.Initial -> stringResource(R.string.gps_rationale_initial_button)
+        AskPermissionState.Denied -> stringResource(R.string.gps_rationale_denied_button)
+        AskPermissionState.DeniedPermanently -> stringResource(R.string.gps_rationale_denied_permanently_button)
     }
 
     val showButtonIcon = state == AskPermissionState.Initial
@@ -333,7 +333,7 @@ private fun SearchField(
             if (searchTerm.isNotEmpty()) {
                 Icon(
                     Icons.Default.Clear,
-                    contentDescription = "clear text",
+                    contentDescription = stringResource(R.string.content_description_clear_location),
                     modifier = Modifier
                         .clickable {
                             keyboardController?.hide()
@@ -387,20 +387,6 @@ fun TestHomeView(searchTerm: String, content: HomeContent) {
 @Preview
 @Composable
 fun SearchResultsPreview() {
-    val locations = listOf(
-        TestData.testLocationOverviewModel.copy(
-            title = "Amsterdam Zuid Mahlerplein",
-        ),
-        TestData.testLocationOverviewModel.copy(
-            title = "Amsterdam Zuid Zuidplein",
-        ),
-    )
-    TestHomeView("Amsterdam Zuid", HomeContent.SearchTermContent(locations, "Amsterdam Zuid", null))
-}
-
-@Preview
-@Composable
-fun SearchResultsLoadingNearbyPreview() {
     val locations = listOf(
         TestData.testLocationOverviewModel.copy(
             title = "Amsterdam Zuid Mahlerplein",

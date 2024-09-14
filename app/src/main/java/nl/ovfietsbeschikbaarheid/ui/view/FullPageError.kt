@@ -11,9 +11,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 
 @Composable
@@ -29,7 +31,7 @@ fun FullPageError(
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "Ophalen gegevens mislukt",
+            text = stringResource(R.string.full_page_error_title),
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center
         )
@@ -37,7 +39,7 @@ fun FullPageError(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
-            text = "Controleer je verbinding en probeer opnieuw.",
+            text = stringResource(R.string.full_page_error_text),
             textAlign = TextAlign.Center
         )
         Button(
@@ -47,7 +49,7 @@ fun FullPageError(
             onClick = onRetry
         ) {
             Text(
-                text = "Probeer opnieuw",
+                text = stringResource(R.string.full_page_error_retry),
             )
         }
     }

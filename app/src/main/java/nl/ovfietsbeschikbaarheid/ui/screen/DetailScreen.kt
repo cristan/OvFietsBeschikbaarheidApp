@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -74,6 +75,7 @@ import nl.ovfietsbeschikbaarheid.ui.view.FullPageLoader
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
+import java.util.Locale
 
 @Composable
 fun DetailScreen(
@@ -145,7 +147,7 @@ private fun DetailsView(
                     },
                     navigationIcon = {
                         IconButton(onClick = onBackClicked) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Terug")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.content_description_back))
                         }
                     },
                 )
@@ -203,7 +205,7 @@ private fun ActualDetails(
 @Composable
 private fun MainInfo(details: DetailsModel) {
     OvCard {
-        Text("OV-fietsen beschikbaar")
+        Text(stringResource(R.string.details_amount_available))
         val rentalBikesAvailable = details.rentalBikesAvailable
         val amount = rentalBikesAvailable?.toString() ?: "Onbekend"
         Box(
@@ -235,24 +237,25 @@ private fun MainInfo(details: DetailsModel) {
             Row(Modifier.align(Alignment.End)) {
                 when (openState) {
                     is OpenState.Closed -> {
-                        Text(text = "Gesloten", color = Red50)
+                        Text(text = stringResource(R.string.open_state_closed), color = Red50)
                         if (openState.openDay != null) {
-                            Text(text = " • Gaat ${openState.openDay} open om ${openState.openTime}")
+                            val openDay = stringResource(openState.openDay).lowercase(Locale.UK)
+                            Text(text = " " + stringResource(R.string.open_state_opens_later_at, openDay, openState.openTime))
                         } else {
-                            Text(text = " • Gaat open om ${openState.openTime}")
+                            Text(text = " " + stringResource(R.string.open_state_opens_today_at, openState.openTime))
                         }
                     }
 
                     is OpenState.Closing -> {
-                        Text(text = "Sluit snel", color = Orange50)
-                        Text(" • Sluit om ${openState.closingTime}")
+                        Text(text = stringResource(R.string.open_state_closing_soon), color = Orange50)
+                        Text(" " + stringResource(R.string.open_state_closes_at, openState.closingTime))
                     }
 
                     is OpenState.Open -> {
-                        Text("Open tot ${openState.closingTime}")
+                        Text(stringResource(R.string.open_until, openState.closingTime))
                     }
 
-                    OpenState.Open247 -> Text(text = "24/7 open")
+                    OpenState.Open247 -> Text(stringResource(R.string.open_state_open_247))
                 }
             }
         }
@@ -323,7 +326,7 @@ private fun Location(details: DetailsModel, onNavigateClicked: (String) -> Unit)
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_directions_24),
                     tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = "Navigeer",
+                    contentDescription = stringResource(R.string.content_description_navigate),
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -370,7 +373,7 @@ private fun ExtraInfo(details: DetailsModel) {
                     contentDescription = null,
                     modifier = Modifier.padding(end = 8.dp)
                 )
-                Text(it.text)
+                Text(stringResource(it.textRes))
             }
         }
 
@@ -382,7 +385,7 @@ private fun ExtraInfo(details: DetailsModel) {
                 contentDescription = null,
                 modifier = Modifier.padding(end = 8.dp)
             )
-            Text("Max aantal: ${details.capacity}")
+            Text(stringResource(R.string.details_capacity, details.capacity))
         }
 
         if (details.about != null) {
@@ -409,7 +412,7 @@ private fun ExtraInfo(details: DetailsModel) {
 private fun OpeningHours(details: DetailsModel) {
     OvCard {
         Text(
-            text = "Openingstijden",
+            text = stringResource(R.string.opening_hours_title),
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )
@@ -418,7 +421,7 @@ private fun OpeningHours(details: DetailsModel) {
         }
         details.openingHours.forEach {
             Row(Modifier.fillMaxWidth()) {
-                Text(it.dayOfWeek, Modifier.weight(1f))
+                Text(stringResource(it.dayOfWeek), Modifier.weight(1f))
                 Text("${it.startTime} - ${it.endTime}", Modifier.weight(1f))
             }
         }
@@ -451,7 +454,7 @@ private fun Alternatives(
 @Composable
 fun DetailsPreview() {
     val dayNames =
-        listOf("Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag", "Zondag")
+        listOf(R.string.day_1, R.string.day_2, R.string.day_3, R.string.day_4, R.string.day_5, R.string.day_6, R.string.day_7)
     val openingHours = dayNames.map { day ->
         OpeningHoursModel(day, "04:45", "01:15")
     }

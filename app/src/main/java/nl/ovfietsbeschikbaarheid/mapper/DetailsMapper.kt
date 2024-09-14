@@ -1,6 +1,8 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
+import androidx.annotation.StringRes
 import com.google.android.gms.maps.model.LatLng
+import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.LocationModel
@@ -114,15 +116,16 @@ object DetailsMapper {
         )
     }
 
-    fun getDayName(dayOfWeek: Int): String {
+    @StringRes
+    fun getDayName(dayOfWeek: Int): Int {
         return when (dayOfWeek) {
-            1 -> "Maandag"
-            2 -> "Dinsdag"
-            3 -> "Woensdag"
-            4 -> "Donderdag"
-            5 -> "Vrijdag"
-            6 -> "Zaterdag"
-            7 -> "Zondag"
+            1 -> R.string.day_1
+            2 -> R.string.day_2
+            3 -> R.string.day_3
+            4 -> R.string.day_4
+            5 -> R.string.day_5
+            6 -> R.string.day_6
+            7 -> R.string.day_7
             else -> throw Exception("Unexpected day of week $dayOfWeek")
         }
     }
