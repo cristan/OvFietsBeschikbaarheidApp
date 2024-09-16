@@ -29,7 +29,7 @@ class OpenStateMapperTest {
 
     @Test
     fun `return 247 when open from 00-00 to 23-59`() {
-        // Quite a few, llike Utrecht P+R Westraven
+        // Quite a few, like Utrecht P+R Westraven
         val openingHours = (1..7).map {
             OpeningHours(it, "00:00", "23:59", false)
         }
@@ -165,9 +165,10 @@ class OpenStateMapperTest {
         val friday2359 = LocalDateTime.of(2024, Month.JULY, 5, 23, 58, 30)
         OpenStateMapper.getOpenState(openingHours, friday2359) shouldBeEqualTo OpenState.Open("01:00")
 
-//        val thursday2359 = LocalDateTime.of(2024, Month.JULY, 4, 23, 59, 30)
-//        OpenStateMapper.getOpenState(openingHours, thursday2359) shouldBeEqualTo OpenState.Closing("24:00")
-//        val sunday2359 = LocalDateTime.of(2024, Month.JULY, 7, 23, 59, 30)
-//        OpenStateMapper.getOpenState(openingHours, sunday2359) shouldBeEqualTo OpenState.Closing("24:00")
+        val thursday2359 = LocalDateTime.of(2024, Month.JULY, 4, 23, 59, 30)
+        OpenStateMapper.getOpenState(openingHours, thursday2359) shouldBeEqualTo OpenState.Closing("24:00")
+
+        val sunday2359 = LocalDateTime.of(2024, Month.JULY, 7, 23, 59, 30)
+        OpenStateMapper.getOpenState(openingHours, sunday2359) shouldBeEqualTo OpenState.Closing("24:00")
     }
 }
