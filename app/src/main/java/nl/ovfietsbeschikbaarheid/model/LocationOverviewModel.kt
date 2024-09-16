@@ -7,9 +7,14 @@ data class LocationOverviewModel(
     val stationCode: String,
     val latitude: Double,
     val longitude: Double,
+    val type: LocationType
 )
 
 data class LocationOverviewWithDistanceModel(
     val distance: String,
     val location: LocationOverviewModel
 )
+
+enum class LocationType {
+    Regular, EBike
+}

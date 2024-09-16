@@ -1,6 +1,7 @@
 package nl.ovfietsbeschikbaarheid
 
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
+import nl.ovfietsbeschikbaarheid.model.LocationType
 
 object TestData {
     val testLocationOverviewModel = LocationOverviewModel(
@@ -10,5 +11,6 @@ object TestData {
         "HVS",
         latitude = 52.36599,
         longitude = 6.469563,
+        type = LocationType.Regular
     )
 }

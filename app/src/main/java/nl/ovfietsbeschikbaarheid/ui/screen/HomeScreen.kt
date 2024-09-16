@@ -48,6 +48,7 @@ import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
+import nl.ovfietsbeschikbaarheid.model.LocationType
 import nl.ovfietsbeschikbaarheid.ui.theme.Gray80
 import nl.ovfietsbeschikbaarheid.ui.theme.Indigo05
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
@@ -354,8 +355,9 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
             .padding(16.dp)
     ) {
         // Bike icon at the start
+        val iconRes = if (location.type == LocationType.EBike) R.drawable.baseline_electric_bike_24 else R.drawable.pedal_bike_24px
         Icon(
-            painter = painterResource(id = R.drawable.pedal_bike_24px),
+            painter = painterResource(id = iconRes),
             tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
             contentDescription = null,
             modifier = Modifier.padding(end = 8.dp)
