@@ -102,8 +102,7 @@ class HomeViewModel(
         if (searchTerm.isBlank()) {
             loadLocation()
         } else {
-            val allLocations = overviewRepository.getAllLocations()
-            val filteredLocations = allLocations.filter { it.title.contains(searchTerm, ignoreCase = true) }
+            val filteredLocations = overviewRepository.getLocations(searchTerm)
             val currentContent = _content.value
             if (currentContent is HomeContent.SearchTermContent) {
                 // Update the search results right away, but keep the nearby locations and update them in another thread to avoid flicker

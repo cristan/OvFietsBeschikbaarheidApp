@@ -28,4 +28,8 @@ class OverviewRepository(private val context: Context) {
         }
         return allLocations
     }
+
+    fun getLocations(searchTerm: String): List<LocationOverviewModel> {
+        return getAllLocations().filter { it.title.contains(searchTerm, ignoreCase = true) }
+    }
 }
