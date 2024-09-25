@@ -17,6 +17,7 @@ import java.io.File
 object LocationsCrawler {
     private val json = Json {
         ignoreUnknownKeys = true
+        prettyPrint = true
     }
 
     private val httpClient = HttpClient {
