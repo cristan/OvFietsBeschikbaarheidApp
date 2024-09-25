@@ -38,7 +38,7 @@ data class DetailsPayload(
 
 @Serializable
 data class PayloadExtra(
-    // a string containing an Int. Weirdly nullable (see Raalte)
+    // a string containing an Int. Weirdly nullable (see Delft Zuid)
     val rentalBikes: Int? = null,
 
     // Can be Bemenst, Kluizen, Sleutelautomaat, Box (Enkhuizen) or null (Utrecht Terwijde)

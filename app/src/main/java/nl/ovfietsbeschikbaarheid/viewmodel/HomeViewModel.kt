@@ -4,11 +4,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.jordond.compass.Priority
 import dev.jordond.compass.geocoder.Geocoder
 import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.geolocation.GeolocatorResult
 import dev.jordond.compass.geolocation.hasPermission
 import dev.jordond.compass.permissions.LocationPermissionController
+import dev.jordond.compass.permissions.PermissionState
+import dev.jordond.compass.permissions.mobile
 import dev.jordond.compass.permissions.mobile.openSettings
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -86,10 +89,23 @@ class HomeViewModel(
         if (currentState == AskPermissionState.DeniedPermanently) {
             LocationPermissionController.openSettings()
         } else {
-            // Either the initial state (where we don't know whether permission is denied permanently)
-            // or the denied once state, after which `geolocator.current()` will ask for permission again
-            _content.value = HomeContent.LoadingGpsLocation
-            fetchLocation()
+            viewModelScope.launch {
+                val permissionState: PermissionState = LocationPermissionController.mobile().requirePermissionFor(Priority.Balanced)
+                when (permissionState) {
+                    // Doesn't happen on Android
+                    PermissionState.NotDetermined -> Unit
+                    PermissionState.Denied -> {
+                        _content.value = HomeContent.AskGpsPermission(AskPermissionState.Denied)
+                    }
+                    PermissionState.DeniedForever -> {
+                        _content.value = HomeContent.AskGpsPermission(AskPermissionState.DeniedPermanently)
+                    }
+                    PermissionState.Granted -> {
+                        _content.value = HomeContent.LoadingGpsLocation
+                        fetchLocation()
+                    }
+                }
+            }
         }
     }
 
@@ -148,6 +164,7 @@ class HomeViewModel(
             val state = if (!showRationale) AskPermissionState.Initial else AskPermissionState.Denied
             _content.value = HomeContent.AskGpsPermission(state)
         } else {
+//            TODO? LocationPermissionController.mobile().hasPermission()
             _content.value = HomeContent.LoadingGpsLocation
             fetchLocation()
         }
