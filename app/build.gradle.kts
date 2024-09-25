@@ -66,8 +66,6 @@ dependencies {
 
     implementation(libs.compass.geocoder)
     implementation(libs.compass.geocoder.mobile)
-    implementation(libs.compass.geolocation)
-    implementation(libs.compass.geolocation.mobile)
     implementation(libs.compass.permissions.mobile)
 
     implementation(platform(libs.koin.bom))
@@ -79,6 +77,9 @@ dependencies {
     implementation(libs.ktor.client.serialization.json)
     implementation(libs.ktor.client.contentnegotiation)
     implementation(libs.ktor.client.logging)
+
+    implementation(libs.play.services.location)
+    implementation(libs.play.services.coroutines)
 
     testImplementation(libs.junit)
     testImplementation(libs.koin.test.junit4)

@@ -6,9 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.jordond.compass.Priority
 import dev.jordond.compass.geocoder.Geocoder
-import dev.jordond.compass.geolocation.Geolocator
-import dev.jordond.compass.geolocation.GeolocatorResult
-import dev.jordond.compass.geolocation.hasPermission
 import dev.jordond.compass.permissions.LocationPermissionController
 import dev.jordond.compass.permissions.PermissionState
 import dev.jordond.compass.permissions.mobile
@@ -20,14 +17,15 @@ import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
+import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import timber.log.Timber
 
 class HomeViewModel(
-    private val geolocator: Geolocator,
     private val geocoder: Geocoder,
     private val overviewRepository: OverviewRepository,
-    private val locationPermissionHelper: LocationPermissionHelper
+    private val locationPermissionHelper: LocationPermissionHelper,
+    private val locationLoader: LocationLoader
 ) : ViewModel() {
 
     private val _searchTerm = mutableStateOf("")
@@ -59,7 +57,7 @@ class HomeViewModel(
 
             currentlyShown is HomeContent.AskGpsPermission
                     && currentlyShown.state == AskPermissionState.DeniedPermanently
-                    && geolocator.hasPermission() -> {
+                    && LocationPermissionController.mobile().hasPermission() -> {
                 // The user went to the app settings and granted the location permission manually
                 _content.value = HomeContent.LoadingGpsLocation
                 fetchLocation()
@@ -90,21 +88,25 @@ class HomeViewModel(
             LocationPermissionController.openSettings()
         } else {
             viewModelScope.launch {
-                val permissionState: PermissionState = LocationPermissionController.mobile().requirePermissionFor(Priority.Balanced)
-                when (permissionState) {
-                    // Doesn't happen on Android
-                    PermissionState.NotDetermined -> Unit
-                    PermissionState.Denied -> {
-                        _content.value = HomeContent.AskGpsPermission(AskPermissionState.Denied)
-                    }
-                    PermissionState.DeniedForever -> {
-                        _content.value = HomeContent.AskGpsPermission(AskPermissionState.DeniedPermanently)
-                    }
-                    PermissionState.Granted -> {
-                        _content.value = HomeContent.LoadingGpsLocation
-                        fetchLocation()
-                    }
-                }
+                requestPermission()
+            }
+        }
+    }
+
+    private suspend fun requestPermission() {
+        val permissionState: PermissionState = LocationPermissionController.mobile().requirePermissionFor(Priority.Balanced)
+        when (permissionState) {
+            // Doesn't happen on Android
+            PermissionState.NotDetermined -> Unit
+            PermissionState.Denied -> {
+                _content.value = HomeContent.AskGpsPermission(AskPermissionState.Denied)
+            }
+            PermissionState.DeniedForever -> {
+                _content.value = HomeContent.AskGpsPermission(AskPermissionState.DeniedPermanently)
+            }
+            PermissionState.Granted -> {
+                _content.value = HomeContent.LoadingGpsLocation
+                fetchLocation()
             }
         }
     }
@@ -155,16 +157,17 @@ class HomeViewModel(
         }
     }
 
+    /**
+     * Check for GPS turned on & the correct permission. If yes, load the location, otherwise show the appropriate warning.
+     */
     private fun loadLocation() {
-        // TODO: replace with geolocator.isAvailable() when this is no longer a suspend fun: https://github.com/jordond/compass/issues/101
         if (!locationPermissionHelper.isGpsTurnedOn()) {
             _content.value = HomeContent.GpsTurnedOff
-        } else if (!geolocator.hasPermission()) {
+        } else if (!LocationPermissionController.mobile().hasPermission()) {
             val showRationale = locationPermissionHelper.shouldShowLocationRationale()
             val state = if (!showRationale) AskPermissionState.Initial else AskPermissionState.Denied
             _content.value = HomeContent.AskGpsPermission(state)
         } else {
-//            TODO? LocationPermissionController.mobile().hasPermission()
             _content.value = HomeContent.LoadingGpsLocation
             fetchLocation()
         }
@@ -178,35 +181,15 @@ class HomeViewModel(
         }
         loadLocationJob = viewModelScope.launch {
             Timber.d("fetchLocation: Fetching location")
-            val geolocatorResult = geolocator.current()
-            _content.value = geolocatorResult.toHomeContent()
-        }
-    }
 
-    private fun GeolocatorResult.toHomeContent(): HomeContent {
-        return when (this) {
-            is GeolocatorResult.PermissionDenied -> {
-                val state = if (forever) AskPermissionState.DeniedPermanently else AskPermissionState.Denied
-                return HomeContent.AskGpsPermission(state)
-            }
-
-            is GeolocatorResult.NotSupported -> {
-                return HomeContent.GpsTurnedOff
-            }
-            // Both are unexpected errors which shouldn't happen. Just show the error
-            is GeolocatorResult.PermissionError, is GeolocatorResult.GeolocationFailed -> {
-                return HomeContent.GpsError((this as GeolocatorResult.Error).message)
-            }
-
-            is GeolocatorResult.NotFound -> HomeContent.GpsError("Geen locatie gevonden")
-            is GeolocatorResult.Success -> {
-                val coordinates = data.coordinates
+            val coordinates = locationLoader.loadCurrentCoordinates()
+            if (coordinates == null) {
+                HomeContent.GpsError("Geen locatie gevonden")
+            } else {
                 val locationsWithDistance =
                     LocationsMapper.withDistance(overviewRepository.getAllLocations(), coordinates)
-                return HomeContent.GpsContent(locationsWithDistance)
+                _content.value = HomeContent.GpsContent(locationsWithDistance)
             }
-
-            else -> throw Exception("Unexpected error: $this")
         }
     }
 }
