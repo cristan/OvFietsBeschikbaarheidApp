@@ -6,7 +6,6 @@
 [![Android](https://img.shields.io/badge/Platform-Android-green)](https://developer.android.com/)
 [![Koin](https://img.shields.io/badge/Koin-%20-orange?logo=koin)](https://github.com/InsertKoinIO/koin)
 [![Ktor](https://img.shields.io/badge/Ktor-%20-blue?logo=kotlin)](https://ktor.io/)
-[![Compass](https://img.shields.io/badge/Compass-%20-F5F5F5)](https://github.com/jordond/compass/)
 [![Google Maps](https://img.shields.io/badge/Google%20Maps-%20-blue?logo=google-maps)](https://github.com/googlemaps/android-maps-compose)
 
 This app is designed to find how many OV-fiets bikes are available as quick as possible.
