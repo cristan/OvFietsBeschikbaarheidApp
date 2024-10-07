@@ -11,16 +11,16 @@
 
     <string name="about_title">Info</string>
     <string name="about_ov_fiets_title">Over de OV-fiets</string>
-    <string name="about_ov_fiets_text_1">Met je OV-chipkaart kun je een OV-fiets huren. Je hebt hiervoor een abonnement nodig dat je gratis online kunt afsluiten. Meer informatie vind je op </string>
+    <string name="about_ov_fiets_text_1">Met je OV-chipkaart kun je een OV-fiets huren. Je hebt hiervoor een abonnement nodig dat je gratis online kunt afsluiten. Meer informatie vind je op\u0020</string>
     <string name="about_ov_fiets_text_2">.</string>
     <string name="about_app_title">Over deze app</string>
-    <string name="about_app_text_1">Deze app is open source! Bekijk de broncode op </string>
+    <string name="about_app_text_1">Deze app is open source! Bekijk de broncode op\u0020</string>
     <string name="about_app_text_2">. De app is niet gelieerd aan de NS (de exploitant van de OV-fiets).</string>
     <string name="about_credits_title">Credits</string>
     <string name="about_credits_text_1">De data wordt geleverd door OpenOV, met de NS als uiteindelijke bron.</string>
-    <string name="about_credits_text_2">Het totale aantal fietsen per locatie komt van </string>
+    <string name="about_credits_text_2">Het totale aantal fietsen per locatie komt van\u0020</string>
     <string name="about_credits_text_3">.</string>
-    <string name="about_credits_text_4">Het kaarticoon is gemaakt door </string>
+    <string name="about_credits_text_4">Het kaarticoon is gemaakt door\u0020</string>
     <string name="about_credits_text_5">brgfx op Freepik</string>
     <string name="about_credits_text_6">.</string>
 

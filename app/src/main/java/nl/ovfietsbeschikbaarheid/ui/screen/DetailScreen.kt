@@ -48,8 +48,10 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapColorScheme
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -350,6 +352,7 @@ private fun Location(details: DetailsModel, onNavigateClicked: (String) -> Unit)
             GoogleMap(
                 modifier = Modifier.height(260.dp),
                 cameraPositionState = cameraPositionState,
+                googleMapOptionsFactory = { GoogleMapOptions().mapColorScheme(MapColorScheme.FOLLOW_SYSTEM) }
             ) {
                 Marker(
                     //                    icon = Icons.Filled.,

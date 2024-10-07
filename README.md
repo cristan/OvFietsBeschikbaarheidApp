@@ -11,7 +11,7 @@
 This app is designed to find how many OV-fiets bikes are available as quick as possible.
 
 <div align="center">
-<img src="resources/screenshots/screenshot1.png" alt="Screenshot 1" width="45%"> <img src="resources/screenshots/screenshot2.png" alt="Screenshot 2" width="45%">
+<img src="resources/screenshots/phone/screenshot1.png" alt="Screenshot 1" width="45%"> <img src="resources/screenshots/phone/screenshot2.png" alt="Screenshot 2" width="45%">
 </div>
 
 ## Features
