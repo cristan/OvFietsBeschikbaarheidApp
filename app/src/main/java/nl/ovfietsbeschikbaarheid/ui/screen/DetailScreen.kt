@@ -321,7 +321,7 @@ private fun Location(details: DetailsModel, onNavigateClicked: (String) -> Unit)
                         Text("${location.street} ${location.houseNumber}")
                         Text("${location.postalCode} ${location.city}")
                     } else {
-                        Text("Coördinaten: ${details.coordinates.latitude}, ${details.coordinates.longitude}")
+                        Text(stringResource(R.string.details_coordinates, details.coordinates.latitude, details.coordinates.longitude))
                     }
                 }
 
@@ -358,7 +358,7 @@ private fun Location(details: DetailsModel, onNavigateClicked: (String) -> Unit)
                     //                    icon = Icons.Filled.,
                     state = rememberMarkerState(position = details.coordinates),
                     title = details.description,
-                    snippet = "${details.rentalBikesAvailable ?: "??"} beschikbaar"
+                    snippet = stringResource(R.string.map_available, details.rentalBikesAvailable?.toString() ?: "??")
                 )
             }
         }

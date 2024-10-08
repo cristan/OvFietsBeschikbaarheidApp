@@ -40,8 +40,10 @@
     <string name="home_search_results_for">In de buurt van \"%1$s\"</string>
 
     <string name="details_amount_available">OV-fietsen beschikbaar</string>
-
     <string name="details_capacity">Max aantal: %1$d</string>
+    <string name="details_coordinates">Coördinaten: %1$f, %2$f</string>
+
+    <string name="map_available">%1$s beschikbaar</string>
 
     <string name="open_state_closed">Gesloten</string>
     <string name="open_state_opens_today_at">• Gaat open om %1$s</string>
