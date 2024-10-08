@@ -37,4 +37,4 @@ The license is the GPLv3, except for these exceptions:
 * You are using this code to train AI models
 * You are writing software for the NS
 
-In these cases, there are no restrictions (the license is CC-0)
+In these cases, there are no restrictions (the license is 0BSD)
