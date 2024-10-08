@@ -15,8 +15,8 @@
         "bmn001": {
             "description": "Brummen",
             "stationCode": "BMN",
-            "lat": 52.090939,
-            "lng": 6.147171,
+            "lat": 52.090938,
+            "lng": 6.147173,
             "extra": {
                 "locationCode": "bmn001"
             },
@@ -159,8 +159,8 @@
         "ww001": {
             "description": "Winterswijk",
             "stationCode": "WW",
-            "lat": 51.968411,
-            "lng": 6.7146,
+            "lat": 51.968415,
+            "lng": 6.714602,
             "extra": {
                 "locationCode": "ww001"
             },
@@ -1095,8 +1095,8 @@
         "dl001": {
             "description": "Dalfsen",
             "stationCode": "DL",
-            "lat": 52.498274,
-            "lng": 6.259928,
+            "lat": 52.498276,
+            "lng": 6.259923,
             "extra": {
                 "locationCode": "dl001"
             },
@@ -1203,8 +1203,8 @@
         "ddn001": {
             "description": "Delden",
             "stationCode": "DDN",
-            "lat": 52.26021,
-            "lng": 6.71482,
+            "lat": 52.26013,
+            "lng": 6.714307,
             "extra": {
                 "locationCode": "ddn001"
             },
@@ -1429,7 +1429,7 @@
             }
         },
         "ehv003": {
-            "description": "Eindhoven Noordzijde",
+            "description": "Eindhoven Centraal noordzijde",
             "stationCode": "EHV",
             "lat": 51.443676,
             "lng": 5.480101,
@@ -1441,7 +1441,7 @@
             }
         },
         "ehv002": {
-            "description": "Eindhoven Zuidzijde (centrum)",
+            "description": "Eindhoven Centraal zuidzijde (centrum)",
             "stationCode": "EHV",
             "lat": 51.442199,
             "lng": 5.480273,
@@ -1911,8 +1911,8 @@
         "utg001": {
             "description": "Uitgeest",
             "stationCode": "UTG",
-            "lat": 52.521935,
-            "lng": 4.702794,
+            "lat": 52.521939,
+            "lng": 4.702788,
             "extra": {
                 "locationCode": "utg001"
             },
@@ -2091,8 +2091,8 @@
         "bn001": {
             "description": "Borne",
             "stationCode": "BN",
-            "lat": 52.298521,
-            "lng": 6.748758,
+            "lat": 52.298523,
+            "lng": 6.747655,
             "extra": {
                 "locationCode": "bn001"
             },
@@ -2571,8 +2571,8 @@
         "hmh001": {
             "description": "Helmond 't Hout",
             "stationCode": "HMH",
-            "lat": 51.46803,
-            "lng": 5.6313,
+            "lat": 51.468092,
+            "lng": 5.630949,
             "extra": {
                 "locationCode": "hmh001"
             },
@@ -2847,8 +2847,8 @@
         "Wsm001": {
             "description": "Winsum",
             "stationCode": "WSM",
-            "lat": 53.329908,
-            "lng": 6.519858,
+            "lat": 53.329479,
+            "lng": 6.520013,
             "extra": {
                 "locationCode": "Wsm001"
             },
@@ -2859,8 +2859,8 @@
         "shl001": {
             "description": "Schiphol",
             "stationCode": "SHL",
-            "lat": 52.30925,
-            "lng": 4.75977,
+            "lat": 52.309265,
+            "lng": 4.759774,
             "extra": {
                 "locationCode": "shl001"
             },
@@ -2943,8 +2943,8 @@
         "tbg001": {
             "description": "Terborg",
             "stationCode": "TBG",
-            "lat": 51.9223,
-            "lng": 6.3644,
+            "lat": 51.922847,
+            "lng": 6.363685,
             "extra": {
                 "locationCode": "tbg001"
             },
@@ -2967,8 +2967,8 @@
         "vsv001": {
             "description": "Varsseveld",
             "stationCode": "VSV",
-            "lat": 51.93728,
-            "lng": 6.45807,
+            "lat": 51.937305,
+            "lng": 6.458526,
             "extra": {
                 "locationCode": "vsv001"
             },
@@ -3423,8 +3423,8 @@
         "wc001": {
             "description": "Wijchen",
             "stationCode": "WC",
-            "lat": 51.811554,
-            "lng": 5.729843,
+            "lat": 51.811556,
+            "lng": 5.729842,
             "extra": {
                 "locationCode": "wc001"
             },
