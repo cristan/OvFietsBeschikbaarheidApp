@@ -184,7 +184,7 @@ class HomeViewModel(
 
             val coordinates = locationLoader.loadCurrentCoordinates()
             if (coordinates == null) {
-                HomeContent.GpsError("Geen locatie gevonden")
+                _content.value = HomeContent.GpsError("Geen locatie gevonden")
             } else {
                 val locationsWithDistance =
                     LocationsMapper.withDistance(overviewRepository.getAllLocations(), coordinates)
