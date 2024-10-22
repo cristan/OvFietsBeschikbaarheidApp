@@ -46,6 +46,7 @@ object LocationsMapper {
             LocationOverviewModel(
                 title = description,
                 uri = toMap.link.uri,
+                fetchTime = toMap.extra.fetchTime,
                 locationCode = toMap.extra.locationCode,
                 stationCode = toMap.stationCode,
                 latitude = toMap.lat,

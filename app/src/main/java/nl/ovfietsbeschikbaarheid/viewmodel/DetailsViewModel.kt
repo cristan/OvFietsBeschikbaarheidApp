@@ -15,6 +15,9 @@ import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.state.setRefreshing
 import timber.log.Timber
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 private const val MIN_REFRESH_TIME = 350L
 
@@ -24,8 +27,8 @@ class DetailsViewModel(
     private val stationRepository: StationRepository
 ) : ViewModel() {
 
-    val screenState: State<ScreenState<DetailsModel>>
-        field = mutableStateOf<ScreenState<DetailsModel>>(ScreenState.Loading)
+    val screenState: State<ScreenState<DetailsContent>>
+        field = mutableStateOf<ScreenState<DetailsContent>>(ScreenState.Loading)
 
     val title: State<String>
         field = mutableStateOf("")
@@ -67,6 +70,12 @@ class DetailsViewModel(
         try {
             val before = System.currentTimeMillis()
             val details = client.getDetails(overviewModel.uri)
+            if (details == null) {
+                val fetchTimeInstant = Instant.ofEpochSecond(1719066494)
+                val lastFetched = LocalDateTime.ofInstant(fetchTimeInstant, ZoneId.of("Europe/Amsterdam"))!!
+                screenState.value = ScreenState.Loaded(DetailsContent.NotFound(overviewModel.title, lastFetched))
+                return
+            }
             val allStations = stationRepository.getAllStations()
             val capabilities = stationRepository.getCapacities()
             val data = DetailsMapper.convert(details, overviewRepository.getAllLocations(), allStations, capabilities)
@@ -74,7 +83,7 @@ class DetailsViewModel(
             if (timeElapsed < minDelay) {
                 delay(minDelay - timeElapsed)
             }
-            screenState.value = ScreenState.Loaded(data)
+            screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
         } catch (e: Exception) {
             Timber.e(e)
             screenState.value = ScreenState.FullPageError
@@ -85,4 +94,9 @@ class DetailsViewModel(
         super.onCleared()
         client.close()
     }
+}
+
+sealed class DetailsContent {
+    data class NotFound(val locationTitle: String, val lastFetched: LocalDateTime) : DetailsContent()
+    data class Content(val details: DetailsModel) : DetailsContent()
 }

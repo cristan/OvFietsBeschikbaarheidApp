@@ -74,9 +74,11 @@ import nl.ovfietsbeschikbaarheid.ui.theme.Red50
 import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
 import nl.ovfietsbeschikbaarheid.ui.view.FullPageLoader
+import nl.ovfietsbeschikbaarheid.viewmodel.DetailsContent
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
@@ -128,7 +130,7 @@ fun DetailScreen(
 @Composable
 private fun DetailsView(
     title: String,
-    details: ScreenState<DetailsModel>,
+    details: ScreenState<DetailsContent>,
     onRetry: () -> Unit,
     onPullToRefresh: () -> Unit,
     onLocationClicked: (String) -> Unit,
@@ -156,16 +158,27 @@ private fun DetailsView(
             },
         ) { innerPadding ->
             when (details) {
-                ScreenState.FullPageError -> FullPageError(onRetry)
+                ScreenState.FullPageError -> FullPageError(onRetry = onRetry)
                 ScreenState.Loading -> FullPageLoader()
-                is ScreenState.Loaded<DetailsModel> -> {
-                    PullToRefreshBox(
-                        state = rememberPullToRefreshState(),
-                        modifier = Modifier.padding(innerPadding),
-                        isRefreshing = details.isRefreshing,
-                        onRefresh = onPullToRefresh,
-                    ) {
-                        ActualDetails(details.data, onLocationClicked, onAlternativeClicked)
+                is ScreenState.Loaded<DetailsContent> -> {
+                    when(details.data) {
+                        is DetailsContent.Content -> PullToRefreshBox(
+                            state = rememberPullToRefreshState(),
+                            modifier = Modifier.padding(innerPadding),
+                            isRefreshing = details.isRefreshing,
+                            onRefresh = onPullToRefresh,
+                        ) {
+                            ActualDetails(details.data.details, onLocationClicked, onAlternativeClicked)
+                        }
+                        is DetailsContent.NotFound -> {
+                            val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.forLanguageTag("nl"))
+                            val formattedDate = formatter.format(details.data.lastFetched)
+                            FullPageError(
+                                title = stringResource(R.string.details_no_data_title),
+                                message = stringResource(R.string.details_no_data_message, details.data.locationTitle, formattedDate),
+                                onRetry = onRetry
+                            )
+                        }
                     }
                 }
             }
@@ -490,7 +503,7 @@ fun DetailsPreview() {
     )
     DetailsView(
         "Amersfoort Mondriaanplein",
-        ScreenState.Loaded(details),
+        ScreenState.Loaded(DetailsContent.Content(details)),
         {},
         {},
         {},

@@ -1,6 +1,5 @@
 package nl.ovfietsbeschikbaarheid
 
-import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -9,6 +8,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
 import timber.log.Timber
 
 class KtorApiClient {
@@ -26,9 +26,13 @@ class KtorApiClient {
         }
     }
 
-    suspend fun getDetails(detailUri: String): DetailsDTO {
+    suspend fun getDetails(detailUri: String): DetailsDTO? {
         Timber.i("Loading $detailUri")
-        return httpClient.get(detailUri).body<DetailsDTO>()
+        val result = httpClient.get(detailUri)
+        if (result.status.value == 404) {
+            return null
+        }
+        return result.body<DetailsDTO>()
     }
 
     fun close() {

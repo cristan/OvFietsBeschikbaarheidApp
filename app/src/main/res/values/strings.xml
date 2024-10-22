@@ -43,6 +43,9 @@
     <string name="details_capacity">Max aantal: %1$d</string>
     <string name="details_coordinates">Coördinaten: %1$f, %2$f</string>
 
+    <string name="details_no_data_title">Geen data</string>
+    <string name="details_no_data_message">Geen data ontvangen voor %1$s sinds %2$s.</string>
+
     <string name="map_available">%1$s beschikbaar</string>
 
     <string name="open_state_closed">Gesloten</string>

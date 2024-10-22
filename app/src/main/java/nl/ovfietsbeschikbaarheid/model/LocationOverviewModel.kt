@@ -3,6 +3,7 @@ package nl.ovfietsbeschikbaarheid.model
 data class LocationOverviewModel(
     val title: String,
     val uri: String,
+    val fetchTime: Long,
     val locationCode: String,
     val stationCode: String,
     val latitude: Double,
