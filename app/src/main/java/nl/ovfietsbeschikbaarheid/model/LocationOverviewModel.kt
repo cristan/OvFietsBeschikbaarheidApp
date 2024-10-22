@@ -2,6 +2,7 @@ package nl.ovfietsbeschikbaarheid.model
 
 data class LocationOverviewModel(
     val title: String,
+    val rentalBikesAvailable: Int?,
     val uri: String,
     val fetchTime: Long,
     val locationCode: String,

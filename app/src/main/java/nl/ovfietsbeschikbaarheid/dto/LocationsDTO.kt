@@ -26,4 +26,5 @@ data class Link(
 data class LocationExtra(
     val locationCode: String,
     val fetchTime: Long,
+    //    val rentalBikes: Int?,
 )

@@ -45,6 +45,7 @@ object LocationsMapper {
             val description = replacements[toMap.description] ?: toMap.description
             LocationOverviewModel(
                 title = description,
+                rentalBikesAvailable = (0..200).random()/* if (toMap.extra.rentalBikes*/,
                 uri = toMap.link.uri,
                 fetchTime = toMap.extra.fetchTime,
                 locationCode = toMap.extra.locationCode,
