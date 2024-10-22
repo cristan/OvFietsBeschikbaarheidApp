@@ -14,11 +14,11 @@ object LocationsMapper {
         "asb003",
         "ut018",
         "UTVR002",
-        "ehv004",
         "gvc021",
         "had002",
         "ed001",
         "ed002",
+        // TODO: we might want to add "ktr001": it's added recently, but no updates since
     )
 
     fun map(locationsDTO: LocationsDTO): List<LocationOverviewModel> {
@@ -46,6 +46,7 @@ object LocationsMapper {
             LocationOverviewModel(
                 title = description,
                 uri = toMap.link.uri,
+                fetchTime = toMap.extra.fetchTime,
                 locationCode = toMap.extra.locationCode,
                 stationCode = toMap.stationCode,
                 latitude = toMap.lat,

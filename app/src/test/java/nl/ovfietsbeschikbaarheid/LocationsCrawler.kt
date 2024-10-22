@@ -58,4 +58,5 @@ data class Link(
 @Serializable
 data class LocationExtra(
     val locationCode: String,
+    val fetchTime: Long,
 )

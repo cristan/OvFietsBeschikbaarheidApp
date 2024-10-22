@@ -20,6 +20,8 @@ import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 
 @Composable
 fun FullPageError(
+    title: String = stringResource(R.string.full_page_error_title),
+    message: String = stringResource(R.string.full_page_error_text),
     onRetry: () -> Unit
 ) {
     Column(
@@ -31,7 +33,7 @@ fun FullPageError(
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.full_page_error_title),
+            text = title,
             style = MaterialTheme.typography.headlineMedium,
             textAlign = TextAlign.Center
         )
@@ -39,7 +41,7 @@ fun FullPageError(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
-            text = stringResource(R.string.full_page_error_text),
+            text = message,
             textAlign = TextAlign.Center
         )
         Button(

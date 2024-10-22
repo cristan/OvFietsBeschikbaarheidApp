@@ -6,7 +6,8 @@
             "lat": 52.10017,
             "lng": 5.04424,
             "extra": {
-                "locationCode": "utt001"
+                "locationCode": "utt001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-utt001"
@@ -15,10 +16,11 @@
         "bmn001": {
             "description": "Brummen",
             "stationCode": "BMN",
-            "lat": 52.090939,
-            "lng": 6.147171,
+            "lat": 52.090938,
+            "lng": 6.147173,
             "extra": {
-                "locationCode": "bmn001"
+                "locationCode": "bmn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bmn001"
@@ -30,7 +32,8 @@
             "lat": 52.30039,
             "lng": 5.61434,
             "extra": {
-                "locationCode": "eml001"
+                "locationCode": "eml001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-eml001"
@@ -42,7 +45,8 @@
             "lat": 51.79464,
             "lng": 5.637462,
             "extra": {
-                "locationCode": "Rvs001"
+                "locationCode": "Rvs001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Rvs001"
@@ -54,7 +58,8 @@
             "lat": 52.078023,
             "lng": 5.122392,
             "extra": {
-                "locationCode": "UTVR001"
+                "locationCode": "UTVR001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-UTVR001"
@@ -66,7 +71,8 @@
             "lat": 51.827333,
             "lng": 5.822722,
             "extra": {
-                "locationCode": "nmgo001"
+                "locationCode": "nmgo001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-nmgo001"
@@ -78,7 +84,8 @@
             "lat": 52.16652,
             "lng": 6.42582,
             "extra": {
-                "locationCode": "lc001"
+                "locationCode": "lc001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-lc001"
@@ -90,7 +97,8 @@
             "lat": 51.49517,
             "lng": 4.29575,
             "extra": {
-                "locationCode": "bgn002"
+                "locationCode": "bgn002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bgn002"
@@ -102,7 +110,8 @@
             "lat": 52.3064,
             "lng": 6.93371,
             "extra": {
-                "locationCode": "odz001"
+                "locationCode": "odz001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-odz001"
@@ -114,7 +123,8 @@
             "lat": 51.72659,
             "lng": 5.87423,
             "extra": {
-                "locationCode": "ck001"
+                "locationCode": "ck001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ck001"
@@ -126,7 +136,8 @@
             "lat": 52.045557,
             "lng": 5.573761,
             "extra": {
-                "locationCode": "klp001"
+                "locationCode": "klp001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-klp001"
@@ -138,7 +149,8 @@
             "lat": 52.45748,
             "lng": 6.57211,
             "extra": {
-                "locationCode": "vhp001"
+                "locationCode": "vhp001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-vhp001"
@@ -150,7 +162,8 @@
             "lat": 51.50841,
             "lng": 5.38957,
             "extra": {
-                "locationCode": "bet001"
+                "locationCode": "bet001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-bet001"
@@ -159,10 +172,11 @@
         "ww001": {
             "description": "Winterswijk",
             "stationCode": "WW",
-            "lat": 51.968411,
-            "lng": 6.7146,
+            "lat": 51.968415,
+            "lng": 6.714602,
             "extra": {
-                "locationCode": "ww001"
+                "locationCode": "ww001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ww001"
@@ -174,7 +188,8 @@
             "lat": 52.311914,
             "lng": 4.948114,
             "extra": {
-                "locationCode": "asb003"
+                "locationCode": "asb003",
+                "fetchTime": 1695282760
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-asb003"
@@ -186,7 +201,8 @@
             "lat": 51.584637,
             "lng": 5.319527,
             "extra": {
-                "locationCode": "btl004"
+                "locationCode": "btl004",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-btl004"
@@ -198,7 +214,8 @@
             "lat": 53.248372,
             "lng": 6.406436,
             "extra": {
-                "locationCode": "Zh001"
+                "locationCode": "Zh001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Zh001"
@@ -210,7 +227,8 @@
             "lat": 52.01759,
             "lng": 5.18015,
             "extra": {
-                "locationCode": "htnc001"
+                "locationCode": "htnc001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-htnc001"
@@ -222,7 +240,8 @@
             "lat": 52.2237,
             "lng": 4.4842,
             "extra": {
-                "locationCode": "vh001"
+                "locationCode": "vh001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-vh001"
@@ -234,7 +253,8 @@
             "lat": 51.574534,
             "lng": 4.99477,
             "extra": {
-                "locationCode": "tbr001"
+                "locationCode": "tbr001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-tbr001"
@@ -246,7 +266,8 @@
             "lat": 52.3377,
             "lng": 5.619034,
             "extra": {
-                "locationCode": "hd001"
+                "locationCode": "hd001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-hd001"
@@ -258,7 +279,8 @@
             "lat": 52.05745,
             "lng": 5.10406,
             "extra": {
-                "locationCode": "ut007"
+                "locationCode": "ut007",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ut007"
@@ -270,7 +292,8 @@
             "lat": 52.069582,
             "lng": 4.320696,
             "extra": {
-                "locationCode": "gv001"
+                "locationCode": "gv001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-gv001"
@@ -282,7 +305,8 @@
             "lat": 52.66929,
             "lng": 4.82352,
             "extra": {
-                "locationCode": "hwd003"
+                "locationCode": "hwd003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hwd003"
@@ -294,7 +318,8 @@
             "lat": 53.20479,
             "lng": 6.58617,
             "extra": {
-                "locationCode": "gerp002"
+                "locationCode": "gerp002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-gerp002"
@@ -306,7 +331,8 @@
             "lat": 52.2685,
             "lng": 6.175444,
             "extra": {
-                "locationCode": "dv003"
+                "locationCode": "dv003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-dv003"
@@ -318,7 +344,8 @@
             "lat": 51.66025,
             "lng": 5.617562,
             "extra": {
-                "locationCode": "Ow002"
+                "locationCode": "Ow002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Ow002"
@@ -330,7 +357,8 @@
             "lat": 52.25645,
             "lng": 6.160837,
             "extra": {
-                "locationCode": "dv001"
+                "locationCode": "dv001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-dv001"
@@ -342,7 +370,8 @@
             "lat": 52.16557,
             "lng": 4.48259,
             "extra": {
-                "locationCode": "ledn002"
+                "locationCode": "ledn002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ledn002"
@@ -354,7 +383,8 @@
             "lat": 51.46274,
             "lng": 5.60881,
             "extra": {
-                "locationCode": "hmbv001"
+                "locationCode": "hmbv001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hmbv001"
@@ -366,7 +396,8 @@
             "lat": 52.9321,
             "lng": 4.76485,
             "extra": {
-                "locationCode": "hdrz001"
+                "locationCode": "hdrz001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hdrz001"
@@ -378,7 +409,8 @@
             "lat": 52.54554,
             "lng": 4.65954,
             "extra": {
-                "locationCode": "cas002"
+                "locationCode": "cas002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-cas002"
@@ -390,7 +422,8 @@
             "lat": 53.032708,
             "lng": 5.652365,
             "extra": {
-                "locationCode": "sk001"
+                "locationCode": "sk001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-sk001"
@@ -402,7 +435,8 @@
             "lat": 51.420056,
             "lng": 5.550968,
             "extra": {
-                "locationCode": "Gp001"
+                "locationCode": "Gp001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Gp001"
@@ -414,7 +448,8 @@
             "lat": 51.588055,
             "lng": 4.533494,
             "extra": {
-                "locationCode": "odb001"
+                "locationCode": "odb001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-odb001"
@@ -426,7 +461,8 @@
             "lat": 52.867532,
             "lng": 4.81149,
             "extra": {
-                "locationCode": "ana001"
+                "locationCode": "ana001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ana001"
@@ -438,7 +474,8 @@
             "lat": 51.49874,
             "lng": 3.88823,
             "extra": {
-                "locationCode": "gs003"
+                "locationCode": "gs003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-gs003"
@@ -450,7 +487,8 @@
             "lat": 52.1746,
             "lng": 5.40462,
             "extra": {
-                "locationCode": "amfs001"
+                "locationCode": "amfs001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-amfs001"
@@ -462,7 +500,8 @@
             "lat": 51.54078,
             "lng": 4.46115,
             "extra": {
-                "locationCode": "rsd002"
+                "locationCode": "rsd002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-rsd002"
@@ -474,7 +513,8 @@
             "lat": 51.9834,
             "lng": 5.90125,
             "extra": {
-                "locationCode": "ah003"
+                "locationCode": "ah003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ah003"
@@ -486,7 +526,8 @@
             "lat": 51.584055,
             "lng": 4.924392,
             "extra": {
-                "locationCode": "gz001"
+                "locationCode": "gz001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-gz001"
@@ -498,7 +539,8 @@
             "lat": 52.38647,
             "lng": 4.746886,
             "extra": {
-                "locationCode": "hwzb001"
+                "locationCode": "hwzb001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hwzb001"
@@ -510,7 +552,8 @@
             "lat": 52.653512,
             "lng": 5.085436,
             "extra": {
-                "locationCode": "hnk001"
+                "locationCode": "hnk001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hnk001"
@@ -522,7 +565,8 @@
             "lat": 52.64469,
             "lng": 5.05501,
             "extra": {
-                "locationCode": "hn001"
+                "locationCode": "hn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-hn001"
@@ -534,7 +578,8 @@
             "lat": 51.921747,
             "lng": 4.534107,
             "extra": {
-                "locationCode": "Rta003"
+                "locationCode": "Rta003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Rta003"
@@ -546,7 +591,8 @@
             "lat": 52.076348,
             "lng": 4.646671,
             "extra": {
-                "locationCode": "bsk001"
+                "locationCode": "bsk001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bsk001"
@@ -558,7 +604,8 @@
             "lat": 52.311246,
             "lng": 6.519122,
             "extra": {
-                "locationCode": "rsn001"
+                "locationCode": "rsn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-rsn001"
@@ -570,7 +617,8 @@
             "lat": 51.365024,
             "lng": 6.171608,
             "extra": {
-                "locationCode": "vl001"
+                "locationCode": "vl001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-vl001"
@@ -582,7 +630,8 @@
             "lat": 52.509885,
             "lng": 6.417791,
             "extra": {
-                "locationCode": "omn001"
+                "locationCode": "omn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-omn001"
@@ -594,7 +643,8 @@
             "lat": 51.94704,
             "lng": 5.22713,
             "extra": {
-                "locationCode": "cl003"
+                "locationCode": "cl003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-cl003"
@@ -606,7 +656,8 @@
             "lat": 53.230098,
             "lng": 6.557451,
             "extra": {
-                "locationCode": "Gnn001"
+                "locationCode": "Gnn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Gnn001"
@@ -618,7 +669,8 @@
             "lat": 51.450113,
             "lng": 5.456891,
             "extra": {
-                "locationCode": "ehs001"
+                "locationCode": "ehs001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ehs001"
@@ -630,7 +682,8 @@
             "lat": 52.38213,
             "lng": 4.670836,
             "extra": {
-                "locationCode": "hlms001"
+                "locationCode": "hlms001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hlms001"
@@ -642,7 +695,8 @@
             "lat": 52.06676,
             "lng": 4.35956,
             "extra": {
-                "locationCode": "vb002"
+                "locationCode": "vb002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-vb002"
@@ -654,7 +708,8 @@
             "lat": 52.16521,
             "lng": 5.30299,
             "extra": {
-                "locationCode": "stz001"
+                "locationCode": "stz001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-stz001"
@@ -666,7 +721,8 @@
             "lat": 53.175165,
             "lng": 6.617819,
             "extra": {
-                "locationCode": "HRN002"
+                "locationCode": "HRN002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-HRN002"
@@ -678,7 +734,8 @@
             "lat": 52.17815,
             "lng": 5.17915,
             "extra": {
-                "locationCode": "hor001"
+                "locationCode": "hor001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hor001"
@@ -690,7 +747,8 @@
             "lat": 51.30583,
             "lng": 5.63594,
             "extra": {
-                "locationCode": "mz001"
+                "locationCode": "mz001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-mz001"
@@ -702,7 +760,8 @@
             "lat": 50.837552,
             "lng": 5.718918,
             "extra": {
-                "locationCode": "mtr001"
+                "locationCode": "mtr001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-mtr001"
@@ -714,7 +773,8 @@
             "lat": 52.3604,
             "lng": 4.93093,
             "extra": {
-                "locationCode": "asdm001"
+                "locationCode": "asdm001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-asdm001"
@@ -726,7 +786,8 @@
             "lat": 52.044821,
             "lng": 6.10249,
             "extra": {
-                "locationCode": "dr001"
+                "locationCode": "dr001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-dr001"
@@ -738,7 +799,8 @@
             "lat": 52.005491,
             "lng": 5.792359,
             "extra": {
-                "locationCode": "wf001"
+                "locationCode": "wf001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-wf001"
@@ -750,7 +812,8 @@
             "lat": 50.882753,
             "lng": 5.750357,
             "extra": {
-                "locationCode": "mes001"
+                "locationCode": "mes001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-mes001"
@@ -762,7 +825,8 @@
             "lat": 51.80781,
             "lng": 4.66785,
             "extra": {
-                "locationCode": "ddr001"
+                "locationCode": "ddr001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ddr001"
@@ -774,7 +838,8 @@
             "lat": 51.9168,
             "lng": 4.2534,
             "extra": {
-                "locationCode": "mss001"
+                "locationCode": "mss001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-mss001"
@@ -786,7 +851,8 @@
             "lat": 52.31266,
             "lng": 5.04215,
             "extra": {
-                "locationCode": "wp001"
+                "locationCode": "wp001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-wp001"
@@ -798,7 +864,8 @@
             "lat": 51.592165,
             "lng": 5.99734,
             "extra": {
-                "locationCode": "vlb001"
+                "locationCode": "vlb001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-vlb001"
@@ -810,7 +877,8 @@
             "lat": 52.38903,
             "lng": 4.83707,
             "extra": {
-                "locationCode": "ass001"
+                "locationCode": "ass001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ass001"
@@ -822,7 +890,8 @@
             "lat": 51.833437,
             "lng": 4.966969,
             "extra": {
-                "locationCode": "gr001"
+                "locationCode": "gr001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-gr001"
@@ -834,7 +903,8 @@
             "lat": 51.952114,
             "lng": 4.551931,
             "extra": {
-                "locationCode": "rta001"
+                "locationCode": "rta001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-rta001"
@@ -846,7 +916,8 @@
             "lat": 50.868919,
             "lng": 5.833232,
             "extra": {
-                "locationCode": "vk001"
+                "locationCode": "vk001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-vk001"
@@ -858,7 +929,8 @@
             "lat": 52.35614,
             "lng": 6.65732,
             "extra": {
-                "locationCode": "aml002"
+                "locationCode": "aml002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-aml002"
@@ -870,7 +942,8 @@
             "lat": 52.40441,
             "lng": 4.6273,
             "extra": {
-                "locationCode": "bll001"
+                "locationCode": "bll001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bll001"
@@ -882,7 +955,8 @@
             "lat": 51.574939,
             "lng": 4.636251,
             "extra": {
-                "locationCode": "etn001"
+                "locationCode": "etn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-etn001"
@@ -894,7 +968,8 @@
             "lat": 52.600106,
             "lng": 4.700891,
             "extra": {
-                "locationCode": "hlo001"
+                "locationCode": "hlo001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hlo001"
@@ -906,7 +981,8 @@
             "lat": 52.165578,
             "lng": 4.48155,
             "extra": {
-                "locationCode": "ledn001"
+                "locationCode": "ledn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ledn001"
@@ -918,7 +994,8 @@
             "lat": 52.51127,
             "lng": 4.96773,
             "extra": {
-                "locationCode": "pmo001"
+                "locationCode": "pmo001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-pmo001"
@@ -930,7 +1007,8 @@
             "lat": 52.50801,
             "lng": 5.47328,
             "extra": {
-                "locationCode": "lls003"
+                "locationCode": "lls003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-lls003"
@@ -942,7 +1020,8 @@
             "lat": 52.08895,
             "lng": 5.10756,
             "extra": {
-                "locationCode": "ut016"
+                "locationCode": "ut016",
+                "fetchTime": 1728892396
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ut016"
@@ -954,7 +1033,8 @@
             "lat": 52.50499,
             "lng": 6.09106,
             "extra": {
-                "locationCode": "zl003"
+                "locationCode": "zl003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-zl003"
@@ -966,7 +1046,8 @@
             "lat": 52.283962,
             "lng": 6.421691,
             "extra": {
-                "locationCode": "hon001"
+                "locationCode": "hon001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hon001"
@@ -978,7 +1059,8 @@
             "lat": 52.391352,
             "lng": 6.141081,
             "extra": {
-                "locationCode": "wh001"
+                "locationCode": "wh001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-wh001"
@@ -990,7 +1072,8 @@
             "lat": 51.606061,
             "lng": 4.72136,
             "extra": {
-                "locationCode": "bdpb001"
+                "locationCode": "bdpb001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bdpb001"
@@ -1002,7 +1085,8 @@
             "lat": 52.505809,
             "lng": 6.090895,
             "extra": {
-                "locationCode": "zl004"
+                "locationCode": "zl004",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-zl004"
@@ -1014,7 +1098,8 @@
             "lat": 51.842825,
             "lng": 5.853375,
             "extra": {
-                "locationCode": "nm001"
+                "locationCode": "nm001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-nm001"
@@ -1026,7 +1111,8 @@
             "lat": 52.695217,
             "lng": 5.235676,
             "extra": {
-                "locationCode": "bkg001"
+                "locationCode": "bkg001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bkg001"
@@ -1038,7 +1124,8 @@
             "lat": 52.065,
             "lng": 5.25978,
             "extra": {
-                "locationCode": "db003"
+                "locationCode": "db003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-db003"
@@ -1050,7 +1137,8 @@
             "lat": 52.08909,
             "lng": 5.24928,
             "extra": {
-                "locationCode": "db002"
+                "locationCode": "db002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-db002"
@@ -1062,7 +1150,8 @@
             "lat": 52.065057,
             "lng": 5.259785,
             "extra": {
-                "locationCode": "db001"
+                "locationCode": "db001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-db001"
@@ -1074,7 +1163,8 @@
             "lat": 51.099873,
             "lng": 5.878368,
             "extra": {
-                "locationCode": "ec001"
+                "locationCode": "ec001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ec001"
@@ -1086,7 +1176,8 @@
             "lat": 52.39069,
             "lng": 6.27817,
             "extra": {
-                "locationCode": "rat001"
+                "locationCode": "rat001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-rat001"
@@ -1095,10 +1186,11 @@
         "dl001": {
             "description": "Dalfsen",
             "stationCode": "DL",
-            "lat": 52.498274,
-            "lng": 6.259928,
+            "lat": 52.498276,
+            "lng": 6.259923,
             "extra": {
-                "locationCode": "dl001"
+                "locationCode": "dl001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-dl001"
@@ -1110,7 +1202,8 @@
             "lat": 51.874121,
             "lng": 4.4776,
             "extra": {
-                "locationCode": "rtd904"
+                "locationCode": "rtd904",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-rtd904"
@@ -1122,7 +1215,8 @@
             "lat": 51.64444,
             "lng": 5.939563,
             "extra": {
-                "locationCode": "Bmr001"
+                "locationCode": "Bmr001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Bmr001"
@@ -1134,7 +1228,8 @@
             "lat": 52.019488,
             "lng": 4.437386,
             "extra": {
-                "locationCode": "rtd906"
+                "locationCode": "rtd906",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-rtd906"
@@ -1146,7 +1241,8 @@
             "lat": 52.020273,
             "lng": 5.548828,
             "extra": {
-                "locationCode": "vndc002"
+                "locationCode": "vndc002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-vndc002"
@@ -1158,7 +1254,8 @@
             "lat": 52.37188,
             "lng": 5.78802,
             "extra": {
-                "locationCode": "Ns001"
+                "locationCode": "Ns001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Ns001"
@@ -1170,7 +1267,8 @@
             "lat": 50.871155,
             "lng": 5.717754,
             "extra": {
-                "locationCode": "mtn001"
+                "locationCode": "mtn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-mtn001"
@@ -1182,7 +1280,8 @@
             "lat": 51.95929,
             "lng": 6.25961,
             "extra": {
-                "locationCode": "dtch001"
+                "locationCode": "dtch001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-dtch001"
@@ -1194,7 +1293,8 @@
             "lat": 52.093019,
             "lng": 5.121088,
             "extra": {
-                "locationCode": "ut018"
+                "locationCode": "ut018",
+                "fetchTime": 1715767971
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ut018"
@@ -1203,10 +1303,11 @@
         "ddn001": {
             "description": "Delden",
             "stationCode": "DDN",
-            "lat": 52.26021,
-            "lng": 6.71482,
+            "lat": 52.26013,
+            "lng": 6.714307,
             "extra": {
-                "locationCode": "ddn001"
+                "locationCode": "ddn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ddn001"
@@ -1218,7 +1319,8 @@
             "lat": 52.32876,
             "lng": 5.05091,
             "extra": {
-                "locationCode": "wp901"
+                "locationCode": "wp901",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-wp901"
@@ -1230,7 +1332,8 @@
             "lat": 51.690151,
             "lng": 4.662549,
             "extra": {
-                "locationCode": "Zlw001"
+                "locationCode": "Zlw001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Zlw001"
@@ -1242,7 +1345,8 @@
             "lat": 52.261809,
             "lng": 6.768326,
             "extra": {
-                "locationCode": "hglg001"
+                "locationCode": "hglg001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hglg001"
@@ -1254,7 +1358,8 @@
             "lat": 52.081541,
             "lng": 4.746529,
             "extra": {
-                "locationCode": "bdg001"
+                "locationCode": "bdg001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bdg001"
@@ -1266,7 +1371,8 @@
             "lat": 52.109965,
             "lng": 5.123593,
             "extra": {
-                "locationCode": "uto001"
+                "locationCode": "uto001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-uto001"
@@ -1278,7 +1384,8 @@
             "lat": 52.18376,
             "lng": 5.29967,
             "extra": {
-                "locationCode": "sd001"
+                "locationCode": "sd001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-sd001"
@@ -1290,7 +1397,8 @@
             "lat": 51.99038,
             "lng": 4.36439,
             "extra": {
-                "locationCode": "dtz001"
+                "locationCode": "dtz001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-dtz001"
@@ -1302,7 +1410,8 @@
             "lat": 51.655932,
             "lng": 5.292129,
             "extra": {
-                "locationCode": "Vg001"
+                "locationCode": "Vg001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Vg001"
@@ -1314,7 +1423,8 @@
             "lat": 52.340294,
             "lng": 4.873381,
             "extra": {
-                "locationCode": "asdz001"
+                "locationCode": "asdz001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-asdz001"
@@ -1326,7 +1436,8 @@
             "lat": 52.494358,
             "lng": 4.685522,
             "extra": {
-                "locationCode": "hk001"
+                "locationCode": "hk001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hk001"
@@ -1338,7 +1449,8 @@
             "lat": 52.336448,
             "lng": 4.873438,
             "extra": {
-                "locationCode": "asdz003"
+                "locationCode": "asdz003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-asdz003"
@@ -1350,7 +1462,8 @@
             "lat": 52.078023,
             "lng": 5.122392,
             "extra": {
-                "locationCode": "UTVR002"
+                "locationCode": "UTVR002",
+                "fetchTime": 1700488276
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-UTVR002"
@@ -1362,7 +1475,8 @@
             "lat": 52.10341,
             "lng": 5.08945,
             "extra": {
-                "locationCode": "utzl001"
+                "locationCode": "utzl001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-utzl001"
@@ -1374,7 +1488,8 @@
             "lat": 52.12492,
             "lng": 4.65789,
             "extra": {
-                "locationCode": "apn001"
+                "locationCode": "apn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-apn001"
@@ -1386,7 +1501,8 @@
             "lat": 51.920017,
             "lng": 4.488638,
             "extra": {
-                "locationCode": "rtb001"
+                "locationCode": "rtb001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-rtb001"
@@ -1398,7 +1514,8 @@
             "lat": 52.40276,
             "lng": 6.60034,
             "extra": {
-                "locationCode": "vz001"
+                "locationCode": "vz001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-vz001"
@@ -1410,43 +1527,47 @@
             "lat": 51.81608,
             "lng": 4.64041,
             "extra": {
-                "locationCode": "zwd003"
+                "locationCode": "zwd003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-zwd003"
             }
         },
         "ehv004": {
-            "description": "Eindhoven OV-fiets PopUp (naast AH)",
+            "description": "Eindhoven Centraal Stationshal (naast AH)",
             "stationCode": "EHV",
             "lat": 51.443672,
             "lng": 5.480109,
             "extra": {
-                "locationCode": "ehv004"
+                "locationCode": "ehv004",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ehv004"
             }
         },
         "ehv003": {
-            "description": "Eindhoven Noordzijde",
+            "description": "Eindhoven Centraal noordzijde",
             "stationCode": "EHV",
             "lat": 51.443676,
             "lng": 5.480101,
             "extra": {
-                "locationCode": "ehv003"
+                "locationCode": "ehv003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ehv003"
             }
         },
         "ehv002": {
-            "description": "Eindhoven Zuidzijde (centrum)",
+            "description": "Eindhoven Centraal zuidzijde (centrum)",
             "stationCode": "EHV",
             "lat": 51.442199,
             "lng": 5.480273,
             "extra": {
-                "locationCode": "ehv002"
+                "locationCode": "ehv002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ehv002"
@@ -1458,7 +1579,8 @@
             "lat": 53.139314,
             "lng": 7.035409,
             "extra": {
-                "locationCode": "ws001"
+                "locationCode": "ws001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ws001"
@@ -1470,7 +1592,8 @@
             "lat": 52.39079,
             "lng": 4.60765,
             "extra": {
-                "locationCode": "ovn001"
+                "locationCode": "ovn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ovn001"
@@ -1482,7 +1605,8 @@
             "lat": 51.614573,
             "lng": 5.545731,
             "extra": {
-                "locationCode": "Btl003"
+                "locationCode": "Btl003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Btl003"
@@ -1494,7 +1618,8 @@
             "lat": 52.28132,
             "lng": 5.15793,
             "extra": {
-                "locationCode": "ndb003"
+                "locationCode": "ndb003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ndb003"
@@ -1506,7 +1631,8 @@
             "lat": 52.08536,
             "lng": 4.89283,
             "extra": {
-                "locationCode": "wd001"
+                "locationCode": "wd001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-wd001"
@@ -1518,7 +1644,8 @@
             "lat": 51.690526,
             "lng": 5.295283,
             "extra": {
-                "locationCode": "ht001"
+                "locationCode": "ht001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ht001"
@@ -1530,7 +1657,8 @@
             "lat": 52.20787,
             "lng": 5.28219,
             "extra": {
-                "locationCode": "brn002"
+                "locationCode": "brn002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-brn002"
@@ -1542,7 +1670,8 @@
             "lat": 51.686951,
             "lng": 5.071715,
             "extra": {
-                "locationCode": "ht002"
+                "locationCode": "ht002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ht002"
@@ -1554,7 +1683,8 @@
             "lat": 50.860941,
             "lng": 6.057447,
             "extra": {
-                "locationCode": "krd001"
+                "locationCode": "krd001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-krd001"
@@ -1566,7 +1696,8 @@
             "lat": 52.028551,
             "lng": 5.533195,
             "extra": {
-                "locationCode": "vndw001"
+                "locationCode": "vndw001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-vndw001"
@@ -1578,7 +1709,8 @@
             "lat": 51.92161,
             "lng": 6.57929,
             "extra": {
-                "locationCode": "atn001"
+                "locationCode": "atn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-atn001"
@@ -1590,7 +1722,8 @@
             "lat": 52.38763,
             "lng": 4.63832,
             "extra": {
-                "locationCode": "hlm002"
+                "locationCode": "hlm002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-hlm002"
@@ -1602,7 +1735,8 @@
             "lat": 52.12949,
             "lng": 5.20514,
             "extra": {
-                "locationCode": "bhv002"
+                "locationCode": "bhv002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bhv002"
@@ -1614,7 +1748,8 @@
             "lat": 52.50387,
             "lng": 4.95413,
             "extra": {
-                "locationCode": "pmr001"
+                "locationCode": "pmr001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-pmr001"
@@ -1626,7 +1761,8 @@
             "lat": 52.57583,
             "lng": 6.621944,
             "extra": {
-                "locationCode": "hdb001"
+                "locationCode": "hdb001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hdb001"
@@ -1638,7 +1774,8 @@
             "lat": 52.087374,
             "lng": 5.109469,
             "extra": {
-                "locationCode": "ut021"
+                "locationCode": "ut021",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ut021"
@@ -1650,7 +1787,8 @@
             "lat": 52.47875,
             "lng": 4.65448,
             "extra": {
-                "locationCode": "bv002"
+                "locationCode": "bv002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-bv002"
@@ -1662,7 +1800,8 @@
             "lat": 51.58515,
             "lng": 5.318988,
             "extra": {
-                "locationCode": "btl001"
+                "locationCode": "btl001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-btl001"
@@ -1674,7 +1813,8 @@
             "lat": 53.159868,
             "lng": 6.770894,
             "extra": {
-                "locationCode": "Hgz001"
+                "locationCode": "Hgz001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Hgz001"
@@ -1686,7 +1826,8 @@
             "lat": 52.433767,
             "lng": 4.633007,
             "extra": {
-                "locationCode": "sptn001"
+                "locationCode": "sptn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-sptn001"
@@ -1698,7 +1839,8 @@
             "lat": 52.19261,
             "lng": 5.43362,
             "extra": {
-                "locationCode": "avat001"
+                "locationCode": "avat001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-avat001"
@@ -1710,7 +1852,8 @@
             "lat": 51.192425,
             "lng": 5.99353,
             "extra": {
-                "locationCode": "rm001"
+                "locationCode": "rm001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-rm001"
@@ -1722,7 +1865,8 @@
             "lat": 52.49511,
             "lng": 4.75479,
             "extra": {
-                "locationCode": "kma001"
+                "locationCode": "kma001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-kma001"
@@ -1734,7 +1878,8 @@
             "lat": 50.89033,
             "lng": 5.97444,
             "extra": {
-                "locationCode": "hrl002"
+                "locationCode": "hrl002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hrl002"
@@ -1746,7 +1891,8 @@
             "lat": 51.715439,
             "lng": 5.369477,
             "extra": {
-                "locationCode": "rs001"
+                "locationCode": "rs001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-rs001"
@@ -1758,7 +1904,8 @@
             "lat": 51.9891,
             "lng": 5.08497,
             "extra": {
-                "locationCode": "ut905"
+                "locationCode": "ut905",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ut905"
@@ -1770,7 +1917,8 @@
             "lat": 52.07164,
             "lng": 5.07869,
             "extra": {
-                "locationCode": "ut904"
+                "locationCode": "ut904",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ut904"
@@ -1782,7 +1930,8 @@
             "lat": 52.08481,
             "lng": 5.17314,
             "extra": {
-                "locationCode": "ut906"
+                "locationCode": "ut906",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ut906"
@@ -1794,7 +1943,8 @@
             "lat": 52.01661,
             "lng": 5.03918,
             "extra": {
-                "locationCode": "ut901"
+                "locationCode": "ut901",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ut901"
@@ -1806,7 +1956,8 @@
             "lat": 51.9835,
             "lng": 5.90126,
             "extra": {
-                "locationCode": "ah001"
+                "locationCode": "ah001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ah001"
@@ -1818,7 +1969,8 @@
             "lat": 52.2933,
             "lng": 4.69816,
             "extra": {
-                "locationCode": "hfd002"
+                "locationCode": "hfd002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hfd002"
@@ -1830,7 +1982,8 @@
             "lat": 52.63753,
             "lng": 4.73985,
             "extra": {
-                "locationCode": "amr001"
+                "locationCode": "amr001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-amr001"
@@ -1842,7 +1995,8 @@
             "lat": 52.78558,
             "lng": 4.80506,
             "extra": {
-                "locationCode": "sgn001"
+                "locationCode": "sgn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-sgn001"
@@ -1854,7 +2008,8 @@
             "lat": 51.923421,
             "lng": 4.469738,
             "extra": {
-                "locationCode": "rtd001"
+                "locationCode": "rtd001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-rtd001"
@@ -1866,7 +2021,8 @@
             "lat": 51.565278,
             "lng": 5.052372,
             "extra": {
-                "locationCode": "tbu001"
+                "locationCode": "tbu001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-tbu001"
@@ -1878,7 +2034,8 @@
             "lat": 52.014613,
             "lng": 4.742138,
             "extra": {
-                "locationCode": "gdg001"
+                "locationCode": "gdg001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-gdg001"
@@ -1890,7 +2047,8 @@
             "lat": 52.078837,
             "lng": 4.34196,
             "extra": {
-                "locationCode": "laa001"
+                "locationCode": "laa001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-laa001"
@@ -1902,7 +2060,8 @@
             "lat": 52.006473,
             "lng": 4.35744,
             "extra": {
-                "locationCode": "dt002"
+                "locationCode": "dt002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-dt002"
@@ -1911,10 +2070,11 @@
         "utg001": {
             "description": "Uitgeest",
             "stationCode": "UTG",
-            "lat": 52.521935,
-            "lng": 4.702794,
+            "lat": 52.521939,
+            "lng": 4.702788,
             "extra": {
-                "locationCode": "utg001"
+                "locationCode": "utg001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-utg001"
@@ -1926,7 +2086,8 @@
             "lat": 52.95674,
             "lng": 4.76071,
             "extra": {
-                "locationCode": "hdr002"
+                "locationCode": "hdr002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hdr002"
@@ -1938,7 +2099,8 @@
             "lat": 52.64396,
             "lng": 4.76371,
             "extra": {
-                "locationCode": "amrn002"
+                "locationCode": "amrn002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-amrn002"
@@ -1950,7 +2112,8 @@
             "lat": 52.04758,
             "lng": 4.415059,
             "extra": {
-                "locationCode": "gvc901"
+                "locationCode": "gvc901",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-gvc901"
@@ -1962,7 +2125,8 @@
             "lat": 52.03487,
             "lng": 5.16663,
             "extra": {
-                "locationCode": "htn001"
+                "locationCode": "htn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-htn001"
@@ -1974,7 +2138,8 @@
             "lat": 52.79051,
             "lng": 6.11712,
             "extra": {
-                "locationCode": "swk002"
+                "locationCode": "swk002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-swk002"
@@ -1986,7 +2151,8 @@
             "lat": 52.73309,
             "lng": 6.47358,
             "extra": {
-                "locationCode": "hgv003"
+                "locationCode": "hgv003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hgv003"
@@ -1998,7 +2164,8 @@
             "lat": 52.14475,
             "lng": 6.19585,
             "extra": {
-                "locationCode": "zp001"
+                "locationCode": "zp001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-zp001"
@@ -2010,7 +2177,8 @@
             "lat": 51.59502,
             "lng": 4.779437,
             "extra": {
-                "locationCode": "Bd003"
+                "locationCode": "Bd003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-Bd003"
@@ -2022,7 +2190,8 @@
             "lat": 52.09094,
             "lng": 4.36933,
             "extra": {
-                "locationCode": "gvm001"
+                "locationCode": "gvm001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-gvm001"
@@ -2034,7 +2203,8 @@
             "lat": 51.52736,
             "lng": 6.01351,
             "extra": {
-                "locationCode": "vry001"
+                "locationCode": "vry001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-vry001"
@@ -2046,7 +2216,8 @@
             "lat": 52.16085,
             "lng": 5.59905,
             "extra": {
-                "locationCode": "bnn001"
+                "locationCode": "bnn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bnn001"
@@ -2058,7 +2229,8 @@
             "lat": 51.80812,
             "lng": 5.26288,
             "extra": {
-                "locationCode": "zbm002"
+                "locationCode": "zbm002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-zbm002"
@@ -2070,7 +2242,8 @@
             "lat": 51.921491,
             "lng": 4.40774,
             "extra": {
-                "locationCode": "sdm001"
+                "locationCode": "sdm001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-sdm001"
@@ -2082,7 +2255,8 @@
             "lat": 52.06024,
             "lng": 4.48739,
             "extra": {
-                "locationCode": "ztm002"
+                "locationCode": "ztm002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ztm002"
@@ -2091,10 +2265,11 @@
         "bn001": {
             "description": "Borne",
             "stationCode": "BN",
-            "lat": 52.298521,
-            "lng": 6.748758,
+            "lat": 52.298523,
+            "lng": 6.747655,
             "extra": {
-                "locationCode": "bn001"
+                "locationCode": "bn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bn001"
@@ -2106,7 +2281,8 @@
             "lat": 51.641542,
             "lng": 4.610095,
             "extra": {
-                "locationCode": "Zvb001"
+                "locationCode": "Zvb001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Zvb001"
@@ -2118,7 +2294,8 @@
             "lat": 52.44301,
             "lng": 4.63908,
             "extra": {
-                "locationCode": "drh001"
+                "locationCode": "drh001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-drh001"
@@ -2130,7 +2307,8 @@
             "lat": 51.47057,
             "lng": 5.70168,
             "extra": {
-                "locationCode": "hmbh001"
+                "locationCode": "hmbh001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hmbh001"
@@ -2142,7 +2320,8 @@
             "lat": 51.82674,
             "lng": 5.86735,
             "extra": {
-                "locationCode": "nmh001"
+                "locationCode": "nmh001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-nmh001"
@@ -2154,7 +2333,8 @@
             "lat": 51.853419,
             "lng": 4.554166,
             "extra": {
-                "locationCode": "brd002"
+                "locationCode": "brd002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-brd002"
@@ -2166,7 +2346,8 @@
             "lat": 52.009869,
             "lng": 6.030578,
             "extra": {
-                "locationCode": "rh001"
+                "locationCode": "rh001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-rh001"
@@ -2178,7 +2359,8 @@
             "lat": 52.08129,
             "lng": 4.323001,
             "extra": {
-                "locationCode": "gvc021"
+                "locationCode": "gvc021",
+                "fetchTime": 1695722302
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-gvc021"
@@ -2190,7 +2372,8 @@
             "lat": 51.596338,
             "lng": 4.77892,
             "extra": {
-                "locationCode": "bd002"
+                "locationCode": "bd002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-bd002"
@@ -2202,7 +2385,8 @@
             "lat": 52.380095,
             "lng": 4.898784,
             "extra": {
-                "locationCode": "asd008"
+                "locationCode": "asd008",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-asd008"
@@ -2214,7 +2398,8 @@
             "lat": 52.402374,
             "lng": 4.931019,
             "extra": {
-                "locationCode": "asd009"
+                "locationCode": "asd009",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-asd009"
@@ -2226,7 +2411,8 @@
             "lat": 52.677967,
             "lng": 4.909418,
             "extra": {
-                "locationCode": "obd001"
+                "locationCode": "obd001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-obd001"
@@ -2238,7 +2424,8 @@
             "lat": 51.88973,
             "lng": 5.42399,
             "extra": {
-                "locationCode": "tl003"
+                "locationCode": "tl003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-tl003"
@@ -2250,7 +2437,8 @@
             "lat": 53.21155,
             "lng": 6.56701,
             "extra": {
-                "locationCode": "gn004"
+                "locationCode": "gn004",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-gn004"
@@ -2262,7 +2450,8 @@
             "lat": 51.758646,
             "lng": 5.507076,
             "extra": {
-                "locationCode": "ow001"
+                "locationCode": "ow001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ow001"
@@ -2274,7 +2463,8 @@
             "lat": 53.21155,
             "lng": 6.56701,
             "extra": {
-                "locationCode": "gn001"
+                "locationCode": "gn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-gn001"
@@ -2286,7 +2476,8 @@
             "lat": 52.78953,
             "lng": 6.89916,
             "extra": {
-                "locationCode": "emn001"
+                "locationCode": "emn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-emn001"
@@ -2298,7 +2489,8 @@
             "lat": 52.06564,
             "lng": 5.14323,
             "extra": {
-                "locationCode": "utl001"
+                "locationCode": "utl001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-utl001"
@@ -2310,7 +2502,8 @@
             "lat": 52.375859,
             "lng": 4.531626,
             "extra": {
-                "locationCode": "zvt001"
+                "locationCode": "zvt001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-zvt001"
@@ -2322,7 +2515,8 @@
             "lat": 50.84962,
             "lng": 5.70491,
             "extra": {
-                "locationCode": "mt001"
+                "locationCode": "mt001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-mt001"
@@ -2334,7 +2528,8 @@
             "lat": 50.84962,
             "lng": 5.70495,
             "extra": {
-                "locationCode": "mt003"
+                "locationCode": "mt003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-mt003"
@@ -2346,7 +2541,8 @@
             "lat": 52.265248,
             "lng": 5.575806,
             "extra": {
-                "locationCode": "pt001"
+                "locationCode": "pt001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-pt001"
@@ -2358,7 +2554,8 @@
             "lat": 52.96098,
             "lng": 5.91617,
             "extra": {
-                "locationCode": "hr002"
+                "locationCode": "hr002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hr002"
@@ -2370,7 +2567,8 @@
             "lat": 52.56016,
             "lng": 5.92167,
             "extra": {
-                "locationCode": "kpn003"
+                "locationCode": "kpn003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-kpn003"
@@ -2382,7 +2580,8 @@
             "lat": 53.104346,
             "lng": 6.885426,
             "extra": {
-                "locationCode": "Vdm001"
+                "locationCode": "Vdm001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Vdm001"
@@ -2394,7 +2593,8 @@
             "lat": 51.93345,
             "lng": 6.132408,
             "extra": {
-                "locationCode": "did001"
+                "locationCode": "did001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-did001"
@@ -2406,7 +2606,8 @@
             "lat": 52.01803,
             "lng": 4.705,
             "extra": {
-                "locationCode": "gd001"
+                "locationCode": "gd001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-gd001"
@@ -2418,7 +2619,8 @@
             "lat": 52.35899,
             "lng": 4.60547,
             "extra": {
-                "locationCode": "had003"
+                "locationCode": "had003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-had003"
@@ -2430,7 +2632,8 @@
             "lat": 52.35899,
             "lng": 4.60547,
             "extra": {
-                "locationCode": "had002"
+                "locationCode": "had002",
+                "fetchTime": 1717406099
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-had002"
@@ -2442,7 +2645,8 @@
             "lat": 51.907233,
             "lng": 4.490302,
             "extra": {
-                "locationCode": "Rtd003"
+                "locationCode": "Rtd003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Rtd003"
@@ -2454,7 +2658,8 @@
             "lat": 51.913304,
             "lng": 4.432742,
             "extra": {
-                "locationCode": "Rtd004"
+                "locationCode": "Rtd004",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Rtd004"
@@ -2466,7 +2671,8 @@
             "lat": 52.69996,
             "lng": 5.28904,
             "extra": {
-                "locationCode": "ekz001"
+                "locationCode": "ekz001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ekz001"
@@ -2478,7 +2684,8 @@
             "lat": 52.36599,
             "lng": 6.469563,
             "extra": {
-                "locationCode": "nvd001"
+                "locationCode": "nvd001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-nvd001"
@@ -2490,7 +2697,8 @@
             "lat": 51.4276,
             "lng": 6.0408,
             "extra": {
-                "locationCode": "hrt001"
+                "locationCode": "hrt001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hrt001"
@@ -2502,7 +2710,8 @@
             "lat": 52.23056,
             "lng": 6.58465,
             "extra": {
-                "locationCode": "go001"
+                "locationCode": "go001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-go001"
@@ -2514,7 +2723,8 @@
             "lat": 51.80099,
             "lng": 4.930693,
             "extra": {
-                "locationCode": "GR002 "
+                "locationCode": "GR002 ",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-GR002%20"
@@ -2526,7 +2736,8 @@
             "lat": 52.140099,
             "lng": 5.589972,
             "extra": {
-                "locationCode": "bnc001"
+                "locationCode": "bnc001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bnc001"
@@ -2538,7 +2749,8 @@
             "lat": 52.04661,
             "lng": 4.49133,
             "extra": {
-                "locationCode": "ztmo001"
+                "locationCode": "ztmo001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ztmo001"
@@ -2550,7 +2762,8 @@
             "lat": 51.582096,
             "lng": 5.194357,
             "extra": {
-                "locationCode": "Ot001"
+                "locationCode": "Ot001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Ot001"
@@ -2562,7 +2775,8 @@
             "lat": 52.32369,
             "lng": 4.93629,
             "extra": {
-                "locationCode": "dvd001"
+                "locationCode": "dvd001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-dvd001"
@@ -2571,10 +2785,11 @@
         "hmh001": {
             "description": "Helmond 't Hout",
             "stationCode": "HMH",
-            "lat": 51.46803,
-            "lng": 5.6313,
+            "lat": 51.468092,
+            "lng": 5.630949,
             "extra": {
-                "locationCode": "hmh001"
+                "locationCode": "hmh001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hmh001"
@@ -2586,7 +2801,8 @@
             "lat": 52.532839,
             "lng": 5.72051,
             "extra": {
-                "locationCode": "DRON001"
+                "locationCode": "DRON001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-DRON001"
@@ -2598,7 +2814,8 @@
             "lat": 52.00517,
             "lng": 4.446053,
             "extra": {
-                "locationCode": "rtd907"
+                "locationCode": "rtd907",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-rtd907"
@@ -2610,7 +2827,8 @@
             "lat": 52.09918,
             "lng": 5.06476,
             "extra": {
-                "locationCode": "utlr001"
+                "locationCode": "utlr001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-utlr001"
@@ -2622,7 +2840,8 @@
             "lat": 52.311914,
             "lng": 4.948114,
             "extra": {
-                "locationCode": "asb002"
+                "locationCode": "asb002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-asb002"
@@ -2634,7 +2853,8 @@
             "lat": 51.00126,
             "lng": 5.85969,
             "extra": {
-                "locationCode": "std002"
+                "locationCode": "std002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-std002"
@@ -2646,7 +2866,8 @@
             "lat": 52.344897,
             "lng": 4.968411,
             "extra": {
-                "locationCode": "dmn001"
+                "locationCode": "dmn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-dmn001"
@@ -2658,7 +2879,8 @@
             "lat": 52.378482,
             "lng": 4.897678,
             "extra": {
-                "locationCode": "asd010"
+                "locationCode": "asd010",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-asd010"
@@ -2670,7 +2892,8 @@
             "lat": 51.923197,
             "lng": 6.072686,
             "extra": {
-                "locationCode": "zv001"
+                "locationCode": "zv001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-zv001"
@@ -2682,7 +2905,8 @@
             "lat": 52.690376,
             "lng": 5.182278,
             "extra": {
-                "locationCode": "hks001"
+                "locationCode": "hks001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hks001"
@@ -2694,7 +2918,8 @@
             "lat": 51.962695,
             "lng": 5.969124,
             "extra": {
-                "locationCode": "wtv001"
+                "locationCode": "wtv001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-wtv001"
@@ -2706,7 +2931,8 @@
             "lat": 52.26595,
             "lng": 5.16272,
             "extra": {
-                "locationCode": "bsmz001"
+                "locationCode": "bsmz001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bsmz001"
@@ -2718,7 +2944,8 @@
             "lat": 52.33725,
             "lng": 4.89075,
             "extra": {
-                "locationCode": "rai001"
+                "locationCode": "rai001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-rai001"
@@ -2730,7 +2957,8 @@
             "lat": 51.995078,
             "lng": 5.980713,
             "extra": {
-                "locationCode": "vp001"
+                "locationCode": "vp001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-vp001"
@@ -2742,7 +2970,8 @@
             "lat": 53.19678,
             "lng": 5.79636,
             "extra": {
-                "locationCode": "lw001"
+                "locationCode": "lw001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-lw001"
@@ -2754,7 +2983,8 @@
             "lat": 52.06346,
             "lng": 5.19642,
             "extra": {
-                "locationCode": "bnk001"
+                "locationCode": "bnk001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bnk001"
@@ -2766,7 +2996,8 @@
             "lat": 52.69232,
             "lng": 6.19411,
             "extra": {
-                "locationCode": "mp002"
+                "locationCode": "mp002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-mp002"
@@ -2778,7 +3009,8 @@
             "lat": 52.34701,
             "lng": 4.91875,
             "extra": {
-                "locationCode": "asa001"
+                "locationCode": "asa001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-asa001"
@@ -2790,7 +3022,8 @@
             "lat": 51.2493,
             "lng": 5.70558,
             "extra": {
-                "locationCode": "wt003"
+                "locationCode": "wt003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-wt003"
@@ -2802,7 +3035,8 @@
             "lat": 52.026939,
             "lng": 5.672048,
             "extra": {
-                "locationCode": "ed001"
+                "locationCode": "ed001",
+                "fetchTime": 1710712243
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ed001"
@@ -2814,7 +3048,8 @@
             "lat": 51.76537,
             "lng": 5.53079,
             "extra": {
-                "locationCode": "o002"
+                "locationCode": "o002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-o002"
@@ -2826,7 +3061,8 @@
             "lat": 53.333643,
             "lng": 6.923376,
             "extra": {
-                "locationCode": "Dz001"
+                "locationCode": "Dz001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Dz001"
@@ -2838,7 +3074,8 @@
             "lat": 52.10367,
             "lng": 5.76998,
             "extra": {
-                "locationCode": "ed901"
+                "locationCode": "ed901",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ed901"
@@ -2847,10 +3084,11 @@
         "Wsm001": {
             "description": "Winsum",
             "stationCode": "WSM",
-            "lat": 53.329908,
-            "lng": 6.519858,
+            "lat": 53.329479,
+            "lng": 6.520013,
             "extra": {
-                "locationCode": "Wsm001"
+                "locationCode": "Wsm001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Wsm001"
@@ -2859,10 +3097,11 @@
         "shl001": {
             "description": "Schiphol",
             "stationCode": "SHL",
-            "lat": 52.30925,
-            "lng": 4.75977,
+            "lat": 52.309265,
+            "lng": 4.759774,
             "extra": {
-                "locationCode": "shl001"
+                "locationCode": "shl001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-shl001"
@@ -2874,7 +3113,8 @@
             "lat": 51.88156,
             "lng": 5.2703,
             "extra": {
-                "locationCode": "gdm001"
+                "locationCode": "gdm001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-gdm001"
@@ -2886,7 +3126,8 @@
             "lat": 52.37785,
             "lng": 4.902062,
             "extra": {
-                "locationCode": "asd002"
+                "locationCode": "asd002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-asd002"
@@ -2898,7 +3139,8 @@
             "lat": 52.102785,
             "lng": 5.008076,
             "extra": {
-                "locationCode": "vtn001"
+                "locationCode": "vtn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-vtn001"
@@ -2910,7 +3152,8 @@
             "lat": 52.22626,
             "lng": 5.18076,
             "extra": {
-                "locationCode": "hvs001"
+                "locationCode": "hvs001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-hvs001"
@@ -2922,7 +3165,8 @@
             "lat": 52.408791,
             "lng": 5.89185,
             "extra": {
-                "locationCode": "Hde001"
+                "locationCode": "Hde001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Hde001"
@@ -2934,7 +3178,8 @@
             "lat": 51.94356,
             "lng": 6.01459,
             "extra": {
-                "locationCode": "dvn001"
+                "locationCode": "dvn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-dvn001"
@@ -2943,10 +3188,11 @@
         "tbg001": {
             "description": "Terborg",
             "stationCode": "TBG",
-            "lat": 51.9223,
-            "lng": 6.3644,
+            "lat": 51.922847,
+            "lng": 6.363685,
             "extra": {
-                "locationCode": "tbg001"
+                "locationCode": "tbg001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-tbg001"
@@ -2958,7 +3204,8 @@
             "lat": 52.081295,
             "lng": 4.323008,
             "extra": {
-                "locationCode": "gvc001"
+                "locationCode": "gvc001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-gvc001"
@@ -2967,10 +3214,11 @@
         "vsv001": {
             "description": "Varsseveld",
             "stationCode": "VSV",
-            "lat": 51.93728,
-            "lng": 6.45807,
+            "lat": 51.937305,
+            "lng": 6.458526,
             "extra": {
-                "locationCode": "vsv001"
+                "locationCode": "vsv001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-vsv001"
@@ -2982,7 +3230,8 @@
             "lat": 52.419138,
             "lng": 4.631457,
             "extra": {
-                "locationCode": "sptz001"
+                "locationCode": "sptz001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-sptz001"
@@ -2994,7 +3243,8 @@
             "lat": 51.5602,
             "lng": 5.086418,
             "extra": {
-                "locationCode": "tb003"
+                "locationCode": "tb003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-tb003"
@@ -3006,7 +3256,8 @@
             "lat": 51.56099,
             "lng": 5.086718,
             "extra": {
-                "locationCode": "tb002"
+                "locationCode": "tb002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-tb002"
@@ -3018,7 +3269,8 @@
             "lat": 52.17035,
             "lng": 4.99054,
             "extra": {
-                "locationCode": "bkl001"
+                "locationCode": "bkl001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bkl001"
@@ -3030,7 +3282,8 @@
             "lat": 52.14708,
             "lng": 4.45593,
             "extra": {
-                "locationCode": "dvnk001"
+                "locationCode": "dvnk001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-dvnk001"
@@ -3042,7 +3295,8 @@
             "lat": 51.899378,
             "lng": 5.195893,
             "extra": {
-                "locationCode": "bsd001"
+                "locationCode": "bsd001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bsd001"
@@ -3054,7 +3308,8 @@
             "lat": 51.45666,
             "lng": 5.78722,
             "extra": {
-                "locationCode": "dn001"
+                "locationCode": "dn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-dn001"
@@ -3066,7 +3321,8 @@
             "lat": 51.957599,
             "lng": 5.578209,
             "extra": {
-                "locationCode": "rhn001"
+                "locationCode": "rhn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-rhn001"
@@ -3078,7 +3334,8 @@
             "lat": 52.04909,
             "lng": 4.47663,
             "extra": {
-                "locationCode": "ztm003"
+                "locationCode": "ztm003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ztm003"
@@ -3090,7 +3347,8 @@
             "lat": 50.896264,
             "lng": 6.019981,
             "extra": {
-                "locationCode": "lg001"
+                "locationCode": "lg001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-lg001"
@@ -3102,7 +3360,8 @@
             "lat": 51.385103,
             "lng": 5.569811,
             "extra": {
-                "locationCode": "hze001"
+                "locationCode": "hze001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hze001"
@@ -3114,7 +3373,8 @@
             "lat": 52.21633,
             "lng": 5.18768,
             "extra": {
-                "locationCode": "hvsp001"
+                "locationCode": "hvsp001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hvsp001"
@@ -3126,7 +3386,8 @@
             "lat": 52.335821,
             "lng": 6.113231,
             "extra": {
-                "locationCode": "ost001"
+                "locationCode": "ost001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ost001"
@@ -3138,7 +3399,8 @@
             "lat": 52.135651,
             "lng": 5.03139,
             "extra": {
-                "locationCode": "mas003"
+                "locationCode": "mas003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-mas003"
@@ -3150,7 +3412,8 @@
             "lat": 52.15446,
             "lng": 5.37339,
             "extra": {
-                "locationCode": "amf002"
+                "locationCode": "amf002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-amf002"
@@ -3162,7 +3425,8 @@
             "lat": 52.026909,
             "lng": 5.671663,
             "extra": {
-                "locationCode": "ed004"
+                "locationCode": "ed004",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ed004"
@@ -3174,7 +3438,8 @@
             "lat": 52.15293,
             "lng": 5.37481,
             "extra": {
-                "locationCode": "amf001"
+                "locationCode": "amf001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-amf001"
@@ -3186,7 +3451,8 @@
             "lat": 52.30292,
             "lng": 4.56551,
             "extra": {
-                "locationCode": "hil001"
+                "locationCode": "hil001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hil001"
@@ -3198,7 +3464,8 @@
             "lat": 52.090746,
             "lng": 5.110702,
             "extra": {
-                "locationCode": "ut020"
+                "locationCode": "ut020",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-ut020"
@@ -3210,7 +3477,8 @@
             "lat": 52.37453,
             "lng": 5.22016,
             "extra": {
-                "locationCode": "alm001"
+                "locationCode": "alm001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-alm001"
@@ -3222,7 +3490,8 @@
             "lat": 51.95865,
             "lng": 6.29575,
             "extra": {
-                "locationCode": "dtc001"
+                "locationCode": "dtc001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-dtc001"
@@ -3234,7 +3503,8 @@
             "lat": 52.438795,
             "lng": 4.815877,
             "extra": {
-                "locationCode": "ZD002"
+                "locationCode": "ZD002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ZD002"
@@ -3246,10 +3516,11 @@
             "lat": 52.854626,
             "lng": 6.520572,
             "extra": {
-                "locationCode": "bl001"
+                "locationCode": "bl001",
+                "fetchTime": 1729603026
             },
             "link": {
-                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-bl001"
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bl001"
             }
         },
         "dld001": {
@@ -3258,7 +3529,8 @@
             "lat": 52.14002,
             "lng": 5.24177,
             "extra": {
-                "locationCode": "dld001"
+                "locationCode": "dld001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-dld001"
@@ -3270,7 +3542,8 @@
             "lat": 51.700878,
             "lng": 5.319214,
             "extra": {
-                "locationCode": "Hto001"
+                "locationCode": "Hto001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Hto001"
@@ -3282,7 +3555,8 @@
             "lat": 52.99185,
             "lng": 6.570329,
             "extra": {
-                "locationCode": "asn001"
+                "locationCode": "asn001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-asn001"
@@ -3294,7 +3568,8 @@
             "lat": 51.44385,
             "lng": 3.59536,
             "extra": {
-                "locationCode": "vs001"
+                "locationCode": "vs001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-vs001"
@@ -3306,7 +3581,8 @@
             "lat": 52.22169,
             "lng": 6.88984,
             "extra": {
-                "locationCode": "es003"
+                "locationCode": "es003",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-es003"
@@ -3318,7 +3594,8 @@
             "lat": 51.4761,
             "lng": 5.661,
             "extra": {
-                "locationCode": "hm001"
+                "locationCode": "hm001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hm001"
@@ -3330,7 +3607,8 @@
             "lat": 52.35864,
             "lng": 4.8339,
             "extra": {
-                "locationCode": "asdl001"
+                "locationCode": "asdl001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-asdl001"
@@ -3342,7 +3620,8 @@
             "lat": 51.829686,
             "lng": 4.777269,
             "extra": {
-                "locationCode": "sdt001"
+                "locationCode": "sdt001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-sdt001"
@@ -3354,7 +3633,8 @@
             "lat": 52.12624,
             "lng": 4.43502,
             "extra": {
-                "locationCode": "vst001"
+                "locationCode": "vst001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-vst001"
@@ -3366,10 +3646,24 @@
             "lat": 52.33042,
             "lng": 4.95566,
             "extra": {
-                "locationCode": "dmnz001"
+                "locationCode": "dmnz001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-dmnz001"
+            }
+        },
+        "ktr001": {
+            "description": "OV-fiets Kesteren",
+            "stationCode": "KTR",
+            "lat": 51.931593,
+            "lng": 5.583736,
+            "extra": {
+                "locationCode": "ktr001",
+                "fetchTime": 1728394573
+            },
+            "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ktr001"
             }
         },
         "Apg001": {
@@ -3378,7 +3672,8 @@
             "lat": 53.325703,
             "lng": 6.86249,
             "extra": {
-                "locationCode": "Apg001"
+                "locationCode": "Apg001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Apg001"
@@ -3390,7 +3685,8 @@
             "lat": 51.87999,
             "lng": 4.53112,
             "extra": {
-                "locationCode": "rlb001"
+                "locationCode": "rlb001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-rlb001"
@@ -3402,7 +3698,8 @@
             "lat": 51.283199,
             "lng": 6.079383,
             "extra": {
-                "locationCode": "rv001"
+                "locationCode": "rv001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-rv001"
@@ -3414,7 +3711,8 @@
             "lat": 52.092506,
             "lng": 5.152792,
             "extra": {
-                "locationCode": "ut903"
+                "locationCode": "ut903",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ut903"
@@ -3423,10 +3721,11 @@
         "wc001": {
             "description": "Wijchen",
             "stationCode": "WC",
-            "lat": 51.811554,
-            "lng": 5.729843,
+            "lat": 51.811556,
+            "lng": 5.729842,
             "extra": {
-                "locationCode": "wc001"
+                "locationCode": "wc001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-wc001"
@@ -3438,7 +3737,8 @@
             "lat": 51.917265,
             "lng": 5.853899,
             "extra": {
-                "locationCode": "est001"
+                "locationCode": "est001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-est001"
@@ -3450,7 +3750,8 @@
             "lat": 52.209578,
             "lng": 5.9692,
             "extra": {
-                "locationCode": "apd001"
+                "locationCode": "apd001",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-apd001"
@@ -3462,7 +3763,8 @@
             "lat": 52.26239,
             "lng": 6.7936,
             "extra": {
-                "locationCode": "hgl002"
+                "locationCode": "hgl002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-hgl002"
@@ -3474,7 +3776,8 @@
             "lat": 52.03988,
             "lng": 4.31965,
             "extra": {
-                "locationCode": "rsw002"
+                "locationCode": "rsw002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-rsw002"
@@ -3486,7 +3789,8 @@
             "lat": 51.49517,
             "lng": 3.61768,
             "extra": {
-                "locationCode": "mdb002"
+                "locationCode": "mdb002",
+                "fetchTime": 1729603026
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-mdb002"
@@ -3498,7 +3802,8 @@
             "lat": 52.027075,
             "lng": 5.671595,
             "extra": {
-                "locationCode": "ed002"
+                "locationCode": "ed002",
+                "fetchTime": 1706022071
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ed002"
