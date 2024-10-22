@@ -1417,7 +1417,7 @@
             }
         },
         "ehv004": {
-            "description": "Eindhoven OV-fiets PopUp (naast AH)",
+            "description": "Eindhoven Centraal Stationshal (naast AH)",
             "stationCode": "EHV",
             "lat": 51.443672,
             "lng": 5.480109,
@@ -3249,7 +3249,7 @@
                 "locationCode": "bl001"
             },
             "link": {
-                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-bl001"
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-bl001"
             }
         },
         "dld001": {
@@ -3370,6 +3370,18 @@
             },
             "link": {
                 "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-dmnz001"
+            }
+        },
+        "ktr001": {
+            "description": "OV-fiets Kesteren",
+            "stationCode": "KTR",
+            "lat": 51.931593,
+            "lng": 5.583736,
+            "extra": {
+                "locationCode": "ktr001"
+            },
+            "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ktr001"
             }
         },
         "Apg001": {
