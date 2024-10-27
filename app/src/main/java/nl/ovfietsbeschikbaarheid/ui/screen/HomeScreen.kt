@@ -46,20 +46,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
+import nl.ovfietsbeschikbaarheid.mapper.OpenStateMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
+import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.ui.theme.Gray80
 import nl.ovfietsbeschikbaarheid.ui.theme.Indigo05
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
+import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
+import nl.ovfietsbeschikbaarheid.ui.theme.Red50
 import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import nl.ovfietsbeschikbaarheid.viewmodel.AskPermissionState
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeContent
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
+import java.time.LocalDateTime
+import java.util.Locale
+import java.util.TimeZone
 
 @Composable
 fun HomeScreen(
@@ -279,7 +287,8 @@ private fun GpsRequestSomething(
     onDoTheThingClicked: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -356,7 +365,8 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(16.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         // Bike icon at the start
         val iconRes = if (location.type == LocationType.EBike) R.drawable.baseline_electric_bike_24 else R.drawable.pedal_bike_24px
@@ -364,33 +374,82 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
             painter = painterResource(id = iconRes),
             tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
             contentDescription = null,
-            modifier = Modifier.padding(end = 8.dp)
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .align(Alignment.CenterVertically)
         )
 
-        location.rentalBikesAvailable?.let {
-            Box(modifier = Modifier.padding(end = 4.dp)) {
-                Text(text = it.toString())
+        Column(modifier = Modifier.weight(1f)) {
+            Row {
                 Text(
-                    text = "8881",
-                    color = Color.Transparent
+                    text = location.title,
                 )
             }
+            Row {
+                if (distance != null) {
+                    Text(
+                        text = distance,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
+                    )
+                }
+                if (location.openingHours != null) {
+                    val openState = OpenStateMapper.getOpenState(
+                        location.openingHours, LocalDateTime.now(TimeZone.getTimeZone("Europe/Amsterdam").toZoneId())
+                    )
+                    if (openState is OpenState.Closed) {
+                        if (distance != null) {
+                            Text(
+                                text = " • ",
+                                color = Color.Gray,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                        Text(text = stringResource(R.string.open_state_closed), color = Red50)
+                        if (openState.openDay == null) {
+                            Text(
+                                text = " " + stringResource(R.string.open_state_opens_today_at, openState.openTime),
+                                color = Color.Gray,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                    }
+                    if (openState is OpenState.Closing) {
+                        if (distance != null) {
+                            Text(
+                                text = " • ",
+                                color = Color.Gray,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                        Text(
+                            text = stringResource(R.string.open_state_closing_soon),
+                            color = Orange50,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                        Text(
+                            text = " " + stringResource(R.string.open_state_closes_at, openState.closingTime),
+                            color = Color.Gray,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                }
+            }
+
         }
 
-        // Location title with weight to take up available space
-        Text(
-            text = location.title,
-            modifier = Modifier.weight(1f)
-        )
-
-        // Row to align location icon and distance to the end
-        if (distance != null) {
-            Text(
+        location.rentalBikesAvailable?.let {
+            Box(
                 modifier = Modifier
                     .wrapContentWidth(Alignment.End)
                     .padding(start = 8.dp),
-                text = distance
-            )
+            ) {
+                Text(text = it.toString())
+//                    Text(
+//                        text = "8881",
+//                        color = Color.Transparent
+//                    )
+            }
         }
     }
 }

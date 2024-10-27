@@ -52,7 +52,8 @@ object LocationsMapper {
                 stationCode = toMap.stationCode,
                 latitude = toMap.lat,
                 longitude = toMap.lng,
-                type = if (description.contains("OV-ebike")) LocationType.EBike else LocationType.Regular
+                type = if (description.contains("OV-ebike")) LocationType.EBike else LocationType.Regular,
+                openingHours = toMap.openingHours
             )
         }.sortedBy { it.title }
     }

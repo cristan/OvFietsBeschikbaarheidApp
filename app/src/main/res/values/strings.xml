@@ -55,6 +55,7 @@
     <string name="open_state_opens_later_at">• Gaat %1$s open om %2$s</string>
     <string name="open_state_closing_soon">Sluit snel</string>
     <string name="open_state_closes_at">• Sluit om %1$s</string>
+    <string name="open">Open</string>
     <string name="open_until">Open tot %1$s</string>
     <string name="open_state_open_247">24/7 open</string>
     <string name="opening_hours_title">Openingstijden</string>

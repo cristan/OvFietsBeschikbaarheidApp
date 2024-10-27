@@ -14,7 +14,9 @@ data class Location(
     val lat: Double,
     val lng: Double,
     val extra: LocationExtra,
-    val link: Link
+    val link: Link,
+    // Weirdly nullable, see Ermelo
+    val openingHours: List<OpeningHours>? = null
 )
 
 @Serializable

@@ -13,6 +13,7 @@ object TestData {
         "HVS",
         latitude = 52.36599,
         longitude = 6.469563,
-        type = LocationType.Regular
+        type = LocationType.Regular,
+        openingHours = emptyList()
     )
 }
