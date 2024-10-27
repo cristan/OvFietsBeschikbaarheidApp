@@ -19,7 +19,7 @@ data class DetailsModel(
     val location: LocationModel?,
     val coordinates: LatLng,
     val stationName: String?,
-    val alternatives: List<LocationOverviewModel>,
+    val alternatives: List<DetailScreenData>,
 )
 
 data class LocationModel(

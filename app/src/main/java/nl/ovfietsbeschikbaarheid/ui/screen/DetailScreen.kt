@@ -57,12 +57,11 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import nl.ovfietsbeschikbaarheid.R
-import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
 import nl.ovfietsbeschikbaarheid.ext.withStyledLink
+import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.LocationModel
-import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
@@ -83,12 +82,13 @@ import java.util.Locale
 
 @Composable
 fun DetailScreen(
+    detailScreenData: DetailScreenData,
     viewModel: DetailsViewModel = koinViewModel(),
-    onAlternativeClicked: (LocationOverviewModel) -> Unit,
+    onAlternativeClicked: (DetailScreenData) -> Unit,
     onBackClicked: () -> Unit
 ) {
     LaunchedEffect(Unit) {
-        viewModel.screenLaunched()
+        viewModel.screenLaunched(detailScreenData)
     }
 
     val context = LocalContext.current
@@ -133,7 +133,7 @@ private fun DetailsView(
     onRetry: () -> Unit,
     onPullToRefresh: () -> Unit,
     onLocationClicked: (String) -> Unit,
-    onAlternativeClicked: (LocationOverviewModel) -> Unit,
+    onAlternativeClicked: (DetailScreenData) -> Unit,
     onBackClicked: () -> Unit
 ) {
     OVFietsBeschikbaarheidTheme {
@@ -189,7 +189,7 @@ private fun DetailsView(
 private fun ActualDetails(
     details: DetailsModel,
     onLocationClicked: (String) -> Unit,
-    onAlternativeClicked: (LocationOverviewModel) -> Unit
+    onAlternativeClicked: (DetailScreenData) -> Unit
 ) {
     Surface(
         Modifier.verticalScroll(rememberScrollState())
@@ -446,7 +446,7 @@ private fun OpeningHours(details: DetailsModel) {
 @Composable
 private fun Alternatives(
     details: DetailsModel,
-    onAlternativeClicked: (LocationOverviewModel) -> Unit
+    onAlternativeClicked: (DetailScreenData) -> Unit
 ) {
     OvCard {
         Text(
@@ -497,7 +497,11 @@ fun DetailsPreview() {
         LatLng(52.15446, 5.37339),
         "Amersfoort",
         listOf(
-            TestData.testLocationOverviewModel
+            DetailScreenData(
+                title = "Amersfoort Centraal",
+                uri = "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-amf001",
+                fetchTime = 1729539103
+            )
         ),
     )
     DetailsView(

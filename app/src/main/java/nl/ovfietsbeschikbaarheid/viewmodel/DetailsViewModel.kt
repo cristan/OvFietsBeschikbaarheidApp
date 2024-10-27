@@ -2,15 +2,14 @@ package nl.ovfietsbeschikbaarheid.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
+import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
-import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.state.ScreenState
@@ -23,7 +22,6 @@ import java.time.ZoneId
 private const val MIN_REFRESH_TIME = 350L
 
 class DetailsViewModel(
-    savedStateHandle: SavedStateHandle,
     private val client: KtorApiClient,
     private val overviewRepository: OverviewRepository,
     private val stationRepository: StationRepository
@@ -32,12 +30,14 @@ class DetailsViewModel(
     private val _screenState = mutableStateOf<ScreenState<DetailsContent>>(ScreenState.Loading)
     val screenState: State<ScreenState<DetailsContent>> = _screenState
 
-    private val overviewModel: LocationOverviewModel = overviewRepository.getAllLocations().find { it.locationCode == savedStateHandle["locationCode"] }!!
+    private lateinit var data: DetailScreenData
 
-    private val _title = mutableStateOf(overviewModel.title)
+    private val _title = mutableStateOf("")
     val title: State<String> = _title
 
-    fun screenLaunched() {
+    fun screenLaunched(data: DetailScreenData) {
+        this.data = data
+        _title.value = data.title
         viewModelScope.launch {
             doRefresh()
         }
@@ -69,16 +69,18 @@ class DetailsViewModel(
     private suspend fun doRefresh(minDelay: Long = 0L) {
         try {
             val before = System.currentTimeMillis()
-            val details = client.getDetails(overviewModel.uri)
+            val details = client.getDetails(data.uri)
             if (details == null) {
-                val fetchTimeInstant = Instant.ofEpochSecond(overviewModel.fetchTime)
+                val fetchTimeInstant = Instant.ofEpochSecond(data.fetchTime)
                 val lastFetched = LocalDateTime.ofInstant(fetchTimeInstant, ZoneId.of("Europe/Amsterdam"))!!
-                _screenState.value = ScreenState.Loaded(DetailsContent.NotFound(overviewModel.title, lastFetched))
+                _screenState.value = ScreenState.Loaded(DetailsContent.NotFound(data.title, lastFetched))
                 return
             }
             val allStations = stationRepository.getAllStations()
             val capabilities = stationRepository.getCapacities()
-            val data = DetailsMapper.convert(details, overviewRepository.getAllLocations(), allStations, capabilities)
+            // TODO: load from cache or reload from the backend
+            val allLocations = overviewRepository.getAllLocations()
+            val data = DetailsMapper.convert(details, allLocations, allStations, capabilities)
             val timeElapsed = System.currentTimeMillis() - before
             if (timeElapsed < minDelay) {
                 delay(minDelay - timeElapsed)

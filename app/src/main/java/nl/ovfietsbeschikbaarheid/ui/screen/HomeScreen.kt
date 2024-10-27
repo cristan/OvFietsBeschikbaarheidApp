@@ -46,7 +46,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
@@ -66,7 +65,6 @@ import nl.ovfietsbeschikbaarheid.viewmodel.HomeContent
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDateTime
-import java.util.Locale
 import java.util.TimeZone
 
 @Composable
