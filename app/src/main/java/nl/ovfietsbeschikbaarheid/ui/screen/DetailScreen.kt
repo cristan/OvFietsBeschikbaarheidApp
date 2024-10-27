@@ -83,13 +83,12 @@ import java.util.Locale
 
 @Composable
 fun DetailScreen(
-    locationCode: String,
     viewModel: DetailsViewModel = koinViewModel(),
     onAlternativeClicked: (LocationOverviewModel) -> Unit,
     onBackClicked: () -> Unit
 ) {
     LaunchedEffect(Unit) {
-        viewModel.setLocationCode(locationCode)
+        viewModel.screenLaunched()
     }
 
     val context = LocalContext.current

@@ -2,6 +2,7 @@ package nl.ovfietsbeschikbaarheid.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
@@ -22,6 +23,7 @@ import java.time.ZoneId
 private const val MIN_REFRESH_TIME = 350L
 
 class DetailsViewModel(
+    savedStateHandle: SavedStateHandle,
     private val client: KtorApiClient,
     private val overviewRepository: OverviewRepository,
     private val stationRepository: StationRepository
@@ -30,14 +32,12 @@ class DetailsViewModel(
     private val _screenState = mutableStateOf<ScreenState<DetailsContent>>(ScreenState.Loading)
     val screenState: State<ScreenState<DetailsContent>> = _screenState
 
-    private val _title = mutableStateOf("")
+    private val overviewModel: LocationOverviewModel = overviewRepository.getAllLocations().find { it.locationCode == savedStateHandle["locationCode"] }!!
+
+    private val _title = mutableStateOf(overviewModel.title)
     val title: State<String> = _title
 
-    private lateinit var overviewModel: LocationOverviewModel
-
-    fun setLocationCode(locationCode: String) {
-        overviewModel = overviewRepository.getAllLocations().find { it.locationCode == locationCode }!!
-        _title.value = overviewModel.title
+    fun screenLaunched() {
         viewModelScope.launch {
             doRefresh()
         }

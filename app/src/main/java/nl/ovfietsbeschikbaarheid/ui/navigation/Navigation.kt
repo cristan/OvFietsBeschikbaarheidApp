@@ -52,10 +52,8 @@ fun Navigation() {
                 else
                     slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End)
             }
-        ) { backStackEntry ->
-            val locationCode = backStackEntry.arguments?.getString("locationCode")!!
+        ) {
             DetailScreen(
-                locationCode = locationCode,
                 onAlternativeClicked = { alternative ->
                     navController.navigate("detail/${alternative.locationCode}")
                 },
