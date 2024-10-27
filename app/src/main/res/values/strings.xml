@@ -35,6 +35,7 @@
     <string name="gps_loading">GPS aan het laden.</string>
 
     <string name="home_nearby">In de buurt</string>
+    <string name="home_search_label">Locatie</string>
 
     <string name="home_no_search_results_for">Geen zoekresultaten voor \"%1$s\"</string>
     <string name="home_search_results_for">In de buurt van \"%1$s\"</string>

@@ -328,7 +328,7 @@ private fun SearchField(
         onValueChange = {
             onSearchTermChanged(it)
         },
-        label = { Text("Locatie") },
+        label = { Text(stringResource(R.string.home_search_label)) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp),
