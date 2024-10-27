@@ -7,6 +7,7 @@ import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -32,39 +33,29 @@ fun Navigation() {
                 }
             })
         }
+        slideInOutComposable("detail/{locationCode}") {
+            NavigableDetailScreen(navController)
+        }
         composable(
-            route = "detail/{locationCode}",
-            enterTransition = {
-                return@composable if (this.initialState.destination.route == "detail/{locationCode}")
-                    null
-                else
-                    slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start)
-            },
-            exitTransition = {
-                return@composable if (this.targetState.destination.route == "detail/{locationCode}")
-                    null
-                else
-                    slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End)
-            },
-            popExitTransition = {
-                return@composable if (this.targetState.destination.route == "detail/{locationCode}")
-                    null
-                else
-                    slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End)
-            }
+            route = "alternative/{locationCode}",
         ) {
-            DetailScreen(
-                onAlternativeClicked = { alternative ->
-                    navController.navigate("detail/${alternative.locationCode}")
-                },
-                onBackClicked = {
-                    navController.navigate("home") {
-                        popUpTo(0)
-                    }
-                }
-            )
+            NavigableDetailScreen(navController)
         }
     }
+}
+
+@Composable
+private fun NavigableDetailScreen(navController: NavHostController) {
+    DetailScreen(
+        onAlternativeClicked = { alternative ->
+            navController.navigate("alternative/${alternative.locationCode}")
+        },
+        onBackClicked = {
+            navController.navigate("home") {
+                popUpTo(0)
+            }
+        }
+    )
 }
 
 private fun NavGraphBuilder.slideInOutComposable(
