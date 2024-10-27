@@ -71,7 +71,7 @@ class DetailsViewModel(
             val before = System.currentTimeMillis()
             val details = client.getDetails(overviewModel.uri)
             if (details == null) {
-                val fetchTimeInstant = Instant.ofEpochSecond(1719066494)
+                val fetchTimeInstant = Instant.ofEpochSecond(overviewModel.fetchTime)
                 val lastFetched = LocalDateTime.ofInstant(fetchTimeInstant, ZoneId.of("Europe/Amsterdam"))!!
                 _screenState.value = ScreenState.Loaded(DetailsContent.NotFound(overviewModel.title, lastFetched))
                 return
