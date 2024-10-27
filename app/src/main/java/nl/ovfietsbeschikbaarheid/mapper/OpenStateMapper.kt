@@ -6,7 +6,6 @@ import nl.ovfietsbeschikbaarheid.model.OpenState
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
-import java.util.Locale
 
 object OpenStateMapper {
     fun getOpenState(openingHours: List<OpeningHours>, dateTime: LocalDateTime): OpenState {
