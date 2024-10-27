@@ -47,7 +47,8 @@ data class Location(
     val lat: Double,
     val lng: Double,
     val extra: LocationExtra,
-    val link: Link
+    val link: Link,
+    val openingHours: List<OpeningHours>? = null
 )
 
 @Serializable
@@ -59,4 +60,12 @@ data class Link(
 data class LocationExtra(
     val locationCode: String,
     val fetchTime: Long,
+)
+
+@Serializable
+data class OpeningHours(
+    val dayOfWeek: Int,
+    val startTime: String,
+    val endTime: String,
+    val closesNextDay: Boolean,
 )
