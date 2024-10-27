@@ -28,22 +28,22 @@ class HomeViewModel(
     private val locationLoader: LocationLoader
 ) : ViewModel() {
 
-    val searchTerm: State<String>
-        field = mutableStateOf("")
+    private val _searchTerm = mutableStateOf("")
+    val searchTerm: State<String> = _searchTerm
 
-    val content: State<HomeContent>
-        // The initial value doesn't really matter: it gets overwritten right away anyway
-        field = mutableStateOf<HomeContent>(HomeContent.InitialEmpty)
+    // The initial value doesn't really matter: it gets overwritten right away anyway
+    private val _content = mutableStateOf<HomeContent>(HomeContent.InitialEmpty)
+    val content: State<HomeContent> = _content
 
     private var geoCoderJob: Job? = null
 
     fun screenLaunched() {
         Timber.d("screenLaunched called")
-        loadData(searchTerm.value)
+        loadData(_searchTerm.value)
     }
 
     fun onReturnedToScreen() {
-        val currentlyShown = content.value
+        val currentlyShown = _content.value
         when {
             currentlyShown is HomeContent.GpsTurnedOff && locationPermissionHelper.isGpsTurnedOn() -> {
                 // The GPS is on now
@@ -59,13 +59,13 @@ class HomeViewModel(
                     && currentlyShown.state == AskPermissionState.DeniedPermanently
                     && LocationPermissionController.mobile().hasPermission() -> {
                 // The user went to the app settings and granted the location permission manually
-                content.value = HomeContent.LoadingGpsLocation
+                _content.value = HomeContent.LoadingGpsLocation
                 fetchLocation()
             }
 
             currentlyShown is HomeContent.GpsContent -> {
                 // Do basically a pull to refresh when re-entering this screen
-                content.value = currentlyShown.copy(isRefreshing = true)
+                _content.value = currentlyShown.copy(isRefreshing = true)
                 fetchLocation()
             }
         }
@@ -73,7 +73,7 @@ class HomeViewModel(
 
     fun refreshGps() {
         Timber.d("refreshGps called")
-        content.value = (content.value as HomeContent.GpsContent).copy(isRefreshing = true)
+        _content.value = (_content.value as HomeContent.GpsContent).copy(isRefreshing = true)
         fetchLocation()
     }
 
@@ -99,20 +99,20 @@ class HomeViewModel(
             // Doesn't happen on Android
             PermissionState.NotDetermined -> Unit
             PermissionState.Denied -> {
-                content.value = HomeContent.AskGpsPermission(AskPermissionState.Denied)
+                _content.value = HomeContent.AskGpsPermission(AskPermissionState.Denied)
             }
             PermissionState.DeniedForever -> {
-                content.value = HomeContent.AskGpsPermission(AskPermissionState.DeniedPermanently)
+                _content.value = HomeContent.AskGpsPermission(AskPermissionState.DeniedPermanently)
             }
             PermissionState.Granted -> {
-                content.value = HomeContent.LoadingGpsLocation
+                _content.value = HomeContent.LoadingGpsLocation
                 fetchLocation()
             }
         }
     }
 
     fun onSearchTermChanged(searchTerm: String) {
-        this.searchTerm.value = searchTerm
+        this._searchTerm.value = searchTerm
         loadData(searchTerm)
     }
 
@@ -121,21 +121,21 @@ class HomeViewModel(
             loadLocation()
         } else {
             val filteredLocations = overviewRepository.getLocations(searchTerm)
-            val currentContent = content.value
+            val currentContent = _content.value
             if (currentContent is HomeContent.SearchTermContent) {
                 // Update the search results right away, but keep the nearby locations and update them in another thread to avoid flicker
-                content.value = currentContent.copy(locations = filteredLocations)
+                _content.value = currentContent.copy(locations = filteredLocations)
             } else {
-                content.value = HomeContent.SearchTermContent(filteredLocations, searchTerm, nearbyLocations = null)
+                _content.value = HomeContent.SearchTermContent(filteredLocations, searchTerm, nearbyLocations = null)
             }
 
             geoCoderJob?.cancel()
             geoCoderJob = viewModelScope.launch {
                 val nearbyLocations = findNearbyLocations(searchTerm)
                 if (nearbyLocations == null && filteredLocations.isEmpty()) {
-                    content.value = HomeContent.NoSearchResults(searchTerm)
+                    _content.value = HomeContent.NoSearchResults(searchTerm)
                 } else {
-                    content.value = HomeContent.SearchTermContent(filteredLocations, searchTerm, nearbyLocations)
+                    _content.value = HomeContent.SearchTermContent(filteredLocations, searchTerm, nearbyLocations)
                 }
             }
         }
@@ -162,13 +162,13 @@ class HomeViewModel(
      */
     private fun loadLocation() {
         if (!locationPermissionHelper.isGpsTurnedOn()) {
-            content.value = HomeContent.GpsTurnedOff
+            _content.value = HomeContent.GpsTurnedOff
         } else if (!LocationPermissionController.mobile().hasPermission()) {
             val showRationale = locationPermissionHelper.shouldShowLocationRationale()
             val state = if (!showRationale) AskPermissionState.Initial else AskPermissionState.Denied
-            content.value = HomeContent.AskGpsPermission(state)
+            _content.value = HomeContent.AskGpsPermission(state)
         } else {
-            content.value = HomeContent.LoadingGpsLocation
+            _content.value = HomeContent.LoadingGpsLocation
             fetchLocation()
         }
     }
@@ -184,11 +184,11 @@ class HomeViewModel(
 
             val coordinates = locationLoader.loadCurrentCoordinates()
             if (coordinates == null) {
-                content.value = HomeContent.GpsError("Geen locatie gevonden")
+                _content.value = HomeContent.GpsError("Geen locatie gevonden")
             } else {
                 val locationsWithDistance =
                     LocationsMapper.withDistance(overviewRepository.getAllLocations(), coordinates)
-                content.value = HomeContent.GpsContent(locationsWithDistance)
+                _content.value = HomeContent.GpsContent(locationsWithDistance)
             }
         }
     }

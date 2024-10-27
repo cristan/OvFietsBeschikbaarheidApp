@@ -27,17 +27,17 @@ class DetailsViewModel(
     private val stationRepository: StationRepository
 ) : ViewModel() {
 
-    val screenState: State<ScreenState<DetailsContent>>
-        field = mutableStateOf<ScreenState<DetailsContent>>(ScreenState.Loading)
+    private val _screenState = mutableStateOf<ScreenState<DetailsContent>>(ScreenState.Loading)
+    val screenState: State<ScreenState<DetailsContent>> = _screenState
 
-    val title: State<String>
-        field = mutableStateOf("")
+    private val _title = mutableStateOf("")
+    val title: State<String> = _title
 
     private lateinit var overviewModel: LocationOverviewModel
 
     fun setLocationCode(locationCode: String) {
         overviewModel = overviewRepository.getAllLocations().find { it.locationCode == locationCode }!!
-        title.value = overviewModel.title
+        _title.value = overviewModel.title
         viewModelScope.launch {
             doRefresh()
         }
@@ -45,7 +45,7 @@ class DetailsViewModel(
 
     fun onReturnToScreenTriggered() {
         if (screenState.value is ScreenState.Loaded) {
-            screenState.setRefreshing()
+            _screenState.setRefreshing()
             viewModelScope.launch {
                 doRefresh()
             }
@@ -54,13 +54,13 @@ class DetailsViewModel(
 
     fun onPullToRefresh() {
         viewModelScope.launch {
-            screenState.setRefreshing()
+            _screenState.setRefreshing()
             doRefresh(MIN_REFRESH_TIME)
         }
     }
 
     fun onRetryClick() {
-        screenState.value = ScreenState.Loading
+        _screenState.value = ScreenState.Loading
         viewModelScope.launch {
             doRefresh()
         }
@@ -73,7 +73,7 @@ class DetailsViewModel(
             if (details == null) {
                 val fetchTimeInstant = Instant.ofEpochSecond(1719066494)
                 val lastFetched = LocalDateTime.ofInstant(fetchTimeInstant, ZoneId.of("Europe/Amsterdam"))!!
-                screenState.value = ScreenState.Loaded(DetailsContent.NotFound(overviewModel.title, lastFetched))
+                _screenState.value = ScreenState.Loaded(DetailsContent.NotFound(overviewModel.title, lastFetched))
                 return
             }
             val allStations = stationRepository.getAllStations()
@@ -83,10 +83,10 @@ class DetailsViewModel(
             if (timeElapsed < minDelay) {
                 delay(minDelay - timeElapsed)
             }
-            screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
+            _screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
         } catch (e: Exception) {
             Timber.e(e)
-            screenState.value = ScreenState.FullPageError
+            _screenState.value = ScreenState.FullPageError
         }
     }
 
