@@ -359,11 +359,15 @@ private fun SearchField(
 
 @Composable
 fun LocationCard(location: LocationOverviewModel, distance: String? = null, onClick: () -> Unit) {
+    val openState = if (location.openingHours == null) null else OpenStateMapper.getOpenState(
+        location.openingHours, LocalDateTime.now(TimeZone.getTimeZone("Europe/Amsterdam").toZoneId())
+    )
+    val hasDataInBottom = distance != null || openState is OpenState.Closed || openState is OpenState.Closing
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = if (hasDataInBottom) 8.dp else 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Bike icon at the start
@@ -392,9 +396,6 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
                     )
                 }
                 if (location.openingHours != null) {
-                    val openState = OpenStateMapper.getOpenState(
-                        location.openingHours, LocalDateTime.now(TimeZone.getTimeZone("Europe/Amsterdam").toZoneId())
-                    )
                     if (openState is OpenState.Closed) {
                         if (distance != null) {
                             Text(
@@ -433,7 +434,6 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
                     }
                 }
             }
-
         }
 
         location.rentalBikesAvailable?.let {

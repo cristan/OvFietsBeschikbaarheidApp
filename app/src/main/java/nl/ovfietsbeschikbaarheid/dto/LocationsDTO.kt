@@ -3,12 +3,7 @@ package nl.ovfietsbeschikbaarheid.dto
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LocationsDTO(
-    val locaties: Map<String, Location>
-)
-
-@Serializable
-data class Location(
+data class LocationDTO(
     val description: String,
     val stationCode: String,
     val lat: Double,
@@ -16,7 +11,7 @@ data class Location(
     val extra: LocationExtra,
     val link: Link,
     // Weirdly nullable, see Ermelo
-    val openingHours: List<OpeningHours>? = null
+    val openingHours: List<OpeningHoursDTO>? = null
 )
 
 @Serializable
@@ -28,5 +23,5 @@ data class Link(
 data class LocationExtra(
     val locationCode: String,
     val fetchTime: Long,
-    //    val rentalBikes: Int?,
+    val rentalBikes: Int? = null,
 )

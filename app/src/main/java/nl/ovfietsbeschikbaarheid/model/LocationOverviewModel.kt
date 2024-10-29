@@ -1,6 +1,6 @@
 package nl.ovfietsbeschikbaarheid.model
 
-import nl.ovfietsbeschikbaarheid.dto.OpeningHours
+import nl.ovfietsbeschikbaarheid.dto.OpeningHoursDTO
 
 data class LocationOverviewModel(
     val title: String,
@@ -12,7 +12,7 @@ data class LocationOverviewModel(
     val latitude: Double,
     val longitude: Double,
     val type: LocationType,
-    val openingHours: List<OpeningHours>?
+    val openingHours: List<OpeningHoursDTO>?
 )
 
 data class LocationOverviewWithDistanceModel(

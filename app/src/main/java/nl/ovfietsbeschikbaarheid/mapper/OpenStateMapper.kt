@@ -1,14 +1,14 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
 import nl.ovfietsbeschikbaarheid.R
-import nl.ovfietsbeschikbaarheid.dto.OpeningHours
+import nl.ovfietsbeschikbaarheid.dto.OpeningHoursDTO
 import nl.ovfietsbeschikbaarheid.model.OpenState
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
 object OpenStateMapper {
-    fun getOpenState(openingHours: List<OpeningHours>, dateTime: LocalDateTime): OpenState {
+    fun getOpenState(openingHours: List<OpeningHoursDTO>, dateTime: LocalDateTime): OpenState {
         // Check for open 24/7
         if (
             openingHours.all { it.startTime == "00:00" && it.endTime == "24:00" } ||

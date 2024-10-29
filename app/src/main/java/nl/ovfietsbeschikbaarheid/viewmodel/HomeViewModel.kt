@@ -28,6 +28,8 @@ class HomeViewModel(
     private val locationLoader: LocationLoader
 ) : ViewModel() {
 
+    private val _lastLoadedLocations = mutableStateOf(emptyList<LocationOverviewModel>())
+
     private val _searchTerm = mutableStateOf("")
     val searchTerm: State<String> = _searchTerm
 
@@ -120,7 +122,7 @@ class HomeViewModel(
         if (searchTerm.isBlank()) {
             loadLocation()
         } else {
-            val filteredLocations = overviewRepository.getLocations(searchTerm)
+            val filteredLocations = overviewRepository.getLocations(_lastLoadedLocations.value, searchTerm)
             val currentContent = _content.value
             if (currentContent is HomeContent.SearchTermContent) {
                 // Update the search results right away, but keep the nearby locations and update them in another thread to avoid flicker
@@ -184,10 +186,13 @@ class HomeViewModel(
 
             val coordinates = locationLoader.loadCurrentCoordinates()
             if (coordinates == null) {
+                // TODO: get from string resource
                 _content.value = HomeContent.NoGpsLocation
             } else {
-                val locationsWithDistance =
-                    LocationsMapper.withDistance(overviewRepository.getAllLocations(), coordinates)
+                // TODO: change notice: it now says "GPS aan het laden", but we're now loading the locations.
+                val locations = overviewRepository.getAllLocations()
+                _lastLoadedLocations.value = locations
+                val locationsWithDistance = LocationsMapper.withDistance(locations, coordinates)
                 _content.value = HomeContent.GpsContent(locationsWithDistance)
             }
         }

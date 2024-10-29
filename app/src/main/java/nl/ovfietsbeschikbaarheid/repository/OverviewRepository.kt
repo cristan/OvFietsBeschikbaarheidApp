@@ -1,35 +1,18 @@
 package nl.ovfietsbeschikbaarheid.repository
 
-import android.content.Context
-import kotlinx.serialization.json.Json
-import nl.ovfietsbeschikbaarheid.R
-import nl.ovfietsbeschikbaarheid.dto.LocationsDTO
+import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 
-class OverviewRepository(private val context: Context) {
-    private var allLocations = listOf<LocationOverviewModel>()
+class OverviewRepository() {
+    private val httpClient = KtorApiClient()
 
-    private val json = Json {
-        ignoreUnknownKeys = true
+    // TODO: can throw an exception. Catch that and allow the user to retry (or use the cached locations)
+    suspend fun getAllLocations(): List<LocationOverviewModel> {
+        return LocationsMapper.map(httpClient.getLocations())
     }
 
-    private fun loadLocations(context: Context): LocationsDTO {
-        val locationsStream = context.resources.openRawResource(R.raw.locations)
-        val inputAsString = locationsStream.bufferedReader().use { it.readText() }
-        return json.decodeFromString<LocationsDTO>(inputAsString)
-//        return httpClient.get("http://fiets.openov.nl/locaties.json").body<LocationsDTO>()
-    }
-
-    fun getAllLocations(): List<LocationOverviewModel> {
-        if (allLocations.isEmpty()) {
-            val response = loadLocations(context)
-            allLocations = LocationsMapper.map(response)
-        }
-        return allLocations
-    }
-
-    fun getLocations(searchTerm: String): List<LocationOverviewModel> {
-        return getAllLocations().filter { it.title.contains(searchTerm, ignoreCase = true) }
+    fun getLocations(allLocations: List<LocationOverviewModel>, searchTerm: String): List<LocationOverviewModel> {
+        return allLocations.filter { it.title.contains(searchTerm, ignoreCase = true) }
     }
 }
