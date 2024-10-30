@@ -43,9 +43,7 @@ fun Navigation() {
         }
         slideInOutComposable<Info> {
             AboutScreen(onBackClicked = {
-                navController.navigate(Home) {
-                    popUpTo(0)
-                }
+                navController.popBackStack<Home>(inclusive = false)
             })
         }
         slideInOutComposable<DetailScreen> { backStackEntry ->
@@ -69,9 +67,7 @@ private fun NavigableDetailScreen(navController: NavHostController, detailScreen
             navController.navigate(DetailScreenAlternative(alternative.title, alternative.uri, alternative.fetchTime))
         },
         onBackClicked = {
-            navController.navigate(Home) {
-                popUpTo(0)
-            }
+            navController.popBackStack<Home>(inclusive = false)
         }
     )
 }
