@@ -129,9 +129,9 @@ private fun HomeView(
                         )
                     }
 
-                    is HomeContent.GpsError -> {
+                    is HomeContent.NoGpsLocation -> {
                         Text(
-                            text = screen.message,
+                            text = stringResource(R.string.home_no_gps_location),
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
                     }
@@ -463,8 +463,8 @@ fun LoadingGpsPreview() {
 
 @Preview
 @Composable
-fun GpsErrorPreview() {
-    TestHomeView("", HomeContent.GpsError("Geen locatie gevonden"))
+fun NoGpsLocationPreview() {
+    TestHomeView("", HomeContent.NoGpsLocation)
 }
 
 @Preview

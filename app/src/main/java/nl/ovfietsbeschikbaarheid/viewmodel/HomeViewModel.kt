@@ -50,7 +50,7 @@ class HomeViewModel(
                 loadLocation()
             }
 
-            currentlyShown is HomeContent.GpsError -> {
+            currentlyShown is HomeContent.NoGpsLocation -> {
                 // Let's try again
                 loadLocation()
             }
@@ -184,7 +184,7 @@ class HomeViewModel(
 
             val coordinates = locationLoader.loadCurrentCoordinates()
             if (coordinates == null) {
-                _content.value = HomeContent.GpsError("Geen locatie gevonden")
+                _content.value = HomeContent.NoGpsLocation
             } else {
                 val locationsWithDistance =
                     LocationsMapper.withDistance(overviewRepository.getAllLocations(), coordinates)
@@ -210,7 +210,7 @@ sealed class HomeContent {
 
     data object GpsTurnedOff : HomeContent()
 
-    data class GpsError(val message: String) : HomeContent()
+    data object NoGpsLocation: HomeContent()
 
     data class GpsContent(
         val locations: List<LocationOverviewWithDistanceModel>,

@@ -39,6 +39,7 @@
 
     <string name="home_no_search_results_for">Geen zoekresultaten voor \"%1$s\"</string>
     <string name="home_search_results_for">In de buurt van \"%1$s\"</string>
+    <string name="home_no_gps_location">Geen locatie gevonden</string>
 
     <string name="details_amount_available">OV-fietsen beschikbaar</string>
     <string name="details_capacity">Max aantal: %1$d</string>
