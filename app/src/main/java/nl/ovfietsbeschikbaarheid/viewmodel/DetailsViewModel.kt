@@ -78,8 +78,7 @@ class DetailsViewModel(
             }
             val allStations = stationRepository.getAllStations()
             val capabilities = stationRepository.getCapacities()
-            // TODO: loads. We only need to do that when we somehow ran out of memory
-            val allLocations = overviewRepository.getAllLocations()
+            val allLocations = overviewRepository.getCachedOrLoad().locations
             val data = DetailsMapper.convert(details, allLocations, allStations, capabilities)
             val timeElapsed = System.currentTimeMillis() - before
             if (timeElapsed < minDelay) {
