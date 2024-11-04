@@ -157,7 +157,7 @@ private fun DetailsView(
             },
         ) { innerPadding ->
             when (details) {
-                ScreenState.FullPageError -> FullPageError(onRetry = onRetry)
+                ScreenState.Error -> FullPageError(onRetry = onRetry)
                 ScreenState.Loading -> FullPageLoader()
                 is ScreenState.Loaded<DetailsContent> -> {
                     when(details.data) {

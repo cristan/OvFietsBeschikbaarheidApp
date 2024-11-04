@@ -10,7 +10,8 @@ sealed class ScreenState<out T> {
         val isRefreshing: Boolean = false
     ) : ScreenState<T>()
 
-    data object FullPageError : ScreenState<Nothing>()
+    // TODO: choose between this and the name FullPageError
+    data object Error : ScreenState<Nothing>()
 }
 
 fun <T> MutableState<ScreenState<T>>.setRefreshing() {

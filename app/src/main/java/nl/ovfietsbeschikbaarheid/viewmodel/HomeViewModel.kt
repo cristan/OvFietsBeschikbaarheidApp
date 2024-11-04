@@ -17,6 +17,7 @@ import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
+import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import timber.log.Timber
@@ -28,8 +29,6 @@ class HomeViewModel(
     private val locationLoader: LocationLoader
 ) : ViewModel() {
 
-    private val _lastLoadedLocations = mutableStateOf(emptyList<LocationOverviewModel>())
-
     private val _searchTerm = mutableStateOf("")
     val searchTerm: State<String> = _searchTerm
 
@@ -38,9 +37,15 @@ class HomeViewModel(
     val content: State<HomeContent> = _content
 
     private var geoCoderJob: Job? = null
+    private var loadLocationsJob: Job? = null
 
     fun screenLaunched() {
         Timber.d("screenLaunched called")
+        if (loadLocationsJob == null) {
+            loadLocationsJob = viewModelScope.launch {
+                overviewRepository.loadAllLocations()
+            }
+        }
         loadData(_searchTerm.value)
     }
 
@@ -122,7 +127,13 @@ class HomeViewModel(
         if (searchTerm.isBlank()) {
             loadLocation()
         } else {
-            val filteredLocations = overviewRepository.getLocations(_lastLoadedLocations.value, searchTerm)
+            val allLocations = overviewRepository.allLocations.value
+            if (allLocations !is ScreenState.Loaded) {
+                // TODO: handle
+                Timber.w("Locations not yet loaded! This isn't handled yet")
+                return
+            }
+            val filteredLocations = overviewRepository.getLocations(allLocations.data, searchTerm)
             val currentContent = _content.value
             if (currentContent is HomeContent.SearchTermContent) {
                 // Update the search results right away, but keep the nearby locations and update them in another thread to avoid flicker
@@ -186,13 +197,16 @@ class HomeViewModel(
 
             val coordinates = locationLoader.loadCurrentCoordinates()
             if (coordinates == null) {
-                // TODO: get from string resource
                 _content.value = HomeContent.NoGpsLocation
             } else {
                 // TODO: change notice: it now says "GPS aan het laden", but we're now loading the locations.
-                val locations = overviewRepository.getAllLocations()
-                _lastLoadedLocations.value = locations
-                val locationsWithDistance = LocationsMapper.withDistance(locations, coordinates)
+                loadLocationsJob?.join()
+                val allLocations = overviewRepository.allLocations.value
+                if (allLocations is ScreenState.Error) {
+                    // TODO: handle
+                    error("Loading error! Not handled yet")
+                }
+                val locationsWithDistance = LocationsMapper.withDistance((allLocations as ScreenState.Loaded).data, coordinates)
                 _content.value = HomeContent.GpsContent(locationsWithDistance)
             }
         }

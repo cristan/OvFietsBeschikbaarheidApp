@@ -88,7 +88,7 @@ class DetailsViewModel(
             _screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
         } catch (e: Exception) {
             Timber.e(e)
-            _screenState.value = ScreenState.FullPageError
+            _screenState.value = ScreenState.Error
         }
     }
 
