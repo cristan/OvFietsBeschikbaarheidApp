@@ -69,6 +69,7 @@ object DetailsMapper {
 
         val foundCapacity = capacities[payload.extra.locationCode.lowercase(Locale.UK)]
         if (foundCapacity == null) {
+            // TODO: add some sort of test which tests all the locations to see whether they have a capacity
             Timber.w("No capacity found for ${payload.extra.locationCode}!")
         }
         val rentalBikesAvailable = payload.extra.rentalBikes
