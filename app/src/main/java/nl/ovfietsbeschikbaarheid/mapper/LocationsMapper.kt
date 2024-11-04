@@ -29,8 +29,13 @@ object LocationsMapper {
             Pair("s-Hertogenbosch", "'s-Hertogenbosch"),
             Pair("Delft, Fietsenstalling", "Delft"),
             Pair("Leiden Centraal,Uitgang LUMC", "Leiden Centraal, Uitgang LUMC"),
-            Pair("Vianen OV-fiets", "Vianen"),
+
             Pair("Hollandse Rading OV-fiets ", "Hollandse Rading"),
+            Pair("Vianen OV-fiets ", "Vianen"),
+            Pair("OV-fiets - Maastricht", "Maastricht"),
+
+            Pair("Openbare fietsenstalling gemeente Groningen : Fietsenstalling Europapark", "Fietsenstalling Europapark"),
+
             // All the other locations at Utrecht start with the word Utrecht, including the other P+Rs. Use the same scheme to make sure they're sorted together.
             Pair("P + R Utrecht Science Park (De Uithof)", "Utrecht P+R Science Park (De Uithof)"),
             // All of these also help with the alphabetical order
@@ -38,7 +43,6 @@ object LocationsMapper {
             Pair("OV-ebike Driebergen-Zeist", "Driebergen-Zeist - OV-ebike"),
             Pair("OV-ebike Groningen", "Groningen - OV-ebike"),
             Pair("OV-ebike Maastricht", "Maastricht - OV-ebike"),
-            Pair("OV-fiets - Maastricht", "Maastricht"),
         )
 
         return locations.map { toMap ->
