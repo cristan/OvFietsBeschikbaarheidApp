@@ -127,7 +127,7 @@ class HomeViewModel(
         if (searchTerm.isBlank()) {
             loadLocation()
         } else {
-            val allLocations = overviewRepository.allLocations.value
+            val allLocations = overviewRepository.allLocations
             if (allLocations !is ScreenState.Loaded) {
                 // TODO: handle
                 Timber.w("Locations not yet loaded! This isn't handled yet")
@@ -164,6 +164,7 @@ class HomeViewModel(
 
         return if (coordinates != null) {
             val foundCoordinates = coordinates.find { it.isInTheNetherlands() } ?: coordinates[0]
+            // TODO: load when more than 1? minute old
             LocationsMapper.withDistance(overviewRepository.getAllLocations(), foundCoordinates)
         } else {
             null
@@ -201,7 +202,7 @@ class HomeViewModel(
             } else {
                 // TODO: change notice: it now says "GPS aan het laden", but we're now loading the locations.
                 loadLocationsJob?.join()
-                val allLocations = overviewRepository.allLocations.value
+                val allLocations = overviewRepository.allLocations
                 if (allLocations is ScreenState.Error) {
                     // TODO: handle
                     error("Loading error! Not handled yet")

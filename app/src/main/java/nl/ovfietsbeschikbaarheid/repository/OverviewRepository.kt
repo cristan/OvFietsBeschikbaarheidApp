@@ -1,6 +1,5 @@
 package nl.ovfietsbeschikbaarheid.repository
 
-import kotlinx.coroutines.flow.MutableStateFlow
 import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
@@ -9,22 +8,21 @@ import nl.ovfietsbeschikbaarheid.state.ScreenState
 class OverviewRepository {
     private val httpClient = KtorApiClient()
 
-//    val allLocations: ScreenState<List<LocationOverviewModel>> = ScreenState.Loading
-
-    val allLocations = MutableStateFlow<ScreenState<List<LocationOverviewModel>>>(ScreenState.Loading)
+    var allLocations: ScreenState<List<LocationOverviewModel>> = ScreenState.Loading
 
     suspend fun loadAllLocations() {
-        // TODO: maybe a separate refresh method
-        val currentState = allLocations.value
+        // TODO: maybe a separate refresh method. Or maybe change the entire setup after we know what to do with refreshing
+        //  In any case: the isRefreshing is not used right now.
+        val currentState = allLocations
         if (currentState is ScreenState.Loaded) {
-            allLocations.value = currentState.copy(isRefreshing = true)
+            allLocations = currentState.copy(isRefreshing = true)
         }
         try {
             val locations = httpClient.getLocations()
             val mapped = LocationsMapper.map(locations)
-            allLocations.value = ScreenState.Loaded(mapped)
+            allLocations = ScreenState.Loaded(mapped)
         } catch (e: Exception) {
-            allLocations.value = ScreenState.Error
+            allLocations = ScreenState.Error
         }
     }
 

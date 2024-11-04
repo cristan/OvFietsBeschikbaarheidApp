@@ -78,7 +78,7 @@ class DetailsViewModel(
             }
             val allStations = stationRepository.getAllStations()
             val capabilities = stationRepository.getCapacities()
-            // TODO: load from cache or reload from the backend
+            // TODO: loads. We only need to do that when we somehow ran out of memory
             val allLocations = overviewRepository.getAllLocations()
             val data = DetailsMapper.convert(details, allLocations, allStations, capabilities)
             val timeElapsed = System.currentTimeMillis() - before
