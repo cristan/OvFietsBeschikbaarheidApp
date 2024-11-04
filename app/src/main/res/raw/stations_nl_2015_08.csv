@@ -342,7 +342,7 @@ id;code;uic;naam;middel_naam;korte_naam;friendly;land;type;geo_lat;geo_lng
 465;ust;8400619;Usquert;Usquert;Usquert;usquert;NL;stoptreinstation;53.4014742;6.6093776
 467;ut;8400621;Utrecht Centraal;Utrecht C.;Utrecht C;utrecht-centraal;NL;megastation;52.0888900756836;5.11027765274048
 718;utlr;8400607;Utrecht Leidsche Rijn;Leidsche Rijn;Leidsche R;utrecht-leidsche-rijn;NL;stoptreinstation;52.09896;5.06523
-469;utl;8400623;Utrecht Lunetten;Utrecht Lunetten;Lunetten;utrecht-lunetten;NL;stoptreinstation;52.0655555725098;5.14416646957397
+469;utln;8400623;Utrecht Lunetten;Utrecht Lunetten;Lunetten;utrecht-lunetten;NL;stoptreinstation;52.0655555725098;5.14416646957397
 470;utm;8400624;Utrecht Maliebaan;Maliebaan;Maliebaan;utrecht-maliebaan;NL;stoptreinstation;52.087776184082;5.13138866424561
 471;uto;8400620;Utrecht Overvecht;Overvecht;Overvecht;utrecht-overvecht;NL;knooppuntstoptreinstation;52.1100006103516;5.12472200393677
 472;utt;8400614;Utrecht Terwijde;Utrecht Terwijde;Terwijde;utrecht-terwijde;NL;stoptreinstation;52.1005554199219;5.04166650772095
