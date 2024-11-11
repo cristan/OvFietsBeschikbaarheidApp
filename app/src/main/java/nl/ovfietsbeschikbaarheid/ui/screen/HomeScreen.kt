@@ -412,7 +412,11 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                         }
-                        Text(text = stringResource(R.string.open_state_closed), color = Red50)
+                        Text(
+                            text = stringResource(R.string.open_state_closed),
+                            color = Red50,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                         if (openState.openDay == null) {
                             Text(
                                 text = " " + stringResource(R.string.open_state_opens_today_at, openState.openTime),
