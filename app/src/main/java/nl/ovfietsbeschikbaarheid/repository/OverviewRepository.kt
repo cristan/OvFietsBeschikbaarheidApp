@@ -3,7 +3,6 @@ package nl.ovfietsbeschikbaarheid.repository
 import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
-import nl.ovfietsbeschikbaarheid.state.ScreenState
 import java.time.Instant
 
 
@@ -14,28 +13,11 @@ class OverviewRepository {
 
     private val httpClient = KtorApiClient()
 
-    var allLocations: ScreenState<List<LocationOverviewModel>> = ScreenState.Loading
-
-    suspend fun loadAllLocations() {
-        // TODO: maybe a separate refresh method. Or maybe change the entire setup after we know what to do with refreshing
-        //  In any case: the isRefreshing is not used right now.
-        val currentState = allLocations
-        if (currentState is ScreenState.Loaded) {
-            allLocations = currentState.copy(isRefreshing = true)
-        }
-        try {
-            val locations = httpClient.getLocations()
-            val mapped = LocationsMapper.map(locations)
-            allLocations = ScreenState.Loaded(mapped)
-        } catch (e: Exception) {
-            allLocations = ScreenState.Error
-        }
-    }
-
     /**
      * Returns the last cached result.
      * In the off chance there is no cached result (which should only happen if the app ran out of memory),
      * the data is loaded again. This will throw an exception when there is no internet for example.
+     * TODO: can throw
      */
     suspend fun getCachedOrLoad(): LocationsResult {
         lastResult?.let {
@@ -48,7 +30,14 @@ class OverviewRepository {
         return locationsResult
     }
 
-    // TODO: can throw an exception. Catch that and allow the user to retry (or use the cached locations)
+    suspend fun getResult(): Result<LocationsResult> {
+        return try {
+            Result.success(getCachedOrLoad())
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun getAllLocations(): List<LocationOverviewModel> {
         return LocationsMapper.map(httpClient.getLocations())
     }

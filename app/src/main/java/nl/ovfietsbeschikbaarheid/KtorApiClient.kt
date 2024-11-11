@@ -27,7 +27,6 @@ class KtorApiClient {
         }
     }
 
-    // TODO: catch exceptions and allow the user to try again
     suspend fun getLocations(): List<LocationDTO> {
         return httpClient.get("https://storage.googleapis.com/ov-fiets-updates/locations.json").body<List<LocationDTO>>()
     }
