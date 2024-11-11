@@ -88,6 +88,7 @@ class HomeViewModel(
     fun onPullToRefresh() {
         Timber.d("onPullToRefresh called")
         _content.value = (_content.value as HomeContent.GpsContent).copy(isRefreshing = true)
+        // TODO: when this fails, show a snackbar instead of blocking the entire screen
         refresh()
     }
 
