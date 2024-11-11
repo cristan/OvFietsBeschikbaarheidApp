@@ -32,7 +32,7 @@
     <string name="gps_off_rationale">GPS is nodig om OV-fiets locaties in de buurt te tonen</string>
     <string name="gps_off_button">Zet GPS aan</string>
 
-    <string name="gps_loading">GPS aan het laden.</string>
+    <string name="loading">Aan het laden</string>
 
     <string name="home_nearby">In de buurt</string>
     <string name="home_search_label">Locatie</string>

@@ -143,7 +143,7 @@ private fun HomeView(
                         )
                     }
 
-                    HomeContent.LoadingGpsLocation -> {
+                    HomeContent.Loading -> {
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -156,7 +156,7 @@ private fun HomeView(
                                     .width(64.dp)
                                     .padding(16.dp),
                             )
-                            Text(stringResource(R.string.gps_loading))
+                            Text(stringResource(R.string.loading))
                         }
                     }
 
@@ -527,8 +527,8 @@ fun NoGpsPreview() {
 
 @Preview
 @Composable
-fun LoadingGpsPreview() {
-    TestHomeView("", HomeContent.LoadingGpsLocation)
+fun LoadingPreview() {
+    TestHomeView("", HomeContent.Loading)
 }
 
 @Preview

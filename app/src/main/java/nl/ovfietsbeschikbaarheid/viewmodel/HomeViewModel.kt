@@ -20,6 +20,8 @@ import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import timber.log.Timber
+import java.time.Duration
+import java.time.Instant
 
 class HomeViewModel(
     private val geocoder: Geocoder,
@@ -66,7 +68,7 @@ class HomeViewModel(
                     && currentlyShown.state == AskPermissionState.DeniedPermanently
                     && LocationPermissionController.mobile().hasPermission() -> {
                 // The user went to the app settings and granted the location permission manually
-                _content.value = HomeContent.LoadingGpsLocation
+                _content.value = HomeContent.Loading
                 fetchLocation()
             }
 
@@ -112,7 +114,7 @@ class HomeViewModel(
                 _content.value = HomeContent.AskGpsPermission(AskPermissionState.DeniedPermanently)
             }
             PermissionState.Granted -> {
-                _content.value = HomeContent.LoadingGpsLocation
+                _content.value = HomeContent.Loading
                 fetchLocation()
             }
         }
@@ -178,29 +180,39 @@ class HomeViewModel(
             val state = if (!showRationale) AskPermissionState.Initial else AskPermissionState.Denied
             _content.value = HomeContent.AskGpsPermission(state)
         } else {
-            _content.value = HomeContent.LoadingGpsLocation
+            _content.value = HomeContent.Loading
             fetchLocation()
         }
     }
 
-    private var loadLocationJob: Job? = null
+    private var loadGpsLocationJob: Job? = null
     private fun fetchLocation() {
-        loadLocationJob?.let {
+        loadGpsLocationJob?.let {
             Timber.d("fetchLocation: Cancelling location job")
             it.cancel()
         }
-        loadLocationJob = viewModelScope.launch {
+        loadGpsLocationJob = viewModelScope.launch {
             Timber.d("fetchLocation: Fetching location")
 
             val coordinates = locationLoader.loadCurrentCoordinates()
             if (coordinates == null) {
                 _content.value = HomeContent.NoGpsLocation
             } else {
-                // TODO: change notice: it now says "GPS aan het laden", but we're now loading the locations.
                 loadLocationsJob?.join()
+
+                // Load the locations again if they're too old
+                allLocationsResult!!.getOrNull()?.let {
+                    val lastFetchTime = it.fetchTime
+                    val now = Instant.now()
+
+                    if (Duration.between(lastFetchTime, now).seconds > 60) {
+                        allLocationsResult = overviewRepository.getResult()
+                    }
+                }
+
                 val allLocations = allLocationsResult!!
                 if (allLocations.isFailure) {
-                    // TODO: handle
+                    // TODO: handle. This should probably be fixed first: this 100% needs to happen and maybe makes other things easier
                     error("Loading error! Not handled yet")
                 } else {
                     val locationsWithDistance = LocationsMapper.withDistance(allLocations.getOrThrow().locations, coordinates)
@@ -223,7 +235,7 @@ sealed class HomeContent {
 
     data class AskGpsPermission(val state: AskPermissionState) : HomeContent()
 
-    data object LoadingGpsLocation : HomeContent()
+    data object Loading : HomeContent()
 
     data object GpsTurnedOff : HomeContent()
 
