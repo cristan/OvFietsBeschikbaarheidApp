@@ -60,6 +60,7 @@ import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
 import nl.ovfietsbeschikbaarheid.ui.theme.Red50
 import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
+import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
 import nl.ovfietsbeschikbaarheid.viewmodel.AskPermissionState
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeContent
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
@@ -90,9 +91,10 @@ fun HomeScreen(
         viewModel::onSearchTermChanged,
         viewModel::onRequestPermissionsClicked,
         viewModel::onTurnOnGpsClicked,
-        viewModel::refreshGps,
+        viewModel::onPullToRefresh,
         onInfoClicked,
         onLocationClick,
+        viewModel::onRetryClicked,
     )
 }
 
@@ -103,9 +105,10 @@ private fun HomeView(
     onSearchTermChanged: (String) -> Unit,
     onRequestLocationClicked: (AskPermissionState) -> Unit,
     onTurnOnGpsClicked: () -> Unit,
-    onGpsRefresh: () -> Unit,
+    onPullToRefresh: () -> Unit,
     onInfoClicked: () -> Unit,
-    onLocationClick: (LocationOverviewModel) -> Unit
+    onLocationClick: (LocationOverviewModel) -> Unit,
+    onRetryClick: () -> Unit
 ) {
     OVFietsBeschikbaarheidTheme {
         Scaffold(
@@ -160,8 +163,12 @@ private fun HomeView(
                         }
                     }
 
+                    HomeContent.NetworkError -> {
+                        FullPageError(onRetry = onRetryClick)
+                    }
+
                     is HomeContent.GpsContent -> {
-                        GpsContent(screen, onLocationClick, onGpsRefresh)
+                        GpsContent(screen, onLocationClick, onPullToRefresh)
                     }
 
                     is HomeContent.NoSearchResults -> {
@@ -172,6 +179,7 @@ private fun HomeView(
                     }
 
                     is HomeContent.SearchTermContent -> {
+                        // TODO?: add a pull to refresh here as well
                         LazyColumn {
                             items(screen.locations) { location ->
                                 LocationCard(location) {
@@ -454,7 +462,7 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
 
 @Composable
 fun TestHomeView(searchTerm: String, content: HomeContent) {
-    HomeView(searchTerm, content, {}, {}, {}, {}, {}, {})
+    HomeView(searchTerm, content, {}, {}, {}, {}, {}, {}, {})
 }
 
 @Preview
@@ -529,6 +537,12 @@ fun NoGpsPreview() {
 @Composable
 fun LoadingPreview() {
     TestHomeView("", HomeContent.Loading)
+}
+
+@Preview
+@Composable
+fun NetworkErrorPreview() {
+    TestHomeView("", HomeContent.NetworkError)
 }
 
 @Preview

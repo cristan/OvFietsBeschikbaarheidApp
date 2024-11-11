@@ -17,12 +17,15 @@ class OverviewRepository {
      * Returns the last cached result.
      * In the off chance there is no cached result (which should only happen if the app ran out of memory),
      * the data is loaded again. This will throw an exception when there is no internet for example.
-     * TODO: can throw
      */
     suspend fun getCachedOrLoad(): LocationsResult {
         lastResult?.let {
             return it
         }
+        return loadLocations()
+    }
+
+    private suspend fun loadLocations(): LocationsResult {
         val locations = httpClient.getLocations()
         val mapped = LocationsMapper.map(locations)
         val locationsResult = LocationsResult(mapped, Instant.now())
@@ -32,7 +35,7 @@ class OverviewRepository {
 
     suspend fun getResult(): Result<LocationsResult> {
         return try {
-            Result.success(getCachedOrLoad())
+            Result.success(loadLocations())
         } catch (e: Exception) {
             Result.failure(e)
         }

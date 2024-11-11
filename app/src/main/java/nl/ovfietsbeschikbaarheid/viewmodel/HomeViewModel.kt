@@ -80,9 +80,21 @@ class HomeViewModel(
         }
     }
 
-    fun refreshGps() {
-        Timber.d("refreshGps called")
+    fun onRetryClicked() {
+        _content.value = HomeContent.Loading
+        refresh()
+    }
+
+    fun onPullToRefresh() {
+        Timber.d("onPullToRefresh called")
         _content.value = (_content.value as HomeContent.GpsContent).copy(isRefreshing = true)
+        refresh()
+    }
+
+    private fun refresh() {
+        loadLocationsJob = viewModelScope.launch {
+            allLocationsResult = overviewRepository.getResult()
+        }
         fetchLocation()
     }
 
@@ -129,8 +141,23 @@ class HomeViewModel(
         if (searchTerm.isBlank()) {
             loadLocation()
         } else {
-            // TODO: handle the job not being completed yet or having failed
-            val allLocations = allLocationsResult!!.getOrThrow().locations
+            val currentResult = allLocationsResult!!
+            // TODO: instead, when loadLocationsJob is not running, do something like the code below
+            //  The current code also kinda works, but doesn't refresh the list if you type while seeing a network error, which isn't ideal
+//            if (loadLocationsJob!!.isActive) {
+//                loadLocationsJob!!.join()
+//            } else {
+//                // TODO: wait for this
+//                loadLocationsJob = viewModelScope.launch {
+//                    allLocationsResult = overviewRepository.getResult()
+//                }
+//            }
+            if (currentResult.isFailure) {
+                _content.value = HomeContent.NetworkError
+                return
+            }
+
+            val allLocations = currentResult.getOrThrow().locations
             val filteredLocations = overviewRepository.getLocations(allLocations, searchTerm)
             val currentContent = _content.value
             if (currentContent is HomeContent.SearchTermContent) {
@@ -162,7 +189,6 @@ class HomeViewModel(
 
         return if (coordinates != null) {
             val foundCoordinates = coordinates.find { it.isInTheNetherlands() } ?: coordinates[0]
-            // TODO: load when more than 1? minute old and also catch exception
             LocationsMapper.withDistance(allLocationsResult!!.getOrThrow().locations, foundCoordinates)
         } else {
             null
@@ -212,8 +238,7 @@ class HomeViewModel(
 
                 val allLocations = allLocationsResult!!
                 if (allLocations.isFailure) {
-                    // TODO: handle. This should probably be fixed first: this 100% needs to happen and maybe makes other things easier
-                    error("Loading error! Not handled yet")
+                    _content.value = HomeContent.NetworkError
                 } else {
                     val locationsWithDistance = LocationsMapper.withDistance(allLocations.getOrThrow().locations, coordinates)
                     _content.value = HomeContent.GpsContent(locationsWithDistance)
@@ -236,6 +261,8 @@ sealed class HomeContent {
     data class AskGpsPermission(val state: AskPermissionState) : HomeContent()
 
     data object Loading : HomeContent()
+
+    data object NetworkError : HomeContent()
 
     data object GpsTurnedOff : HomeContent()
 
