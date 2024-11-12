@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import com.google.android.gms.maps.model.LatLng
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
+import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.LocationModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
@@ -64,7 +65,7 @@ object DetailsMapper {
 
                     // Don't pick yourself
                     it.locationCode != payload.extra.locationCode
-        }
+        }.map { DetailScreenData(it.title, it.uri, it.fetchTime) }
 
         val foundCapacity = capacities[payload.extra.locationCode.lowercase(Locale.UK)]
         if (foundCapacity == null) {

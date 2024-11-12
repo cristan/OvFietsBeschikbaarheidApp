@@ -9,6 +9,7 @@ import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
+import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import timber.log.Timber
 
 class KtorApiClient {
@@ -24,6 +25,10 @@ class KtorApiClient {
         install(Logging) {
             level = LogLevel.ALL
         }
+    }
+
+    suspend fun getLocations(): List<LocationDTO> {
+        return httpClient.get("https://storage.googleapis.com/ov-fiets-updates/locations.json").body<List<LocationDTO>>()
     }
 
     suspend fun getDetails(detailUri: String): DetailsDTO? {

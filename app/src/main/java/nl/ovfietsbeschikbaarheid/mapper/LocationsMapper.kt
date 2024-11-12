@@ -1,7 +1,7 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
 import dev.jordond.compass.Coordinates
-import nl.ovfietsbeschikbaarheid.dto.LocationsDTO
+import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.ext.distanceTo
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
@@ -10,21 +10,7 @@ import java.text.DecimalFormat
 import kotlin.math.roundToInt
 
 object LocationsMapper {
-    private val nonExistingLocations = listOf(
-        "asb003",
-        "ut018",
-        "UTVR002",
-        "gvc021",
-        "had002",
-        "ed001",
-        "ed002",
-        // TODO: we might want to add "ktr001": it's added recently, but no updates since
-    )
-
-    fun map(locationsDTO: LocationsDTO): List<LocationOverviewModel> {
-        val locations = locationsDTO.locaties.values
-            .filter { !nonExistingLocations.contains(it.extra.locationCode) }
-
+    fun map(locations: List<LocationDTO>): List<LocationOverviewModel> {
         val replacements = hashMapOf(
             Pair("s-Hertogenbosch", "'s-Hertogenbosch"),
             Pair("Delft, Fietsenstalling", "Delft"),
@@ -49,13 +35,15 @@ object LocationsMapper {
             val description = replacements[toMap.description] ?: toMap.description
             LocationOverviewModel(
                 title = description,
+                rentalBikesAvailable = toMap.extra.rentalBikes,
                 uri = toMap.link.uri,
                 fetchTime = toMap.extra.fetchTime,
                 locationCode = toMap.extra.locationCode,
                 stationCode = toMap.stationCode,
                 latitude = toMap.lat,
                 longitude = toMap.lng,
-                type = if (description.contains("OV-ebike")) LocationType.EBike else LocationType.Regular
+                type = if (description.contains("OV-ebike")) LocationType.EBike else LocationType.Regular,
+                openingHours = toMap.openingHours
             )
         }.sortedBy { it.title }
     }
