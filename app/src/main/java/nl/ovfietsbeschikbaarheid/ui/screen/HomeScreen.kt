@@ -65,6 +65,7 @@ import nl.ovfietsbeschikbaarheid.viewmodel.AskPermissionState
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeContent
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
+import java.time.Instant
 import java.time.LocalDateTime
 import java.util.TimeZone
 
@@ -572,5 +573,5 @@ fun GpsResultsPreview() {
             )
         ),
     )
-    TestHomeView("", HomeContent.GpsContent(locations))
+    TestHomeView("", HomeContent.GpsContent(locations, Instant.ofEpochMilli(1731442462000)))
 }

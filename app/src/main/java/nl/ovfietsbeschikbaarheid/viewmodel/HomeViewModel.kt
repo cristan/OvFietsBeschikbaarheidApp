@@ -39,7 +39,7 @@ class HomeViewModel(
 
     private var geoCoderJob: Job? = null
     private var loadLocationsJob: Job? = null
-    private var allLocationsResult: Result<OverviewRepository.LocationsResult>? = null
+    private var allLocationsResult: Result<List<LocationOverviewModel>>? = null
 
     fun screenLaunched() {
         Timber.d("screenLaunched called")
@@ -73,9 +73,10 @@ class HomeViewModel(
             }
 
             currentlyShown is HomeContent.GpsContent -> {
-                // Do basically a pull to refresh when re-entering this screen
-                _content.value = currentlyShown.copy(isRefreshing = true)
-                fetchLocation()
+                // Do basically a pull to refresh when re-entering this screen when the data is 5 minutes or more old
+                if (Duration.between(currentlyShown.fetchTime, Instant.now()).toMinutes() >= 5) {
+                    refresh()
+                }
             }
         }
     }
@@ -158,7 +159,7 @@ class HomeViewModel(
                 return
             }
 
-            val allLocations = currentResult.getOrThrow().locations
+            val allLocations = currentResult.getOrThrow()
             val filteredLocations = overviewRepository.getLocations(allLocations, searchTerm)
             val currentContent = _content.value
             if (currentContent is HomeContent.SearchTermContent) {
@@ -180,6 +181,7 @@ class HomeViewModel(
         }
     }
 
+    // TODO: extract to other file
     private suspend fun findNearbyLocations(searchTerm: String): List<LocationOverviewWithDistanceModel>? {
         val geoCoderAvailable = geocoder.isAvailable()
         if (!geoCoderAvailable) {
@@ -190,7 +192,7 @@ class HomeViewModel(
 
         return if (coordinates != null) {
             val foundCoordinates = coordinates.find { it.isInTheNetherlands() } ?: coordinates[0]
-            LocationsMapper.withDistance(allLocationsResult!!.getOrThrow().locations, foundCoordinates)
+            LocationsMapper.withDistance(allLocationsResult!!.getOrThrow(), foundCoordinates)
         } else {
             null
         }
@@ -227,22 +229,12 @@ class HomeViewModel(
             } else {
                 loadLocationsJob?.join()
 
-                // Load the locations again if they're too old
-                allLocationsResult!!.getOrNull()?.let {
-                    val lastFetchTime = it.fetchTime
-                    val now = Instant.now()
-
-                    if (Duration.between(lastFetchTime, now).seconds > 60) {
-                        allLocationsResult = overviewRepository.getResult()
-                    }
-                }
-
                 val allLocations = allLocationsResult!!
                 if (allLocations.isFailure) {
                     _content.value = HomeContent.NetworkError
                 } else {
-                    val locationsWithDistance = LocationsMapper.withDistance(allLocations.getOrThrow().locations, coordinates)
-                    _content.value = HomeContent.GpsContent(locationsWithDistance)
+                    val locationsWithDistance = LocationsMapper.withDistance(allLocations.getOrThrow(), coordinates)
+                    _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now())
                 }
             }
         }
@@ -271,6 +263,7 @@ sealed class HomeContent {
 
     data class GpsContent(
         val locations: List<LocationOverviewWithDistanceModel>,
+        val fetchTime: Instant,
         val isRefreshing: Boolean = false
     ) : HomeContent()
 

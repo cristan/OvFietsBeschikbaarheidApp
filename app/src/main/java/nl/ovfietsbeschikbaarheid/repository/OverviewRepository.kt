@@ -9,7 +9,7 @@ import java.time.Instant
 class OverviewRepository {
     data class LocationsResult(val locations: List<LocationOverviewModel>, val fetchTime: Instant)
 
-    private var lastResult: LocationsResult? = null
+    private var lastResult: List<LocationOverviewModel>? = null
 
     private val httpClient = KtorApiClient()
 
@@ -18,22 +18,21 @@ class OverviewRepository {
      * In the off chance there is no cached result (which should only happen if the app ran out of memory),
      * the data is loaded again. This will throw an exception when there is no internet for example.
      */
-    suspend fun getCachedOrLoad(): LocationsResult {
+    suspend fun getCachedOrLoad(): List<LocationOverviewModel> {
         lastResult?.let {
             return it
         }
         return loadLocations()
     }
 
-    private suspend fun loadLocations(): LocationsResult {
+    private suspend fun loadLocations(): List<LocationOverviewModel> {
         val locations = httpClient.getLocations()
         val mapped = LocationsMapper.map(locations)
-        val locationsResult = LocationsResult(mapped, Instant.now())
-        lastResult = locationsResult
-        return locationsResult
+        lastResult = mapped
+        return mapped
     }
 
-    suspend fun getResult(): Result<LocationsResult> {
+    suspend fun getResult(): Result<List<LocationOverviewModel>> {
         return try {
             Result.success(loadLocations())
         } catch (e: Exception) {
