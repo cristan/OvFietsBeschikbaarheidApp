@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -379,17 +378,6 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
             .padding(horizontal = 16.dp, vertical = if (hasDataInBottom) 8.dp else 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Bike icon at the start
-        val iconRes = if (location.type == LocationType.EBike) R.drawable.baseline_electric_bike_24 else R.drawable.pedal_bike_24px
-        Icon(
-            painter = painterResource(id = iconRes),
-            tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
-            contentDescription = null,
-            modifier = Modifier
-                .padding(end = 8.dp)
-                .align(Alignment.CenterVertically)
-        )
-
         Column(modifier = Modifier.weight(1f)) {
             Row {
                 Text(
@@ -450,16 +438,23 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
         }
 
         location.rentalBikesAvailable?.let {
+            val iconRes = if (location.type == LocationType.EBike) R.drawable.baseline_electric_bike_24 else R.drawable.pedal_bike_24px
+            Icon(
+                painter = painterResource(id = iconRes),
+                tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                contentDescription = null,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
             Box(
-                modifier = Modifier
-                    .wrapContentWidth(Alignment.End)
-                    .padding(start = 8.dp),
+                modifier = Modifier.padding(start = 8.dp),
             ) {
                 Text(text = it.toString())
-//                    Text(
-//                        text = "8881",
-//                        color = Color.Transparent
-//                    )
+
+                // Placeholder so all numbers are left aligned. Text, so it scales when people have a larger font size
+                Text(
+                    text = "888",
+                    color = Color.Transparent
+                )
             }
         }
     }
@@ -492,6 +487,7 @@ fun SearchResultsNearbyPreview() {
     val locations = listOf(
         TestData.testLocationOverviewModel.copy(
             title = "Amsterdam Zuid Mahlerplein",
+            rentalBikesAvailable = 9
         ),
         TestData.testLocationOverviewModel.copy(
             title = "Amsterdam Zuid Zuidplein",
@@ -502,12 +498,14 @@ fun SearchResultsNearbyPreview() {
             "800 m",
             TestData.testLocationOverviewModel.copy(
                 title = "Amsterdam Zuid Mahlerplein",
+                rentalBikesAvailable = 9
             )
         ),
         LocationOverviewWithDistanceModel(
             "1,1 km",
             TestData.testLocationOverviewModel.copy(
                 title = "Amsterdam Zuid Zuidplein",
+                rentalBikesAvailable = 101
             )
         ),
     )
@@ -564,6 +562,7 @@ fun GpsResultsPreview() {
             "800 m",
             TestData.testLocationOverviewModel.copy(
                 title = "Amsterdam Zuid Mahlerplein",
+                rentalBikesAvailable = 13
             )
         ),
         LocationOverviewWithDistanceModel(
