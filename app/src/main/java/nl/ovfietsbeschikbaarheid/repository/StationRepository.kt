@@ -3,7 +3,7 @@ package nl.ovfietsbeschikbaarheid.repository
 import android.content.Context
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import nl.ovfietsbeschikbaarheid.R
-import java.util.Locale
+import nl.ovfietsbeschikbaarheid.util.dutchLocale
 
 class StationRepository(private val context: Context) {
     private var cachedStations: Map<String, String>? = null
@@ -19,7 +19,7 @@ class StationRepository(private val context: Context) {
         val stationsStream = context.resources.openRawResource(R.raw.stations_nl_2015_08)
         val stations = HashMap<String, String>()
         csvReader { delimiter = ';' }.readAll(stationsStream).forEach {
-            val code = it[1].uppercase(Locale.UK)
+            val code = it[1].uppercase(dutchLocale)
             val stationName = it[3]
             stations[code] = stationName
         }

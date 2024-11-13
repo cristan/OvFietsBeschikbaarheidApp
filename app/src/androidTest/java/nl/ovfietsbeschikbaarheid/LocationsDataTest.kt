@@ -4,8 +4,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.runBlocking
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
+import nl.ovfietsbeschikbaarheid.util.dutchLocale
 import org.junit.Test
-import java.util.Locale
 
 class LocationsDataTest {
 
@@ -24,7 +24,7 @@ class LocationsDataTest {
                     // Same applies to Utrecht Vaartsche Rijn: this is made at 2016.
                     println("Station ${it.stationCode} not found for $it")
                 }
-                val foundCapacity = capacities[it.locationCode.lowercase(Locale.UK)]
+                val foundCapacity = capacities[it.locationCode.lowercase(dutchLocale)]
                 if (foundCapacity == null) {
                     error("Capacity for ${it.locationCode} not found")
                 }

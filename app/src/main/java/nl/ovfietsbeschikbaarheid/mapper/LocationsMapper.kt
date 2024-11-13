@@ -6,7 +6,9 @@ import nl.ovfietsbeschikbaarheid.ext.distanceTo
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
+import nl.ovfietsbeschikbaarheid.util.dutchLocale
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import kotlin.math.roundToInt
 
 object LocationsMapper {
@@ -49,9 +51,12 @@ object LocationsMapper {
     }
 
     fun withDistance(locations: List<LocationOverviewModel>, currentCoordinates: Coordinates): List<LocationOverviewWithDistanceModel> {
+        val symbols = DecimalFormatSymbols(dutchLocale)
+
         val kmFormat = DecimalFormat().apply {
             minimumFractionDigits = 1
             maximumFractionDigits = 1
+            decimalFormatSymbols = symbols
         }
         return locations
             .sortedBy { it.distanceTo(currentCoordinates) }
