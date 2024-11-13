@@ -5,13 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -48,17 +48,25 @@ import androidx.compose.ui.unit.dp
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
+import nl.ovfietsbeschikbaarheid.mapper.OpenStateMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
+import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.ui.theme.Gray80
 import nl.ovfietsbeschikbaarheid.ui.theme.Indigo05
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
+import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
+import nl.ovfietsbeschikbaarheid.ui.theme.Red50
 import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
+import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
 import nl.ovfietsbeschikbaarheid.viewmodel.AskPermissionState
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeContent
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
+import java.time.Instant
+import java.time.LocalDateTime
+import java.util.TimeZone
 
 @Composable
 fun HomeScreen(
@@ -83,9 +91,10 @@ fun HomeScreen(
         viewModel::onSearchTermChanged,
         viewModel::onRequestPermissionsClicked,
         viewModel::onTurnOnGpsClicked,
-        viewModel::refreshGps,
+        viewModel::onPullToRefresh,
         onInfoClicked,
         onLocationClick,
+        viewModel::onRetryClicked,
     )
 }
 
@@ -96,9 +105,10 @@ private fun HomeView(
     onSearchTermChanged: (String) -> Unit,
     onRequestLocationClicked: (AskPermissionState) -> Unit,
     onTurnOnGpsClicked: () -> Unit,
-    onGpsRefresh: () -> Unit,
+    onPullToRefresh: () -> Unit,
     onInfoClicked: () -> Unit,
-    onLocationClick: (LocationOverviewModel) -> Unit
+    onLocationClick: (LocationOverviewModel) -> Unit,
+    onRetryClick: () -> Unit
 ) {
     OVFietsBeschikbaarheidTheme {
         Scaffold(
@@ -129,14 +139,14 @@ private fun HomeView(
                         )
                     }
 
-                    is HomeContent.GpsError -> {
+                    is HomeContent.NoGpsLocation -> {
                         Text(
-                            text = screen.message,
+                            text = stringResource(R.string.home_no_gps_location),
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
                     }
 
-                    HomeContent.LoadingGpsLocation -> {
+                    HomeContent.Loading -> {
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -149,12 +159,16 @@ private fun HomeView(
                                     .width(64.dp)
                                     .padding(16.dp),
                             )
-                            Text(stringResource(R.string.gps_loading))
+                            Text(stringResource(R.string.loading))
                         }
                     }
 
+                    HomeContent.NetworkError -> {
+                        FullPageError(onRetry = onRetryClick)
+                    }
+
                     is HomeContent.GpsContent -> {
-                        GpsContent(screen, onLocationClick, onGpsRefresh)
+                        GpsContent(screen, onLocationClick, onPullToRefresh)
                     }
 
                     is HomeContent.NoSearchResults -> {
@@ -165,6 +179,7 @@ private fun HomeView(
                     }
 
                     is HomeContent.SearchTermContent -> {
+                        // TODO?: add a pull to refresh here as well
                         LazyColumn {
                             items(screen.locations) { location ->
                                 LocationCard(location) {
@@ -278,7 +293,8 @@ private fun GpsRequestSomething(
     onDoTheThingClicked: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -328,7 +344,7 @@ private fun SearchField(
         onValueChange = {
             onSearchTermChanged(it)
         },
-        label = { Text("Locatie") },
+        label = { Text(stringResource(R.string.home_search_label)) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp),
@@ -351,42 +367,102 @@ private fun SearchField(
 
 @Composable
 fun LocationCard(location: LocationOverviewModel, distance: String? = null, onClick: () -> Unit) {
+    val openState = if (location.openingHours == null) null else OpenStateMapper.getOpenState(
+        location.openingHours, LocalDateTime.now(TimeZone.getTimeZone("Europe/Amsterdam").toZoneId())
+    )
+    val hasDataInBottom = distance != null || openState is OpenState.Closed || openState is OpenState.Closing
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(16.dp)
+            .padding(horizontal = 16.dp, vertical = if (hasDataInBottom) 8.dp else 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        // Bike icon at the start
-        val iconRes = if (location.type == LocationType.EBike) R.drawable.baseline_electric_bike_24 else R.drawable.pedal_bike_24px
-        Icon(
-            painter = painterResource(id = iconRes),
-            tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
-            contentDescription = null,
-            modifier = Modifier.padding(end = 8.dp)
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            Row {
+                Text(
+                    text = location.title,
+                )
+            }
+            Row {
+                if (distance != null) {
+                    Text(
+                        text = distance,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Gray
+                    )
+                }
+                if (location.openingHours != null) {
+                    if (openState is OpenState.Closed) {
+                        if (distance != null) {
+                            Text(
+                                text = " • ",
+                                color = Color.Gray,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                        Text(
+                            text = stringResource(R.string.open_state_closed),
+                            color = Red50,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        if (openState.openDay == null) {
+                            Text(
+                                text = " " + stringResource(R.string.open_state_opens_today_at, openState.openTime),
+                                color = Color.Gray,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                    }
+                    if (openState is OpenState.Closing) {
+                        if (distance != null) {
+                            Text(
+                                text = " • ",
+                                color = Color.Gray,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                        Text(
+                            text = stringResource(R.string.open_state_closing_soon),
+                            color = Orange50,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                        Text(
+                            text = " " + stringResource(R.string.open_state_closes_at, openState.closingTime),
+                            color = Color.Gray,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                }
+            }
+        }
 
-        // Location title with weight to take up available space
-        Text(
-            text = location.title,
-            modifier = Modifier.weight(1f)
-        )
-
-        // Row to align location icon and distance to the end
-        if (distance != null) {
-            Text(
-                modifier = Modifier
-                    .wrapContentWidth(Alignment.End)
-                    .padding(start = 8.dp),
-                text = distance
+        location.rentalBikesAvailable?.let {
+            val iconRes = if (location.type == LocationType.EBike) R.drawable.baseline_electric_bike_24 else R.drawable.pedal_bike_24px
+            Icon(
+                painter = painterResource(id = iconRes),
+                tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                contentDescription = null,
+                modifier = Modifier.align(Alignment.CenterVertically)
             )
+            Box(
+                modifier = Modifier.padding(start = 8.dp),
+            ) {
+                Text(text = it.toString())
+
+                // Placeholder so all numbers are left aligned. Text, so it scales when people have a larger font size
+                Text(
+                    text = "888",
+                    color = Color.Transparent
+                )
+            }
         }
     }
 }
 
 @Composable
 fun TestHomeView(searchTerm: String, content: HomeContent) {
-    HomeView(searchTerm, content, {}, {}, {}, {}, {}, {})
+    HomeView(searchTerm, content, {}, {}, {}, {}, {}, {}, {})
 }
 
 @Preview
@@ -395,9 +471,11 @@ fun SearchResultsPreview() {
     val locations = listOf(
         TestData.testLocationOverviewModel.copy(
             title = "Amsterdam Zuid Mahlerplein",
+            rentalBikesAvailable = 329
         ),
         TestData.testLocationOverviewModel.copy(
             title = "Amsterdam Zuid Zuidplein",
+            rentalBikesAvailable = 300
         ),
     )
     TestHomeView("Amsterdam Zuid", HomeContent.SearchTermContent(locations, "Amsterdam Zuid", null))
@@ -409,6 +487,7 @@ fun SearchResultsNearbyPreview() {
     val locations = listOf(
         TestData.testLocationOverviewModel.copy(
             title = "Amsterdam Zuid Mahlerplein",
+            rentalBikesAvailable = 9
         ),
         TestData.testLocationOverviewModel.copy(
             title = "Amsterdam Zuid Zuidplein",
@@ -419,12 +498,14 @@ fun SearchResultsNearbyPreview() {
             "800 m",
             TestData.testLocationOverviewModel.copy(
                 title = "Amsterdam Zuid Mahlerplein",
+                rentalBikesAvailable = 9
             )
         ),
         LocationOverviewWithDistanceModel(
             "1,1 km",
             TestData.testLocationOverviewModel.copy(
                 title = "Amsterdam Zuid Zuidplein",
+                rentalBikesAvailable = 101
             )
         ),
     )
@@ -457,14 +538,20 @@ fun NoGpsPreview() {
 
 @Preview
 @Composable
-fun LoadingGpsPreview() {
-    TestHomeView("", HomeContent.LoadingGpsLocation)
+fun LoadingPreview() {
+    TestHomeView("", HomeContent.Loading)
 }
 
 @Preview
 @Composable
-fun GpsErrorPreview() {
-    TestHomeView("", HomeContent.GpsError("Geen locatie gevonden"))
+fun NetworkErrorPreview() {
+    TestHomeView("", HomeContent.NetworkError)
+}
+
+@Preview
+@Composable
+fun NoGpsLocationPreview() {
+    TestHomeView("", HomeContent.NoGpsLocation)
 }
 
 @Preview
@@ -475,6 +562,7 @@ fun GpsResultsPreview() {
             "800 m",
             TestData.testLocationOverviewModel.copy(
                 title = "Amsterdam Zuid Mahlerplein",
+                rentalBikesAvailable = 13
             )
         ),
         LocationOverviewWithDistanceModel(
@@ -484,5 +572,5 @@ fun GpsResultsPreview() {
             )
         ),
     )
-    TestHomeView("", HomeContent.GpsContent(locations))
+    TestHomeView("", HomeContent.GpsContent(locations, Instant.ofEpochMilli(1731442462000)))
 }

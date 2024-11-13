@@ -8,8 +8,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
+import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
-import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.state.ScreenState
@@ -27,17 +27,17 @@ class DetailsViewModel(
     private val stationRepository: StationRepository
 ) : ViewModel() {
 
-    val screenState: State<ScreenState<DetailsContent>>
-        field = mutableStateOf<ScreenState<DetailsContent>>(ScreenState.Loading)
+    private val _screenState = mutableStateOf<ScreenState<DetailsContent>>(ScreenState.Loading)
+    val screenState: State<ScreenState<DetailsContent>> = _screenState
 
-    val title: State<String>
-        field = mutableStateOf("")
+    private lateinit var data: DetailScreenData
 
-    private lateinit var overviewModel: LocationOverviewModel
+    private val _title = mutableStateOf("")
+    val title: State<String> = _title
 
-    fun setLocationCode(locationCode: String) {
-        overviewModel = overviewRepository.getAllLocations().find { it.locationCode == locationCode }!!
-        title.value = overviewModel.title
+    fun screenLaunched(data: DetailScreenData) {
+        this.data = data
+        _title.value = data.title
         viewModelScope.launch {
             doRefresh()
         }
@@ -45,7 +45,7 @@ class DetailsViewModel(
 
     fun onReturnToScreenTriggered() {
         if (screenState.value is ScreenState.Loaded) {
-            screenState.setRefreshing()
+            _screenState.setRefreshing()
             viewModelScope.launch {
                 doRefresh()
             }
@@ -54,13 +54,13 @@ class DetailsViewModel(
 
     fun onPullToRefresh() {
         viewModelScope.launch {
-            screenState.setRefreshing()
+            _screenState.setRefreshing()
             doRefresh(MIN_REFRESH_TIME)
         }
     }
 
     fun onRetryClick() {
-        screenState.value = ScreenState.Loading
+        _screenState.value = ScreenState.Loading
         viewModelScope.launch {
             doRefresh()
         }
@@ -69,24 +69,26 @@ class DetailsViewModel(
     private suspend fun doRefresh(minDelay: Long = 0L) {
         try {
             val before = System.currentTimeMillis()
-            val details = client.getDetails(overviewModel.uri)
+            val details = client.getDetails(data.uri)
             if (details == null) {
-                val fetchTimeInstant = Instant.ofEpochSecond(1719066494)
+                val fetchTimeInstant = Instant.ofEpochSecond(data.fetchTime)
                 val lastFetched = LocalDateTime.ofInstant(fetchTimeInstant, ZoneId.of("Europe/Amsterdam"))!!
-                screenState.value = ScreenState.Loaded(DetailsContent.NotFound(overviewModel.title, lastFetched))
+                _screenState.value = ScreenState.Loaded(DetailsContent.NotFound(data.title, lastFetched))
                 return
             }
             val allStations = stationRepository.getAllStations()
             val capabilities = stationRepository.getCapacities()
-            val data = DetailsMapper.convert(details, overviewRepository.getAllLocations(), allStations, capabilities)
+            // No need to go for the non-cached locations: these are only for the alternatives, and these barely change at all
+            val allLocations = overviewRepository.getCachedOrLoad()
+            val data = DetailsMapper.convert(details, allLocations, allStations, capabilities)
             val timeElapsed = System.currentTimeMillis() - before
             if (timeElapsed < minDelay) {
                 delay(minDelay - timeElapsed)
             }
-            screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
+            _screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
         } catch (e: Exception) {
             Timber.e(e)
-            screenState.value = ScreenState.FullPageError
+            _screenState.value = ScreenState.FullPageError
         }
     }
 

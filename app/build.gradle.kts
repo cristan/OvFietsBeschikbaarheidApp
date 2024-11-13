@@ -7,14 +7,14 @@ plugins {
 
 android {
     namespace = "nl.ovfietsbeschikbaarheid"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "nl.ovfietsbeschikbaarheid"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 11
-        versionName = "1.2"
+        targetSdk = 35
+        versionCode = 12
+        versionName = "2.0"
 
         // Only include resources for supported languages
         resourceConfigurations += listOf("nl", "en")
@@ -45,12 +45,6 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
-    }
-}
-
-kotlin {
-    sourceSets.all {
-        languageSettings.enableLanguageFeature("ExplicitBackingFields")
     }
 }
 

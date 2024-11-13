@@ -32,7 +32,7 @@ data class DetailsPayload(
 
     val extra: PayloadExtra,
 
-    val openingHours: List<OpeningHours>? = null,
+    val openingHours: List<OpeningHoursDTO>? = null,
     val infoImages: List<InfoImage>,
 )
 
@@ -45,14 +45,6 @@ data class PayloadExtra(
     val serviceType: String? = null,
 
     val locationCode: String,
-)
-
-@Serializable
-data class OpeningHours(
-    val dayOfWeek: Int,
-    val startTime: String,
-    val endTime: String,
-    val closesNextDay: Boolean,
 )
 
 @Serializable
