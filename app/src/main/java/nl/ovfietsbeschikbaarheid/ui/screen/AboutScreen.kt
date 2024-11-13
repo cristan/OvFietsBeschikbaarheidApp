@@ -88,7 +88,7 @@ private fun AboutView(
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
                     text = buildAnnotatedString {
-                        append("Deze app is open source! Bekijk de broncode op ")
+                        append(stringResource(R.string.about_app_text_1))
                         withStyledLink(text = "github.com/cristan/OvFietsBeschikbaarheidApp", url = "https://github.com/cristan/OvFietsBeschikbaarheidApp")
                         append(stringResource(R.string.about_app_text_2))
                     }
