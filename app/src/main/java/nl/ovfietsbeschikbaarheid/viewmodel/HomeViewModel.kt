@@ -37,12 +37,13 @@ class HomeViewModel(
     private val _content = mutableStateOf<HomeContent>(HomeContent.InitialEmpty)
     val content: State<HomeContent> = _content
 
-    private var geoCoderJob: Job? = null
+    private var loadGpsLocationJob: Job? = null
     private var loadLocationsJob: Job? = null
+    private var geoCoderJob: Job? = null
     private var allLocationsResult: Result<List<LocationOverviewModel>>? = null
 
     fun screenLaunched() {
-        Timber.d("screenLaunched called")
+        Timber.d("screenLaunched called ${System.currentTimeMillis()}")
         if (loadLocationsJob == null) {
             loadLocationsJob = viewModelScope.launch {
                 allLocationsResult = overviewRepository.getResult()
@@ -52,6 +53,7 @@ class HomeViewModel(
     }
 
     fun onReturnedToScreen() {
+        Timber.d("onReturnedToScreen called")
         val currentlyShown = _content.value
         when {
             currentlyShown is HomeContent.GpsTurnedOff && locationPermissionHelper.isGpsTurnedOn() -> {
@@ -155,6 +157,7 @@ class HomeViewModel(
 //                }
 //            }
             if (currentResult.isFailure) {
+                Timber.d(currentResult.exceptionOrNull())
                 _content.value = HomeContent.NetworkError
                 return
             }
@@ -214,7 +217,6 @@ class HomeViewModel(
         }
     }
 
-    private var loadGpsLocationJob: Job? = null
     private fun fetchLocation() {
         loadGpsLocationJob?.let {
             Timber.d("fetchLocation: Cancelling location job")
@@ -231,6 +233,7 @@ class HomeViewModel(
 
                 val allLocations = allLocationsResult!!
                 if (allLocations.isFailure) {
+                    Timber.d(allLocations.exceptionOrNull())
                     _content.value = HomeContent.NetworkError
                 } else {
                     val locationsWithDistance = LocationsMapper.withDistance(allLocations.getOrThrow(), coordinates)
