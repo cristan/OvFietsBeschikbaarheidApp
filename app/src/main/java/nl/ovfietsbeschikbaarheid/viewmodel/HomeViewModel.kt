@@ -42,14 +42,22 @@ class HomeViewModel(
     private var geoCoderJob: Job? = null
     private var allLocationsResult: Result<List<LocationOverviewModel>>? = null
 
+    /**
+     * Called when the screen is launched, but also when navigating back from the details screen.
+     */
     fun screenLaunched() {
         Timber.d("screenLaunched called ${System.currentTimeMillis()}")
-        if (loadLocationsJob == null) {
-            loadLocationsJob = viewModelScope.launch {
-                allLocationsResult = overviewRepository.getResult()
+        if(content.value is HomeContent.InitialEmpty) {
+            // Screen launched for the first time
+            if (loadLocationsJob == null) {
+                loadLocationsJob = viewModelScope.launch {
+                    allLocationsResult = overviewRepository.getResult()
+                }
             }
+            loadData(_searchTerm.value)
+        } else {
+            onReturnedToScreen()
         }
-        loadData(_searchTerm.value)
     }
 
     fun onReturnedToScreen() {
