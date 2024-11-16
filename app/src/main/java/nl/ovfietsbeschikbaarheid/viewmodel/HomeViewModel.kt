@@ -47,7 +47,7 @@ class HomeViewModel(
      */
     fun screenLaunched() {
         Timber.d("screenLaunched called ${System.currentTimeMillis()}")
-        if(content.value is HomeContent.InitialEmpty) {
+        if (content.value is HomeContent.InitialEmpty) {
             // Screen launched for the first time
             if (loadLocationsJob == null) {
                 loadLocationsJob = viewModelScope.launch {
@@ -85,7 +85,11 @@ class HomeViewModel(
             currentlyShown is HomeContent.GpsContent -> {
                 // Do basically a pull to refresh when re-entering this screen when the data is 5 minutes or more old
                 if (Duration.between(currentlyShown.fetchTime, Instant.now()).toMinutes() >= 5) {
-                    refresh()
+                    val currentContent = _content.value
+                    if (currentContent is HomeContent.GpsContent) {
+                        _content.value = currentContent.copy(isRefreshing = true)
+                        refresh()
+                    }
                 }
             }
         }
@@ -134,9 +138,11 @@ class HomeViewModel(
             PermissionState.Denied -> {
                 _content.value = HomeContent.AskGpsPermission(AskPermissionState.Denied)
             }
+
             PermissionState.DeniedForever -> {
                 _content.value = HomeContent.AskGpsPermission(AskPermissionState.DeniedPermanently)
             }
+
             PermissionState.Granted -> {
                 _content.value = HomeContent.Loading
                 fetchLocation()
@@ -270,7 +276,7 @@ sealed class HomeContent {
 
     data object GpsTurnedOff : HomeContent()
 
-    data object NoGpsLocation: HomeContent()
+    data object NoGpsLocation : HomeContent()
 
     data class GpsContent(
         val locations: List<LocationOverviewWithDistanceModel>,
