@@ -188,6 +188,7 @@ class HomeViewModel(
 
             geoCoderJob?.cancel()
             geoCoderJob = viewModelScope.launch {
+                // TODO: will result in weird situations when very slow. I've never seen it slow IRL though, so it's probably fine.
                 val nearbyLocations = findNearbyLocations(searchTerm)
                 if (nearbyLocations == null && filteredLocations.isEmpty()) {
                     _content.value = HomeContent.NoSearchResults(searchTerm)
