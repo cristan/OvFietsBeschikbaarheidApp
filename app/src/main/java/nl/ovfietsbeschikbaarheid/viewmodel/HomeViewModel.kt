@@ -54,7 +54,7 @@ class HomeViewModel(
                     allLocationsResult = overviewRepository.getResult()
                 }
             }
-            loadData(_searchTerm.value)
+            loadLocation()
         } else {
             onReturnedToScreen()
         }
@@ -152,14 +152,14 @@ class HomeViewModel(
 
     fun onSearchTermChanged(searchTerm: String) {
         this._searchTerm.value = searchTerm
-        loadData(searchTerm)
-    }
 
-    private fun loadData(searchTerm: String) {
         if (searchTerm.isBlank()) {
             loadLocation()
         } else {
+            // TODO: crashes when you start typing before the locations have fully loaded
             val currentResult = allLocationsResult!!
+
+
             // TODO: instead, when loadLocationsJob is not running, do something like the code below
             //  The current code also kinda works, but doesn't refresh the list if you type while seeing a network error, which isn't ideal
 //            if (loadLocationsJob!!.isActive) {
