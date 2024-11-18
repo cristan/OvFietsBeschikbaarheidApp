@@ -37,21 +37,31 @@ class HomeViewModel(
     private val _content = mutableStateOf<HomeContent>(HomeContent.InitialEmpty)
     val content: State<HomeContent> = _content
 
-    private var geoCoderJob: Job? = null
+    private var loadGpsLocationJob: Job? = null
     private var loadLocationsJob: Job? = null
+    private var geoCoderJob: Job? = null
     private var allLocationsResult: Result<List<LocationOverviewModel>>? = null
 
+    /**
+     * Called when the screen is launched, but also when navigating back from the details screen.
+     */
     fun screenLaunched() {
-        Timber.d("screenLaunched called")
-        if (loadLocationsJob == null) {
-            loadLocationsJob = viewModelScope.launch {
-                allLocationsResult = overviewRepository.getResult()
+        Timber.d("screenLaunched called ${System.currentTimeMillis()}")
+        if (content.value is HomeContent.InitialEmpty) {
+            // Screen launched for the first time
+            if (loadLocationsJob == null) {
+                loadLocationsJob = viewModelScope.launch {
+                    allLocationsResult = overviewRepository.getResult()
+                }
             }
+            loadLocation()
+        } else {
+            onReturnedToScreen()
         }
-        loadData(_searchTerm.value)
     }
 
     fun onReturnedToScreen() {
+        Timber.d("onReturnedToScreen called")
         val currentlyShown = _content.value
         when {
             currentlyShown is HomeContent.GpsTurnedOff && locationPermissionHelper.isGpsTurnedOn() -> {
@@ -75,7 +85,11 @@ class HomeViewModel(
             currentlyShown is HomeContent.GpsContent -> {
                 // Do basically a pull to refresh when re-entering this screen when the data is 5 minutes or more old
                 if (Duration.between(currentlyShown.fetchTime, Instant.now()).toMinutes() >= 5) {
-                    refresh()
+                    val currentContent = _content.value
+                    if (currentContent is HomeContent.GpsContent) {
+                        _content.value = currentContent.copy(isRefreshing = true)
+                        refresh()
+                    }
                 }
             }
         }
@@ -124,9 +138,11 @@ class HomeViewModel(
             PermissionState.Denied -> {
                 _content.value = HomeContent.AskGpsPermission(AskPermissionState.Denied)
             }
+
             PermissionState.DeniedForever -> {
                 _content.value = HomeContent.AskGpsPermission(AskPermissionState.DeniedPermanently)
             }
+
             PermissionState.Granted -> {
                 _content.value = HomeContent.Loading
                 fetchLocation()
@@ -136,14 +152,14 @@ class HomeViewModel(
 
     fun onSearchTermChanged(searchTerm: String) {
         this._searchTerm.value = searchTerm
-        loadData(searchTerm)
-    }
 
-    private fun loadData(searchTerm: String) {
         if (searchTerm.isBlank()) {
             loadLocation()
         } else {
+            // TODO: crashes when you start typing before the locations have fully loaded
             val currentResult = allLocationsResult!!
+
+
             // TODO: instead, when loadLocationsJob is not running, do something like the code below
             //  The current code also kinda works, but doesn't refresh the list if you type while seeing a network error, which isn't ideal
 //            if (loadLocationsJob!!.isActive) {
@@ -155,6 +171,7 @@ class HomeViewModel(
 //                }
 //            }
             if (currentResult.isFailure) {
+                Timber.d(currentResult.exceptionOrNull())
                 _content.value = HomeContent.NetworkError
                 return
             }
@@ -171,6 +188,7 @@ class HomeViewModel(
 
             geoCoderJob?.cancel()
             geoCoderJob = viewModelScope.launch {
+                // TODO: will result in weird situations when very slow. I've never seen it slow IRL though, so it's probably fine.
                 val nearbyLocations = findNearbyLocations(searchTerm)
                 if (nearbyLocations == null && filteredLocations.isEmpty()) {
                     _content.value = HomeContent.NoSearchResults(searchTerm)
@@ -214,7 +232,6 @@ class HomeViewModel(
         }
     }
 
-    private var loadGpsLocationJob: Job? = null
     private fun fetchLocation() {
         loadGpsLocationJob?.let {
             Timber.d("fetchLocation: Cancelling location job")
@@ -231,6 +248,7 @@ class HomeViewModel(
 
                 val allLocations = allLocationsResult!!
                 if (allLocations.isFailure) {
+                    Timber.d(allLocations.exceptionOrNull())
                     _content.value = HomeContent.NetworkError
                 } else {
                     val locationsWithDistance = LocationsMapper.withDistance(allLocations.getOrThrow(), coordinates)
@@ -259,7 +277,7 @@ sealed class HomeContent {
 
     data object GpsTurnedOff : HomeContent()
 
-    data object NoGpsLocation: HomeContent()
+    data object NoGpsLocation : HomeContent()
 
     data class GpsContent(
         val locations: List<LocationOverviewWithDistanceModel>,
