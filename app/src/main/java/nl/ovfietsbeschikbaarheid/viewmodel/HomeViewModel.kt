@@ -5,18 +5,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.jordond.compass.Priority
-import dev.jordond.compass.geocoder.Geocoder
 import dev.jordond.compass.permissions.LocationPermissionController
 import dev.jordond.compass.permissions.PermissionState
 import dev.jordond.compass.permissions.mobile
 import dev.jordond.compass.permissions.mobile.openSettings
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import nl.ovfietsbeschikbaarheid.ext.isInTheNetherlands
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
-import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
+import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import timber.log.Timber
@@ -24,7 +22,7 @@ import java.time.Duration
 import java.time.Instant
 
 class HomeViewModel(
-    private val geocoder: Geocoder,
+    private val findNearbyLocationsUseCase: FindNearbyLocationsUseCase,
     private val overviewRepository: OverviewRepository,
     private val locationPermissionHelper: LocationPermissionHelper,
     private val locationLoader: LocationLoader
@@ -159,7 +157,6 @@ class HomeViewModel(
             // TODO: crashes when you start typing before the locations have fully loaded
             val currentResult = allLocationsResult!!
 
-
             // TODO: instead, when loadLocationsJob is not running, do something like the code below
             //  The current code also kinda works, but doesn't refresh the list if you type while seeing a network error, which isn't ideal
 //            if (loadLocationsJob!!.isActive) {
@@ -188,31 +185,15 @@ class HomeViewModel(
 
             geoCoderJob?.cancel()
             geoCoderJob = viewModelScope.launch {
-                // TODO: will result in weird situations when very slow. I've never seen it slow IRL though, so it's probably fine.
-                val nearbyLocations = findNearbyLocations(searchTerm)
+                // TODO: will result in weird situations when very slow (test by adding a delay here).
+                //  I've never seen it slow IRL though, so it's probably fine.
+                val nearbyLocations = findNearbyLocationsUseCase(searchTerm, allLocations)
                 if (nearbyLocations == null && filteredLocations.isEmpty()) {
                     _content.value = HomeContent.NoSearchResults(searchTerm)
                 } else {
                     _content.value = HomeContent.SearchTermContent(filteredLocations, searchTerm, nearbyLocations)
                 }
             }
-        }
-    }
-
-    // TODO: extract to other file
-    private suspend fun findNearbyLocations(searchTerm: String): List<LocationOverviewWithDistanceModel>? {
-        val geoCoderAvailable = geocoder.isAvailable()
-        if (!geoCoderAvailable) {
-            return null
-        }
-
-        val coordinates = geocoder.forward(searchTerm).getOrNull()
-
-        return if (coordinates != null) {
-            val foundCoordinates = coordinates.find { it.isInTheNetherlands() } ?: coordinates[0]
-            LocationsMapper.withDistance(allLocationsResult!!.getOrThrow(), foundCoordinates)
-        } else {
-            null
         }
     }
 
@@ -257,39 +238,4 @@ class HomeViewModel(
             }
         }
     }
-}
-
-enum class AskPermissionState {
-    Initial,
-    Denied,
-    DeniedPermanently
-}
-
-sealed class HomeContent {
-    // Initial empty state while we set things up.
-    data object InitialEmpty : HomeContent()
-
-    data class AskGpsPermission(val state: AskPermissionState) : HomeContent()
-
-    data object Loading : HomeContent()
-
-    data object NetworkError : HomeContent()
-
-    data object GpsTurnedOff : HomeContent()
-
-    data object NoGpsLocation : HomeContent()
-
-    data class GpsContent(
-        val locations: List<LocationOverviewWithDistanceModel>,
-        val fetchTime: Instant,
-        val isRefreshing: Boolean = false
-    ) : HomeContent()
-
-    data class SearchTermContent(
-        val locations: List<LocationOverviewModel>,
-        val searchTerm: String,
-        val nearbyLocations: List<LocationOverviewWithDistanceModel>?
-    ) : HomeContent()
-
-    data class NoSearchResults(val searchTerm: String) : HomeContent()
 }
