@@ -47,10 +47,8 @@ class HomeViewModel(
         Timber.d("screenLaunched called ${System.currentTimeMillis()}")
         if (content.value is HomeContent.InitialEmpty) {
             // Screen launched for the first time
-            if (loadLocationsJob == null) {
-                loadLocationsJob = viewModelScope.launch {
-                    allLocationsResult = overviewRepository.getResult()
-                }
+            loadLocationsJob = viewModelScope.launch {
+                allLocationsResult = overviewRepository.getResult()
             }
             loadLocation()
         } else {
