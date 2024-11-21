@@ -78,7 +78,7 @@ fun HomeScreen(
     val screen by viewModel.content
 
     LaunchedEffect(Unit) {
-        viewModel.screenLaunched()
+        viewModel.onScreenLaunched()
     }
     // Check if permissions changed after returning to the screen
     OnReturnToScreenEffect {

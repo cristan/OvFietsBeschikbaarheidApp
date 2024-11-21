@@ -4,10 +4,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.jordond.compass.Priority
 import dev.jordond.compass.permissions.LocationPermissionController
 import dev.jordond.compass.permissions.PermissionState
-import dev.jordond.compass.permissions.mobile
 import dev.jordond.compass.permissions.mobile.openSettings
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -43,7 +41,7 @@ class HomeViewModel(
     /**
      * Called when the screen is launched, but also when navigating back from the details screen.
      */
-    fun screenLaunched() {
+    fun onScreenLaunched() {
         Timber.d("screenLaunched called ${System.currentTimeMillis()}")
         if (content.value is HomeContent.InitialEmpty) {
             // Screen launched for the first time
@@ -72,7 +70,7 @@ class HomeViewModel(
 
             currentlyShown is HomeContent.AskGpsPermission
                     && currentlyShown.state == AskPermissionState.DeniedPermanently
-                    && LocationPermissionController.mobile().hasPermission() -> {
+                    && locationPermissionHelper.hasGpsPermission() -> {
                 // The user went to the app settings and granted the location permission manually
                 _content.value = HomeContent.Loading
                 fetchLocation()
@@ -127,7 +125,7 @@ class HomeViewModel(
     }
 
     private suspend fun requestPermission() {
-        val permissionState: PermissionState = LocationPermissionController.mobile().requirePermissionFor(Priority.Balanced)
+        val permissionState: PermissionState = locationPermissionHelper.requirePermission()
         when (permissionState) {
             // Doesn't happen on Android
             PermissionState.NotDetermined -> Unit
@@ -201,7 +199,7 @@ class HomeViewModel(
     private fun loadLocation() {
         if (!locationPermissionHelper.isGpsTurnedOn()) {
             _content.value = HomeContent.GpsTurnedOff
-        } else if (!LocationPermissionController.mobile().hasPermission()) {
+        } else if (!locationPermissionHelper.hasGpsPermission()) {
             val showRationale = locationPermissionHelper.shouldShowLocationRationale()
             val state = if (!showRationale) AskPermissionState.Initial else AskPermissionState.Denied
             _content.value = HomeContent.AskGpsPermission(state)

@@ -7,6 +7,10 @@ import android.location.LocationManager
 import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.core.app.ActivityCompat
+import dev.jordond.compass.Priority
+import dev.jordond.compass.permissions.LocationPermissionController
+import dev.jordond.compass.permissions.PermissionState
+import dev.jordond.compass.permissions.mobile
 import java.lang.ref.WeakReference
 
 class LocationPermissionHelper(
@@ -37,4 +41,8 @@ class LocationPermissionHelper(
             startActivity(intent)
         }
     }
+
+    fun hasGpsPermission() = LocationPermissionController.mobile().hasPermission()
+
+    suspend fun requirePermission(): PermissionState = LocationPermissionController.mobile().requirePermissionFor(Priority.Balanced)
 }
