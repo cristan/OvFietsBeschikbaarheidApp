@@ -5,6 +5,9 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
@@ -19,6 +22,7 @@ import org.amshove.kluent.shouldBeInstanceOf
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
 
     @get:Rule
@@ -31,20 +35,61 @@ class HomeViewModelTest {
     private val viewModel = HomeViewModel(findNearbyLocationsUseCase, overviewRepository, locationPermissionHelper, locationLoader)
 
     @Test
-    fun `starting up the app when you have all the permissions and everything works`() = runTest {
-        coEvery { overviewRepository.getResult() } returns Result.success(listOf(TestData.testLocationOverviewModel))
+    fun `starting up the app when you have all the permissions and everything works - GPS first`() = runTest {
+        coEvery { overviewRepository.getResult() } coAnswers {
+            delay(1000L)
+            Result.success(listOf(TestData.testLocationOverviewModel))
+        }
         every { locationPermissionHelper.isGpsTurnedOn() } returns true
         every { locationPermissionHelper.hasGpsPermission() } returns true
-        coEvery { locationLoader.loadCurrentCoordinates() } returns Coordinates(51.46, 6.16)
+        coEvery { locationLoader.loadCurrentCoordinates() } coAnswers {
+            delay(500L)
+            Coordinates(51.46, 6.16)
+        }
 
         viewModel.onScreenLaunched()
+
+        viewModel.content.value shouldBe HomeContent.Loading
+
+        advanceTimeBy(700L)
+        // The GPS is loaded now, but we're still waiting on the backend
+        viewModel.content.value shouldBe HomeContent.Loading
+
+        advanceTimeBy(400L)
+        // All data is now loaded
 
         viewModel.content.value shouldBeInstanceOf HomeContent.GpsContent::class
         val gpsContent = viewModel.content.value as HomeContent.GpsContent
         gpsContent.isRefreshing shouldBe false
 
-        // TODO: emulate loading the data and the GPS. In fact: test both (internet is faster or the GPS is faster)
         gpsContent.locations shouldBeEqualTo listOf(LocationOverviewWithDistanceModel("103,1 km", TestData.testLocationOverviewModel))
+    }
+
+    @Test
+    fun `starting up the app when you have all the permissions and everything works - network first`() = runTest {
+        coEvery { overviewRepository.getResult() } coAnswers {
+            delay(500L)
+            Result.success(listOf(TestData.testLocationOverviewModel))
+        }
+        every { locationPermissionHelper.isGpsTurnedOn() } returns true
+        every { locationPermissionHelper.hasGpsPermission() } returns true
+        coEvery { locationLoader.loadCurrentCoordinates() } coAnswers {
+            delay(1000L)
+            Coordinates(51.46, 6.16)
+        }
+
+        viewModel.onScreenLaunched()
+
+        viewModel.content.value shouldBe HomeContent.Loading
+
+        advanceTimeBy(700L)
+        // The locations are loaded now from the backend, but we're still waiting on the GPS
+        viewModel.content.value shouldBe HomeContent.Loading
+
+        advanceTimeBy(400L)
+        // All data is now loaded
+
+        viewModel.content.value shouldBeInstanceOf HomeContent.GpsContent::class
     }
 
     @Test
