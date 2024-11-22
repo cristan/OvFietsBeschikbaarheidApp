@@ -185,6 +185,11 @@ class HomeViewModelTest {
         assertIs<HomeContent.GpsContent>(viewModel.content.value)
     }
 
+    // TODO: user keeps on stubbornly denying GPS permissions
+    // TODO: user starts searching before the locations are loaded from the backend
+    // TODO: locations could not be loaded from the backend and are then retried
+    // TODO: user starts typing when a full page error is shown
+
     private fun launchWithEverythingOk(allLocations: List<LocationOverviewModel> = listOf(TestData.testLocationOverviewModel)) {
         stubLocationsOk(allLocations)
         stubGpsOk()
