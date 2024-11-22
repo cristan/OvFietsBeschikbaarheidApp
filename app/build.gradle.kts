@@ -83,10 +83,7 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.koin.test.junit4)
-    // No need for kluent-android: the only difference is stuff about functions with spaces in them, but Android has support for that for ages now
-    // https://github.com/MarkusAmshove/Kluent/pull/58
-    testImplementation(libs.kluent)
-    // To get JUnit errors from kotlin.test (which Kluent uses), to e.g. enable diff windows in failure messages
+    // To get JUnit errors from kotlin.test, to e.g. enable diff windows in failure messages
     testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)

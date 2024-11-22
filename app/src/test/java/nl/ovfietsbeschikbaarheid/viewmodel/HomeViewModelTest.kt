@@ -8,19 +8,22 @@ import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import nl.ovfietsbeschikbaarheid.TestData
+import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.testutils.MainDispatcherRule
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
-import org.amshove.kluent.shouldBe
-import org.amshove.kluent.shouldBeEqualTo
-import org.amshove.kluent.shouldBeInstanceOf
 import org.junit.Rule
 import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertIs
+import kotlin.test.assertSame
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
@@ -49,20 +52,20 @@ class HomeViewModelTest {
 
         viewModel.onScreenLaunched()
 
-        viewModel.content.value shouldBe HomeContent.Loading
+        assertSame(viewModel.content.value, HomeContent.Loading)
 
         advanceTimeBy(700L)
         // The GPS is loaded now, but we're still waiting on the backend
-        viewModel.content.value shouldBe HomeContent.Loading
+        assertSame(viewModel.content.value, HomeContent.Loading)
 
         advanceTimeBy(400L)
         // All data is now loaded
 
-        viewModel.content.value shouldBeInstanceOf HomeContent.GpsContent::class
+        assertIs<HomeContent.GpsContent>(viewModel.content.value)
         val gpsContent = viewModel.content.value as HomeContent.GpsContent
-        gpsContent.isRefreshing shouldBe false
+        assertFalse(gpsContent.isRefreshing)
 
-        gpsContent.locations shouldBeEqualTo listOf(LocationOverviewWithDistanceModel("103,1 km", TestData.testLocationOverviewModel))
+        assertEquals(listOf(LocationOverviewWithDistanceModel("103,1 km", TestData.testLocationOverviewModel)), gpsContent.locations)
     }
 
     @Test
@@ -80,32 +83,95 @@ class HomeViewModelTest {
 
         viewModel.onScreenLaunched()
 
-        viewModel.content.value shouldBe HomeContent.Loading
+        assertSame(viewModel.content.value, HomeContent.Loading)
 
         advanceTimeBy(700L)
         // The locations are loaded now from the backend, but we're still waiting on the GPS
-        viewModel.content.value shouldBe HomeContent.Loading
+        assertSame(viewModel.content.value, HomeContent.Loading)
 
         advanceTimeBy(400L)
         // All data is now loaded
 
-        viewModel.content.value shouldBeInstanceOf HomeContent.GpsContent::class
+        assertIs<HomeContent.GpsContent>(viewModel.content.value)
     }
 
     @Test
-    fun `GPS turned off, then accepted`() = runTest {
+    fun `searching - typing something else before the reverse geocode completes`() = runTest {
+        val utrecht = TestData.testLocationOverviewModel.copy(title = "Utrecht")
+        val utrechtTerwijde = TestData.testLocationOverviewModel.copy(title = "Utrecht Terwijde")
+        val allLocations = listOf(utrecht, utrechtTerwijde)
+        launchWithEverythingOk(allLocations)
+
+        // Searching for the first search term is slow
+        val nearbyUtrecht = listOf(
+            LocationOverviewWithDistanceModel("0 km", utrecht),
+            LocationOverviewWithDistanceModel("10 km", utrechtTerwijde)
+        )
+        coEvery { findNearbyLocationsUseCase.invoke("utrecht", allLocations) } coAnswers {
+            delay(1000L)
+
+            nearbyUtrecht
+        }
+
+        // Searching for the second search term is faster
+        val nearbyUtrechtTerwijde = listOf(
+            LocationOverviewWithDistanceModel("0 km", utrechtTerwijde),
+            LocationOverviewWithDistanceModel("10 km", utrecht)
+        )
+        coEvery { findNearbyLocationsUseCase.invoke("utrecht terwijde", allLocations) } coAnswers {
+            delay(500L)
+
+            nearbyUtrechtTerwijde
+        }
+
+        // Searching for the first search term immediately shows the search results while we're searching where the search term is
+        viewModel.onSearchTermChanged("utrecht")
+        assertEquals(HomeContent.SearchTermContent(allLocations, "utrecht", null), viewModel.content.value)
+
+        // Before the data is loaded, the user is searching for something else
+        viewModel.onSearchTermChanged("utrecht terwijde")
+        assertEquals(HomeContent.SearchTermContent(listOf(utrechtTerwijde), "utrecht", null), viewModel.content.value)
+
+        // At the end, the search results of the lastly entered search term are shown
+        advanceUntilIdle()
+        assertEquals(viewModel.content.value, HomeContent.SearchTermContent(listOf(utrechtTerwijde), "utrecht terwijde", nearbyUtrechtTerwijde))
+    }
+
+    @Test
+    fun `searching - clearing the search term before reverse geocode could complete`() = runTest {
+        val allLocations = listOf(TestData.testLocationOverviewModel)
+        launchWithEverythingOk(allLocations)
+
+        val searchTerm = allLocations[0].title
+        coEvery { findNearbyLocationsUseCase.invoke(searchTerm, allLocations) } coAnswers {
+            delay(1000L)
+
+            listOf(LocationOverviewWithDistanceModel("0 km", TestData.testLocationOverviewModel))
+        }
+
+        viewModel.onSearchTermChanged(searchTerm)
+        assertEquals(HomeContent.SearchTermContent(allLocations, searchTerm, null), viewModel.content.value)
+
+        viewModel.onSearchTermChanged("")
+        assertIs<HomeContent.GpsContent>(viewModel.content.value)
+
+        advanceUntilIdle()
+        assertIs<HomeContent.GpsContent>(viewModel.content.value)
+    }
+
+    @Test
+    fun `GPS turned off, then turned on`() = runTest {
         // Internet works fine and GPS permissions were already granted
         every { locationPermissionHelper.hasGpsPermission() }.returns(true)
-        coEvery { overviewRepository.getResult() } returns Result.success(listOf(TestData.testLocationOverviewModel))
         coEvery { locationLoader.loadCurrentCoordinates() } returns Coordinates(51.46, 6.16)
+        stubLocationsOk()
 
         // Screen launching with GPS turned off
-        coEvery { overviewRepository.getResult() } returns Result.success(listOf(TestData.testLocationOverviewModel))
         every { locationPermissionHelper.isGpsTurnedOn() }.returns(false)
         coEvery { locationLoader.loadCurrentCoordinates() } returns Coordinates(51.46, 6.16)
 
         viewModel.onScreenLaunched()
-        viewModel.content.value shouldBeEqualTo HomeContent.GpsTurnedOff
+        assertEquals(viewModel.content.value, HomeContent.GpsTurnedOff)
 
         // User clicks on turn on GPS
         viewModel.onTurnOnGpsClicked()
@@ -116,6 +182,25 @@ class HomeViewModelTest {
         viewModel.onReturnedToScreen()
 
         // No further complications and data is shown
-        viewModel.content.value shouldBeInstanceOf HomeContent.GpsContent::class
+        assertIs<HomeContent.GpsContent>(viewModel.content.value)
+    }
+
+    private fun launchWithEverythingOk(allLocations: List<LocationOverviewModel> = listOf(TestData.testLocationOverviewModel)) {
+        stubLocationsOk(allLocations)
+        stubGpsOk()
+        viewModel.onScreenLaunched()
+    }
+
+    private fun stubLocationsOk(allLocations: List<LocationOverviewModel> = listOf(TestData.testLocationOverviewModel)) {
+        coEvery { overviewRepository.getResult() } returns Result.success(allLocations)
+
+        // This doesn't call a backend, so the regular method can be called.
+        every { overviewRepository.getLocations(any(), any()) } answers { callOriginal() }
+    }
+
+    private fun stubGpsOk() {
+        every { locationPermissionHelper.isGpsTurnedOn() } returns true
+        every { locationPermissionHelper.hasGpsPermission() } returns true
+        coEvery { locationLoader.loadCurrentCoordinates() } returns Coordinates(51.46, 6.16)
     }
 }

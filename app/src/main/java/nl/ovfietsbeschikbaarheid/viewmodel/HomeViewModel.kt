@@ -146,6 +146,7 @@ class HomeViewModel(
 
     fun onSearchTermChanged(searchTerm: String) {
         this._searchTerm.value = searchTerm
+        geoCoderJob?.cancel()
 
         if (searchTerm.isBlank()) {
             loadLocation()
@@ -179,7 +180,6 @@ class HomeViewModel(
                 _content.value = HomeContent.SearchTermContent(filteredLocations, searchTerm, nearbyLocations = null)
             }
 
-            geoCoderJob?.cancel()
             geoCoderJob = viewModelScope.launch {
                 // TODO: will result in weird situations when very slow (test by adding a delay here).
                 //  I've never seen it slow IRL though, so it's probably fine.
