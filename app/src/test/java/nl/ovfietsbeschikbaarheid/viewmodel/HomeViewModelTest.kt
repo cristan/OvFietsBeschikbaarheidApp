@@ -15,12 +15,12 @@ import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.testutils.MainDispatcherRule
+import nl.ovfietsbeschikbaarheid.testutils.shouldBeEqualTo
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import org.junit.Rule
 import org.junit.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertSame
@@ -65,7 +65,7 @@ class HomeViewModelTest {
         val gpsContent = viewModel.content.value as HomeContent.GpsContent
         assertFalse(gpsContent.isRefreshing)
 
-        assertEquals(listOf(LocationOverviewWithDistanceModel("103,1 km", TestData.testLocationOverviewModel)), gpsContent.locations)
+        gpsContent.locations shouldBeEqualTo listOf(LocationOverviewWithDistanceModel("103,1 km", TestData.testLocationOverviewModel))
     }
 
     @Test
@@ -126,15 +126,15 @@ class HomeViewModelTest {
 
         // Searching for the first search term immediately shows the search results while we're searching where the search term is
         viewModel.onSearchTermChanged("utrecht")
-        assertEquals(HomeContent.SearchTermContent(allLocations, "utrecht", null), viewModel.content.value)
+        viewModel.content.value shouldBeEqualTo HomeContent.SearchTermContent(allLocations, "utrecht", null)
 
         // Before the data is loaded, the user is searching for something else
         viewModel.onSearchTermChanged("utrecht terwijde")
-        assertEquals(HomeContent.SearchTermContent(listOf(utrechtTerwijde), "utrecht", null), viewModel.content.value)
+        viewModel.content.value shouldBeEqualTo HomeContent.SearchTermContent(listOf(utrechtTerwijde), "utrecht", null)
 
         // At the end, the search results of the lastly entered search term are shown
         advanceUntilIdle()
-        assertEquals(viewModel.content.value, HomeContent.SearchTermContent(listOf(utrechtTerwijde), "utrecht terwijde", nearbyUtrechtTerwijde))
+        viewModel.content.value shouldBeEqualTo HomeContent.SearchTermContent(listOf(utrechtTerwijde), "utrecht terwijde", nearbyUtrechtTerwijde)
     }
 
     @Test
@@ -150,7 +150,7 @@ class HomeViewModelTest {
         }
 
         viewModel.onSearchTermChanged(searchTerm)
-        assertEquals(HomeContent.SearchTermContent(allLocations, searchTerm, null), viewModel.content.value)
+        viewModel.content.value shouldBeEqualTo HomeContent.SearchTermContent(allLocations, searchTerm, null)
 
         viewModel.onSearchTermChanged("")
         assertIs<HomeContent.GpsContent>(viewModel.content.value)
@@ -171,7 +171,7 @@ class HomeViewModelTest {
         coEvery { locationLoader.loadCurrentCoordinates() } returns Coordinates(51.46, 6.16)
 
         viewModel.onScreenLaunched()
-        assertEquals(viewModel.content.value, HomeContent.GpsTurnedOff)
+        viewModel.content.value shouldBeEqualTo HomeContent.GpsTurnedOff
 
         // User clicks on turn on GPS
         viewModel.onTurnOnGpsClicked()
