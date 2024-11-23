@@ -4,9 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.jordond.compass.permissions.LocationPermissionController
 import dev.jordond.compass.permissions.PermissionState
-import dev.jordond.compass.permissions.mobile.openSettings
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
@@ -116,7 +114,7 @@ class HomeViewModel(
         Timber.d("requestGpsPermissions called")
 
         if (currentState == AskPermissionState.DeniedPermanently) {
-            LocationPermissionController.openSettings()
+            locationPermissionHelper.openSettings()
         } else {
             viewModelScope.launch {
                 requestPermission()

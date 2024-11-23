@@ -1,6 +1,7 @@
 package nl.ovfietsbeschikbaarheid.viewmodel
 
 import dev.jordond.compass.Coordinates
+import dev.jordond.compass.permissions.PermissionState
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -185,7 +186,41 @@ class HomeViewModelTest {
         assertIs<HomeContent.GpsContent>(viewModel.content.value)
     }
 
-    // TODO: user keeps on stubbornly denying GPS permissions
+    @Test
+    fun `user keeps on stubbornly denying GPS permissions until they finally cave`() = runTest {
+        // First app boot (no permissions, but with internet)
+        stubLocationsOk()
+        every { locationPermissionHelper.isGpsTurnedOn() } returns true
+        every { locationPermissionHelper.hasGpsPermission() } returns false
+        every { locationPermissionHelper.shouldShowLocationRationale() } returns false
+
+        viewModel.onScreenLaunched()
+
+        viewModel.content.value shouldBeEqualTo HomeContent.AskGpsPermission(AskPermissionState.Initial)
+
+        // User clicks on "OV-Fiets locaties in je buurt", but doesn't accept the GPS permission
+        coEvery { locationPermissionHelper.requirePermission() } returns PermissionState.Denied
+        viewModel.onRequestPermissionsClicked(AskPermissionState.Initial)
+
+        viewModel.content.value shouldBeEqualTo HomeContent.AskGpsPermission(AskPermissionState.Denied)
+
+        // User clicks on the button but denies again
+        coEvery { locationPermissionHelper.requirePermission() } returns PermissionState.DeniedForever
+        viewModel.onRequestPermissionsClicked(AskPermissionState.Denied)
+
+        viewModel.content.value shouldBeEqualTo HomeContent.AskGpsPermission(AskPermissionState.DeniedPermanently)
+
+        // User clicks on open settings, and finally gives permission
+        viewModel.onRequestPermissionsClicked(AskPermissionState.DeniedPermanently)
+        verify { locationPermissionHelper.openSettings() }
+
+        every { locationPermissionHelper.hasGpsPermission() } returns true
+        coEvery { locationLoader.loadCurrentCoordinates() } returns Coordinates(51.46, 6.16)
+        viewModel.onReturnedToScreen()
+
+        assertIs<HomeContent.GpsContent>(viewModel.content.value)
+    }
+
     // TODO: user starts searching before the locations are loaded from the backend
     // TODO: locations could not be loaded from the backend and are then retried
     // TODO: user starts typing when a full page error is shown

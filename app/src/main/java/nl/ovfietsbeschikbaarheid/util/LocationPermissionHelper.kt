@@ -11,6 +11,7 @@ import dev.jordond.compass.Priority
 import dev.jordond.compass.permissions.LocationPermissionController
 import dev.jordond.compass.permissions.PermissionState
 import dev.jordond.compass.permissions.mobile
+import dev.jordond.compass.permissions.mobile.openSettings
 import java.lang.ref.WeakReference
 
 class LocationPermissionHelper(
@@ -43,6 +44,8 @@ class LocationPermissionHelper(
     }
 
     fun hasGpsPermission() = LocationPermissionController.mobile().hasPermission()
+
+    fun openSettings() = LocationPermissionController.openSettings()
 
     suspend fun requirePermission(): PermissionState = LocationPermissionController.mobile().requirePermissionFor(Priority.Balanced)
 }
