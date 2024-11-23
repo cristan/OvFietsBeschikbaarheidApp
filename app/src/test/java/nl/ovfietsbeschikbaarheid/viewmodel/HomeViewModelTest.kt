@@ -221,9 +221,35 @@ class HomeViewModelTest {
         assertIs<HomeContent.GpsContent>(viewModel.content.value)
     }
 
-    // TODO: user starts searching before the locations are loaded from the backend
+    @Test
+    fun `user starts searching before the locations are loaded from the backend`() = runTest {
+        stubGpsOk()
+        every { overviewRepository.getLocations(any(), any()) } answers { callOriginal() }
+
+        coEvery { overviewRepository.getResult() } coAnswers {
+            delay(1000L)
+            Result.success(listOf(TestData.testLocationOverviewModel))
+        }
+
+        viewModel.onScreenLaunched()
+        viewModel.content.value shouldBeEqualTo HomeContent.Loading
+
+        coEvery { findNearbyLocationsUseCase.invoke(any(), any()) } returns null
+        val searchTerm = TestData.testLocationOverviewModel.title
+        viewModel.onSearchTermChanged(searchTerm)
+
+        // Should show loading until the locations are loaded
+        viewModel.content.value shouldBeEqualTo HomeContent.Loading
+
+        advanceUntilIdle()
+
+        // After the locations are loaded, the results by the current search term should be shown
+        viewModel.content.value shouldBeEqualTo HomeContent.SearchTermContent(listOf(TestData.testLocationOverviewModel), searchTerm, null)
+    }
+
     // TODO: locations could not be loaded from the backend and are then retried
     // TODO: user starts typing when a full page error is shown
+    // TODO: data is refreshed after the user returns after 5+ minutes
 
     private fun launchWithEverythingOk(allLocations: List<LocationOverviewModel> = listOf(TestData.testLocationOverviewModel)) {
         stubLocationsOk(allLocations)

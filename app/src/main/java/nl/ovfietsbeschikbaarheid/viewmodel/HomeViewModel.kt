@@ -31,10 +31,12 @@ class HomeViewModel(
     private val _content = mutableStateOf<HomeContent>(HomeContent.InitialEmpty)
     val content: State<HomeContent> = _content
 
-    private var loadGpsLocationJob: Job? = null
     private var loadLocationsJob: Job? = null
-    private var geoCoderJob: Job? = null
     private var allLocationsResult: Result<List<LocationOverviewModel>>? = null
+
+    private var loadGpsLocationJob: Job? = null
+    private var showSearchTermJob: Job? = null
+    private var geoCoderJob: Job? = null
 
     /**
      * Called when the screen is launched, but also when navigating back from the details screen.
@@ -144,49 +146,50 @@ class HomeViewModel(
 
     fun onSearchTermChanged(searchTerm: String) {
         this._searchTerm.value = searchTerm
+
+        // Stop all jobs which will update the screen: there is something else to show now.
+        loadGpsLocationJob?.cancel()
         geoCoderJob?.cancel()
+        showSearchTermJob?.cancel()
 
         if (searchTerm.isBlank()) {
             loadLocation()
         } else {
-            // TODO: crashes when you start typing before the locations have fully loaded
-            val currentResult = allLocationsResult!!
-
-            // TODO: instead, when loadLocationsJob is not running, do something like the code below
-            //  The current code also kinda works, but doesn't refresh the list if you type while seeing a network error, which isn't ideal
-//            if (loadLocationsJob!!.isActive) {
-//                loadLocationsJob!!.join()
-//            } else {
-//                // TODO: wait for this
-//                loadLocationsJob = viewModelScope.launch {
-//                    allLocationsResult = overviewRepository.getResult()
-//                }
-//            }
-            if (currentResult.isFailure) {
-                Timber.d(currentResult.exceptionOrNull())
-                _content.value = HomeContent.NetworkError
-                return
-            }
-
-            val allLocations = currentResult.getOrThrow()
-            val filteredLocations = overviewRepository.getLocations(allLocations, searchTerm)
-            val currentContent = _content.value
-            if (currentContent is HomeContent.SearchTermContent) {
-                // Update the search results right away, but keep the nearby locations and update them in another thread to avoid flicker
-                _content.value = currentContent.copy(locations = filteredLocations)
-            } else {
-                _content.value = HomeContent.SearchTermContent(filteredLocations, searchTerm, nearbyLocations = null)
-            }
-
-            geoCoderJob = viewModelScope.launch {
-                // TODO: will result in weird situations when very slow (test by adding a delay here).
-                //  I've never seen it slow IRL though, so it's probably fine.
-                val nearbyLocations = findNearbyLocationsUseCase(searchTerm, allLocations)
-                if (nearbyLocations == null && filteredLocations.isEmpty()) {
-                    _content.value = HomeContent.NoSearchResults(searchTerm)
-                } else {
-                    _content.value = HomeContent.SearchTermContent(filteredLocations, searchTerm, nearbyLocations)
+            if (loadLocationsJob!!.isActive) {
+                showSearchTermJob = viewModelScope.launch {
+                    loadLocationsJob!!.join()
+                    showSearchTerm(searchTerm)
                 }
+            } else {
+                showSearchTerm(searchTerm)
+            }
+        }
+    }
+
+    private fun showSearchTerm(searchTerm: String) {
+        val currentResult = allLocationsResult!!
+        if (currentResult.isFailure) {
+            Timber.d(currentResult.exceptionOrNull())
+            _content.value = HomeContent.NetworkError
+            return
+        }
+
+        val allLocations = currentResult.getOrThrow()
+        val filteredLocations = overviewRepository.getLocations(allLocations, searchTerm)
+        val currentContent = _content.value
+        if (currentContent is HomeContent.SearchTermContent) {
+            // Update the search results right away, but keep the nearby locations and update them in another thread to avoid flicker
+            _content.value = currentContent.copy(locations = filteredLocations)
+        } else {
+            _content.value = HomeContent.SearchTermContent(filteredLocations, searchTerm, nearbyLocations = null)
+        }
+
+        geoCoderJob = viewModelScope.launch {
+            val nearbyLocations = findNearbyLocationsUseCase(searchTerm, allLocations)
+            if (nearbyLocations == null && filteredLocations.isEmpty()) {
+                _content.value = HomeContent.NoSearchResults(searchTerm)
+            } else {
+                _content.value = HomeContent.SearchTermContent(filteredLocations, searchTerm, nearbyLocations)
             }
         }
     }
@@ -208,10 +211,6 @@ class HomeViewModel(
     }
 
     private fun fetchLocation() {
-        loadGpsLocationJob?.let {
-            Timber.d("fetchLocation: Cancelling location job")
-            it.cancel()
-        }
         loadGpsLocationJob = viewModelScope.launch {
             Timber.d("fetchLocation: Fetching location")
 
