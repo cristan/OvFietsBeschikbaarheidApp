@@ -22,6 +22,7 @@ import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import org.junit.Rule
 import org.junit.Test
+import java.net.UnknownHostException
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertSame
@@ -40,10 +41,7 @@ class HomeViewModelTest {
 
     @Test
     fun `starting up the app when you have all the permissions and everything works - GPS first`() = runTest {
-        coEvery { overviewRepository.getResult() } coAnswers {
-            delay(1000L)
-            Result.success(listOf(TestData.testLocationOverviewModel))
-        }
+        stubLocationsOk(listOf(TestData.testLocationOverviewModel), delay = 1000L)
         every { locationPermissionHelper.isGpsTurnedOn() } returns true
         every { locationPermissionHelper.hasGpsPermission() } returns true
         coEvery { locationLoader.loadCurrentCoordinates() } coAnswers {
@@ -71,10 +69,7 @@ class HomeViewModelTest {
 
     @Test
     fun `starting up the app when you have all the permissions and everything works - network first`() = runTest {
-        coEvery { overviewRepository.getResult() } coAnswers {
-            delay(500L)
-            Result.success(listOf(TestData.testLocationOverviewModel))
-        }
+        stubLocationsOk(delay = 500L)
         every { locationPermissionHelper.isGpsTurnedOn() } returns true
         every { locationPermissionHelper.hasGpsPermission() } returns true
         coEvery { locationLoader.loadCurrentCoordinates() } coAnswers {
@@ -164,12 +159,11 @@ class HomeViewModelTest {
     fun `GPS turned off, then turned on`() = runTest {
         // Internet works fine and GPS permissions were already granted
         every { locationPermissionHelper.hasGpsPermission() }.returns(true)
-        coEvery { locationLoader.loadCurrentCoordinates() } returns Coordinates(51.46, 6.16)
         stubLocationsOk()
 
-        // Screen launching with GPS turned off
-        every { locationPermissionHelper.isGpsTurnedOn() }.returns(false)
+        // Screen launching with working GPS, but turned off
         coEvery { locationLoader.loadCurrentCoordinates() } returns Coordinates(51.46, 6.16)
+        every { locationPermissionHelper.isGpsTurnedOn() }.returns(false)
 
         viewModel.onScreenLaunched()
         viewModel.content.value shouldBeEqualTo HomeContent.GpsTurnedOff
@@ -234,7 +228,7 @@ class HomeViewModelTest {
         viewModel.onScreenLaunched()
         viewModel.content.value shouldBeEqualTo HomeContent.Loading
 
-        coEvery { findNearbyLocationsUseCase.invoke(any(), any()) } returns null
+        coEvery { findNearbyLocationsUseCase.invoke(any(), any()) } returns null // We're not testing nearby locations here
         val searchTerm = TestData.testLocationOverviewModel.title
         viewModel.onSearchTermChanged(searchTerm)
 
@@ -247,8 +241,42 @@ class HomeViewModelTest {
         viewModel.content.value shouldBeEqualTo HomeContent.SearchTermContent(listOf(TestData.testLocationOverviewModel), searchTerm, null)
     }
 
-    // TODO: locations could not be loaded from the backend and are then retried
-    // TODO: user starts typing when a full page error is shown
+    @Test
+    fun `locations could not be loaded from the backend which is successfully retried`() = runTest {
+        stubGpsOk()
+        coEvery { overviewRepository.getResult() } returns Result.failure(UnknownHostException())
+
+        viewModel.onScreenLaunched()
+
+        viewModel.content.value shouldBeEqualTo HomeContent.NetworkError
+
+        stubLocationsOk()
+
+        viewModel.onRetryClicked()
+
+        assertIs<HomeContent.GpsContent>(viewModel.content.value)
+    }
+
+    @Test
+    fun `data gets reloaded when the user types at the network error screen`() = runTest {
+        // Start with network error
+        stubGpsOk()
+        coEvery { overviewRepository.getResult() } returns Result.failure(UnknownHostException())
+
+        viewModel.onScreenLaunched()
+
+        viewModel.content.value shouldBeEqualTo HomeContent.NetworkError
+
+        // Start typing by the time your network is ok again
+        stubLocationsOk()
+        coEvery { findNearbyLocationsUseCase.invoke(any(), any()) } returns null // We're not testing nearby locations here
+
+        viewModel.onSearchTermChanged("a")
+        stubLocationsOk(delay = 500L)
+
+        assertIs<HomeContent.SearchTermContent>(viewModel.content.value)
+    }
+
     // TODO: data is refreshed after the user returns after 5+ minutes
 
     private fun launchWithEverythingOk(allLocations: List<LocationOverviewModel> = listOf(TestData.testLocationOverviewModel)) {
@@ -257,8 +285,16 @@ class HomeViewModelTest {
         viewModel.onScreenLaunched()
     }
 
-    private fun stubLocationsOk(allLocations: List<LocationOverviewModel> = listOf(TestData.testLocationOverviewModel)) {
-        coEvery { overviewRepository.getResult() } returns Result.success(allLocations)
+    private fun stubLocationsOk(
+        allLocations: List<LocationOverviewModel> = listOf(TestData.testLocationOverviewModel),
+        delay: Long = 0L
+    ) {
+        coEvery { overviewRepository.getResult() } coAnswers {
+            if(delay != 0L) {
+                delay(delay)
+            }
+            Result.success(allLocations)
+        }
 
         // This doesn't call a backend, so the regular method can be called.
         every { overviewRepository.getLocations(any(), any()) } answers { callOriginal() }

@@ -155,6 +155,14 @@ class HomeViewModel(
         if (searchTerm.isBlank()) {
             loadLocation()
         } else {
+            // When you start typing while the location loading failed and we're not already loading the location, start loading the locations again
+            if (!loadLocationsJob!!.isActive && allLocationsResult?.isFailure == true) {
+                loadLocationsJob = viewModelScope.launch {
+                    allLocationsResult = overviewRepository.getResult()
+                }
+            }
+
+            // When you typed when we're still loading the locations, wait for it
             if (loadLocationsJob!!.isActive) {
                 showSearchTermJob = viewModelScope.launch {
                     loadLocationsJob!!.join()
@@ -167,14 +175,7 @@ class HomeViewModel(
     }
 
     private fun showSearchTerm(searchTerm: String) {
-        val currentResult = allLocationsResult!!
-        if (currentResult.isFailure) {
-            Timber.d(currentResult.exceptionOrNull())
-            _content.value = HomeContent.NetworkError
-            return
-        }
-
-        val allLocations = currentResult.getOrThrow()
+        val allLocations = allLocationsResult!!.getOrThrow()
         val filteredLocations = overviewRepository.getLocations(allLocations, searchTerm)
         val currentContent = _content.value
         if (currentContent is HomeContent.SearchTermContent) {
