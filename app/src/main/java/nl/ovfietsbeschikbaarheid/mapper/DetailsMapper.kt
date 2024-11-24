@@ -19,40 +19,6 @@ import kotlin.math.max
 object DetailsMapper {
     private val newLinesAtEnd = Regex("[\\\\n\\s]*\$")
 
-    /**
-     * In most cases, determining the max capacity is more of an art than a science.
-     * There are exceptions though: some have an X amount of hardcoded lockers. The max capacity is that.
-     *
-     * The max amount comes from the description, doublechecked with real life.
-     * These don't match the description, so the description is probably outdated:
-     * lc001, amfs001, hwzb001, Bmr001, ut901, Rtd003, dld001
-     */
-    val capacities: Map<String, Int> = mapOf(
-        // The description says 8, the recent history says 8, but this photo makes it look like there are 20.
-        // https://maps.app.goo.gl/y1DqEXBqitu5GWzu5
-        Pair("nmgo001", 8),
-        Pair("lc001", 6),
-        // https://www.google.com/maps/@52.4571924,6.5696539,3a,15y,18.63h,93t/data=!3m8!1e1!3m6!1sAF1QipPjkkyyENMc4lvBkZYuBhjww6HAFtKtr3jbzBi9!2e10!3e11!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipPjkkyyENMc4lvBkZYuBhjww6HAFtKtr3jbzBi9%3Dw900-h600-k-no-pi-2.9999358817800044-ya266.6255494042068-ro0-fo100!7i8704!8i4352
-        // A little hard to see whether these are 4 or 8.
-        // Pair("vhp001", 8),
-        Pair("btl004", 16),
-        Pair("tbr001", 4),
-        Pair("Ow002", 8),
-        Pair("hnk001", 8),
-        Pair("Gnn001", 8),
-        Pair("stz001", 8),
-        Pair("HRN002", 6),
-        Pair("bdpb001", 8),
-        Pair("rtd904", 8),
-        Pair("wp901", 8),
-        Pair("bdg001", 8),
-        Pair("sd001", 4),
-        Pair("utl001", 4),
-        Pair("vst001", 4),
-        Pair("rlb001", 8),
-        Pair("est001", 8),
-    )
-
     fun convert(
         detailsDTO: DetailsDTO,
         allLocations: List<LocationOverviewModel>,
