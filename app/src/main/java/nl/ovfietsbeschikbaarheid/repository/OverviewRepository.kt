@@ -3,12 +3,8 @@ package nl.ovfietsbeschikbaarheid.repository
 import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
-import java.time.Instant
-
 
 class OverviewRepository {
-    data class LocationsResult(val locations: List<LocationOverviewModel>, val fetchTime: Instant)
-
     private var lastResult: List<LocationOverviewModel>? = null
 
     private val httpClient = KtorApiClient()

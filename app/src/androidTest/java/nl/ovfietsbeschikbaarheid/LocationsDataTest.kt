@@ -17,6 +17,8 @@ class LocationsDataTest {
         val capacities = stationRepository.getCapacities()
         runBlocking {
             val allLocations = OverviewRepository().getAllLocations()
+
+            // Check if we have a station name for all of the locations
             allLocations.forEach {
                 val stationName = allStations[it.stationCode]
                 if (stationName == null && it.stationCode != "BSLC") {
@@ -24,12 +26,20 @@ class LocationsDataTest {
                     // Same applies to Utrecht Vaartsche Rijn: this is made at 2016.
                     println("Station ${it.stationCode} not found for $it")
                 }
+            }
+            allLocations.forEach {
+                // Check if we have a capacity for each of the locations
                 val foundCapacity = capacities[it.locationCode.lowercase(dutchLocale)]
                 if (foundCapacity == null) {
                     error("Capacity for ${it.locationCode} not found")
                 }
-            }
 
+                // Check if the rentalBikesAvailable is higher than the capacity. If yes, the capacities need to be updated
+                val rentalBikesAvailable = it.rentalBikesAvailable
+                if (rentalBikesAvailable != null && rentalBikesAvailable > foundCapacity) {
+                    println("Rental bikes available ($rentalBikesAvailable) is higher than capacity ($foundCapacity) for ${it.locationCode} (${it.title})")
+                }
+            }
         }
     }
 }
