@@ -54,7 +54,7 @@ class HomeViewModel(
         }
     }
 
-    fun onReturnedToScreen() {
+    fun onReturnedToScreen(now: Instant = Instant.now()) {
         Timber.d("onReturnedToScreen called")
         val currentlyShown = _content.value
         when {
@@ -78,7 +78,7 @@ class HomeViewModel(
 
             currentlyShown is HomeContent.GpsContent -> {
                 // Do basically a pull to refresh when re-entering this screen when the data is 5 minutes or more old
-                if (Duration.between(currentlyShown.fetchTime, Instant.now()).toMinutes() >= 5) {
+                if (Duration.between(currentlyShown.fetchTime, now).toMinutes() >= 5) {
                     val currentContent = _content.value
                     if (currentContent is HomeContent.GpsContent) {
                         _content.value = currentContent.copy(isRefreshing = true)

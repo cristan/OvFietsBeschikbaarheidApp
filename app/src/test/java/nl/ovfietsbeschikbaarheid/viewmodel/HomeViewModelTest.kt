@@ -3,6 +3,7 @@ package nl.ovfietsbeschikbaarheid.viewmodel
 import dev.jordond.compass.Coordinates
 import dev.jordond.compass.permissions.PermissionState
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -23,6 +24,8 @@ import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import org.junit.Rule
 import org.junit.Test
 import java.net.UnknownHostException
+import java.time.Instant
+import java.util.concurrent.TimeUnit
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertSame
@@ -277,8 +280,32 @@ class HomeViewModelTest {
         assertIs<HomeContent.SearchTermContent>(viewModel.content.value)
     }
 
-    // TODO: data is refreshed after the user returns after 5+ minutes
+    @Test
+    fun `data is refreshed after the user returns after 5+ minutes`() = runTest {
+        launchWithEverythingOk()
 
+        assertIs<HomeContent.GpsContent>(viewModel.content.value)
+
+        stubLocationsOk(listOf(TestData.testLocationOverviewModel.copy(rentalBikesAvailable = 1337)))
+
+        viewModel.onReturnedToScreen()
+
+        // Even though we have returned to the screen, the data isn't reloaded because it was right after
+        coVerify(exactly = 1) { overviewRepository.getResult() }
+
+        val inFiveAndAHalfMinutes = Instant.now()
+            .plusSeconds(TimeUnit.MINUTES.toSeconds(5))
+            .plusSeconds(30)
+
+        viewModel.onReturnedToScreen(inFiveAndAHalfMinutes)
+
+        coVerify(exactly = 2) { overviewRepository.getResult() }
+
+        val viewModelContent = viewModel.content.value
+        assertIs<HomeContent.GpsContent>(viewModelContent)
+        viewModelContent.locations[0].location.rentalBikesAvailable shouldBeEqualTo 1337
+    }
+    
     private fun launchWithEverythingOk(allLocations: List<LocationOverviewModel> = listOf(TestData.testLocationOverviewModel)) {
         stubLocationsOk(allLocations)
         stubGpsOk()
