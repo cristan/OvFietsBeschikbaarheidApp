@@ -2,12 +2,17 @@ package nl.ovfietsbeschikbaarheid.repository
 
 import android.content.Context
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+import kotlinx.serialization.json.Json
 import nl.ovfietsbeschikbaarheid.R
-import nl.ovfietsbeschikbaarheid.util.dutchLocale
+import nl.ovfietsbeschikbaarheid.dto.Station
 
-class StationRepository(private val context: Context) {
+class StationRepository(
+    private val context: Context
+) {
     private var cachedStations: Map<String, String>? = null
     private var cachedCapacities: Map<String, Int>? = null
+
+    private val json = Json
 
     /**
      * Returns a map between station code and station name
@@ -16,15 +21,10 @@ class StationRepository(private val context: Context) {
         cachedStations?.let {
             return it
         }
-        val stationsStream = context.resources.openRawResource(R.raw.stations_nl_2015_08)
-        val stations = HashMap<String, String>()
-        csvReader { delimiter = ';' }.readAll(stationsStream).forEach {
-            val code = it[1].uppercase(dutchLocale)
-            val stationName = it[3]
-            stations[code] = stationName
-        }
-        cachedStations = stations
-        return stations
+        val stationsStream = context.resources.openRawResource(R.raw.stations)
+        val inputAsString = stationsStream.bufferedReader().use { it.readText() }
+        return json.decodeFromString<List<Station>>(inputAsString)
+            .associate { it.code to it.name }
     }
 
     /**
