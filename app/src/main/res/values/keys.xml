@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="google_maps_api_key">PASTE_GOOGLE_MAP_API_KEY_HERE</string>
+    <!--
+    Yes, this is the real Google Maps API key. This prevents me forgetting to fill it when making a release.
+    This is fine: it is limited to Android apps and only when using with my debug / the upload keystore.
+
+    The hash of the certificates can be found by running the gradle command `signingreport`.
+    -->
+    <string name="google_maps_api_key">AIzaSyB6qkBbPGcAx5nGoMlnWZVdkTqIdBr6j38</string>
 </resources>
