@@ -281,6 +281,21 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun `app doesn't crash when you search at the network error screen and you still don't have internet`() = runTest {
+        // Start with network error
+        stubGpsOk()
+        coEvery { overviewRepository.getResult() } returns Result.failure(UnknownHostException())
+
+        viewModel.onScreenLaunched()
+
+        viewModel.content.value shouldBeEqualTo HomeContent.NetworkError
+
+        viewModel.onSearchTermChanged("a")
+
+        viewModel.content.value shouldBeEqualTo HomeContent.NetworkError
+    }
+
+    @Test
     fun `data is refreshed after the user returns after 5+ minutes`() = runTest {
         launchWithEverythingOk()
 
