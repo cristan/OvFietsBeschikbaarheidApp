@@ -325,6 +325,24 @@ class HomeViewModelTest {
         viewModelContent.locations[0].location.rentalBikesAvailable shouldBeEqualTo 1337
     }
 
+    @Test
+    fun `gps isn't refreshed again when going to the GPS list again right away`() = runTest {
+        launchWithEverythingOk()
+
+        assertIs<HomeContent.GpsContent>(viewModel.content.value)
+
+        coVerify(exactly = 1) { locationLoader.loadCurrentCoordinates() }
+
+        coEvery { findNearbyLocationsUseCase.invoke(any(), any()) } returns null // We're not testing nearby locations here
+
+        viewModel.onSearchTermChanged("a")
+        viewModel.onSearchTermChanged("")
+
+        assertIs<HomeContent.GpsContent>(viewModel.content.value)
+
+        coVerify(exactly = 1) { locationLoader.loadCurrentCoordinates() }
+    }
+
     private fun launchWithEverythingOk(allLocations: List<LocationOverviewModel> = listOf(TestData.testLocationOverviewModel)) {
         stubLocationsOk(allLocations)
         stubGpsOk()
