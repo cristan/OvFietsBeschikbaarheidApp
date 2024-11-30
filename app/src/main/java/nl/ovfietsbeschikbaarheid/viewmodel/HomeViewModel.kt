@@ -233,11 +233,8 @@ class HomeViewModel(
                 }
             } catch (e: CancellationException) {
                 // The job got cancelled. That's fine: the new job will show the user what they want.
-                // TODO: check if this is still needed after the refactoring is complete
             } catch (e: Exception) {
-                Timber.e(e, "fetchLocation: Failed to fetch location ${this@launch}")
-                // TODO: get rid of the printlns and maybe some of the Timbers
-                println("fetchLocation: Failed to fetch location ${this@launch}; $e")
+                Timber.e(e, "fetchLocation: Failed to fetch location")
                 _content.value = HomeContent.NetworkError
             }
         }

@@ -58,8 +58,6 @@ play-services-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-
 
 compass-geocoder = { module = "dev.jordond.compass:geocoder", version.ref = "compass" }
 compass-geocoder-mobile = { module = "dev.jordond.compass:geocoder-mobile", version.ref = "compass" }
-compass-geolocation = { module = "dev.jordond.compass:geolocation", version.ref = "compass" }
-compass-geolocation-mobile = { module = "dev.jordond.compass:geolocation-mobile", version.ref = "compass" }
 compass-permissions-mobile = { module = "dev.jordond.compass:permissions-mobile", version.ref = "compass" }
 
 [plugins]
