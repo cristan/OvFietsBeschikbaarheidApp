@@ -133,7 +133,11 @@ class HomeViewModelTest {
 
         // At the end, the search results of the lastly entered search term are shown
         advanceUntilIdle()
-        viewModel.content.value shouldBeEqualTo HomeContent.SearchTermContent(listOf(utrechtTerwijde), "utrecht terwijde", nearbyUtrechtTerwijde)
+        viewModel.content.value shouldBeEqualTo HomeContent.SearchTermContent(
+            listOf(utrechtTerwijde),
+            "utrecht terwijde",
+            nearbyUtrechtTerwijde
+        )
     }
 
     @Test
@@ -221,11 +225,11 @@ class HomeViewModelTest {
     @Test
     fun `user starts searching before the locations are loaded from the backend`() = runTest {
         stubGpsOk()
-        every { overviewRepository.getLocations(any(), any()) } answers { callOriginal() }
+        every { overviewRepository.filterLocations(any(), any()) } answers { callOriginal() }
 
-        coEvery { overviewRepository.getResult() } coAnswers {
+        coEvery { overviewRepository.getAllLocations() } coAnswers {
             delay(1000L)
-            Result.success(listOf(TestData.testLocationOverviewModel))
+            listOf(TestData.testLocationOverviewModel)
         }
 
         viewModel.onScreenLaunched()
@@ -247,7 +251,7 @@ class HomeViewModelTest {
     @Test
     fun `locations could not be loaded from the backend which is successfully retried`() = runTest {
         stubGpsOk()
-        coEvery { overviewRepository.getResult() } returns Result.failure(UnknownHostException())
+        coEvery { overviewRepository.getAllLocations() } throws UnknownHostException()
 
         viewModel.onScreenLaunched()
 
@@ -264,7 +268,7 @@ class HomeViewModelTest {
     fun `data gets reloaded when the user types at the network error screen`() = runTest {
         // Start with network error
         stubGpsOk()
-        coEvery { overviewRepository.getResult() } returns Result.failure(UnknownHostException())
+        coEvery { overviewRepository.getAllLocations() } throws UnknownHostException()
 
         viewModel.onScreenLaunched()
 
@@ -281,6 +285,21 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun `app doesn't crash when you search at the network error screen and you still don't have internet`() = runTest {
+        // Start with network error
+        stubGpsOk()
+        coEvery { overviewRepository.getAllLocations() } throws UnknownHostException()
+
+        viewModel.onScreenLaunched()
+
+        viewModel.content.value shouldBeEqualTo HomeContent.NetworkError
+
+        viewModel.onSearchTermChanged("a")
+
+        viewModel.content.value shouldBeEqualTo HomeContent.NetworkError
+    }
+
+    @Test
     fun `data is refreshed after the user returns after 5+ minutes`() = runTest {
         launchWithEverythingOk()
 
@@ -291,7 +310,7 @@ class HomeViewModelTest {
         viewModel.onReturnedToScreen()
 
         // Even though we have returned to the screen, the data isn't reloaded because it was right after
-        coVerify(exactly = 1) { overviewRepository.getResult() }
+        coVerify(exactly = 1) { overviewRepository.getAllLocations() }
 
         val inFiveAndAHalfMinutes = Instant.now()
             .plusSeconds(TimeUnit.MINUTES.toSeconds(5))
@@ -299,13 +318,31 @@ class HomeViewModelTest {
 
         viewModel.onReturnedToScreen(inFiveAndAHalfMinutes)
 
-        coVerify(exactly = 2) { overviewRepository.getResult() }
+        coVerify(exactly = 2) { overviewRepository.getAllLocations() }
 
         val viewModelContent = viewModel.content.value
         assertIs<HomeContent.GpsContent>(viewModelContent)
         viewModelContent.locations[0].location.rentalBikesAvailable shouldBeEqualTo 1337
     }
-    
+
+    @Test
+    fun `gps isn't refreshed again when going to the GPS list again right away`() = runTest {
+        launchWithEverythingOk()
+
+        assertIs<HomeContent.GpsContent>(viewModel.content.value)
+
+        coVerify(exactly = 1) { locationLoader.loadCurrentCoordinates() }
+
+        coEvery { findNearbyLocationsUseCase.invoke(any(), any()) } returns null // We're not testing nearby locations here
+
+        viewModel.onSearchTermChanged("a")
+        viewModel.onSearchTermChanged("")
+
+        assertIs<HomeContent.GpsContent>(viewModel.content.value)
+
+        coVerify(exactly = 1) { locationLoader.loadCurrentCoordinates() }
+    }
+
     private fun launchWithEverythingOk(allLocations: List<LocationOverviewModel> = listOf(TestData.testLocationOverviewModel)) {
         stubLocationsOk(allLocations)
         stubGpsOk()
@@ -316,15 +353,15 @@ class HomeViewModelTest {
         allLocations: List<LocationOverviewModel> = listOf(TestData.testLocationOverviewModel),
         delay: Long = 0L
     ) {
-        coEvery { overviewRepository.getResult() } coAnswers {
-            if(delay != 0L) {
+        coEvery { overviewRepository.getAllLocations() } coAnswers {
+            if (delay != 0L) {
                 delay(delay)
             }
-            Result.success(allLocations)
+            allLocations
         }
 
         // This doesn't call a backend, so the regular method can be called.
-        every { overviewRepository.getLocations(any(), any()) } answers { callOriginal() }
+        every { overviewRepository.filterLocations(any(), any()) } answers { callOriginal() }
     }
 
     private fun stubGpsOk() {

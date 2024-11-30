@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.jordond.compass.permissions.PermissionState
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.future.await
+import kotlinx.coroutines.future.future
 import kotlinx.coroutines.launch
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
@@ -16,6 +18,8 @@ import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import timber.log.Timber
 import java.time.Duration
 import java.time.Instant
+import java.util.concurrent.CancellationException
+import java.util.concurrent.CompletableFuture
 
 class HomeViewModel(
     private val findNearbyLocationsUseCase: FindNearbyLocationsUseCase,
@@ -31,8 +35,12 @@ class HomeViewModel(
     private val _content = mutableStateOf<HomeContent>(HomeContent.InitialEmpty)
     val content: State<HomeContent> = _content
 
-    private var loadLocationsJob: Job? = null
-    private var allLocationsResult: Result<List<LocationOverviewModel>>? = null
+    private lateinit var locations: CompletableFuture<List<LocationOverviewModel>>
+    private val coordinates by lazy {
+        viewModelScope.future {
+            locationLoader.loadCurrentCoordinates()
+        }
+    }
 
     private var loadGpsLocationJob: Job? = null
     private var showSearchTermJob: Job? = null
@@ -45,8 +53,8 @@ class HomeViewModel(
         Timber.d("screenLaunched called ${System.currentTimeMillis()}")
         if (content.value is HomeContent.InitialEmpty) {
             // Screen launched for the first time
-            loadLocationsJob = viewModelScope.launch {
-                allLocationsResult = overviewRepository.getResult()
+            locations = viewModelScope.future {
+                overviewRepository.getAllLocations()
             }
             loadLocation()
         } else {
@@ -102,8 +110,8 @@ class HomeViewModel(
     }
 
     private fun refresh() {
-        loadLocationsJob = viewModelScope.launch {
-            allLocationsResult = overviewRepository.getResult()
+        locations = viewModelScope.future {
+            overviewRepository.getAllLocations()
         }
         fetchLocation()
     }
@@ -156,27 +164,25 @@ class HomeViewModel(
             loadLocation()
         } else {
             // When you start typing while the location loading failed and we're not already loading the location, start loading the locations again
-            if (!loadLocationsJob!!.isActive && allLocationsResult?.isFailure == true) {
-                loadLocationsJob = viewModelScope.launch {
-                    allLocationsResult = overviewRepository.getResult()
+            if (locations.isDone && locations.isCompletedExceptionally) {
+                locations = viewModelScope.future {
+                    overviewRepository.getAllLocations()
                 }
             }
 
-            // When you typed when we're still loading the locations, wait for it
-            if (loadLocationsJob!!.isActive) {
-                showSearchTermJob = viewModelScope.launch {
-                    loadLocationsJob!!.join()
-                    showSearchTerm(searchTerm)
+            showSearchTermJob = viewModelScope.launch {
+                try {
+                    showSearchTerm(searchTerm, locations.await())
+                } catch (e: Exception) {
+                    Timber.e(e, "onSearchTermChanged: Failed to fetch locations.")
+                    _content.value = HomeContent.NetworkError
                 }
-            } else {
-                showSearchTerm(searchTerm)
             }
         }
     }
 
-    private fun showSearchTerm(searchTerm: String) {
-        val allLocations = allLocationsResult!!.getOrThrow()
-        val filteredLocations = overviewRepository.getLocations(allLocations, searchTerm)
+    private fun showSearchTerm(searchTerm: String, allLocations: List<LocationOverviewModel>) {
+        val filteredLocations = overviewRepository.filterLocations(allLocations, searchTerm)
         val currentContent = _content.value
         if (currentContent is HomeContent.SearchTermContent) {
             // Update the search results right away, but keep the nearby locations and update them in another thread to avoid flicker
@@ -215,20 +221,21 @@ class HomeViewModel(
         loadGpsLocationJob = viewModelScope.launch {
             Timber.d("fetchLocation: Fetching location")
 
-            val coordinates = locationLoader.loadCurrentCoordinates()
-            if (coordinates == null) {
-                _content.value = HomeContent.NoGpsLocation
-            } else {
-                loadLocationsJob?.join()
-
-                val allLocations = allLocationsResult!!
-                if (allLocations.isFailure) {
-                    Timber.d(allLocations.exceptionOrNull())
-                    _content.value = HomeContent.NetworkError
+            try {
+                val coordinates = coordinates.await()
+                if (coordinates == null) {
+                    _content.value = HomeContent.NoGpsLocation
                 } else {
-                    val locationsWithDistance = LocationsMapper.withDistance(allLocations.getOrThrow(), coordinates)
+                    val allLocations = locations.await()
+                    val locationsWithDistance = LocationsMapper.withDistance(allLocations, coordinates)
+                    Timber.d("fetchLocation: Got locations ${this@launch}")
                     _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now())
                 }
+            } catch (e: CancellationException) {
+                // The job got cancelled. That's fine: the new job will show the user what they want.
+            } catch (e: Exception) {
+                Timber.e(e, "fetchLocation: Failed to fetch location")
+                _content.value = HomeContent.NetworkError
             }
         }
     }

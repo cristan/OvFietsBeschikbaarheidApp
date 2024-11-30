@@ -22,9 +22,7 @@ class LocationsDataTest {
             allLocations.forEach {
                 val stationName = allStations[it.stationCode]
                 if (stationName == null && it.stationCode != "BSLC") {
-                    // Triggers at Eindhoven Strijp-S. This is a "new" train station since 2015, so probably from just after stations_nl_2015_08 is made.
-                    // Same applies to Utrecht Vaartsche Rijn: this is made at 2016.
-                    println("Station ${it.stationCode} not found for $it")
+                    error("Station ${it.stationCode} not found for $it")
                 }
             }
             allLocations.forEach {

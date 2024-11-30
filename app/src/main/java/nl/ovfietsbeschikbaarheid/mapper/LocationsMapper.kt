@@ -22,7 +22,8 @@ object LocationsMapper {
             Pair("Vianen OV-fiets ", "Vianen"),
             Pair("OV-fiets - Maastricht", "Maastricht"),
 
-            Pair("Openbare fietsenstalling gemeente Groningen : Fietsenstalling Europapark", "Fietsenstalling Europapark"),
+            Pair("Openbare fietsenstalling gemeente Groningen : Fietsenstalling Europapark", "Groningen Europapark"),
+            Pair("Gilze Rijen", "Gilze-Rijen"),
 
             // All the other locations at Utrecht start with the word Utrecht, including the other P+Rs. Use the same scheme to make sure they're sorted together.
             Pair("P + R Utrecht Science Park (De Uithof)", "Utrecht P+R Science Park (De Uithof)"),

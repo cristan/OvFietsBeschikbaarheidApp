@@ -18,29 +18,16 @@ class OverviewRepository {
         lastResult?.let {
             return it
         }
-        return loadLocations()
-    }
-
-    private suspend fun loadLocations(): List<LocationOverviewModel> {
-        val locations = httpClient.getLocations()
-        val mapped = LocationsMapper.map(locations)
-        lastResult = mapped
-        return mapped
-    }
-
-    suspend fun getResult(): Result<List<LocationOverviewModel>> {
-        return try {
-            Result.success(loadLocations())
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
+        return getAllLocations()
     }
 
     suspend fun getAllLocations(): List<LocationOverviewModel> {
-        return LocationsMapper.map(httpClient.getLocations())
+        val locations = LocationsMapper.map(httpClient.getLocations())
+        lastResult = locations
+        return locations
     }
 
-    fun getLocations(allLocations: List<LocationOverviewModel>, searchTerm: String): List<LocationOverviewModel> {
+    fun filterLocations(allLocations: List<LocationOverviewModel>, searchTerm: String): List<LocationOverviewModel> {
         return allLocations.filter { it.title.contains(searchTerm, ignoreCase = true) }
     }
 }
