@@ -36,6 +36,11 @@ class HomeViewModel(
     val content: State<HomeContent> = _content
 
     private lateinit var locations: CompletableFuture<List<LocationOverviewModel>>
+    private val coordinates by lazy {
+        viewModelScope.future {
+            locationLoader.loadCurrentCoordinates()
+        }
+    }
 
     private var loadGpsLocationJob: Job? = null
     private var showSearchTermJob: Job? = null
@@ -51,7 +56,6 @@ class HomeViewModel(
             locations = viewModelScope.future {
                 overviewRepository.getAllLocations()
             }
-
             loadLocation()
         } else {
             onReturnedToScreen()
@@ -217,23 +221,24 @@ class HomeViewModel(
         loadGpsLocationJob = viewModelScope.launch {
             Timber.d("fetchLocation: Fetching location")
 
-            val coordinates = locationLoader.loadCurrentCoordinates()
-            if (coordinates == null) {
-                _content.value = HomeContent.NoGpsLocation
-            } else {
-                try {
+            try {
+                val coordinates = coordinates.await()
+                if (coordinates == null) {
+                    _content.value = HomeContent.NoGpsLocation
+                } else {
                     val allLocations = locations.await()
                     val locationsWithDistance = LocationsMapper.withDistance(allLocations, coordinates)
                     Timber.d("fetchLocation: Got locations ${this@launch}")
                     _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now())
-                } catch (e: CancellationException) {
-                    // The job got cancelled. That's fine: the new job will show the user what they want.
-                    // TODO: check if this is still needed after the refactoring is complete
-                } catch (e: Exception) {
-                    Timber.e(e, "fetchLocation: Failed to fetch location ${this@launch}")
-                    println("fetchLocation: Failed to fetch location ${this@launch}")
-                    _content.value = HomeContent.NetworkError
                 }
+            } catch (e: CancellationException) {
+                // The job got cancelled. That's fine: the new job will show the user what they want.
+                // TODO: check if this is still needed after the refactoring is complete
+            } catch (e: Exception) {
+                Timber.e(e, "fetchLocation: Failed to fetch location ${this@launch}")
+                // TODO: get rid of the printlns and maybe some of the Timbers
+                println("fetchLocation: Failed to fetch location ${this@launch}; $e")
+                _content.value = HomeContent.NetworkError
             }
         }
     }
