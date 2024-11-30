@@ -6,6 +6,8 @@ import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.util.dutchLocale
 import org.junit.Test
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 class LocationsDataTest {
 
@@ -17,6 +19,14 @@ class LocationsDataTest {
         val capacities = stationRepository.getCapacities()
         runBlocking {
             val allLocations = OverviewRepository().getAllLocations()
+
+            val lastUpdateTimestamp = allLocations.maxOf { it.fetchTime }
+            val lastUpdateInstant = Instant.ofEpochSecond(lastUpdateTimestamp)
+            val lastUpdateAgo = lastUpdateInstant.until(Instant.now(), ChronoUnit.MINUTES)
+            println("The last update (at $lastUpdateTimestamp) was $lastUpdateAgo minutes ago")
+            if(lastUpdateAgo > 10) {
+                error("The last update (at $lastUpdateTimestamp) was $lastUpdateAgo minutes ago")
+            }
 
             // Check if we have a station name for all of the locations
             allLocations.forEach {
