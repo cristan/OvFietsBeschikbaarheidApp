@@ -166,20 +166,18 @@ class HomeViewModel(
                 }
             }
 
-            // When you typed when we're still loading the locations, wait for it
-            if (!locations.isDone) {
-                showSearchTermJob = viewModelScope.launch {
-                    locations.await()
-                    showSearchTerm(searchTerm)
+            showSearchTermJob = viewModelScope.launch {
+                try {
+                    showSearchTerm(searchTerm, locations.await())
+                } catch (e: Exception) {
+                    Timber.e(e, "onSearchTermChanged: Failed to fetch locations.")
+                    _content.value = HomeContent.NetworkError
                 }
-            } else {
-                showSearchTerm(searchTerm)
             }
         }
     }
 
-    private fun showSearchTerm(searchTerm: String) {
-        val allLocations = locations.get()
+    private fun showSearchTerm(searchTerm: String, allLocations: List<LocationOverviewModel>) {
         val filteredLocations = overviewRepository.filterLocations(allLocations, searchTerm)
         val currentContent = _content.value
         if (currentContent is HomeContent.SearchTermContent) {
