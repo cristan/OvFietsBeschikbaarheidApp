@@ -20,6 +20,7 @@ class LocationLoader(
 
     @SuppressLint("MissingPermission")
     suspend fun loadCurrentCoordinates(): Coordinates? {
+        // TODO: add delay to test not calling when it is already recently called
         val currentLocationRequest = CurrentLocationRequest.Builder()
             .setDurationMillis(5000)
             .setGranularity(Granularity.GRANULARITY_COARSE)
