@@ -6,7 +6,6 @@ import android.content.Context.LOCATION_SERVICE
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.os.Bundle
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.CurrentLocationRequest
@@ -63,9 +62,6 @@ private suspend fun LocationManager.awaitCurrentLocation(): Location? {
                 continuation.resume(location)
             }
 
-            @Deprecated("Deprecated in Java")
-            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) = Unit
-            override fun onProviderEnabled(provider: String) = Unit
             override fun onProviderDisabled(provider: String) {
                 continuation.resume(null) // Provider was disabled, return null
             }
