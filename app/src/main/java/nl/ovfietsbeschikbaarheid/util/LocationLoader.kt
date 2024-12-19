@@ -55,8 +55,6 @@ class LocationLoader(
 @SuppressLint("MissingPermission")
 private suspend fun LocationManager.awaitCurrentLocation(): Location? {
     return suspendCancellableCoroutine { continuation ->
-        val provider = LocationManager.GPS_PROVIDER
-
         val locationListener = object : LocationListener {
             override fun onLocationChanged(location: Location) {
                 continuation.resume(location)
@@ -68,7 +66,7 @@ private suspend fun LocationManager.awaitCurrentLocation(): Location? {
         }
 
         @Suppress("DEPRECATION")
-        requestSingleUpdate(provider, locationListener, null)
+        requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null)
 
         continuation.invokeOnCancellation {
             removeUpdates(locationListener)
