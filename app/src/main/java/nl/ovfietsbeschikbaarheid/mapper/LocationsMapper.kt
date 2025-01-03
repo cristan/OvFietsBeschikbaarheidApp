@@ -21,6 +21,7 @@ object LocationsMapper {
             Pair("Hollandse Rading OV-fiets ", "Hollandse Rading"),
             Pair("Vianen OV-fiets ", "Vianen"),
             Pair("OV-fiets - Maastricht", "Maastricht"),
+            Pair("OV-fiets Kesteren", "Kesteren"),
 
             Pair("Openbare fietsenstalling gemeente Groningen : Fietsenstalling Europapark", "Groningen Europapark"),
             Pair("Gilze Rijen", "Gilze-Rijen"),
