@@ -29,6 +29,7 @@ class LocationLoader(
     suspend fun loadCurrentCoordinates(): Coordinates? {
         val playServicesAvailable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)
         if (playServicesAvailable != ConnectionResult.SUCCESS) {
+            // No Play Services. Fall back to the old fashioned way.
             val locationService = context.getSystemService(LOCATION_SERVICE) as LocationManager
             return locationService.awaitCurrentLocation()?.toCoordinates()
         }
