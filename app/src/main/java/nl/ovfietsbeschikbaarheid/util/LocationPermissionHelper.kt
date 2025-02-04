@@ -31,7 +31,7 @@ class LocationPermissionHelper(
     }
 
     fun isGpsTurnedOn(): Boolean {
-        // TODO: Can be replaced with geolocator.isAvailable() when this is no longer a suspend fun: https://github.com/jordond/compass/issues/101
+        // Can be replaced with geolocator.isAvailable(), but this would cause an extra dependency for just 2 lines of code
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
