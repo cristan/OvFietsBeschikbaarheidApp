@@ -37,7 +37,7 @@ class HomeViewModel(
     val content: State<HomeContent> = _content
 
     private lateinit var locations: CompletableFuture<List<LocationOverviewModel>>
-    private var lastKnownCoordinates: Coordinates? = null
+    private var lastLoadedCoordinates: Coordinates? = null
 
     private var loadGpsLocationJob: Job? = null
     private var showSearchTermJob: Job? = null
@@ -110,7 +110,7 @@ class HomeViewModel(
         locations = viewModelScope.future {
             overviewRepository.getAllLocations()
         }
-        lastKnownCoordinates = null
+        lastLoadedCoordinates = null
         fetchLocation()
     }
 
@@ -220,8 +220,18 @@ class HomeViewModel(
             Timber.d("fetchLocation: Fetching location")
 
             try {
-                val coordinates = lastKnownCoordinates ?: locationLoader.loadCurrentCoordinates()
-                lastKnownCoordinates = coordinates
+                if(!locations.isDone) {
+                    val lastKnownCoordinates = locationLoader.getLastKnownCoordinates()
+                    if (lastKnownCoordinates != null) {
+                        val allLocations = locations.await()
+                        val locationsWithDistance = LocationsMapper.withDistance(allLocations, lastKnownCoordinates)
+                        Timber.d("fetchLocation: Got locations ${this@launch}")
+                        _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now(), isRefreshing = true)
+                    }
+                }
+
+                val coordinates = lastLoadedCoordinates ?: locationLoader.loadCurrentCoordinates()
+                lastLoadedCoordinates = coordinates
                 if (coordinates == null) {
                     _content.value = HomeContent.NoGpsLocation
                 } else {
