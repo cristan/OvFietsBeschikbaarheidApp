@@ -222,6 +222,17 @@ class HomeViewModel(
             Timber.d("fetchLocation: Fetching location")
 
             try {
+                if(!locations.isDone) {
+                    //
+                    val lastKnownCoordinates = locationLoader.getLastKnownCoordinates()
+                    if (lastKnownCoordinates != null) {
+                        val allLocations = locations.await()
+                        val locationsWithDistance = LocationsMapper.withDistance(allLocations, lastKnownCoordinates)
+                        Timber.d("fetchLocation: Got locations ${this@launch}")
+                        _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now(), isRefreshing = true)
+                    }
+                }
+
                 val coordinates = coordinates.await()
                 if (coordinates == null) {
                     _content.value = HomeContent.NoGpsLocation

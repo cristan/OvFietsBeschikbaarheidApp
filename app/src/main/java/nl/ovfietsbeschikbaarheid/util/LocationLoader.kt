@@ -26,6 +26,15 @@ class LocationLoader(
     }
 
     @SuppressLint("MissingPermission")
+    suspend fun getLastKnownCoordinates(): Coordinates? {
+        val playServicesAvailable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)
+        if (playServicesAvailable != ConnectionResult.SUCCESS) {
+            return null
+        }
+        return fusedLocationClient.lastLocation.await()?.toCoordinates()
+    }
+
+    @SuppressLint("MissingPermission")
     suspend fun loadCurrentCoordinates(): Coordinates? {
         val playServicesAvailable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)
         if (playServicesAvailable != ConnectionResult.SUCCESS) {
@@ -35,7 +44,6 @@ class LocationLoader(
         }
 
         val currentLocationRequest = CurrentLocationRequest.Builder()
-            .setDurationMillis(5000)
             .setGranularity(Granularity.GRANULARITY_COARSE)
             .setPriority(Priority.PRIORITY_BALANCED_POWER_ACCURACY)
             .build()
