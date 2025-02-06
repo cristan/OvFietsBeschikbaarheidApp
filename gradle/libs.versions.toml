@@ -46,6 +46,7 @@ ktor-client-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-
 ktor-client-contentnegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 google-maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "googleMaps"}
+google-maps-compose-utils = { group = "com.google.maps.android", name = "maps-compose-utils", version.ref = "googleMaps"}
 csv = { group = "com.github.doyaaaaaken", name = "kotlin-csv-jvm", version.ref = "csv"}
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
 koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4" }
