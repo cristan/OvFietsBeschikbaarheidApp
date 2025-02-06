@@ -12,9 +12,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
-import nl.ovfietsbeschikbaarheid.ui.screen.AboutScreen
 import nl.ovfietsbeschikbaarheid.ui.screen.DetailScreen
 import nl.ovfietsbeschikbaarheid.ui.screen.HomeScreen
+import nl.ovfietsbeschikbaarheid.ui.screen.MapScreen
 
 @Serializable
 object Home
@@ -42,7 +42,10 @@ fun Navigation() {
             )
         }
         slideInOutComposable<Info> {
-            AboutScreen(onBackClicked = {
+//            AboutScreen(onBackClicked = {
+//                navController.popBackStack<Home>(inclusive = false)
+//            })
+            MapScreen(onBackClicked = {
                 navController.popBackStack<Home>(inclusive = false)
             })
         }

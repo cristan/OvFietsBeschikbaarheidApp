@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.google.maps.compose)
+    implementation(libs.google.maps.compose.utils)
     implementation(libs.csv)
     implementation(libs.timber)
 

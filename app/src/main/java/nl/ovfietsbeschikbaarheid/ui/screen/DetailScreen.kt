@@ -118,7 +118,7 @@ fun DetailScreen(
 
     val title by viewModel.title
     val details by viewModel.screenState
-    DetailsView(
+    MapView(
         title,
         details,
         viewModel::onRetryClick,
@@ -131,7 +131,7 @@ fun DetailScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DetailsView(
+private fun MapView(
     title: String,
     details: ScreenState<DetailsContent>,
     onRetry: () -> Unit,
@@ -512,7 +512,7 @@ fun DetailsPreview() {
             )
         ),
     )
-    DetailsView(
+    MapView(
         "Amersfoort Mondriaanplein",
         ScreenState.Loaded(DetailsContent.Content(details)),
         {},
