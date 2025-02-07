@@ -1,9 +1,13 @@
 package nl.ovfietsbeschikbaarheid.ui.screen
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -17,17 +21,28 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapColorScheme
+import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.clustering.Clustering
+import com.google.maps.android.compose.clustering.rememberClusterManager
+import com.google.maps.android.compose.clustering.rememberClusterRenderer
 import com.google.maps.android.compose.rememberCameraPositionState
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.model.VehicleModel
@@ -56,6 +71,23 @@ fun MapScreen(
         viewModel::onRetryClick,
         onBackClicked
     )
+//    val singapore2 = LatLng(52.2129919, 5.2793703)
+//    val items = remember { mutableStateListOf<MyItem>() }
+//    LaunchedEffect(Unit) {
+//        for (i in 1..10) {
+//            val position = LatLng(
+//                singapore2.latitude + Random.nextFloat(),
+//                singapore2.longitude + Random.nextFloat(),
+//            )
+//            items.add(MyItem(position, "Marker", "Snippet", 0f))
+//        }
+//    }
+//    Box(
+//        modifier = Modifier.fillMaxSize()
+//            .systemBarsPadding()
+//    ) {
+//        GoogleMapClustering(items = items)
+//    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -124,22 +156,110 @@ private fun ActualMap(
             googleMapOptionsFactory = { GoogleMapOptions().mapColorScheme(MapColorScheme.FOLLOW_SYSTEM) }
         ) {
             // TODO: always show OV-fiets locations
-            Clustering(
-                items = vehicles,
-                // Optional: Handle clicks on clusters, cluster items, and cluster item info windows
-                onClusterClick = {
-                    Timber.d("Cluster clicked! $it")
-                    false
-                },
-                onClusterItemClick = {
-                    Timber.d("Cluster item clicked! $it")
-                    false
-                },
-                onClusterItemInfoWindowClick = {
-                    Timber.d("Cluster item info window clicked! $it")
-                },
-                // Optional: Custom rendering for non-clustered items
-                clusterItemContent = null
+//            Clustering(
+//                items = vehicles,
+//                // Optional: Handle clicks on clusters, cluster items, and cluster item info windows
+//                onClusterClick = {
+//                    Timber.d("Cluster clicked! $it")
+//                    false
+//                },
+//                onClusterItemClick = {
+//                    Timber.d("Cluster item clicked! $it")
+//                    false
+//                },
+//                onClusterItemInfoWindowClick = {
+//                    Timber.d("Cluster item info window clicked! $it")
+//                },
+//                // Optional: Custom rendering for non-clustered items
+//                clusterItemContent = null
+//            )
+            MyCustomRendererClustering(vehicles)
+        }
+    }
+}
+
+@OptIn(MapsComposeExperimentalApi::class)
+@Composable
+fun MyCustomRendererClustering(items: List<VehicleModel>) {
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val screenWidth = configuration.screenWidthDp.dp
+    val clusterManager = rememberClusterManager<VehicleModel>()
+
+    // Here the clusterManager is being customized with a NonHierarchicalViewBasedAlgorithm.
+    // This speeds up by a factor the rendering of items on the screen.
+    clusterManager?.setAlgorithm(
+        NonHierarchicalViewBasedAlgorithm(
+            screenWidth.value.toInt(),
+            screenHeight.value.toInt()
+        )
+    )
+    val renderer = rememberClusterRenderer(
+//        clusterContent = { cluster ->
+//            CircleContent(
+//                modifier = Modifier.size(40.dp),
+//                text = "%,d".format(cluster.size),
+//                color = Color.Green,
+//            )
+//        },
+        clusterContent = null,
+        clusterItemContent = {
+            CircleContent(
+                modifier = Modifier.size(20.dp),
+                text = "",
+                color = it.getColor(),
+            )
+        },
+        clusterManager = clusterManager,
+    )
+
+    SideEffect {
+        clusterManager ?: return@SideEffect
+        clusterManager.setOnClusterClickListener {
+            Timber.d( "Cluster clicked! $it")
+            false
+        }
+        clusterManager.setOnClusterItemClickListener {
+            Timber.d( "Cluster item clicked! $it")
+            false
+        }
+        clusterManager.setOnClusterItemInfoWindowClickListener {
+            Timber.d( "Cluster item info window clicked! $it")
+        }
+    }
+    SideEffect {
+        if (clusterManager?.renderer != renderer) {
+            clusterManager?.renderer = renderer ?: return@SideEffect
+        }
+    }
+
+    if (clusterManager != null) {
+        Clustering(
+            items = items,
+            clusterManager = clusterManager,
+        )
+    }
+}
+
+@Composable
+private fun CircleContent(
+    color: Color,
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier,
+        shape = CircleShape,
+        color = color,
+        contentColor = Color.White,
+        border = BorderStroke(1.dp, Color.White)
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                text,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Black,
+                textAlign = TextAlign.Center
             )
         }
     }
