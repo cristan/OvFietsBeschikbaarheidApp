@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.maps.GoogleMapOptions
+import com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapColorScheme
@@ -40,17 +41,21 @@ import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapsComposeExperimentalApi
+import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.clustering.rememberClusterManager
 import com.google.maps.android.compose.clustering.rememberClusterRenderer
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
 import nl.ovfietsbeschikbaarheid.R
+import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.VehicleModel
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
 import nl.ovfietsbeschikbaarheid.ui.view.FullPageLoader
+import nl.ovfietsbeschikbaarheid.viewmodel.MapContent
 import nl.ovfietsbeschikbaarheid.viewmodel.MapViewModel
 import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
@@ -93,7 +98,7 @@ fun MapScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MapView(
-    screenState: ScreenState<List<VehicleModel>>,
+    screenState: ScreenState<MapContent>,
     onRetry: () -> Unit,
     onBackClicked: () -> Unit
 ) {
@@ -124,19 +129,19 @@ private fun MapView(
             when (screenState) {
                 ScreenState.FullPageError -> FullPageError(onRetry = onRetry)
                 ScreenState.Loading -> FullPageLoader()
-                is ScreenState.Loaded<List<VehicleModel>> -> {
-                    ActualMap(innerPadding, screenState.data)
+                is ScreenState.Loaded<MapContent> -> {
+                    ActualMap(innerPadding, screenState.data.vehicles, screenState.data.overviewModels)
                 }
             }
         }
     }
 }
 
-@OptIn(MapsComposeExperimentalApi::class)
 @Composable
 private fun ActualMap(
     innerPadding: PaddingValues,
     vehicles: List<VehicleModel>,
+    locationOverviewModels: List<LocationOverviewModel>
 ) {
     Surface(
         Modifier
@@ -145,6 +150,7 @@ private fun ActualMap(
     ) {
         val cameraPositionState = rememberCameraPositionState {
             // TODO: zoom in a way that you can see all OV-Fiets locations
+            //  Alternatively, zoom into your own location when you have location permission
             position = CameraPosition.fromLatLngZoom(LatLng(52.2129919, 5.2793703), 10f)
         }
 
@@ -155,24 +161,14 @@ private fun ActualMap(
             properties = MapProperties(isMyLocationEnabled = true),
             googleMapOptionsFactory = { GoogleMapOptions().mapColorScheme(MapColorScheme.FOLLOW_SYSTEM) }
         ) {
-            // TODO: always show OV-fiets locations
-//            Clustering(
-//                items = vehicles,
-//                // Optional: Handle clicks on clusters, cluster items, and cluster item info windows
-//                onClusterClick = {
-//                    Timber.d("Cluster clicked! $it")
-//                    false
-//                },
-//                onClusterItemClick = {
-//                    Timber.d("Cluster item clicked! $it")
-//                    false
-//                },
-//                onClusterItemInfoWindowClick = {
-//                    Timber.d("Cluster item info window clicked! $it")
-//                },
-//                // Optional: Custom rendering for non-clustered items
-//                clusterItemContent = null
-//            )
+            locationOverviewModels.forEach {
+                Marker(
+                    icon = defaultMarker(54f),
+                    state = rememberMarkerState(position = LatLng(it.latitude, it.longitude)),
+                    title = it.title,
+                    snippet = stringResource(R.string.map_available, it.rentalBikesAvailable?.toString() ?: "??")
+                )
+            }
             MyCustomRendererClustering(vehicles)
         }
     }
