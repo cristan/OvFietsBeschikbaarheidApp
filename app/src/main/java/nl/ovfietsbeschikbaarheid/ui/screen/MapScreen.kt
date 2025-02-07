@@ -195,14 +195,22 @@ fun MyCustomRendererClustering(items: List<VehicleModel>) {
         )
     )
     val renderer = rememberClusterRenderer(
-//        clusterContent = { cluster ->
-//            CircleContent(
-//                modifier = Modifier.size(40.dp),
-//                text = "%,d".format(cluster.size),
-//                color = Color.Green,
-//            )
-//        },
-        clusterContent = null,
+        clusterContent = { cluster ->
+            val averageColor = cluster.items.map { it.getColor() }
+                .let { colors ->
+                    val size = colors.size
+                    val allReds = colors.sumOf { it.red } / size
+                    val avgGreen = colors.sumOf { it.green } / size
+                    val avgBlue = colors.sumOf { it.blue } / size
+                    Color(allReds, avgGreen, avgBlue)
+                }
+
+            CircleContent(
+                modifier = Modifier.size(40.dp),
+                text = "%,d".format(cluster.size),
+                color = averageColor,
+            )
+        },
         clusterItemContent = {
             CircleContent(
                 modifier = Modifier.size(20.dp),
@@ -263,4 +271,12 @@ private fun CircleContent(
             )
         }
     }
+}
+
+inline fun <T> Iterable<T>.sumOf(selector: (T) -> Float): Float {
+    var sum = 0f
+    for (element in this) {
+        sum += selector(element)
+    }
+    return sum
 }
