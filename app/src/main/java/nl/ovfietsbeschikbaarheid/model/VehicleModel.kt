@@ -15,7 +15,7 @@ data class VehicleModel(
 
     override fun getTitle() = formFactor.name
 
-    override fun getSnippet() = vehicleId
+    override fun getSnippet() = systemId
 
     override fun getZIndex() = 0f
 
