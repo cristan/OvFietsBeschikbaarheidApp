@@ -48,7 +48,7 @@
     <string name="details_no_data_title">Geen data</string>
     <string name="details_no_data_message">Geen data ontvangen voor %1$s sinds %2$s.</string>
 
-    <string name="map_available">%1$s beschikbaar</string>
+    <string name="map_available">%1$s OV-fietsen beschikbaar</string>
 
     <string name="open_state_closed">Gesloten</string>
     <string name="open_state_opens_today_at">• Gaat open om %1$s</string>

@@ -13,7 +13,7 @@ data class VehicleModel(
 ): ClusterItem {
     override fun getPosition() = vehiclePosition
 
-    override fun getTitle() = formFactor.name
+    override fun getTitle() = formFactor.description
 
     override fun getSnippet() = systemId
 
@@ -39,8 +39,8 @@ data class VehicleModel(
         }
 }
 
-enum class FormFactor {
-    BICYCLE,
-    CARGO_BICYCLE,
-    MOPED,
+// TODO: figure out a way to turn this into a string resource
+enum class FormFactor(val description: String) {
+    BICYCLE("Deelfiets"),
+    CARGO_BICYCLE("Bakfiets"),
 }

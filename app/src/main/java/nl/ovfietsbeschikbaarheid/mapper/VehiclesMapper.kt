@@ -25,7 +25,6 @@ object VehiclesMapper {
             val formFactor = when (it.form_factor) {
                 "bicycle" -> FormFactor.BICYCLE
                 "cargo_bicycle" -> FormFactor.CARGO_BICYCLE
-                "moped" -> FormFactor.MOPED
                 else -> throw IllegalArgumentException("Unknown form factor: ${it.form_factor}")
             }
             VehicleModel(LatLng(it.lat, it.lon), formFactor, it.system_id, it.vehicle_id)
