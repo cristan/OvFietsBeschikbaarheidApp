@@ -5,18 +5,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.VehicleModel
+import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.VehiclesRepository
 import nl.ovfietsbeschikbaarheid.state.ScreenState
-import nl.ovfietsbeschikbaarheid.state.setRefreshing
 import timber.log.Timber
 
 class MapViewModel(
     private val vehiclesRepository: VehiclesRepository,
+    private val overviewRepository: OverviewRepository
 ) : ViewModel() {
 
-    private val _screenState = mutableStateOf<ScreenState<List<VehicleModel>>>(ScreenState.Loading)
-    val screenState: State<ScreenState<List<VehicleModel>>> = _screenState
+    private val _screenState = mutableStateOf<ScreenState<MapContent>>(ScreenState.Loading)
+    val screenState: State<ScreenState<MapContent>> = _screenState
 
     fun screenLaunched() {
         viewModelScope.launch {
@@ -34,10 +36,16 @@ class MapViewModel(
     private suspend fun doRefresh() {
         try {
             val details = vehiclesRepository.getAllVehicles()
-            _screenState.value = ScreenState.Loaded(details)
+            val overviewModels = overviewRepository.getCachedOrLoad()
+            _screenState.value = ScreenState.Loaded(MapContent(details, overviewModels))
         } catch (e: Exception) {
             Timber.e(e)
             _screenState.value = ScreenState.FullPageError
         }
     }
 }
+
+data class MapContent(
+    val vehicles: List<VehicleModel>,
+    val overviewModels: List<LocationOverviewModel>
+)
