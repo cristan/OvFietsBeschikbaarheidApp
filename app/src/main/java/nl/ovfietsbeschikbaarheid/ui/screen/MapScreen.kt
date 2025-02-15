@@ -14,15 +14,19 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -174,7 +178,7 @@ private fun ActualMap(
     }
 }
 
-@OptIn(MapsComposeExperimentalApi::class)
+@OptIn(MapsComposeExperimentalApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun MyCustomRendererClustering(items: List<VehicleModel>) {
     val configuration = LocalConfiguration.current
@@ -217,6 +221,23 @@ fun MyCustomRendererClustering(items: List<VehicleModel>) {
         clusterManager = clusterManager,
     )
 
+    val shownVehicleModel = remember { mutableStateOf<VehicleModel?>(null) }
+//    val shownVehicleModel2 by remember<VehicleModel?>(null)
+    val sheetState = rememberModalBottomSheetState()
+    val shownVehicleModelValue = shownVehicleModel.value
+    if(shownVehicleModelValue != null) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                shownVehicleModel.value = null
+            },
+            sheetState = sheetState
+        ) {
+            Text(shownVehicleModelValue.title)
+            Text(shownVehicleModelValue.snippet)
+        }
+
+    }
+
     SideEffect {
         clusterManager ?: return@SideEffect
         clusterManager.setOnClusterClickListener {
@@ -225,10 +246,8 @@ fun MyCustomRendererClustering(items: List<VehicleModel>) {
         }
         clusterManager.setOnClusterItemClickListener {
             Timber.d( "Cluster item clicked! $it")
-            false
-        }
-        clusterManager.setOnClusterItemInfoWindowClickListener {
-            Timber.d( "Cluster item info window clicked! $it")
+            shownVehicleModel.value = it
+            true
         }
     }
     SideEffect {
