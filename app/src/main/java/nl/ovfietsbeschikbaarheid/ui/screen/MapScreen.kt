@@ -27,6 +27,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,10 +37,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapColorScheme
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.google.maps.android.compose.GoogleMap
@@ -51,6 +55,7 @@ import com.google.maps.android.compose.clustering.rememberClusterManager
 import com.google.maps.android.compose.clustering.rememberClusterRenderer
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
+import kotlinx.coroutines.launch
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.VehicleModel
@@ -152,6 +157,7 @@ private fun ActualMap(
             .padding(innerPadding)
             .fillMaxSize()
     ) {
+        val coroutineScope = rememberCoroutineScope()
         val cameraPositionState = rememberCameraPositionState {
             // TODO: zoom in a way that you can see all OV-Fiets locations
             //  Alternatively, zoom into your own location when you have location permission
@@ -173,14 +179,19 @@ private fun ActualMap(
                     snippet = stringResource(R.string.map_available, it.rentalBikesAvailable?.toString() ?: "??")
                 )
             }
-            MyCustomRendererClustering(vehicles)
+
+            MyCustomRendererClustering(vehicles, { cameraUpdate ->
+                coroutineScope.launch {
+                    cameraPositionState.animate(cameraUpdate)
+                }
+            })
         }
     }
 }
 
 @OptIn(MapsComposeExperimentalApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun MyCustomRendererClustering(items: List<VehicleModel>) {
+fun MyCustomRendererClustering(items: List<VehicleModel>, animate: (CameraUpdate) -> Unit) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     val screenWidth = configuration.screenWidthDp.dp
@@ -222,7 +233,6 @@ fun MyCustomRendererClustering(items: List<VehicleModel>) {
     )
 
     val shownVehicleModel = remember { mutableStateOf<VehicleModel?>(null) }
-//    val shownVehicleModel2 by remember<VehicleModel?>(null)
     val sheetState = rememberModalBottomSheetState()
     val shownVehicleModelValue = shownVehicleModel.value
     if(shownVehicleModelValue != null) {
@@ -240,9 +250,15 @@ fun MyCustomRendererClustering(items: List<VehicleModel>) {
 
     SideEffect {
         clusterManager ?: return@SideEffect
-        clusterManager.setOnClusterClickListener {
-            Timber.d( "Cluster clicked! $it")
-            false
+        clusterManager.setOnClusterClickListener { cluster ->
+            val bounds = LatLngBounds.builder().apply {
+                cluster.items.forEach { include(it.position) }
+            }.build()
+
+            val newLatLngBounds: CameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100)
+            animate(newLatLngBounds)
+
+            true // Return true to indicate we handled the click
         }
         clusterManager.setOnClusterItemClickListener {
             Timber.d( "Cluster item clicked! $it")
