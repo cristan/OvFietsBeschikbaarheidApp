@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -197,8 +199,7 @@ fun MyCustomRendererClustering(items: List<VehicleModel>, animate: (CameraUpdate
     val screenWidth = configuration.screenWidthDp.dp
     val clusterManager = rememberClusterManager<VehicleModel>()
 
-    // Here the clusterManager is being customized with a NonHierarchicalViewBasedAlgorithm.
-    // This speeds up by a factor the rendering of items on the screen.
+    // Using the NonHierarchicalViewBasedAlgorithm speeds up rendering
     clusterManager?.setAlgorithm(
         NonHierarchicalViewBasedAlgorithm(
             screenWidth.value.toInt(),
@@ -232,25 +233,34 @@ fun MyCustomRendererClustering(items: List<VehicleModel>, animate: (CameraUpdate
         clusterManager = clusterManager,
     )
 
-    val shownVehicleModel = remember { mutableStateOf<VehicleModel?>(null) }
+    val shownVehicleModels = remember { mutableStateOf<List<VehicleModel>?>(null) }
     val sheetState = rememberModalBottomSheetState()
-    val shownVehicleModelValue = shownVehicleModel.value
-    if(shownVehicleModelValue != null) {
+    val shownVehicleModelsValue = shownVehicleModels.value
+    if(shownVehicleModelsValue != null) {
         ModalBottomSheet(
             onDismissRequest = {
-                shownVehicleModel.value = null
+                shownVehicleModels.value = null
             },
             sheetState = sheetState
         ) {
-            Text(shownVehicleModelValue.title)
-            Text(shownVehicleModelValue.snippet)
+            LazyColumn {
+                items(shownVehicleModelsValue) { shownVehicleModel ->
+                    Text(shownVehicleModel.title)
+                    Text(shownVehicleModel.snippet)
+                }
+            }
         }
-
     }
 
     SideEffect {
         clusterManager ?: return@SideEffect
         clusterManager.setOnClusterClickListener { cluster ->
+            val itemsAsList = cluster.items.toList()
+            if (itemsAsList.all { it.position == itemsAsList[0].position }) {
+                shownVehicleModels.value = itemsAsList
+                return@setOnClusterClickListener true
+            }
+
             val bounds = LatLngBounds.builder().apply {
                 cluster.items.forEach { include(it.position) }
             }.build()
@@ -262,7 +272,7 @@ fun MyCustomRendererClustering(items: List<VehicleModel>, animate: (CameraUpdate
         }
         clusterManager.setOnClusterItemClickListener {
             Timber.d( "Cluster item clicked! $it")
-            shownVehicleModel.value = it
+            shownVehicleModels.value = listOf(it)
             true
         }
     }
