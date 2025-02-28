@@ -57,6 +57,7 @@ import com.google.maps.android.compose.clustering.rememberClusterManager
 import com.google.maps.android.compose.clustering.rememberClusterRenderer
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
+import com.google.maps.android.ktx.utils.sphericalDistance
 import kotlinx.coroutines.launch
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
@@ -255,15 +256,15 @@ fun MyCustomRendererClustering(items: List<VehicleModel>, animate: (CameraUpdate
     SideEffect {
         clusterManager ?: return@SideEffect
         clusterManager.setOnClusterClickListener { cluster ->
-            val itemsAsList = cluster.items.toList()
-            if (itemsAsList.all { it.position == itemsAsList[0].position }) {
-                shownVehicleModels.value = itemsAsList
-                return@setOnClusterClickListener true
-            }
-
             val bounds = LatLngBounds.builder().apply {
                 cluster.items.forEach { include(it.position) }
             }.build()
+            val distance = bounds.northeast.sphericalDistance(bounds.southwest)
+            Timber.d("distance: $distance")
+            if(distance < 5) {
+                shownVehicleModels.value = cluster.items.toList()
+                return@setOnClusterClickListener true
+            }
 
             val newLatLngBounds: CameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100)
             animate(newLatLngBounds)
