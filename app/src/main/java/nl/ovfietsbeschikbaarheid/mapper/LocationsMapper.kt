@@ -1,5 +1,6 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
+import com.google.android.gms.maps.model.LatLng
 import dev.jordond.compass.Coordinates
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.ext.distanceTo
@@ -49,18 +50,17 @@ object LocationsMapper {
         return locations.map { toMap ->
             val description = replacements[toMap.description] ?: toMap.description
             LocationOverviewModel(
-                title = description,
+                locationTitle = description,
                 rentalBikesAvailable = if (lastUpdateTooLongAgo) null else toMap.extra.rentalBikes,
                 uri = toMap.link.uri,
                 fetchTime = toMap.extra.fetchTime,
                 locationCode = toMap.extra.locationCode,
                 stationCode = toMap.stationCode,
-                latitude = toMap.lat,
-                longitude = toMap.lng,
+                locationPosition = LatLng(toMap.lat, toMap.lng),
                 type = if (description.contains("OV-ebike")) LocationType.EBike else LocationType.Regular,
                 openingHours = toMap.openingHours
             )
-        }.sortedBy { it.title }
+        }.sortedBy { it.locationTitle }
     }
 
     fun withDistance(locations: List<LocationOverviewModel>, currentCoordinates: Coordinates): List<LocationOverviewWithDistanceModel> {

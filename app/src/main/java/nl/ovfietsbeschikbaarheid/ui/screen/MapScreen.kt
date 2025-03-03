@@ -42,7 +42,6 @@ import androidx.compose.ui.unit.sp
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMapOptions
-import com.google.android.gms.maps.model.BitmapDescriptorFactory.defaultMarker
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -51,12 +50,10 @@ import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapsComposeExperimentalApi
-import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.clustering.rememberClusterManager
 import com.google.maps.android.compose.clustering.rememberClusterRenderer
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.google.maps.android.compose.rememberMarkerState
 import com.google.maps.android.ktx.utils.sphericalDistance
 import kotlinx.coroutines.launch
 import nl.ovfietsbeschikbaarheid.R
@@ -145,8 +142,6 @@ private fun ActualMap(
     ) {
         val coroutineScope = rememberCoroutineScope()
         val cameraPositionState = rememberCameraPositionState {
-            // TODO: zoom in a way that you can see all OV-Fiets locations
-            //  Alternatively, zoom into your own location when you have location permission
             position = CameraPosition.fromLatLngZoom(LatLng(52.2129919, 5.2793703), 10f)
         }
 
@@ -157,40 +152,49 @@ private fun ActualMap(
             properties = MapProperties(isMyLocationEnabled = true),
             googleMapOptionsFactory = { GoogleMapOptions().mapColorScheme(MapColorScheme.FOLLOW_SYSTEM) }
         ) {
-            locationOverviewModels.forEach {
-                Marker(
-                    icon = defaultMarker(54f),
-                    state = rememberMarkerState(position = LatLng(it.latitude, it.longitude)),
-                    title = it.title,
-                    snippet = stringResource(R.string.map_available, it.rentalBikesAvailable?.toString() ?: "??")
-                )
-            }
-
-            MyCustomRendererClustering(vehicles, { cameraUpdate ->
-                coroutineScope.launch {
-                    cameraPositionState.animate(cameraUpdate)
+            MyCustomRendererClustering(
+                vehicles = vehicles,
+                locationOverviewModels = locationOverviewModels,
+                animate = { cameraUpdate ->
+                    coroutineScope.launch {
+                        cameraPositionState.animate(cameraUpdate)
+                    }
                 }
-            })
+            )
         }
     }
 }
 
 @OptIn(MapsComposeExperimentalApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun MyCustomRendererClustering(items: List<VehicleModel>, animate: (CameraUpdate) -> Unit) {
+fun MyCustomRendererClustering(
+    vehicles: List<VehicleModel>,
+    locationOverviewModels: List<LocationOverviewModel>,
+    animate: (CameraUpdate) -> Unit
+) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     val screenWidth = configuration.screenWidthDp.dp
-    val clusterManager = rememberClusterManager<VehicleModel>()
+
+    val vehicleClusterManager = rememberClusterManager<VehicleModel>()
+    val locationClusterManager = rememberClusterManager<LocationOverviewModel>()
 
     // Using the NonHierarchicalViewBasedAlgorithm speeds up rendering
-    clusterManager?.setAlgorithm(
+    vehicleClusterManager?.setAlgorithm(
         NonHierarchicalViewBasedAlgorithm(
             screenWidth.value.toInt(),
             screenHeight.value.toInt()
         )
     )
-    val renderer = rememberClusterRenderer(
+
+    locationClusterManager?.setAlgorithm(
+        NonHierarchicalViewBasedAlgorithm(
+            screenWidth.value.toInt(),
+            screenHeight.value.toInt()
+        )
+    )
+
+    val vehicleRenderer = rememberClusterRenderer(
         clusterContent = { cluster ->
             val averageColor = cluster.items.map { it.getColor() }
                 .let { colors ->
@@ -214,7 +218,7 @@ fun MyCustomRendererClustering(items: List<VehicleModel>, animate: (CameraUpdate
                 color = it.getColor(),
             )
         },
-        clusterManager = clusterManager,
+        clusterManager = vehicleClusterManager,
     )
 
     val shownVehicleModels = remember { mutableStateOf<List<VehicleModel>?>(null) }
@@ -237,8 +241,8 @@ fun MyCustomRendererClustering(items: List<VehicleModel>, animate: (CameraUpdate
     }
 
     SideEffect {
-        clusterManager ?: return@SideEffect
-        clusterManager.setOnClusterClickListener { cluster ->
+        vehicleClusterManager ?: return@SideEffect
+        vehicleClusterManager.setOnClusterClickListener { cluster ->
             val bounds = LatLngBounds.builder().apply {
                 cluster.items.forEach { include(it.position) }
             }.build()
@@ -254,22 +258,51 @@ fun MyCustomRendererClustering(items: List<VehicleModel>, animate: (CameraUpdate
 
             true // Return true to indicate we handled the click
         }
-        clusterManager.setOnClusterItemClickListener {
+        vehicleClusterManager.setOnClusterItemClickListener {
             Timber.d( "Cluster item clicked! $it")
             shownVehicleModels.value = listOf(it)
             true
         }
     }
+
+    val locationRenderer = rememberClusterRenderer(
+        clusterContent = { cluster ->
+            CircleContent(
+                modifier = Modifier.size(40.dp),
+                text = "%d".format(cluster.size),
+                color = Color.Yellow
+            )
+        },
+        clusterItemContent = {
+            CircleContent(
+                modifier = Modifier.size(20.dp),
+                text = it.locationTitle.take(1),
+                color = Color.Yellow,
+            )
+        },
+        clusterManager = locationClusterManager,
+    )
+
     SideEffect {
-        if (clusterManager?.renderer != renderer) {
-            clusterManager?.renderer = renderer ?: return@SideEffect
+        if (vehicleClusterManager?.renderer != vehicleRenderer) {
+            vehicleClusterManager?.renderer = vehicleRenderer ?: return@SideEffect
+        }
+        if (locationClusterManager?.renderer != locationRenderer) {
+            locationClusterManager?.renderer = locationRenderer ?: return@SideEffect
         }
     }
 
-    if (clusterManager != null) {
+    if (vehicleClusterManager != null) {
         Clustering(
-            items = items,
-            clusterManager = clusterManager,
+            items = vehicles,
+            clusterManager = vehicleClusterManager,
+        )
+    }
+
+    if (locationClusterManager != null) {
+        Clustering(
+            items = locationOverviewModels,
+            clusterManager = locationClusterManager,
         )
     }
 }

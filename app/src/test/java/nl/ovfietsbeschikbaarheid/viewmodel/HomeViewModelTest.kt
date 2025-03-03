@@ -96,8 +96,8 @@ class HomeViewModelTest {
 
     @Test
     fun `searching - typing something else before the reverse geocode completes`() = runTest {
-        val utrecht = TestData.testLocationOverviewModel.copy(title = "Utrecht")
-        val utrechtTerwijde = TestData.testLocationOverviewModel.copy(title = "Utrecht Terwijde")
+        val utrecht = TestData.testLocationOverviewModel.copy(locationTitle = "Utrecht")
+        val utrechtTerwijde = TestData.testLocationOverviewModel.copy(locationTitle = "Utrecht Terwijde")
         val allLocations = listOf(utrecht, utrechtTerwijde)
         launchWithEverythingOk(allLocations)
 
@@ -145,7 +145,7 @@ class HomeViewModelTest {
         val allLocations = listOf(TestData.testLocationOverviewModel)
         launchWithEverythingOk(allLocations)
 
-        val searchTerm = allLocations[0].title
+        val searchTerm = allLocations[0].locationTitle
         coEvery { findNearbyLocationsUseCase.invoke(searchTerm, allLocations) } coAnswers {
             delay(1000L)
 
@@ -236,7 +236,7 @@ class HomeViewModelTest {
         viewModel.content.value shouldBeEqualTo HomeContent.Loading
 
         coEvery { findNearbyLocationsUseCase.invoke(any(), any()) } returns null // We're not testing nearby locations here
-        val searchTerm = TestData.testLocationOverviewModel.title
+        val searchTerm = TestData.testLocationOverviewModel.locationTitle
         viewModel.onSearchTermChanged(searchTerm)
 
         // Should show loading until the locations are loaded

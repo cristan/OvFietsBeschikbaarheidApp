@@ -7,7 +7,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-fun LocationOverviewModel.distanceTo(coordinates: Coordinates) = getDistanceFromLatLon(latitude, longitude, coordinates.latitude, coordinates.longitude)
+fun LocationOverviewModel.distanceTo(coordinates: Coordinates) = getDistanceFromLatLon(locationPosition.latitude, locationPosition.longitude, coordinates.latitude, coordinates.longitude)
 
 fun Coordinates.isInTheNetherlands() = latitude in 50.803721015..53.5104033474 && longitude in 3.31497114423..7.09205325687
 

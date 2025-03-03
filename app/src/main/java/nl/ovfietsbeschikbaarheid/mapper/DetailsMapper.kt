@@ -65,7 +65,7 @@ object DetailsMapper {
 
                     // Don't pick yourself
                     it.locationCode != payload.extra.locationCode
-        }.map { DetailScreenData(it.title, it.uri, it.fetchTime) }
+        }.map { DetailScreenData(it.locationTitle, it.uri, it.fetchTime) }
 
         val foundCapacity = capacities[payload.extra.locationCode.lowercase(Locale.UK)]
         if (foundCapacity == null) {

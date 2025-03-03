@@ -37,7 +37,7 @@ fun Navigation() {
             HomeScreen(
                 onInfoClicked = { navController.navigate(Info) },
                 onLocationClick = {
-                    navController.navigate(DetailScreen(it.title, it.uri, it.fetchTime))
+                    navController.navigate(DetailScreen(it.locationTitle, it.uri, it.fetchTime))
                 }
             )
         }
