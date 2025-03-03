@@ -45,7 +45,7 @@ class LocationsDataTest {
                 // Check if the rentalBikesAvailable is higher than the capacity. If yes, the capacities need to be updated
                 val rentalBikesAvailable = it.rentalBikesAvailable
                 if (rentalBikesAvailable != null && rentalBikesAvailable > foundCapacity) {
-                    println("Rental bikes available ($rentalBikesAvailable) is higher than capacity ($foundCapacity) for ${it.locationCode} (${it.title})")
+                    println("Rental bikes available ($rentalBikesAvailable) is higher than capacity ($foundCapacity) for ${it.locationCode} (${it.locationTitle})")
                 }
             }
         }

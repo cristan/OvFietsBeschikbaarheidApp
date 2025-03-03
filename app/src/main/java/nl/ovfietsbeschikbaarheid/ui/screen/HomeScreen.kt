@@ -393,7 +393,7 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
         Column(modifier = Modifier.weight(1f)) {
             Row {
                 Text(
-                    text = location.title,
+                    text = location.locationTitle,
                 )
             }
             Row {
@@ -482,11 +482,11 @@ fun TestHomeView(searchTerm: String, content: HomeContent) {
 fun SearchResultsPreview() {
     val locations = listOf(
         TestData.testLocationOverviewModel.copy(
-            title = "Amsterdam Zuid Mahlerplein",
+            locationTitle = "Amsterdam Zuid Mahlerplein",
             rentalBikesAvailable = 329
         ),
         TestData.testLocationOverviewModel.copy(
-            title = "Amsterdam Zuid Zuidplein",
+            locationTitle = "Amsterdam Zuid Zuidplein",
             rentalBikesAvailable = 300
         ),
     )
@@ -498,25 +498,25 @@ fun SearchResultsPreview() {
 fun SearchResultsNearbyPreview() {
     val locations = listOf(
         TestData.testLocationOverviewModel.copy(
-            title = "Amsterdam Zuid Mahlerplein",
+            locationTitle = "Amsterdam Zuid Mahlerplein",
             rentalBikesAvailable = 9
         ),
         TestData.testLocationOverviewModel.copy(
-            title = "Amsterdam Zuid Zuidplein",
+            locationTitle = "Amsterdam Zuid Zuidplein",
         ),
     )
     val gpsLocations = listOf(
         LocationOverviewWithDistanceModel(
             "800 m",
             TestData.testLocationOverviewModel.copy(
-                title = "Amsterdam Zuid Mahlerplein",
+                locationTitle = "Amsterdam Zuid Mahlerplein",
                 rentalBikesAvailable = 9
             )
         ),
         LocationOverviewWithDistanceModel(
             "1,1 km",
             TestData.testLocationOverviewModel.copy(
-                title = "Amsterdam Zuid Zuidplein",
+                locationTitle = "Amsterdam Zuid Zuidplein",
                 rentalBikesAvailable = 101
             )
         ),
@@ -573,14 +573,14 @@ fun GpsResultsPreview() {
         LocationOverviewWithDistanceModel(
             "800 m",
             TestData.testLocationOverviewModel.copy(
-                title = "Amsterdam Zuid Mahlerplein",
+                locationTitle = "Amsterdam Zuid Mahlerplein",
                 rentalBikesAvailable = 13
             )
         ),
         LocationOverviewWithDistanceModel(
             "1,1 km",
             TestData.testLocationOverviewModel.copy(
-                title = "Amsterdam Zuid Zuidplein",
+                locationTitle = "Amsterdam Zuid Zuidplein",
             )
         ),
     )

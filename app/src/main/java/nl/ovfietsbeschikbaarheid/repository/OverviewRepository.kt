@@ -28,6 +28,6 @@ class OverviewRepository {
     }
 
     fun filterLocations(allLocations: List<LocationOverviewModel>, searchTerm: String): List<LocationOverviewModel> {
-        return allLocations.filter { it.title.contains(searchTerm, ignoreCase = true) }
+        return allLocations.filter { it.locationTitle.contains(searchTerm, ignoreCase = true) }
     }
 }
