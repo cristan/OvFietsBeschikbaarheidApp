@@ -88,23 +88,6 @@ fun MapScreen(
         viewModel::onRetryClick,
         onBackClicked
     )
-//    val singapore2 = LatLng(52.2129919, 5.2793703)
-//    val items = remember { mutableStateListOf<MyItem>() }
-//    LaunchedEffect(Unit) {
-//        for (i in 1..10) {
-//            val position = LatLng(
-//                singapore2.latitude + Random.nextFloat(),
-//                singapore2.longitude + Random.nextFloat(),
-//            )
-//            items.add(MyItem(position, "Marker", "Snippet", 0f))
-//        }
-//    }
-//    Box(
-//        modifier = Modifier.fillMaxSize()
-//            .systemBarsPadding()
-//    ) {
-//        GoogleMapClustering(items = items)
-//    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
