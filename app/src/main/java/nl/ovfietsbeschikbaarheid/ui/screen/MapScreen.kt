@@ -61,6 +61,7 @@ import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.VehicleModel
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
+import nl.ovfietsbeschikbaarheid.ui.theme.OvFietsYellow
 import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
 import nl.ovfietsbeschikbaarheid.ui.view.FullPageLoader
@@ -270,14 +271,14 @@ fun MyCustomRendererClustering(
             CircleContent(
                 modifier = Modifier.size(40.dp),
                 text = "%d".format(cluster.size),
-                color = Color.Yellow
+                color = OvFietsYellow
             )
         },
         clusterItemContent = {
             CircleContent(
                 modifier = Modifier.size(20.dp),
                 text = it.locationTitle.take(1),
-                color = Color.Yellow,
+                color = OvFietsYellow,
             )
         },
         clusterManager = locationClusterManager,
