@@ -180,15 +180,19 @@ fun MyCustomRendererClustering(
     val vehicleClusterManager = rememberClusterManager<VehicleModel>()
     val locationClusterManager = rememberClusterManager<LocationOverviewModel>()
 
+    if (vehicleClusterManager == null || locationClusterManager == null) {
+        return
+    }
+
     // Using the NonHierarchicalViewBasedAlgorithm speeds up rendering
-    vehicleClusterManager?.setAlgorithm(
+    vehicleClusterManager.setAlgorithm(
         NonHierarchicalViewBasedAlgorithm(
             screenWidth.value.toInt(),
             screenHeight.value.toInt()
         )
     )
 
-    locationClusterManager?.setAlgorithm(
+    locationClusterManager.setAlgorithm(
         NonHierarchicalViewBasedAlgorithm(
             screenWidth.value.toInt(),
             screenHeight.value.toInt()
@@ -225,7 +229,7 @@ fun MyCustomRendererClustering(
     val shownVehicleModels = remember { mutableStateOf<List<VehicleModel>?>(null) }
     val sheetState = rememberModalBottomSheetState()
     val shownVehicleModelsValue = shownVehicleModels.value
-    if(shownVehicleModelsValue != null) {
+    if (shownVehicleModelsValue != null) {
         ModalBottomSheet(
             onDismissRequest = {
                 shownVehicleModels.value = null
@@ -242,14 +246,13 @@ fun MyCustomRendererClustering(
     }
 
     SideEffect {
-        vehicleClusterManager ?: return@SideEffect
         vehicleClusterManager.setOnClusterClickListener { cluster ->
             val bounds = LatLngBounds.builder().apply {
                 cluster.items.forEach { include(it.position) }
             }.build()
             val distance = bounds.northeast.sphericalDistance(bounds.southwest)
             Timber.d("distance: $distance")
-            if(distance < 5) {
+            if (distance < 5) {
                 shownVehicleModels.value = cluster.items.toList()
                 return@setOnClusterClickListener true
             }
@@ -260,7 +263,7 @@ fun MyCustomRendererClustering(
             true // Return true to indicate we handled the click
         }
         vehicleClusterManager.setOnClusterItemClickListener {
-            Timber.d( "Cluster item clicked! $it")
+            Timber.d("Cluster item clicked! $it")
             shownVehicleModels.value = listOf(it)
             true
         }
@@ -285,27 +288,23 @@ fun MyCustomRendererClustering(
     )
 
     SideEffect {
-        if (vehicleClusterManager?.renderer != vehicleRenderer) {
-            vehicleClusterManager?.renderer = vehicleRenderer ?: return@SideEffect
+        if (vehicleClusterManager.renderer != vehicleRenderer) {
+            vehicleClusterManager.renderer = vehicleRenderer ?: return@SideEffect
         }
-        if (locationClusterManager?.renderer != locationRenderer) {
-            locationClusterManager?.renderer = locationRenderer ?: return@SideEffect
+        if (locationClusterManager.renderer != locationRenderer) {
+            locationClusterManager.renderer = locationRenderer ?: return@SideEffect
         }
     }
 
-    if (vehicleClusterManager != null) {
-        Clustering(
-            items = vehicles,
-            clusterManager = vehicleClusterManager,
-        )
-    }
+    Clustering(
+        items = vehicles,
+        clusterManager = vehicleClusterManager,
+    )
 
-    if (locationClusterManager != null) {
-        Clustering(
-            items = locationOverviewModels,
-            clusterManager = locationClusterManager,
-        )
-    }
+    Clustering(
+        items = locationOverviewModels,
+        clusterManager = locationClusterManager,
+    )
 }
 
 @Composable
