@@ -1,5 +1,6 @@
 package nl.ovfietsbeschikbaarheid.ui.screen
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -46,6 +47,8 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapColorScheme
+import com.google.maps.android.clustering.ClusterItem
+import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
@@ -173,10 +176,6 @@ fun MyCustomRendererClustering(
     locationOverviewModels: List<LocationOverviewModel>,
     animate: (CameraUpdate) -> Unit
 ) {
-    val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp
-    val screenWidth = configuration.screenWidthDp.dp
-
     val vehicleClusterManager = rememberClusterManager<VehicleModel>()
     val locationClusterManager = rememberClusterManager<LocationOverviewModel>()
 
@@ -185,19 +184,9 @@ fun MyCustomRendererClustering(
     }
 
     // Using the NonHierarchicalViewBasedAlgorithm speeds up rendering
-    vehicleClusterManager.setAlgorithm(
-        NonHierarchicalViewBasedAlgorithm(
-            screenWidth.value.toInt(),
-            screenHeight.value.toInt()
-        )
-    )
-
-    locationClusterManager.setAlgorithm(
-        NonHierarchicalViewBasedAlgorithm(
-            screenWidth.value.toInt(),
-            screenHeight.value.toInt()
-        )
-    )
+    val configuration = LocalConfiguration.current
+    vehicleClusterManager.setNonHierarchicalViewBasedAlgorithm(configuration)
+    locationClusterManager.setNonHierarchicalViewBasedAlgorithm(configuration)
 
     val vehicleRenderer = rememberClusterRenderer(
         clusterContent = { cluster ->
@@ -226,8 +215,8 @@ fun MyCustomRendererClustering(
         clusterManager = vehicleClusterManager,
     )
 
-    val shownVehicleModels = remember { mutableStateOf<List<VehicleModel>?>(null) }
     val sheetState = rememberModalBottomSheetState()
+    val shownVehicleModels = remember { mutableStateOf<List<VehicleModel>?>(null) }
     val shownVehicleModelsValue = shownVehicleModels.value
     if (shownVehicleModelsValue != null) {
         ModalBottomSheet(
@@ -329,6 +318,15 @@ private fun CircleContent(
             )
         }
     }
+}
+
+private fun <T: ClusterItem> ClusterManager<T>.setNonHierarchicalViewBasedAlgorithm(configuration: Configuration) {
+    setAlgorithm(
+        NonHierarchicalViewBasedAlgorithm(
+            configuration.screenWidthDp,
+            configuration.screenHeightDp
+        )
+    )
 }
 
 inline fun <T> Iterable<T>.sumOf(selector: (T) -> Float): Float {
