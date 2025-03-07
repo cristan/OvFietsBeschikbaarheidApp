@@ -197,27 +197,7 @@ fun MyCustomRendererClustering(
     }
 
     SideEffect {
-        vehicleClusterManager.setOnClusterClickListener { cluster ->
-            val bounds = LatLngBounds.builder().apply {
-                cluster.items.forEach { include(it.position) }
-            }.build()
-            val distance = bounds.northeast.sphericalDistance(bounds.southwest)
-            Timber.d("distance: $distance")
-            if (distance < 5) {
-                shownVehicleModels.value = cluster.items.toList()
-                return@setOnClusterClickListener true
-            }
-
-            val newLatLngBounds: CameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100)
-            animate(newLatLngBounds)
-
-            true // Return true to indicate we handled the click
-        }
-        vehicleClusterManager.setOnClusterItemClickListener {
-            Timber.d("Cluster item clicked! $it")
-            shownVehicleModels.value = listOf(it)
-            true
-        }
+        vehicleClusterManager.setZoomInOrSelectClickListeners(animate, { shownVehicleModels.value = it })
     }
 
     val vehicleRenderer = rememberClusterRenderer(
@@ -285,6 +265,33 @@ fun MyCustomRendererClustering(
     )
 }
 
+private fun <T : ClusterItem> ClusterManager<T>.setZoomInOrSelectClickListeners(
+    animate: (CameraUpdate) -> Unit,
+    onItemsSelected: (List<T>) -> Unit
+) {
+    setOnClusterClickListener { cluster ->
+        val bounds = LatLngBounds.builder().apply {
+            cluster.items.forEach { include(it.position) }
+        }.build()
+        val distance = bounds.northeast.sphericalDistance(bounds.southwest)
+        Timber.d("distance: $distance")
+        if (distance < 5) {
+            onItemsSelected(cluster.items.toList())
+            return@setOnClusterClickListener true
+        }
+
+        val newLatLngBounds: CameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100)
+        animate(newLatLngBounds)
+
+        true // Return true to indicate we handled the click
+    }
+    setOnClusterItemClickListener {
+        Timber.d("Cluster item clicked! $it")
+        onItemsSelected(listOf(it))
+        true
+    }
+}
+
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun VehicleBottomSheet(
@@ -331,7 +338,7 @@ private fun CircleContent(
     }
 }
 
-private fun <T: ClusterItem> ClusterManager<T>.setNonHierarchicalViewBasedAlgorithm(configuration: Configuration) {
+private fun <T : ClusterItem> ClusterManager<T>.setNonHierarchicalViewBasedAlgorithm(configuration: Configuration) {
     setAlgorithm(
         NonHierarchicalViewBasedAlgorithm(
             configuration.screenWidthDp,
