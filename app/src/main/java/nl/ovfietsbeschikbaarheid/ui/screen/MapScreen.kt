@@ -19,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -26,6 +27,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -188,6 +190,36 @@ fun MyCustomRendererClustering(
     vehicleClusterManager.setNonHierarchicalViewBasedAlgorithm(configuration)
     locationClusterManager.setNonHierarchicalViewBasedAlgorithm(configuration)
 
+    val sheetState = rememberModalBottomSheetState()
+    val shownVehicleModels = remember { mutableStateOf<List<VehicleModel>?>(null) }
+    shownVehicleModels.value?.let {
+        VehicleBottomSheet(shownVehicleModels, sheetState, it)
+    }
+
+    SideEffect {
+        vehicleClusterManager.setOnClusterClickListener { cluster ->
+            val bounds = LatLngBounds.builder().apply {
+                cluster.items.forEach { include(it.position) }
+            }.build()
+            val distance = bounds.northeast.sphericalDistance(bounds.southwest)
+            Timber.d("distance: $distance")
+            if (distance < 5) {
+                shownVehicleModels.value = cluster.items.toList()
+                return@setOnClusterClickListener true
+            }
+
+            val newLatLngBounds: CameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100)
+            animate(newLatLngBounds)
+
+            true // Return true to indicate we handled the click
+        }
+        vehicleClusterManager.setOnClusterItemClickListener {
+            Timber.d("Cluster item clicked! $it")
+            shownVehicleModels.value = listOf(it)
+            true
+        }
+    }
+
     val vehicleRenderer = rememberClusterRenderer(
         clusterContent = { cluster ->
             val averageColor = cluster.items.map { it.getColor() }
@@ -214,49 +246,6 @@ fun MyCustomRendererClustering(
         },
         clusterManager = vehicleClusterManager,
     )
-
-    val sheetState = rememberModalBottomSheetState()
-    val shownVehicleModels = remember { mutableStateOf<List<VehicleModel>?>(null) }
-    val shownVehicleModelsValue = shownVehicleModels.value
-    if (shownVehicleModelsValue != null) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                shownVehicleModels.value = null
-            },
-            sheetState = sheetState
-        ) {
-            LazyColumn {
-                items(shownVehicleModelsValue) { shownVehicleModel ->
-                    Text(shownVehicleModel.title)
-                    Text(shownVehicleModel.snippet)
-                }
-            }
-        }
-    }
-
-    SideEffect {
-        vehicleClusterManager.setOnClusterClickListener { cluster ->
-            val bounds = LatLngBounds.builder().apply {
-                cluster.items.forEach { include(it.position) }
-            }.build()
-            val distance = bounds.northeast.sphericalDistance(bounds.southwest)
-            Timber.d("distance: $distance")
-            if (distance < 5) {
-                shownVehicleModels.value = cluster.items.toList()
-                return@setOnClusterClickListener true
-            }
-
-            val newLatLngBounds: CameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100)
-            animate(newLatLngBounds)
-
-            true // Return true to indicate we handled the click
-        }
-        vehicleClusterManager.setOnClusterItemClickListener {
-            Timber.d("Cluster item clicked! $it")
-            shownVehicleModels.value = listOf(it)
-            true
-        }
-    }
 
     val locationRenderer = rememberClusterRenderer(
         clusterContent = { cluster ->
@@ -294,6 +283,28 @@ fun MyCustomRendererClustering(
         items = locationOverviewModels,
         clusterManager = locationClusterManager,
     )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun VehicleBottomSheet(
+    shownVehicleModels: MutableState<List<VehicleModel>?>,
+    sheetState: SheetState,
+    shownVehicleModelsValue: List<VehicleModel>
+) {
+    ModalBottomSheet(
+        onDismissRequest = {
+            shownVehicleModels.value = null
+        },
+        sheetState = sheetState
+    ) {
+        LazyColumn {
+            items(shownVehicleModelsValue) { shownVehicleModel ->
+                Text(shownVehicleModel.title)
+                Text(shownVehicleModel.snippet)
+            }
+        }
+    }
 }
 
 @Composable
