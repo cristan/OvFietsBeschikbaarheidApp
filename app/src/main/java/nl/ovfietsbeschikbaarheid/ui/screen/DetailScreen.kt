@@ -2,7 +2,6 @@ package nl.ovfietsbeschikbaarheid.ui.screen
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -52,6 +51,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -98,14 +98,12 @@ fun DetailScreen(
     val context = LocalContext.current
     val onLocationClicked: (String) -> Unit = { address ->
         val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse(
-            "http://maps.google.co.in/maps?q=${
-                URLEncoder.encode(
-                    address,
-                    "UTF-8"
-                )
-            }"
-        )
+        intent.data = "http://maps.google.co.in/maps?q=${
+            URLEncoder.encode(
+                address,
+                "UTF-8"
+            )
+        }".toUri()
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
         if (intent.resolveActivity(context.packageManager) != null) {
