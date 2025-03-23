@@ -16,10 +16,13 @@ android {
         versionCode = 16
         versionName = "2.2.0"
 
-        // Only include resources for supported languages
-        resourceConfigurations += listOf("nl", "en")
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    androidResources {
+        // Keeps language resources for only the locales specified below.
+        @Suppress("UnstableApiUsage")
+        localeFilters += listOf("nl", "en")
     }
 
     buildTypes {
