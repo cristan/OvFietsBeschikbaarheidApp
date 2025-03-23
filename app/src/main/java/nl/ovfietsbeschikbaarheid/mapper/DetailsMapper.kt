@@ -111,7 +111,7 @@ object DetailsMapper {
             alternatives = alternatives,
             openState = payload.openingHours?.let {
                 OpenStateMapper.getOpenState(
-                    it, LocalDateTime.now(TimeZone.getTimeZone("Europe/Amsterdam").toZoneId())
+                    payload.extra.locationCode, it, LocalDateTime.now(TimeZone.getTimeZone("Europe/Amsterdam").toZoneId())
                 )
             },
         )

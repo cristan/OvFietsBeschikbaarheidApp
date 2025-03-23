@@ -380,7 +380,7 @@ private fun SearchField(
 @Composable
 fun LocationCard(location: LocationOverviewModel, distance: String? = null, onClick: () -> Unit) {
     val openState = if (location.openingHours == null) null else OpenStateMapper.getOpenState(
-        location.openingHours, LocalDateTime.now(TimeZone.getTimeZone("Europe/Amsterdam").toZoneId())
+        location.locationCode, location.openingHours, LocalDateTime.now(TimeZone.getTimeZone("Europe/Amsterdam").toZoneId())
     )
     val hasDataInBottom = distance != null || openState is OpenState.Closed || openState is OpenState.Closing
     Row(
