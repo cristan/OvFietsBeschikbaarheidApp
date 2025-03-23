@@ -326,6 +326,35 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun `both the GPS locations as well as the data from the backend is refreshed at a pull to refresh`() = runTest {
+        stubLocationsOk(
+            listOf(
+                TestData.testLocationOverviewModel,
+                TestData.testLocationOverviewModel.copy(
+                    title = "Utrecht Centraal Stationsplein",
+                    latitude = 52.090746,
+                    longitude = 5.110702,
+                )
+            )
+        )
+        stubGpsOk()
+        viewModel.onScreenLaunched()
+
+        assertIs<HomeContent.GpsContent>(viewModel.content.value)
+
+        stubGpsOk(Coordinates(latitude = 52.090746, longitude = 5.110702))
+
+        viewModel.onPullToRefresh()
+
+        coVerify(exactly = 2) { overviewRepository.getAllLocations() }
+        coVerify(exactly = 2) { locationLoader.loadCurrentCoordinates() }
+
+        val viewModelContent = viewModel.content.value
+        assertIs<HomeContent.GpsContent>(viewModelContent)
+        viewModelContent.locations[0].location.title shouldBeEqualTo "Utrecht Centraal Stationsplein"
+    }
+
+    @Test
     fun `gps isn't refreshed again when going to the GPS list again right away`() = runTest {
         launchWithEverythingOk()
 
@@ -340,7 +369,7 @@ class HomeViewModelTest {
 
         assertIs<HomeContent.GpsContent>(viewModel.content.value)
 
-        coVerify(exactly = 1) { locationLoader.loadCurrentCoordinates() }
+        coVerify(exactly = 2) { locationLoader.loadCurrentCoordinates() }
     }
 
     private fun launchWithEverythingOk(allLocations: List<LocationOverviewModel> = listOf(TestData.testLocationOverviewModel)) {
@@ -364,9 +393,9 @@ class HomeViewModelTest {
         every { overviewRepository.filterLocations(any(), any()) } answers { callOriginal() }
     }
 
-    private fun stubGpsOk() {
+    private fun stubGpsOk(coordinates: Coordinates = Coordinates(51.46, 6.16)) {
         every { locationPermissionHelper.isGpsTurnedOn() } returns true
         every { locationPermissionHelper.hasGpsPermission() } returns true
-        coEvery { locationLoader.loadCurrentCoordinates() } returns Coordinates(51.46, 6.16)
+        coEvery { locationLoader.loadCurrentCoordinates() } returns coordinates
     }
 }

@@ -8,13 +8,19 @@ import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 
 object OpenStateMapper {
-    fun getOpenState(openingHours: List<OpeningHoursDTO>, dateTime: LocalDateTime): OpenState {
+    fun getOpenState(locationCode: String, openingHours: List<OpeningHoursDTO>, dateTime: LocalDateTime): OpenState {
         // Check for open 24/7
         if (
             openingHours.all { it.startTime == "00:00" && it.endTime == "24:00" } ||
             openingHours.all { it.startTime == "00:00" && it.endTime == "00:01" } ||
             openingHours.all { it.startTime == "00:00" && it.endTime == "23:59" }
         ) {
+            return OpenState.Open247
+        }
+
+        if (locationCode == "bet001") {
+            // Best is open 24/7, despite the description saying otherwise. It's just the manned part which is closed quite often,
+            // but that's not where the OV-fietsen are.
             return OpenState.Open247
         }
 

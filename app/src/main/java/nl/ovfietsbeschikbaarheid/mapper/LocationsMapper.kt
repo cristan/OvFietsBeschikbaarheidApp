@@ -7,8 +7,11 @@ import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
 import nl.ovfietsbeschikbaarheid.util.dutchLocale
+import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import kotlin.math.roundToInt
 
 object LocationsMapper {
@@ -21,6 +24,7 @@ object LocationsMapper {
             Pair("Hollandse Rading OV-fiets ", "Hollandse Rading"),
             Pair("Vianen OV-fiets ", "Vianen"),
             Pair("OV-fiets - Maastricht", "Maastricht"),
+            Pair("OV-fiets Kesteren", "Kesteren"),
 
             Pair("Openbare fietsenstalling gemeente Groningen : Fietsenstalling Europapark", "Groningen Europapark"),
             Pair("Gilze Rijen", "Gilze-Rijen"),
@@ -34,11 +38,19 @@ object LocationsMapper {
             Pair("OV-ebike Maastricht", "Maastricht - OV-ebike"),
         )
 
+        val lastUpdateTimestamp = locations.maxOf { it.extra.fetchTime }
+        val lastUpdateInstant = Instant.ofEpochSecond(lastUpdateTimestamp)
+        val lastUpdateAgo = lastUpdateInstant.until(Instant.now(), ChronoUnit.MINUTES)
+        val lastUpdateTooLongAgo = lastUpdateAgo > 120
+        if (lastUpdateTooLongAgo) {
+            Timber.e("The last update (at $lastUpdateTimestamp) was $lastUpdateAgo minutes ago")
+        }
+
         return locations.map { toMap ->
             val description = replacements[toMap.description] ?: toMap.description
             LocationOverviewModel(
                 title = description,
-                rentalBikesAvailable = toMap.extra.rentalBikes,
+                rentalBikesAvailable = if (lastUpdateTooLongAgo) null else toMap.extra.rentalBikes,
                 uri = toMap.link.uri,
                 fetchTime = toMap.extra.fetchTime,
                 locationCode = toMap.extra.locationCode,

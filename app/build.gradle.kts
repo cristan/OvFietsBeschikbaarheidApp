@@ -13,13 +13,16 @@ android {
         applicationId = "nl.ovfietsbeschikbaarheid"
         minSdk = 26
         targetSdk = 35
-        versionCode = 16
-        versionName = "2.2.0"
-
-        // Only include resources for supported languages
-        resourceConfigurations += listOf("nl", "en")
+        versionCode = 17
+        versionName = "2.3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    androidResources {
+        // Keeps language resources for only the locales specified below.
+        @Suppress("UnstableApiUsage")
+        localeFilters += listOf("nl", "en")
     }
 
     buildTypes {

@@ -11,11 +11,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
+import kotlin.system.exitProcess
 
 /**
  * Not a test, rather a tool. Added in the test folder to prevent it being added in the app.
  */
-object LocationsCrawler {
+object StationsDownloader {
     private val json = Json {
         ignoreUnknownKeys = true
         // Pretty print would help in git diff, but it rarely changes and is otherwise a waste of space and CPU cycles
@@ -30,8 +31,12 @@ object LocationsCrawler {
 
     @JvmStatic
     fun main(args: Array<String>): Unit = runBlocking {
-        // NOTE: don't commit your real key
-        val subscriptionKey = ""
+        if(args.isEmpty()) {
+            println("No arguments provided! Add your subscription key https://apiportal.ns.nl/ as the first parameter.")
+            exitProcess(1)
+        }
+
+        val subscriptionKey = args[0]
 
         // Alternative: download from https://data.ndovloket.nl/haltes/ It's a big blob of XML and it also contains needless stuff like
         // bus stops, but it seems to have a little more info like the street name.
