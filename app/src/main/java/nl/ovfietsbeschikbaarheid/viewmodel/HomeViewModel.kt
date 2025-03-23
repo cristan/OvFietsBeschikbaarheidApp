@@ -36,11 +36,6 @@ class HomeViewModel(
     val content: State<HomeContent> = _content
 
     private lateinit var locations: CompletableFuture<List<LocationOverviewModel>>
-    private val coordinates by lazy {
-        viewModelScope.future {
-            locationLoader.loadCurrentCoordinates()
-        }
-    }
 
     private var loadGpsLocationJob: Job? = null
     private var showSearchTermJob: Job? = null
@@ -222,7 +217,7 @@ class HomeViewModel(
             Timber.d("fetchLocation: Fetching location")
 
             try {
-                val coordinates = coordinates.await()
+                val coordinates = locationLoader.loadCurrentCoordinates()
                 if (coordinates == null) {
                     _content.value = HomeContent.NoGpsLocation
                 } else {
