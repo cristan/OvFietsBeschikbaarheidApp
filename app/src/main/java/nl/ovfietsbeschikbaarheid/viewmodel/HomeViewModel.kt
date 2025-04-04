@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.jordond.compass.Coordinates
 import dev.jordond.compass.permissions.PermissionState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.future.await
@@ -36,6 +37,7 @@ class HomeViewModel(
     val content: State<HomeContent> = _content
 
     private lateinit var locations: CompletableFuture<List<LocationOverviewModel>>
+    private var lastKnownCoordinates: Coordinates? = null
 
     private var loadGpsLocationJob: Job? = null
     private var showSearchTermJob: Job? = null
@@ -108,6 +110,7 @@ class HomeViewModel(
         locations = viewModelScope.future {
             overviewRepository.getAllLocations()
         }
+        lastKnownCoordinates = null
         fetchLocation()
     }
 
@@ -217,7 +220,8 @@ class HomeViewModel(
             Timber.d("fetchLocation: Fetching location")
 
             try {
-                val coordinates = locationLoader.loadCurrentCoordinates()
+                val coordinates = lastKnownCoordinates ?: locationLoader.loadCurrentCoordinates()
+                lastKnownCoordinates = coordinates
                 if (coordinates == null) {
                     _content.value = HomeContent.NoGpsLocation
                 } else {
