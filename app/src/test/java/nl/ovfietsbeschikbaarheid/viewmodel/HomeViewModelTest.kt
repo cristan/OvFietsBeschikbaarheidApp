@@ -1,5 +1,6 @@
 package nl.ovfietsbeschikbaarheid.viewmodel
 
+import com.google.android.gms.maps.model.LatLng
 import dev.jordond.compass.Coordinates
 import dev.jordond.compass.permissions.PermissionState
 import io.mockk.coEvery
@@ -331,9 +332,8 @@ class HomeViewModelTest {
             listOf(
                 TestData.testLocationOverviewModel,
                 TestData.testLocationOverviewModel.copy(
-                    title = "Utrecht Centraal Stationsplein",
-                    latitude = 52.090746,
-                    longitude = 5.110702,
+                    locationTitle = "Utrecht Centraal Stationsplein",
+                    locationPosition = LatLng(52.090746, 5.110702),
                 )
             )
         )
