@@ -264,6 +264,12 @@ class HomeViewModelTest {
         assertIs<HomeContent.GpsContent>(viewModel.content.value)
     }
 
+    // TODO: screen hangs when you start searching and then clear the search term at the network error screen
+    // Maybe start refreshing on the first letter entered on network error?
+
+    // TODO: you start up the app, GPS is slow, you type something and clear it again
+    //  it shouldn't load the GPS again
+
     @Test
     fun `data gets reloaded when the user types at the network error screen`() = runTest {
         // Start with network error
