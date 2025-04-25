@@ -158,16 +158,16 @@ class HomeViewModel(
         geoCoderJob?.cancel()
         showSearchTermJob?.cancel()
 
+        // When you start typing while the location loading failed and we're not already loading the location, start loading the locations again
+        if (locations.isDone && locations.isCompletedExceptionally) {
+            locations = viewModelScope.future {
+                overviewRepository.getAllLocations()
+            }
+        }
+
         if (searchTerm.isBlank()) {
             loadLocation()
         } else {
-            // When you start typing while the location loading failed and we're not already loading the location, start loading the locations again
-            if (locations.isDone && locations.isCompletedExceptionally) {
-                locations = viewModelScope.future {
-                    overviewRepository.getAllLocations()
-                }
-            }
-
             showSearchTermJob = viewModelScope.launch {
                 try {
                     showSearchTerm(searchTerm, locations.await())
