@@ -6,9 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.jordond.compass.Coordinates
 import dev.jordond.compass.permissions.PermissionState
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.future.await
-import kotlinx.coroutines.future.future
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
@@ -20,7 +21,6 @@ import timber.log.Timber
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.CancellationException
-import java.util.concurrent.CompletableFuture
 
 class HomeViewModel(
     private val findNearbyLocationsUseCase: FindNearbyLocationsUseCase,
@@ -36,7 +36,7 @@ class HomeViewModel(
     private val _content = mutableStateOf<HomeContent>(HomeContent.InitialEmpty)
     val content: State<HomeContent> = _content
 
-    private lateinit var locations: CompletableFuture<List<LocationOverviewModel>>
+    private lateinit var locations: Deferred<List<LocationOverviewModel>>
     private var lastLoadedCoordinates: Coordinates? = null
 
     private var loadGpsLocationJob: Job? = null
@@ -50,7 +50,7 @@ class HomeViewModel(
         Timber.d("screenLaunched called ${System.currentTimeMillis()}")
         if (content.value is HomeContent.InitialEmpty) {
             // Screen launched for the first time
-            locations = viewModelScope.future {
+            locations = viewModelScope.async {
                 overviewRepository.getAllLocations()
             }
             loadLocation()
@@ -107,7 +107,7 @@ class HomeViewModel(
     }
 
     private fun refresh() {
-        locations = viewModelScope.future {
+        locations = viewModelScope.async {
             overviewRepository.getAllLocations()
         }
         lastLoadedCoordinates = null
@@ -150,6 +150,7 @@ class HomeViewModel(
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun onSearchTermChanged(searchTerm: String) {
         this._searchTerm.value = searchTerm
 
@@ -159,8 +160,8 @@ class HomeViewModel(
         showSearchTermJob?.cancel()
 
         // When you start typing while the location loading failed and we're not already loading the location, start loading the locations again
-        if (locations.isDone && locations.isCompletedExceptionally) {
-            locations = viewModelScope.future {
+        if (locations.isCompleted && locations.getCompletionExceptionOrNull() != null) {
+            locations = viewModelScope.async {
                 overviewRepository.getAllLocations()
             }
         }
@@ -220,7 +221,7 @@ class HomeViewModel(
             Timber.d("fetchLocation: Fetching location")
 
             try {
-                if(!locations.isDone) {
+                if(!locations.isCompleted) {
                     val lastKnownCoordinates = locationLoader.getLastKnownCoordinates()
                     if (lastKnownCoordinates != null) {
                         val allLocations = locations.await()
