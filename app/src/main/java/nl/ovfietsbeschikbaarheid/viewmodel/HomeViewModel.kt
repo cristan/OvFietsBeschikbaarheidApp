@@ -11,6 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import nl.ovfietsbeschikbaarheid.ext.tryAwait
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
@@ -78,7 +79,7 @@ class HomeViewModel(
                     && locationPermissionHelper.hasGpsPermission() -> {
                 // The user went to the app settings and granted the location permission manually
                 _content.value = HomeContent.Loading
-                fetchLocation()
+                awaitAndShowLocationsWithDistance()
             }
 
             currentlyShown is HomeContent.GpsContent -> {
@@ -111,7 +112,7 @@ class HomeViewModel(
             overviewRepository.getAllLocations()
         }
         lastLoadedCoordinates = null
-        fetchLocation()
+        awaitAndShowLocationsWithDistance()
     }
 
     fun onTurnOnGpsClicked() {
@@ -145,7 +146,7 @@ class HomeViewModel(
 
             PermissionState.Granted -> {
                 _content.value = HomeContent.Loading
-                fetchLocation()
+                awaitAndShowLocationsWithDistance()
             }
         }
     }
@@ -212,33 +213,42 @@ class HomeViewModel(
             _content.value = HomeContent.AskGpsPermission(state)
         } else {
             _content.value = HomeContent.Loading
-            fetchLocation()
+            awaitAndShowLocationsWithDistance()
         }
     }
 
-    private fun fetchLocation() {
+    private fun awaitAndShowLocationsWithDistance() {
         loadGpsLocationJob = viewModelScope.launch {
-            Timber.d("fetchLocation: Fetching location")
+            Timber.d("awaitAndShowLocationsWithDistance: Fetching location")
 
             try {
-                if(!locations.isCompleted) {
+                // Load the locations and coordinates in parallel
+                val coordinatesDeferred = async {
+                    lastLoadedCoordinates ?: locationLoader.loadCurrentCoordinates()
+                }
+                Timber.d("awaitAndShowLocationsWithDistance: awaiting locations")
+                val allLocations = locations.await()
+
+                // The locations have loaded. Try if the coordinates resolve within 5 ms...
+                val fastCoordinates = coordinatesDeferred.tryAwait(timeoutMillis = 5)
+                if (fastCoordinates == null) {
+                    // ... if no, show the last known coordinates while the coordinates are loading with isRefreshing = true.
                     val lastKnownCoordinates = locationLoader.getLastKnownCoordinates()
                     if (lastKnownCoordinates != null) {
-                        val allLocations = locations.await()
                         val locationsWithDistance = LocationsMapper.withDistance(allLocations, lastKnownCoordinates)
-                        Timber.d("fetchLocation: Got locations ${this@launch}")
+                        Timber.d("awaitAndShowLocationsWithDistance: using last known coordinates")
                         _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now(), isRefreshing = true)
                     }
                 }
 
-                val coordinates = lastLoadedCoordinates ?: locationLoader.loadCurrentCoordinates()
-                lastLoadedCoordinates = coordinates
-                if (coordinates == null) {
+                val loadedCoordinates = coordinatesDeferred.await()
+                lastLoadedCoordinates = loadedCoordinates
+
+                if (loadedCoordinates == null) {
                     _content.value = HomeContent.NoGpsLocation
                 } else {
-                    val allLocations = locations.await()
-                    val locationsWithDistance = LocationsMapper.withDistance(allLocations, coordinates)
-                    Timber.d("fetchLocation: Got locations ${this@launch}")
+                    Timber.d("awaitAndShowLocationsWithDistance: using loaded coordinates")
+                    val locationsWithDistance = LocationsMapper.withDistance(allLocations, loadedCoordinates)
                     _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now())
                 }
             } catch (e: CancellationException) {

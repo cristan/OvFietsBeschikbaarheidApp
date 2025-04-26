@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import dev.jordond.compass.Coordinates
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 import kotlin.coroutines.resume
 
 class LocationLoader(
@@ -36,6 +37,7 @@ class LocationLoader(
 
     @SuppressLint("MissingPermission")
     suspend fun loadCurrentCoordinates(): Coordinates? {
+        Timber.d("Loading location")
         val playServicesAvailable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)
         if (playServicesAvailable != ConnectionResult.SUCCESS) {
             // No Play Services. Fall back to the old fashioned way.
