@@ -229,15 +229,19 @@ class HomeViewModel(
                 Timber.d("awaitAndShowLocationsWithDistance: awaiting locations")
                 val allLocations = locations.await()
 
-                // The locations have loaded. Try if the coordinates resolve within 5 ms...
-                val fastCoordinates = coordinatesDeferred.tryAwait(timeoutMillis = 5)
-                if (fastCoordinates == null) {
-                    // ... if no, show the last known coordinates while the coordinates are loading with isRefreshing = true.
-                    val lastKnownCoordinates = locationLoader.getLastKnownCoordinates()
-                    if (lastKnownCoordinates != null) {
-                        val locationsWithDistance = LocationsMapper.withDistance(allLocations, lastKnownCoordinates)
-                        Timber.d("awaitAndShowLocationsWithDistance: using last known coordinates")
-                        _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now(), isRefreshing = true)
+                // The locations have loaded. When we're not already showing locations by distance...
+                if (_content.value !is HomeContent.GpsContent) {
+                    // ...try if the coordinates resolve within 5 ms...
+                    val fastCoordinates = coordinatesDeferred.tryAwait(timeoutMillis = 5)
+                    if (fastCoordinates == null) {
+                        // ... if no, show the last known coordinates while the coordinates are loading
+                        // with isRefreshing = true while the coordinates continue loading.
+                        val lastKnownCoordinates = locationLoader.getLastKnownCoordinates()
+                        if (lastKnownCoordinates != null) {
+                            val locationsWithDistance = LocationsMapper.withDistance(allLocations, lastKnownCoordinates)
+                            Timber.d("awaitAndShowLocationsWithDistance: using last known coordinates")
+                            _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now(), isRefreshing = true)
+                        }
                     }
                 }
 
