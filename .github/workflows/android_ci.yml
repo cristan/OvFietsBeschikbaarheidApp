@@ -9,6 +9,9 @@ on:
       - develop
       - release/*
 
+permissions:
+  contents: read
+
 jobs:
   test-feature:
     runs-on: ubuntu-latest
