@@ -26,9 +26,11 @@ import org.junit.Test
 import java.net.UnknownHostException
 import java.time.Instant
 import java.util.concurrent.TimeUnit
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
@@ -79,19 +81,27 @@ class HomeViewModelTest {
             delay(1000L)
             Coordinates(51.46, 6.16)
         }
+        coEvery { locationLoader.getLastKnownCoordinates() }.returns(Coordinates(52.46, 6.16))
 
         viewModel.onScreenLaunched()
 
         assertSame(viewModel.content.value, HomeContent.Loading)
 
         advanceTimeBy(700L)
-        // The locations are loaded now from the backend, but we're still waiting on the GPS
-        assertSame(viewModel.content.value, HomeContent.Loading)
+        // The locations are loaded now from the backend, but we're still waiting on the GPS. The distance based on the last known coordinates is shown.
+
+        val initialViewModelContentValue = viewModel.content.value
+        assertIs<HomeContent.GpsContent>(initialViewModelContentValue)
+        assertTrue(initialViewModelContentValue.isRefreshing)
+        assertEquals(initialViewModelContentValue.locations[0].distance, "23,5 km")
 
         advanceTimeBy(400L)
         // All data is now loaded
 
-        assertIs<HomeContent.GpsContent>(viewModel.content.value)
+        val finalViewModelContentValue = viewModel.content.value
+        assertIs<HomeContent.GpsContent>(finalViewModelContentValue)
+        assertFalse(finalViewModelContentValue.isRefreshing)
+        assertEquals(finalViewModelContentValue.locations[0].distance, "103,1 km")
     }
 
     @Test
@@ -264,6 +274,9 @@ class HomeViewModelTest {
         assertIs<HomeContent.GpsContent>(viewModel.content.value)
     }
 
+    // TODO: you start up the app, GPS is slow, you type something and clear it again
+    //  it shouldn't load the GPS again
+
     @Test
     fun `data gets reloaded when the user types at the network error screen`() = runTest {
         // Start with network error
@@ -369,7 +382,7 @@ class HomeViewModelTest {
 
         assertIs<HomeContent.GpsContent>(viewModel.content.value)
 
-        coVerify(exactly = 2) { locationLoader.loadCurrentCoordinates() }
+        coVerify(exactly = 1) { locationLoader.loadCurrentCoordinates() }
     }
 
     private fun launchWithEverythingOk(allLocations: List<LocationOverviewModel> = listOf(TestData.testLocationOverviewModel)) {

@@ -4,11 +4,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.jordond.compass.Coordinates
 import dev.jordond.compass.permissions.PermissionState
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.future.await
-import kotlinx.coroutines.future.future
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import nl.ovfietsbeschikbaarheid.ext.tryAwait
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
@@ -19,7 +22,6 @@ import timber.log.Timber
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.CancellationException
-import java.util.concurrent.CompletableFuture
 
 class HomeViewModel(
     private val findNearbyLocationsUseCase: FindNearbyLocationsUseCase,
@@ -35,7 +37,8 @@ class HomeViewModel(
     private val _content = mutableStateOf<HomeContent>(HomeContent.InitialEmpty)
     val content: State<HomeContent> = _content
 
-    private lateinit var locations: CompletableFuture<List<LocationOverviewModel>>
+    private lateinit var locations: Deferred<List<LocationOverviewModel>>
+    private var lastLoadedCoordinates: Coordinates? = null
 
     private var loadGpsLocationJob: Job? = null
     private var showSearchTermJob: Job? = null
@@ -48,7 +51,7 @@ class HomeViewModel(
         Timber.d("screenLaunched called ${System.currentTimeMillis()}")
         if (content.value is HomeContent.InitialEmpty) {
             // Screen launched for the first time
-            locations = viewModelScope.future {
+            locations = viewModelScope.async {
                 overviewRepository.getAllLocations()
             }
             loadLocation()
@@ -76,7 +79,7 @@ class HomeViewModel(
                     && locationPermissionHelper.hasGpsPermission() -> {
                 // The user went to the app settings and granted the location permission manually
                 _content.value = HomeContent.Loading
-                fetchLocation()
+                awaitAndShowLocationsWithDistance()
             }
 
             currentlyShown is HomeContent.GpsContent -> {
@@ -105,10 +108,11 @@ class HomeViewModel(
     }
 
     private fun refresh() {
-        locations = viewModelScope.future {
+        locations = viewModelScope.async {
             overviewRepository.getAllLocations()
         }
-        fetchLocation()
+        lastLoadedCoordinates = null
+        awaitAndShowLocationsWithDistance()
     }
 
     fun onTurnOnGpsClicked() {
@@ -142,11 +146,12 @@ class HomeViewModel(
 
             PermissionState.Granted -> {
                 _content.value = HomeContent.Loading
-                fetchLocation()
+                awaitAndShowLocationsWithDistance()
             }
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun onSearchTermChanged(searchTerm: String) {
         this._searchTerm.value = searchTerm
 
@@ -155,16 +160,16 @@ class HomeViewModel(
         geoCoderJob?.cancel()
         showSearchTermJob?.cancel()
 
+        // When you start typing while the location loading failed and we're not already loading the location, start loading the locations again
+        if (locations.isCompleted && locations.getCompletionExceptionOrNull() != null) {
+            locations = viewModelScope.async {
+                overviewRepository.getAllLocations()
+            }
+        }
+
         if (searchTerm.isBlank()) {
             loadLocation()
         } else {
-            // When you start typing while the location loading failed and we're not already loading the location, start loading the locations again
-            if (locations.isDone && locations.isCompletedExceptionally) {
-                locations = viewModelScope.future {
-                    overviewRepository.getAllLocations()
-                }
-            }
-
             showSearchTermJob = viewModelScope.launch {
                 try {
                     showSearchTerm(searchTerm, locations.await())
@@ -208,22 +213,46 @@ class HomeViewModel(
             _content.value = HomeContent.AskGpsPermission(state)
         } else {
             _content.value = HomeContent.Loading
-            fetchLocation()
+            awaitAndShowLocationsWithDistance()
         }
     }
 
-    private fun fetchLocation() {
+    private fun awaitAndShowLocationsWithDistance() {
         loadGpsLocationJob = viewModelScope.launch {
-            Timber.d("fetchLocation: Fetching location")
+            Timber.d("awaitAndShowLocationsWithDistance: Fetching location")
 
             try {
-                val coordinates = locationLoader.loadCurrentCoordinates()
-                if (coordinates == null) {
+                // Load the locations and coordinates in parallel
+                val coordinatesDeferred = async {
+                    lastLoadedCoordinates ?: locationLoader.loadCurrentCoordinates()
+                }
+                Timber.d("awaitAndShowLocationsWithDistance: awaiting locations")
+                val allLocations = locations.await()
+
+                // The locations have loaded. When we're not already showing locations by distance...
+                if (_content.value !is HomeContent.GpsContent) {
+                    // ...try if the coordinates resolve within 5 ms...
+                    val fastCoordinates = coordinatesDeferred.tryAwait(timeoutMillis = 5)
+                    if (fastCoordinates == null) {
+                        // ... if no, show the last known coordinates while the coordinates are loading
+                        // with isRefreshing = true while the coordinates continue loading.
+                        val lastKnownCoordinates = locationLoader.getLastKnownCoordinates()
+                        if (lastKnownCoordinates != null) {
+                            val locationsWithDistance = LocationsMapper.withDistance(allLocations, lastKnownCoordinates)
+                            Timber.d("awaitAndShowLocationsWithDistance: using last known coordinates")
+                            _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now(), isRefreshing = true)
+                        }
+                    }
+                }
+
+                val loadedCoordinates = coordinatesDeferred.await()
+                lastLoadedCoordinates = loadedCoordinates
+
+                if (loadedCoordinates == null) {
                     _content.value = HomeContent.NoGpsLocation
                 } else {
-                    val allLocations = locations.await()
-                    val locationsWithDistance = LocationsMapper.withDistance(allLocations, coordinates)
-                    Timber.d("fetchLocation: Got locations ${this@launch}")
+                    Timber.d("awaitAndShowLocationsWithDistance: using loaded coordinates")
+                    val locationsWithDistance = LocationsMapper.withDistance(allLocations, loadedCoordinates)
                     _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now())
                 }
             } catch (e: CancellationException) {
