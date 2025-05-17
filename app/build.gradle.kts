@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.google.maps.compose)
     implementation(libs.csv)
     implementation(libs.timber)
+    implementation(libs.compose.shimmer)
 
     implementation(libs.compass.geocoder)
     implementation(libs.compass.geocoder.mobile)
