@@ -15,7 +15,7 @@ import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
 
 @Composable
-fun Modifier.shimmer(
+fun Modifier.withShimmer(
     shimmerInstance: Shimmer = rememberShimmer(ShimmerBounds.View),
     shape: Shape = RoundedCornerShape(8.dp),
     color: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
