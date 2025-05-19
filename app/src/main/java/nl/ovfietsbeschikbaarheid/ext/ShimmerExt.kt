@@ -10,11 +10,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.Shimmer
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
 
 @Composable
-fun Modifier.shimmerable(
-    shimmerInstance: Shimmer,
+fun Modifier.shimmer(
+    shimmerInstance: Shimmer = rememberShimmer(ShimmerBounds.View),
     shape: Shape = RoundedCornerShape(8.dp),
     color: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
 ): Modifier {
