@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -65,6 +64,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberUpdatedMarkerState
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import com.valentinilk.shimmer.shimmer
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
@@ -211,11 +211,18 @@ fun DetailsLoader(
                     .padding(vertical = 24.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(220.dp)
-                        .withShimmer(shimmerInstance, shape = CircleShape)
+                CircularProgressIndicator(
+                    progress = { 1.0f },
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                    modifier = Modifier.size(220.dp).shimmer(shimmerInstance),
+                    strokeWidth = 36.dp,
+                    strokeCap = StrokeCap.Butt,
+                    gapSize = 0.dp,
+
                 )
+                Box(modifier = Modifier
+                    .size(width = 68.dp, height = 54.dp)
+                    .withShimmer(shimmerInstance))
             }
             Row(Modifier.align(Alignment.End)) {
                 Text(
