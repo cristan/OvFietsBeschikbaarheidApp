@@ -53,7 +53,7 @@ import com.valentinilk.shimmer.rememberShimmer
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
-import nl.ovfietsbeschikbaarheid.ext.withShimmer
+import nl.ovfietsbeschikbaarheid.ext.shimmerShape
 import nl.ovfietsbeschikbaarheid.mapper.OpenStateMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
@@ -168,10 +168,10 @@ private fun HomeView(
                                 ) {
                                     Column(modifier = Modifier.weight(1f)) {
                                         Row {
-                                            Box(Modifier.size(width = 140.dp, height = 24.dp).padding(bottom = 4.dp, top = 2.dp).withShimmer(shimmerInstance))
+                                            Box(Modifier.size(width = 140.dp, height = 24.dp).padding(bottom = 4.dp, top = 2.dp).shimmerShape(shimmerInstance))
                                         }
                                         Row {
-                                            Box(Modifier.size(width = 60.dp, height = 20.dp).padding(top = 4.dp).withShimmer(shimmerInstance))
+                                            Box(Modifier.size(width = 60.dp, height = 20.dp).padding(top = 4.dp).shimmerShape(shimmerInstance))
                                         }
                                     }
 
@@ -184,7 +184,7 @@ private fun HomeView(
                                     Box(
                                         modifier = Modifier.padding(start = 8.dp),
                                     ) {
-                                        Box(Modifier.size(width = 24.dp, height = 20.dp).padding(top = 4.dp).withShimmer(shimmerInstance))
+                                        Box(Modifier.size(width = 24.dp, height = 20.dp).padding(top = 4.dp).shimmerShape(shimmerInstance))
 
                                         // Placeholder so all numbers are left aligned. Text, so it scales when people have a larger font size
                                         Text(

@@ -68,7 +68,7 @@ import com.valentinilk.shimmer.shimmer
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
-import nl.ovfietsbeschikbaarheid.ext.withShimmer
+import nl.ovfietsbeschikbaarheid.ext.shimmerShape
 import nl.ovfietsbeschikbaarheid.ext.withStyledLink
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
@@ -222,12 +222,12 @@ fun DetailsLoader(
                 )
                 Box(modifier = Modifier
                     .size(width = 68.dp, height = 54.dp)
-                    .withShimmer(shimmerInstance))
+                    .shimmerShape(shimmerInstance))
             }
             Row(Modifier.align(Alignment.End)) {
                 Text(
                     stringResource(R.string.open_until, "23:33"),
-                    modifier = Modifier.withShimmer(shimmerInstance)
+                    modifier = Modifier.shimmerShape(shimmerInstance)
                 )
             }
         }
@@ -242,19 +242,19 @@ fun DetailsLoader(
                 .padding(vertical = 32.dp)
                 .height(28.dp)
                 .fillMaxWidth()
-                .withShimmer(shimmerInstance, shape = RoundedCornerShape(8.dp)))
+                .shimmerShape(shimmerInstance, shape = RoundedCornerShape(8.dp)))
 
             Box(modifier = Modifier
                 .height(276.dp)// 260 dp + 16 dp padding. Not sure where that 16 dp comes from, but ok.
                 .fillMaxWidth()
-                .withShimmer(shimmerInstance, shape = RoundedCornerShape(12.dp)))
+                .shimmerShape(shimmerInstance, shape = RoundedCornerShape(12.dp)))
         }
 
         OvCard {
             Box(modifier = Modifier
                 .height(160.dp)
                 .fillMaxWidth()
-                .withShimmer(shimmerInstance, shape = RoundedCornerShape(12.dp)))
+                .shimmerShape(shimmerInstance, shape = RoundedCornerShape(12.dp)))
         }
     }
 }
