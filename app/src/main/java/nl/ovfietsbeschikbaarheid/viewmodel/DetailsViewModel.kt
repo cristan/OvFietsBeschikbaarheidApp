@@ -66,7 +66,7 @@ class DetailsViewModel(
         }
     }
 
-    private suspend fun doRefresh(minDelay: Long = 200L) {
+    private suspend fun doRefresh(minDelay: Long = 0L) {
         try {
             val before = System.currentTimeMillis()
             val details = client.getDetails(data.uri)
