@@ -2,6 +2,9 @@ package nl.ovfietsbeschikbaarheid.ui.screen
 
 import android.content.Intent
 import android.content.res.Configuration
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +44,9 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,6 +60,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -294,7 +302,7 @@ private fun ActualDetails(
 }
 
 @Composable
-private fun MainInfo(details: DetailsModel) {
+private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,) {
     OvCard {
         Text(stringResource(R.string.details_amount_available))
         val rentalBikesAvailable = details.rentalBikesAvailable
@@ -305,15 +313,23 @@ private fun MainInfo(details: DetailsModel) {
                 .padding(vertical = 24.dp),
             contentAlignment = Alignment.Center
         ) {
-            val progress = if (rentalBikesAvailable == null) 0f else rentalBikesAvailable.toFloat() / details.capacity
             val color =
                 when (details.openState) {
                     is OpenState.Closed -> Red50
                     is OpenState.Closing -> Orange50
                     else -> ProgressIndicatorDefaults.circularColor
                 }
+            var progress by remember { mutableFloatStateOf(0F) }
+            val progressAnimDuration = 500
+            val progressAnimation by animateFloatAsState(
+                targetValue = progress,
+                animationSpec = tween(durationMillis = progressAnimDuration, easing = FastOutSlowInEasing),
+            )
+            LaunchedEffect(lifecycleOwner) {
+                progress = if (rentalBikesAvailable == null) 0f else rentalBikesAvailable.toFloat() / details.capacity
+            }
             CircularProgressIndicator(
-                progress = { progress }, modifier = Modifier.size(220.dp),
+                progress = { progressAnimation }, modifier = Modifier.size(220.dp),
                 color = color,
                 strokeWidth = 36.dp,
                 strokeCap = StrokeCap.Butt,
