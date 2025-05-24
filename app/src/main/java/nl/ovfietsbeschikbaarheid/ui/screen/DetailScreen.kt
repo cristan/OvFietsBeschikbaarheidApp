@@ -2,9 +2,9 @@ package nl.ovfietsbeschikbaarheid.ui.screen
 
 import android.content.Intent
 import android.content.res.Configuration
-import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -319,22 +319,27 @@ private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = Loc
                     is OpenState.Closing -> Orange50
                     else -> ProgressIndicatorDefaults.circularColor
                 }
+
             var progress by remember { mutableFloatStateOf(0F) }
-            val progressAnimDuration = 500
-            val progressAnimation by animateFloatAsState(
+            val animatedProgress by animateFloatAsState(
                 targetValue = progress,
-                animationSpec = tween(durationMillis = progressAnimDuration, easing = FastOutSlowInEasing),
+                animationSpec = SpringSpec(
+                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
             )
             LaunchedEffect(lifecycleOwner) {
                 progress = if (rentalBikesAvailable == null) 0f else rentalBikesAvailable.toFloat() / details.capacity
             }
+
             CircularProgressIndicator(
-                progress = { progressAnimation }, modifier = Modifier.size(220.dp),
+                progress = { animatedProgress }, modifier = Modifier.size(220.dp),
                 color = color,
                 strokeWidth = 36.dp,
                 strokeCap = StrokeCap.Butt,
                 gapSize = 0.dp
             )
+
             Text(
                 text = amount,
                 fontSize = if (rentalBikesAvailable != null) 60.sp else 24.sp
