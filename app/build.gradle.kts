@@ -13,8 +13,8 @@ android {
         applicationId = "nl.ovfietsbeschikbaarheid"
         minSdk = 26
         targetSdk = 35
-        versionCode = 18
-        versionName = "2.4.0"
+        versionCode = 19
+        versionName = "2.5.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.google.maps.compose)
     implementation(libs.csv)
     implementation(libs.timber)
+    implementation(libs.compose.shimmer)
 
     implementation(libs.compass.geocoder)
     implementation(libs.compass.geocoder.mobile)

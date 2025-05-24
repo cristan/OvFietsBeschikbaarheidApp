@@ -2,6 +2,9 @@ package nl.ovfietsbeschikbaarheid.ui.screen
 
 import android.content.Intent
 import android.content.res.Configuration
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.SpringSpec
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -40,8 +44,12 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
@@ -52,6 +60,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -59,9 +69,14 @@ import com.google.android.gms.maps.model.MapColorScheme
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
-import com.google.maps.android.compose.rememberMarkerState
+import com.google.maps.android.compose.rememberUpdatedMarkerState
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
+import com.valentinilk.shimmer.shimmer
 import nl.ovfietsbeschikbaarheid.R
+import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
+import nl.ovfietsbeschikbaarheid.ext.shimmerShape
 import nl.ovfietsbeschikbaarheid.ext.withStyledLink
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
@@ -76,7 +91,6 @@ import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
 import nl.ovfietsbeschikbaarheid.ui.theme.Red50
 import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
-import nl.ovfietsbeschikbaarheid.ui.view.FullPageLoader
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsContent
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -114,10 +128,9 @@ fun DetailScreen(
     // Refresh the screen on multitasking back to it
     OnReturnToScreenEffect(viewModel::onReturnToScreenTriggered)
 
-    val title by viewModel.title
     val details by viewModel.screenState
     DetailsView(
-        title,
+        detailScreenData,
         details,
         viewModel::onRetryClick,
         viewModel::onPullToRefresh,
@@ -130,7 +143,7 @@ fun DetailScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DetailsView(
-    title: String,
+    detailScreenData: DetailScreenData,
     details: ScreenState<DetailsContent>,
     onRetry: () -> Unit,
     onPullToRefresh: () -> Unit,
@@ -148,11 +161,14 @@ private fun DetailsView(
                         navigationIconContentColor = Yellow50
                     ),
                     title = {
-                        Text(title)
+                        Text(detailScreenData.title)
                     },
                     navigationIcon = {
                         IconButton(onClick = onBackClicked) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.content_description_back))
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.content_description_back)
+                            )
                         }
                     },
                 )
@@ -161,9 +177,9 @@ private fun DetailsView(
         ) { innerPadding ->
             when (details) {
                 ScreenState.FullPageError -> FullPageError(onRetry = onRetry)
-                ScreenState.Loading -> FullPageLoader()
+                ScreenState.Loading -> DetailsLoader(modifier = Modifier.padding(innerPadding))
                 is ScreenState.Loaded<DetailsContent> -> {
-                    when(details.data) {
+                    when (details.data) {
                         is DetailsContent.Content -> PullToRefreshBox(
                             state = rememberPullToRefreshState(),
                             modifier = Modifier.padding(innerPadding),
@@ -172,6 +188,7 @@ private fun DetailsView(
                         ) {
                             ActualDetails(details.data.details, onLocationClicked, onAlternativeClicked)
                         }
+
                         is DetailsContent.NotFound -> {
                             val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.forLanguageTag("nl"))
                             val formattedDate = formatter.format(details.data.lastFetched)
@@ -184,6 +201,68 @@ private fun DetailsView(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun DetailsLoader(
+    modifier: Modifier
+) {
+    val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
+    Column(modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
+        OvCard {
+            Text(stringResource(R.string.details_amount_available))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 24.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    progress = { 1.0f },
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                    modifier = Modifier.size(220.dp).shimmer(shimmerInstance),
+                    strokeWidth = 36.dp,
+                    strokeCap = StrokeCap.Butt,
+                    gapSize = 0.dp,
+
+                )
+                Box(modifier = Modifier
+                    .size(width = 68.dp, height = 54.dp)
+                    .shimmerShape(shimmerInstance))
+            }
+            Row(Modifier.align(Alignment.End)) {
+                Text(
+                    stringResource(R.string.open_until, "23:33"),
+                    modifier = Modifier.shimmerShape(shimmerInstance)
+                )
+            }
+        }
+
+        OvCard {
+            Text(
+                text = "Locatie",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+
+            Box(modifier = Modifier
+                .padding(vertical = 32.dp)
+                .height(28.dp)
+                .fillMaxWidth()
+                .shimmerShape(shimmerInstance, shape = RoundedCornerShape(8.dp)))
+
+            Box(modifier = Modifier
+                .height(276.dp)// 260 dp + 16 dp padding. Not sure where that 16 dp comes from, but ok.
+                .fillMaxWidth()
+                .shimmerShape(shimmerInstance, shape = RoundedCornerShape(12.dp)))
+        }
+
+        OvCard {
+            Box(modifier = Modifier
+                .height(160.dp)
+                .fillMaxWidth()
+                .shimmerShape(shimmerInstance, shape = RoundedCornerShape(12.dp)))
         }
     }
 }
@@ -204,7 +283,7 @@ private fun ActualDetails(
                 Disruptions(it)
             }
 
-            Location(details, onLocationClicked)
+            Location(details.location, details.coordinates, details.directions, details.description, details.rentalBikesAvailable, onLocationClicked)
 
             ExtraInfo(details)
 
@@ -223,7 +302,7 @@ private fun ActualDetails(
 }
 
 @Composable
-private fun MainInfo(details: DetailsModel) {
+private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,) {
     OvCard {
         Text(stringResource(R.string.details_amount_available))
         val rentalBikesAvailable = details.rentalBikesAvailable
@@ -234,20 +313,33 @@ private fun MainInfo(details: DetailsModel) {
                 .padding(vertical = 24.dp),
             contentAlignment = Alignment.Center
         ) {
-            val progress = if (rentalBikesAvailable == null) 0f else rentalBikesAvailable.toFloat() / details.capacity
             val color =
                 when (details.openState) {
                     is OpenState.Closed -> Red50
                     is OpenState.Closing -> Orange50
                     else -> ProgressIndicatorDefaults.circularColor
                 }
+
+            var progress by remember { mutableFloatStateOf(0F) }
+            val animatedProgress by animateFloatAsState(
+                targetValue = progress,
+                animationSpec = SpringSpec(
+                    dampingRatio = Spring.DampingRatioNoBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
+            LaunchedEffect(lifecycleOwner) {
+                progress = if (rentalBikesAvailable == null) 0f else rentalBikesAvailable.toFloat() / details.capacity
+            }
+
             CircularProgressIndicator(
-                progress = { progress }, modifier = Modifier.size(220.dp),
+                progress = { animatedProgress }, modifier = Modifier.size(220.dp),
                 color = color,
                 strokeWidth = 36.dp,
                 strokeCap = StrokeCap.Butt,
                 gapSize = 0.dp
             )
+
             Text(
                 text = amount,
                 fontSize = if (rentalBikesAvailable != null) 60.sp else 24.sp
@@ -300,30 +392,25 @@ private fun Disruptions(disruptions: String) {
 }
 
 @Composable
-private fun Location(details: DetailsModel, onNavigateClicked: (String) -> Unit) {
-    OvCard(
-        contentPadding = 0.dp
-    ) {
+private fun Location(location: LocationModel?, coordinates: LatLng, directions: String?, description: String, rentalBikesAvailable: Int?, onNavigateClicked: (String) -> Unit) {
+    OvCard {
         Text(
             text = "Locatie",
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)
         )
         val onAddressClick = {
-            if (details.location != null) {
-                val location = details.location
+            if (location != null) {
                 val address =
                     "${location.street} ${location.houseNumber} ${location.postalCode} ${location.city}"
                 onNavigateClicked(address)
             } else {
-                onNavigateClicked("${details.coordinates.latitude}, ${details.coordinates.longitude}")
+                onNavigateClicked("${coordinates.latitude}, ${coordinates.longitude}")
             }
         }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(onClick = onAddressClick)
-                .padding(horizontal = 16.dp)
         ) {
             HorizontalDivider(Modifier.padding(vertical = 16.dp))
 
@@ -332,14 +419,12 @@ private fun Location(details: DetailsModel, onNavigateClicked: (String) -> Unit)
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                val location = details.location
-
                 Column(modifier = Modifier.weight(1f)) {
                     if (location != null) {
                         Text("${location.street} ${location.houseNumber}")
                         Text("${location.postalCode} ${location.city}")
                     } else {
-                        Text(stringResource(R.string.details_coordinates, details.coordinates.latitude, details.coordinates.longitude))
+                        Text(stringResource(R.string.details_coordinates, coordinates.latitude, coordinates.longitude))
                     }
                 }
 
@@ -354,31 +439,29 @@ private fun Location(details: DetailsModel, onNavigateClicked: (String) -> Unit)
             HorizontalDivider(Modifier.padding(vertical = 16.dp))
         }
 
-        if (details.directions != null) {
+        if (directions != null) {
             Text(
-                text = details.directions,
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                text = directions,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
         }
 
         val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(details.coordinates, 15f)
+            position = CameraPosition.fromLatLngZoom(coordinates, 15f)
         }
-        Card(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+        GoogleMap(
+            modifier = Modifier
+                .height(260.dp)
+                .clip(RoundedCornerShape(12.dp)),
+            cameraPositionState = cameraPositionState,
+            googleMapOptionsFactory = { GoogleMapOptions().mapColorScheme(MapColorScheme.FOLLOW_SYSTEM) }
         ) {
-            GoogleMap(
-                modifier = Modifier.height(260.dp),
-                cameraPositionState = cameraPositionState,
-                googleMapOptionsFactory = { GoogleMapOptions().mapColorScheme(MapColorScheme.FOLLOW_SYSTEM) }
-            ) {
-                Marker(
-                    //                    icon = Icons.Filled.,
-                    state = rememberMarkerState(position = details.coordinates),
-                    title = details.description,
-                    snippet = stringResource(R.string.map_available, details.rentalBikesAvailable?.toString() ?: "??")
-                )
-            }
+            Marker(
+                //                    icon = Icons.Filled.,
+                state = rememberUpdatedMarkerState(position = coordinates),
+                title = description,
+                snippet = stringResource(R.string.map_available, rentalBikesAvailable?.toString() ?: "??")
+            )
         }
     }
 }
@@ -473,6 +556,21 @@ private fun Alternatives(
 @Preview(heightDp = 2000)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark mode")
 @Composable
+fun DetailsLoadingPreview() {
+    DetailsView(
+        TestData.testDetailScreenData,
+        ScreenState.Loading,
+        {},
+        {},
+        {},
+        {},
+        {}
+    )
+}
+
+@Preview(heightDp = 2000)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark mode")
+@Composable
 fun DetailsPreview() {
     val dayNames =
         listOf(R.string.day_1, R.string.day_2, R.string.day_3, R.string.day_4, R.string.day_5, R.string.day_6, R.string.day_7)
@@ -511,7 +609,7 @@ fun DetailsPreview() {
         ),
     )
     DetailsView(
-        "Amersfoort Mondriaanplein",
+        TestData.testDetailScreenData,
         ScreenState.Loaded(DetailsContent.Content(details)),
         {},
         {},

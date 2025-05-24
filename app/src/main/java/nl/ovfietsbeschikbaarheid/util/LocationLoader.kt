@@ -58,7 +58,7 @@ class LocationLoader(
         if (location != null) {
             return location.toCoordinates()
         }
-        // Fall back to last known location
+        // Fall back to last known location. We could use compass fully now, getting the last known location is now supported since version 2.2.
         return fusedLocationClient.lastLocation.await()?.toCoordinates()
     }
 }

@@ -1,5 +1,6 @@
 package nl.ovfietsbeschikbaarheid
 
+import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
 
@@ -15,5 +16,11 @@ object TestData {
         longitude = 6.469563,
         type = LocationType.Regular,
         openingHours = emptyList()
+    )
+
+    val testDetailScreenData = DetailScreenData(
+        title = "Amersfoort Mondriaanplein",
+        uri = "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-amf002",
+        fetchTime = 1729539103,
     )
 }

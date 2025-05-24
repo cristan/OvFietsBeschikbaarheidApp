@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
@@ -25,7 +26,6 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,9 +48,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
+import nl.ovfietsbeschikbaarheid.ext.shimmerShape
 import nl.ovfietsbeschikbaarheid.mapper.OpenStateMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
@@ -151,19 +154,46 @@ private fun HomeView(
                     }
 
                     HomeContent.Loading -> {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = 80.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .width(64.dp)
-                                    .padding(16.dp),
-                            )
-                            Text(stringResource(R.string.loading))
+                        val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
+                        LazyColumn(userScrollEnabled = false) {
+                            item {
+                                HorizontalBar(stringResource(R.string.home_nearby))
+                            }
+                            items(count = 20) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Row {
+                                            Box(Modifier.size(width = 140.dp, height = 24.dp).padding(bottom = 4.dp, top = 2.dp).shimmerShape(shimmerInstance))
+                                        }
+                                        Row {
+                                            Box(Modifier.size(width = 60.dp, height = 20.dp).padding(top = 4.dp).shimmerShape(shimmerInstance))
+                                        }
+                                    }
+
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.pedal_bike_24px),
+                                        tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                                        contentDescription = null,
+                                        modifier = Modifier.align(Alignment.CenterVertically)
+                                    )
+                                    Box(
+                                        modifier = Modifier.padding(start = 8.dp),
+                                    ) {
+                                        Box(Modifier.size(width = 24.dp, height = 20.dp).padding(top = 4.dp).shimmerShape(shimmerInstance))
+
+                                        // Placeholder so all numbers are left aligned. Text, so it scales when people have a larger font size
+                                        Text(
+                                            text = "888",
+                                            color = Color.Transparent
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
 
