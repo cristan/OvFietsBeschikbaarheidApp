@@ -230,15 +230,19 @@ fun DetailsLoader(
                 CircularProgressIndicator(
                     progress = { 1.0f },
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                    modifier = Modifier.size(220.dp).shimmer(shimmerInstance),
+                    modifier = Modifier
+                        .size(220.dp)
+                        .shimmer(shimmerInstance),
                     strokeWidth = 36.dp,
                     strokeCap = StrokeCap.Butt,
                     gapSize = 0.dp,
 
+                    )
+                Box(
+                    modifier = Modifier
+                        .size(width = 68.dp, height = 54.dp)
+                        .shimmerShape(shimmerInstance)
                 )
-                Box(modifier = Modifier
-                    .size(width = 68.dp, height = 54.dp)
-                    .shimmerShape(shimmerInstance))
             }
             Row(Modifier.align(Alignment.End)) {
                 Text(
@@ -254,23 +258,29 @@ fun DetailsLoader(
                 style = MaterialTheme.typography.headlineMedium,
             )
 
-            Box(modifier = Modifier
-                .padding(vertical = 32.dp)
-                .height(28.dp)
-                .fillMaxWidth()
-                .shimmerShape(shimmerInstance, shape = RoundedCornerShape(8.dp)))
+            Box(
+                modifier = Modifier
+                    .padding(vertical = 32.dp)
+                    .height(28.dp)
+                    .fillMaxWidth()
+                    .shimmerShape(shimmerInstance, shape = RoundedCornerShape(8.dp))
+            )
 
-            Box(modifier = Modifier
-                .height(276.dp)// 260 dp + 16 dp padding. Not sure where that 16 dp comes from, but ok.
-                .fillMaxWidth()
-                .shimmerShape(shimmerInstance, shape = RoundedCornerShape(12.dp)))
+            Box(
+                modifier = Modifier
+                    .height(276.dp)// 260 dp + 16 dp padding. Not sure where that 16 dp comes from, but ok.
+                    .fillMaxWidth()
+                    .shimmerShape(shimmerInstance, shape = RoundedCornerShape(12.dp))
+            )
         }
 
         OvCard {
-            Box(modifier = Modifier
-                .height(160.dp)
-                .fillMaxWidth()
-                .shimmerShape(shimmerInstance, shape = RoundedCornerShape(12.dp)))
+            Box(
+                modifier = Modifier
+                    .height(160.dp)
+                    .fillMaxWidth()
+                    .shimmerShape(shimmerInstance, shape = RoundedCornerShape(12.dp))
+            )
         }
     }
 }
@@ -293,7 +303,14 @@ private fun ActualDetails(
                 Disruptions(it)
             }
 
-            Location(details.location, details.coordinates, details.directions, details.description, details.rentalBikesAvailable, onLocationClicked)
+            Location(
+                details.location,
+                details.coordinates,
+                details.directions,
+                details.description,
+                details.rentalBikesAvailable,
+                onLocationClicked
+            )
 
             ExtraInfo(details)
 
@@ -312,7 +329,7 @@ private fun ActualDetails(
 }
 
 @Composable
-private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,) {
+private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
     OvCard {
         Text(stringResource(R.string.details_amount_available))
         val rentalBikesAvailable = details.rentalBikesAvailable
@@ -389,37 +406,39 @@ fun CapacityGraph(
     data: List<CapacityModel>,
     modifier: Modifier = Modifier
 ) {
-    if (data.isEmpty()) return
+    val now = remember { Instant.now() }
+    val startTime = remember { now.minus(12, ChronoUnit.HOURS) }
+
+    val filtered = remember(data) {
+        data.filter { it.dateTime >= startTime }
+            .sortedBy { it.dateTime }
+    }
+
+    if (filtered.size < 2) return // not enough data
 
     OvCard {
-        val sortedData = remember(data) {
-            data.sortedBy { it.dateTime }
-        }
+        // Y axis always starts at 0
+        val maxCapacity = filtered.maxOf { it.capacity }.coerceAtLeast(1)
 
-        val minCapacity = sortedData.minOf { it.capacity }
-        val maxCapacity = sortedData.maxOf { it.capacity }
-
-        val timeRange = sortedData.first().dateTime to sortedData.last().dateTime
-        val timeSpan = Duration.between(timeRange.first, timeRange.second).toMillis().coerceAtLeast(1)
-
+        val primaryColor = MaterialTheme.colorScheme.primary
         Canvas(
             modifier = modifier
                 .fillMaxWidth()
                 .height(100.dp)
-                .padding(horizontal = 8.dp)
         ) {
             val width = size.width
             val height = size.height
 
-            val points = sortedData.map {
-                val x = ((Duration.between(timeRange.first, it.dateTime).toMillis() / timeSpan.toFloat()) * width)
-                val y = height - ((it.capacity - minCapacity).toFloat() / (maxCapacity - minCapacity).coerceAtLeast(1)) * height
+            val duration = Duration.between(startTime, now).toMillis().toFloat()
+
+            val points = filtered.map { model ->
+                val x = (Duration.between(startTime, model.dateTime).toMillis() / duration) * width
+                val y = height - (model.capacity / maxCapacity.toFloat()) * height
                 Offset(x, y)
             }
 
-            // Line style
             val path = Path().apply {
-                points.firstOrNull()?.let { moveTo(it.x, it.y) }
+                moveTo(points.first().x, points.first().y)
                 for (pt in points.drop(1)) {
                     lineTo(pt.x, pt.y)
                 }
@@ -427,8 +446,8 @@ fun CapacityGraph(
 
             drawPath(
                 path = path,
-                color = Color(0xFF3B82F6), // Tailwind "blue-500"
-                style = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round)
+                color = primaryColor,
+                style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
             )
         }
     }
@@ -452,7 +471,14 @@ private fun Disruptions(disruptions: String) {
 }
 
 @Composable
-private fun Location(location: LocationModel?, coordinates: LatLng, directions: String?, description: String, rentalBikesAvailable: Int?, onNavigateClicked: (String) -> Unit) {
+private fun Location(
+    location: LocationModel?,
+    coordinates: LatLng,
+    directions: String?,
+    description: String,
+    rentalBikesAvailable: Int?,
+    onNavigateClicked: (String) -> Unit
+) {
     OvCard {
         Text(
             text = "Locatie",
