@@ -80,7 +80,8 @@ class DetailsViewModel(
             val capabilities = stationRepository.getCapacities()
             // No need to go for the non-cached locations: these are only for the alternatives, and these barely change at all
             val allLocations = overviewRepository.getCachedOrLoad()
-            val data = DetailsMapper.convert(details, allLocations, allStations, capabilities)
+            val history = client.getHistory(details.payload.extra.locationCode)
+            val data = DetailsMapper.convert(details, allLocations, allStations, capabilities, history)
             val timeElapsed = System.currentTimeMillis() - before
             if (timeElapsed < minDelay) {
                 delay(minDelay - timeElapsed)

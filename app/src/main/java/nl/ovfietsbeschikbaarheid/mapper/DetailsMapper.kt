@@ -4,6 +4,8 @@ import androidx.annotation.StringRes
 import com.google.android.gms.maps.model.LatLng
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
+import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
+import nl.ovfietsbeschikbaarheid.model.CapacityModel
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.LocationModel
@@ -11,6 +13,7 @@ import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
 import timber.log.Timber
+import java.time.Instant
 import java.time.LocalDateTime
 import java.util.Locale
 import java.util.TimeZone
@@ -23,7 +26,8 @@ object DetailsMapper {
         detailsDTO: DetailsDTO,
         allLocations: List<LocationOverviewModel>,
         allStations: Map<String, String>,
-        capacities: Map<String, Int>
+        capacities: Map<String, Int>,
+        hourlyLocationCapacityDtos: List<HourlyLocationCapacityDto>
     ): DetailsModel {
         val payload = detailsDTO.payload
 
@@ -95,6 +99,10 @@ object DetailsMapper {
             }
         }
 
+        // Let's add the current capacity to the graph. Unfortunately, the current backend call doesn't return a timestamp, so we'll assume now.
+        val currentCapacity = CapacityModel(rentalBikesAvailable ?: 0, Instant.now())
+        val historicalCapacities = convertHourlyCapacities(hourlyLocationCapacityDtos) + currentCapacity
+
         return DetailsModel(
             description = payload.description,
             openingHoursInfo = openingHoursInfo,
@@ -114,7 +122,19 @@ object DetailsMapper {
                     payload.extra.locationCode, it, LocalDateTime.now(TimeZone.getTimeZone("Europe/Amsterdam").toZoneId())
                 )
             },
+            capacityHistory = historicalCapacities,
         )
+    }
+
+    private fun convertHourlyCapacities(hourlyLocationCapacityDtos: List<HourlyLocationCapacityDto>): List<CapacityModel> {
+        return hourlyLocationCapacityDtos.map {
+            val firstCapacity = it.document.fields.first.integerValue.toInt()
+            val dateTime = it.document.createTime
+            CapacityModel(
+                firstCapacity,
+                dateTime.toInstant()
+            )
+        }
     }
 
     @StringRes

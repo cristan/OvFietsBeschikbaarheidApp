@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -50,8 +51,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -78,6 +82,7 @@ import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
 import nl.ovfietsbeschikbaarheid.ext.shimmerShape
 import nl.ovfietsbeschikbaarheid.ext.withStyledLink
+import nl.ovfietsbeschikbaarheid.model.CapacityModel
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.LocationModel
@@ -95,7 +100,10 @@ import nl.ovfietsbeschikbaarheid.viewmodel.DetailsContent
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
+import java.time.Duration
+import java.time.Instant
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.Locale
 
 @Composable
@@ -279,6 +287,8 @@ private fun ActualDetails(
         Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
             MainInfo(details)
 
+            CapacityGraph(details.capacityHistory)
+
             details.disruptions?.let {
                 Disruptions(it)
             }
@@ -370,6 +380,56 @@ private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = Loc
                     OpenState.Open247 -> Text(stringResource(R.string.open_state_open_247))
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun CapacityGraph(
+    data: List<CapacityModel>,
+    modifier: Modifier = Modifier
+) {
+    if (data.isEmpty()) return
+
+    OvCard {
+        val sortedData = remember(data) {
+            data.sortedBy { it.dateTime }
+        }
+
+        val minCapacity = sortedData.minOf { it.capacity }
+        val maxCapacity = sortedData.maxOf { it.capacity }
+
+        val timeRange = sortedData.first().dateTime to sortedData.last().dateTime
+        val timeSpan = Duration.between(timeRange.first, timeRange.second).toMillis().coerceAtLeast(1)
+
+        Canvas(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(100.dp)
+                .padding(horizontal = 8.dp)
+        ) {
+            val width = size.width
+            val height = size.height
+
+            val points = sortedData.map {
+                val x = ((Duration.between(timeRange.first, it.dateTime).toMillis() / timeSpan.toFloat()) * width)
+                val y = height - ((it.capacity - minCapacity).toFloat() / (maxCapacity - minCapacity).coerceAtLeast(1)) * height
+                Offset(x, y)
+            }
+
+            // Line style
+            val path = Path().apply {
+                points.firstOrNull()?.let { moveTo(it.x, it.y) }
+                for (pt in points.drop(1)) {
+                    lineTo(pt.x, pt.y)
+                }
+            }
+
+            drawPath(
+                path = path,
+                color = Color(0xFF3B82F6), // Tailwind "blue-500"
+                style = Stroke(width = 2.dp.toPx(), cap = StrokeCap.Round)
+            )
         }
     }
 }
@@ -605,7 +665,22 @@ fun DetailsPreview() {
                 title = "Amersfoort Centraal",
                 uri = "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-amf001",
                 fetchTime = 1729539103
-            )
+            ),
+        ),
+        listOf(
+            CapacityModel(20, Instant.now().minus(12, ChronoUnit.HOURS)),
+            CapacityModel(19, Instant.now().minus(11, ChronoUnit.HOURS)),
+            CapacityModel(18, Instant.now().minus(10, ChronoUnit.HOURS)),
+            CapacityModel(16, Instant.now().minus(9, ChronoUnit.HOURS)),
+            CapacityModel(16, Instant.now().minus(8, ChronoUnit.HOURS)),
+            CapacityModel(13, Instant.now().minus(7, ChronoUnit.HOURS)),
+            CapacityModel(14, Instant.now().minus(6, ChronoUnit.HOURS)),
+            CapacityModel(15, Instant.now().minus(5, ChronoUnit.HOURS)),
+            CapacityModel(22, Instant.now().minus(4, ChronoUnit.HOURS)),
+            CapacityModel(18, Instant.now().minus(3, ChronoUnit.HOURS)),
+            CapacityModel(14, Instant.now().minus(2, ChronoUnit.HOURS)),
+            CapacityModel(15, Instant.now().minus(1, ChronoUnit.HOURS)),
+            CapacityModel(19, Instant.now())
         ),
     )
     DetailsView(

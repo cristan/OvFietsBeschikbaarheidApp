@@ -6,9 +6,13 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
+import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import timber.log.Timber
 
@@ -38,6 +42,50 @@ class KtorApiClient {
             return null
         }
         return result.body<DetailsDTO>()
+    }
+
+    suspend fun getHistory(code: String): List<HourlyLocationCapacityDto> {
+        Timber.i("Loading the history of $code")
+        val body = """
+        {
+            "structuredQuery": {
+                "from": [
+                    {
+                        "collectionId": "hourly_location_capacity"
+                    }
+                ],
+                "select": {
+                    "fields": [
+                        {
+                            "fieldPath": "hour"
+                        },
+                        {
+                            "fieldPath": "first"
+                        }
+                    ]
+                },
+                "where": {
+                    "fieldFilter": {
+                        "field": {
+                            "fieldPath": "code"
+                        },
+                        "op": "EQUAL",
+                        "value": {
+                            "stringValue": "Apg001"
+                        }
+                    }
+                }
+            }
+        }
+        """.trimIndent()
+        val result = httpClient.post("https://firestore.googleapis.com/v1/projects/ov-fiets-app-427721/databases/(default)/documents:runQuery") {
+            header("Content-Type", "application/json")
+            setBody(body)
+        }
+//        if (result.status.value == 404) {
+//            return null
+//        }
+        return result.body<List<HourlyLocationCapacityDto>>()
     }
 
     fun close() {

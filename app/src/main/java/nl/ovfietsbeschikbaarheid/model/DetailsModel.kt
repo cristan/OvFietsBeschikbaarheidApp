@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.google.android.gms.maps.model.LatLng
 import nl.ovfietsbeschikbaarheid.R
+import java.time.Instant
 
 data class DetailsModel(
     val description: String,
@@ -20,6 +21,12 @@ data class DetailsModel(
     val coordinates: LatLng,
     val stationName: String?,
     val alternatives: List<DetailScreenData>,
+    val capacityHistory: List<CapacityModel>
+)
+
+data class CapacityModel(
+    val capacity: Int,
+    val dateTime: Instant
 )
 
 data class LocationModel(
