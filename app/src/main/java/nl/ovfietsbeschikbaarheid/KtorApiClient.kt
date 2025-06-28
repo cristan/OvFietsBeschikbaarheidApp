@@ -71,7 +71,7 @@ class KtorApiClient {
                         },
                         "op": "EQUAL",
                         "value": {
-                            "stringValue": "Apg001"
+                            "stringValue": "$code"
                         }
                     }
                 }
