@@ -82,7 +82,7 @@ class DetailsViewModel(
                     stationRepository.getCapacities()
                 }
                 val historyDeferred = async {
-                    client.getHistory(data.locatonCode, ZonedDateTime.now(ZoneOffset.UTC).minusHours(12).toString())
+                    client.getHistory(data.locatonCode, ZonedDateTime.now(ZoneOffset.UTC).minusHours(13).toString())
                 }
 
                 val details = detailsDeferred.await()

@@ -439,6 +439,7 @@ fun CapacityGraph(
 
             val duration = Duration.between(startTime, now).toMillis().toFloat()
 
+            // Draw line of the history
             val points = data.map { model ->
                 val x = (Duration.between(startTime, model.dateTime).toMillis() / duration) * width
                 val y = height - (model.capacity / maxCapacity.toFloat()) * height
@@ -458,6 +459,7 @@ fun CapacityGraph(
                 style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
             )
 
+            // Draw the hours at the bottom of the x axis
             for (i in 0..12) {
                 val hourTime = startTime.plus(i.toLong(), ChronoUnit.HOURS)
                 val x = (Duration.between(startTime, hourTime).toMillis() / duration) * width

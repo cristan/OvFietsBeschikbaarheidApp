@@ -92,7 +92,7 @@ class KtorApiClient {
                                     "field": {
                                         "fieldPath": "timestamp"
                                     },
-                                    "op": "GREATER_THAN_OR_EQUAL",
+                                    "op": "GREATER_THAN",
                                     "value": {
                                         "timestampValue": "$startDate"
                                     }
