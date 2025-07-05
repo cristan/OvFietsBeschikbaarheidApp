@@ -66,6 +66,19 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import co.yml.charts.axis.AxisData
+import co.yml.charts.common.extensions.formatToSinglePrecision
+import co.yml.charts.common.model.Point
+import co.yml.charts.ui.linechart.LineChart
+import co.yml.charts.ui.linechart.model.GridLines
+import co.yml.charts.ui.linechart.model.IntersectionPoint
+import co.yml.charts.ui.linechart.model.Line
+import co.yml.charts.ui.linechart.model.LineChartData
+import co.yml.charts.ui.linechart.model.LinePlotData
+import co.yml.charts.ui.linechart.model.LineStyle
+import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
+import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
+import co.yml.charts.ui.linechart.model.ShadowUnderLine
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -417,6 +430,64 @@ fun CapacityGraph(
     if (filtered.size < 2) return // not enough data
 
     OvCard {
+        val pointsData: List<Point> = data.map {
+            val x = (Duration.between(startTime, it.dateTime).toMillis()) / 3600000f
+            Point(x, it.capacity.toFloat())
+        }
+
+        val xAxisData = AxisData.Builder()
+//            .axisConfig(AxisConfig())
+            .axisStepSize(20.dp)
+//            .backgroundColor(Color.Blue)
+            .steps(pointsData.size - 1)
+            .labelData { i -> i.toString() }
+//            .labelAndAxisLinePadding(15.dp)
+            .build()
+
+        val steps = 5
+        val yAxisData = AxisData.Builder()
+            .steps(steps)
+//            .backgroundColor(Color.Red)
+            .labelAndAxisLinePadding(10.dp)
+            .labelData { i ->
+                val maxCapacity = data.maxOf { it.capacity }
+                val yScale = maxCapacity.toFloat() / steps
+                (i * yScale).formatToSinglePrecision()
+//                i.toFloat().formatToSinglePrecision()
+            }.build()
+
+        // TODO: doesn't fill the entire width
+        // TODO: find a way to start at zero
+        val lineChartData = LineChartData(
+            linePlotData = LinePlotData(
+                lines = listOf(
+                    Line(
+                        dataPoints = pointsData,
+                        LineStyle(),
+                        IntersectionPoint(),
+                        SelectionHighlightPoint(),
+                        ShadowUnderLine(),
+                        SelectionHighlightPopUp()
+                    )
+                ),
+            ),
+            xAxisData = xAxisData,
+            yAxisData = yAxisData,
+            gridLines = GridLines(),
+            backgroundColor = Color.White
+        )
+
+        LineChart(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(300.dp),
+            lineChartData = lineChartData
+        )
+//        val pointsData: List<Point> =
+//            listOf(Point(0f, 40f), Point(1f, 90f), Point(2f, 0f), Point(3f, 60f), Point(4f, 10f))
+
+
+
         // Y axis always starts at 0
         val maxCapacity = filtered.maxOf { it.capacity }.coerceAtLeast(1)
 

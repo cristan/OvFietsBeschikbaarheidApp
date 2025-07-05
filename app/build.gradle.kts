@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.csv)
     implementation(libs.timber)
     implementation(libs.compose.shimmer)
+    implementation(libs.ycharts)
 
     implementation(libs.compass.geocoder)
     implementation(libs.compass.geocoder.mobile)

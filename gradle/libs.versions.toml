@@ -21,6 +21,7 @@ compass = "2.3.0"
 playServicesLocation = "21.3.0"
 playServicesCoroutines = "1.10.2"
 timber = "5.0.1"
+ycharts = "2.1.0"
 
 
 [libraries]
@@ -61,6 +62,7 @@ play-services-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-
 compass-geocoder = { module = "dev.jordond.compass:geocoder", version.ref = "compass" }
 compass-geocoder-mobile = { module = "dev.jordond.compass:geocoder-mobile", version.ref = "compass" }
 compass-permissions-mobile = { module = "dev.jordond.compass:permissions-mobile", version.ref = "compass" }
+ycharts = { module = "co.yml:ycharts", version.ref = "ycharts" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
