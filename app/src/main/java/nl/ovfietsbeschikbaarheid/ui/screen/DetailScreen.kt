@@ -477,6 +477,8 @@ fun CapacityGraph(
             backgroundColor = Color.White
         )
 
+        // YCharts seem to be very bugged. See https://github.com/codeandtheory/YCharts/issues/186
+        // If their own example on their own readme is bugged, it begs the question whether I should bother with this
         LineChart(
             modifier = Modifier
                 .fillMaxWidth()
