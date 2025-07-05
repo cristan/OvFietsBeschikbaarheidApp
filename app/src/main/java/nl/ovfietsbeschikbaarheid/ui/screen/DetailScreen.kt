@@ -709,8 +709,8 @@ fun DetailsPreview() {
     )
 
     val amsterdamZoneId = ZoneId.of("Europe/Amsterdam")
-    val dateLastData = ZonedDateTime.of(2025, 7, 1, 18, 0,0, 0, amsterdamZoneId)
-    val now = ZonedDateTime.of(2025, 7, 1, 18, 30, 0, 0, amsterdamZoneId)
+    val now = ZonedDateTime.now(amsterdamZoneId)
+    val dateLastData = now.truncatedTo(ChronoUnit.HOURS)
     val details = DetailsModel(
         "Amersfoort Mondriaanplein",
         OpenState.Open("01:20"),
