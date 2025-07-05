@@ -44,7 +44,7 @@ class KtorApiClient {
         return result.body<DetailsDTO>()
     }
 
-    suspend fun getHistory(code: String): List<HourlyLocationCapacityDto> {
+    suspend fun getHistory(code: String, startDate: String): List<HourlyLocationCapacityDto> {
         Timber.i("Loading the history of $code")
         val body = """
         {
@@ -64,15 +64,33 @@ class KtorApiClient {
                         }
                     ]
                 },
-                "where": {
-                    "fieldFilter": {
-                        "field": {
-                            "fieldPath": "code"
-                        },
-                        "op": "EQUAL",
-                        "value": {
-                            "stringValue": "$code"
-                        }
+               "where": {
+                    "compositeFilter": {
+                        "op": "AND",
+                        "filters": [
+                            {
+                                "fieldFilter": {
+                                    "field": {
+                                        "fieldPath": "code"
+                                    },
+                                    "op": "EQUAL",
+                                    "value": {
+                                        "stringValue": "$code"
+                                    }
+                                }
+                            },
+                            {
+                                "fieldFilter": {
+                                    "field": {
+                                        "fieldPath": "timestamp"
+                                    },
+                                    "op": "GREATER_THAN_OR_EQUAL",
+                                    "value": {
+                                        "timestampValue": "$startDate"
+                                    }
+                                }
+                            }
+                        ]
                     }
                 }
             }

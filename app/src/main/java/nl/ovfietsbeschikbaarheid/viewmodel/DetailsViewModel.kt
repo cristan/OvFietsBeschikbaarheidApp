@@ -18,6 +18,9 @@ import timber.log.Timber
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import kotlin.time.measureTimedValue
 
 private const val MIN_REFRESH_TIME = 350L
 
@@ -69,18 +72,35 @@ class DetailsViewModel(
     private suspend fun doRefresh(minDelay: Long = 0L) {
         try {
             val before = System.currentTimeMillis()
-            val details = client.getDetails(data.uri)
+
+            val (details, detailsTimeTaken) = measureTimedValue {
+                client.getDetails(data.uri)
+            }
+            Timber.d("Details loaded in $detailsTimeTaken")
             if (details == null) {
                 val fetchTimeInstant = Instant.ofEpochSecond(data.fetchTime)
                 val lastFetched = LocalDateTime.ofInstant(fetchTimeInstant, ZoneId.of("Europe/Amsterdam"))!!
                 _screenState.value = ScreenState.Loaded(DetailsContent.NotFound(data.title, lastFetched))
                 return
             }
-            val allStations = stationRepository.getAllStations()
-            val capabilities = stationRepository.getCapacities()
+            val (allStations, stationsTimeTaken) = measureTimedValue {
+                stationRepository.getAllStations()
+            }
+            Timber.d("Stations loaded in $stationsTimeTaken")
+            val (capabilities, capabilitiesTimeTaken) = measureTimedValue {
+                stationRepository.getCapacities()
+            }
+            Timber.d("Capabilities loaded in $capabilitiesTimeTaken")
+
             // No need to go for the non-cached locations: these are only for the alternatives, and these barely change at all
             val allLocations = overviewRepository.getCachedOrLoad()
-            val history = client.getHistory(details.payload.extra.locationCode)
+
+            // TODO: Do all of this loading in parallel
+            val (history, historyTimeTaken) = measureTimedValue {
+                client.getHistory(details.payload.extra.locationCode, ZonedDateTime.now(ZoneOffset.UTC).minusHours(12).toString())
+            }
+            Timber.d("History loaded in $historyTimeTaken")
+
             val data = DetailsMapper.convert(details, allLocations, allStations, capabilities, history)
             val timeElapsed = System.currentTimeMillis() - before
             if (timeElapsed < minDelay) {
