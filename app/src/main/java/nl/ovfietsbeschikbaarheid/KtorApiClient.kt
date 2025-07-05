@@ -15,6 +15,7 @@ import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
 import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import timber.log.Timber
+import kotlin.time.measureTimedValue
 
 class KtorApiClient {
 
@@ -32,12 +33,19 @@ class KtorApiClient {
     }
 
     suspend fun getLocations(): List<LocationDTO> {
-        return httpClient.get("https://storage.googleapis.com/ov-fiets-updates/locations.json").body<List<LocationDTO>>()
+        val (locations, timeTaken) = measureTimedValue {
+            httpClient.get("https://storage.googleapis.com/ov-fiets-updates/locations.json").body<List<LocationDTO>>()
+        }
+        Timber.d("Loaded locations in $timeTaken")
+        return locations
     }
 
     suspend fun getDetails(detailUri: String): DetailsDTO? {
         Timber.i("Loading $detailUri")
-        val result = httpClient.get(detailUri)
+        val (result, timeTaken) = measureTimedValue {
+            httpClient.get(detailUri)
+        }
+        Timber.d("Loaded $detailUri in $timeTaken")
         if (result.status.value == 404) {
             return null
         }
@@ -96,14 +104,15 @@ class KtorApiClient {
             }
         }
         """.trimIndent()
-        val result = httpClient.post("https://firestore.googleapis.com/v1/projects/ov-fiets-app-427721/databases/(default)/documents:runQuery") {
-            header("Content-Type", "application/json")
-            setBody(body)
+        val (history, timeTaken) = measureTimedValue {
+            val result = httpClient.post("https://firestore.googleapis.com/v1/projects/ov-fiets-app-427721/databases/(default)/documents:runQuery") {
+                header("Content-Type", "application/json")
+                setBody(body)
+            }
+            result.body<List<HourlyLocationCapacityDto>>()
         }
-//        if (result.status.value == 404) {
-//            return null
-//        }
-        return result.body<List<HourlyLocationCapacityDto>>()
+        Timber.d("Loaded the history of $code since $startDate in $timeTaken")
+        return history
     }
 
     fun close() {

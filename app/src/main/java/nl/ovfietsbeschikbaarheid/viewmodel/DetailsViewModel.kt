@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import nl.ovfietsbeschikbaarheid.KtorApiClient
@@ -20,7 +21,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
-import kotlin.time.measureTimedValue
 
 private const val MIN_REFRESH_TIME = 350L
 
@@ -41,25 +41,19 @@ class DetailsViewModel(
     fun screenLaunched(data: DetailScreenData) {
         this.data = data
         _title.value = data.title
-        viewModelScope.launch {
-            doRefresh()
-        }
+        doRefresh()
     }
 
     fun onReturnToScreenTriggered() {
         if (screenState.value is ScreenState.Loaded) {
             _screenState.setRefreshing()
-            viewModelScope.launch {
-                doRefresh()
-            }
+            doRefresh()
         }
     }
 
     fun onPullToRefresh() {
-        viewModelScope.launch {
-            _screenState.setRefreshing()
-            doRefresh(MIN_REFRESH_TIME)
-        }
+        _screenState.setRefreshing()
+        doRefresh(MIN_REFRESH_TIME)
     }
 
     fun onRetryClick() {
@@ -69,47 +63,46 @@ class DetailsViewModel(
         }
     }
 
-    private suspend fun doRefresh(minDelay: Long = 0L) {
-        try {
-            val before = System.currentTimeMillis()
+    private fun doRefresh(minDelay: Long = 0L) {
+        viewModelScope.launch {
+            try {
+                val before = System.currentTimeMillis()
 
-            val (details, detailsTimeTaken) = measureTimedValue {
-                client.getDetails(data.uri)
-            }
-            Timber.d("Details loaded in $detailsTimeTaken")
-            if (details == null) {
-                val fetchTimeInstant = Instant.ofEpochSecond(data.fetchTime)
-                val lastFetched = LocalDateTime.ofInstant(fetchTimeInstant, ZoneId.of("Europe/Amsterdam"))!!
-                _screenState.value = ScreenState.Loaded(DetailsContent.NotFound(data.title, lastFetched))
-                return
-            }
-            val (allStations, stationsTimeTaken) = measureTimedValue {
-                stationRepository.getAllStations()
-            }
-            Timber.d("Stations loaded in $stationsTimeTaken")
-            val (capabilities, capabilitiesTimeTaken) = measureTimedValue {
-                stationRepository.getCapacities()
-            }
-            Timber.d("Capabilities loaded in $capabilitiesTimeTaken")
+                val detailsDeferred = async {
+                    client.getDetails(data.uri)
+                }
+                val allLocationsDeferred = async {
+                    // No need to go for the non-cached locations: these are only for the alternatives, and these barely change at all
+                    overviewRepository.getCachedOrLoad()
+                }
+                val allStationsDeferred = async {
+                    stationRepository.getAllStations()
+                }
+                val capacitiesDeferred = async {
+                    stationRepository.getCapacities()
+                }
+                val historyDeferred = async {
+                    client.getHistory(data.locatonCode, ZonedDateTime.now(ZoneOffset.UTC).minusHours(12).toString())
+                }
 
-            // No need to go for the non-cached locations: these are only for the alternatives, and these barely change at all
-            val allLocations = overviewRepository.getCachedOrLoad()
+                val details = detailsDeferred.await()
+                if (details == null) {
+                    val fetchTimeInstant = Instant.ofEpochSecond(data.fetchTime)
+                    val lastFetched = LocalDateTime.ofInstant(fetchTimeInstant, ZoneId.of("Europe/Amsterdam"))!!
+                    _screenState.value = ScreenState.Loaded(DetailsContent.NotFound(data.title, lastFetched))
+                    return@launch
+                }
 
-            // TODO: Do all of this loading in parallel
-            val (history, historyTimeTaken) = measureTimedValue {
-                client.getHistory(details.payload.extra.locationCode, ZonedDateTime.now(ZoneOffset.UTC).minusHours(12).toString())
+                val data = DetailsMapper.convert(details, allLocationsDeferred.await(), allStationsDeferred.await(), capacitiesDeferred.await(), historyDeferred.await())
+                val timeElapsed = System.currentTimeMillis() - before
+                if (timeElapsed < minDelay) {
+                    delay(minDelay - timeElapsed)
+                }
+                _screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
+            } catch (e: Exception) {
+                Timber.e(e)
+                _screenState.value = ScreenState.FullPageError
             }
-            Timber.d("History loaded in $historyTimeTaken")
-
-            val data = DetailsMapper.convert(details, allLocations, allStations, capabilities, history)
-            val timeElapsed = System.currentTimeMillis() - before
-            if (timeElapsed < minDelay) {
-                delay(minDelay - timeElapsed)
-            }
-            _screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
-        } catch (e: Exception) {
-            Timber.e(e)
-            _screenState.value = ScreenState.FullPageError
         }
     }
 

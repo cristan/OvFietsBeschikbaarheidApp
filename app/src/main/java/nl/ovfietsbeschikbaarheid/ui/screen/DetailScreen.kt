@@ -690,6 +690,7 @@ fun DetailsPreview() {
             DetailScreenData(
                 title = "Amersfoort Centraal",
                 uri = "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-amf001",
+                locatonCode = "amf001",
                 fetchTime = 1729539103
             ),
         ),

@@ -5,6 +5,8 @@ import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import kotlinx.serialization.json.Json
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.dto.Station
+import timber.log.Timber
+import kotlin.time.measureTimedValue
 
 class StationRepository(
     private val context: Context
@@ -21,10 +23,15 @@ class StationRepository(
         cachedStations?.let {
             return it
         }
-        val stationsStream = context.resources.openRawResource(R.raw.stations)
-        val inputAsString = stationsStream.bufferedReader().use { it.readText() }
-        return json.decodeFromString<List<Station>>(inputAsString)
-            .associate { it.code to it.name }
+        val (stations, timeTaken) = measureTimedValue {
+            val stationsStream = context.resources.openRawResource(R.raw.stations)
+            val inputAsString = stationsStream.bufferedReader().use { it.readText() }
+            json.decodeFromString<List<Station>>(inputAsString)
+                .associate { it.code to it.name }
+        }
+        Timber.d("Loaded stations in $timeTaken")
+        cachedStations = stations
+        return stations
     }
 
     /**
@@ -35,23 +42,28 @@ class StationRepository(
         cachedCapacities?.let {
             return it
         }
-        val maxAvailableStream = context.resources.openRawResource(R.raw.max_2017_2023)
-        val capabilities = HashMap<String, Int>()
-        csvReader { delimiter = ';' }.readAll(maxAvailableStream)
-            .drop(1)
-            .forEach { line ->
-                val code = line[0]
-                val maxAvailabilities = line
-                    .drop(2)
-                    .map { maxAvailability ->
-                        if (maxAvailability.isEmpty()) {
-                            0
-                        } else {
-                            maxAvailability.toInt()
+        val (capabilities, timeTaken) = measureTimedValue {
+            val maxAvailableStream = context.resources.openRawResource(R.raw.max_2017_2023)
+            val capabilities = HashMap<String, Int>()
+            csvReader { delimiter = ';' }.readAll(maxAvailableStream)
+                .drop(1)
+                .forEach { line ->
+                    val code = line[0]
+                    val maxAvailabilities = line
+                        .drop(2)
+                        .map { maxAvailability ->
+                            if (maxAvailability.isEmpty()) {
+                                0
+                            } else {
+                                maxAvailability.toInt()
+                            }
                         }
-                    }
-                capabilities[code] = maxAvailabilities.max()
-            }
+                    capabilities[code] = maxAvailabilities.max()
+                }
+            capabilities
+        }
+        Timber.d("Loaded capacities in $timeTaken")
+
         cachedCapacities = capabilities
         return capabilities
     }
