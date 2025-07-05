@@ -12,9 +12,10 @@ import nl.ovfietsbeschikbaarheid.model.LocationModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
+import nl.ovfietsbeschikbaarheid.util.dutchZone
 import timber.log.Timber
-import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.util.Locale
 import java.util.TimeZone
 import kotlin.math.max
@@ -100,8 +101,8 @@ object DetailsMapper {
         }
 
         // Let's add the current capacity to the graph. Unfortunately, the current backend call doesn't return a timestamp, so we'll assume now.
-        val currentCapacity = CapacityModel(rentalBikesAvailable ?: 0, Instant.now())
-        val historicalCapacities = convertHourlyCapacities(hourlyLocationCapacityDtos) + currentCapacity
+        val currentCapacity = CapacityModel(rentalBikesAvailable ?: 0, ZonedDateTime.now(dutchZone))
+        val historicalCapacities = convertHourlyCapacities(hourlyLocationCapacityDtos).sortedBy { it.dateTime } + currentCapacity
 
         return DetailsModel(
             description = payload.description,
@@ -132,7 +133,7 @@ object DetailsMapper {
             val dateTime = it.document.createTime
             CapacityModel(
                 firstCapacity,
-                dateTime.toInstant()
+                dateTime.withZoneSameInstant(dutchZone)
             )
         }
     }

@@ -59,7 +59,12 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -96,12 +101,14 @@ import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
 import nl.ovfietsbeschikbaarheid.ui.theme.Red50
 import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
+import nl.ovfietsbeschikbaarheid.util.dutchZone
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsContent
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
 import java.time.Duration
-import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Locale
@@ -406,21 +413,22 @@ fun CapacityGraph(
     data: List<CapacityModel>,
     modifier: Modifier = Modifier
 ) {
-    val now = remember { Instant.now() }
-    val startTime = remember { now.minus(12, ChronoUnit.HOURS) }
-
-    val filtered = remember(data) {
-        data.filter { it.dateTime >= startTime }
-            .sortedBy { it.dateTime }
-    }
-
-    if (filtered.size < 2) return // not enough data
+    if (data.size < 2) return // not enough data
+    val now = remember { ZonedDateTime.now(dutchZone) }
+    val startTime = remember { data[0].dateTime.truncatedTo(ChronoUnit.HOURS) }
+    val textMeasurer = rememberTextMeasurer()
 
     OvCard {
-        // Y axis always starts at 0
-        val maxCapacity = filtered.maxOf { it.capacity }.coerceAtLeast(1)
+        Text(
+            text = stringResource(R.string.history_title),
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
 
+        val maxCapacity = data.maxOf { it.capacity }.coerceAtLeast(1)
         val primaryColor = MaterialTheme.colorScheme.primary
+        val labelColor = MaterialTheme.colorScheme.onBackground
+
         Canvas(
             modifier = modifier
                 .fillMaxWidth()
@@ -431,7 +439,7 @@ fun CapacityGraph(
 
             val duration = Duration.between(startTime, now).toMillis().toFloat()
 
-            val points = filtered.map { model ->
+            val points = data.map { model ->
                 val x = (Duration.between(startTime, model.dateTime).toMillis() / duration) * width
                 val y = height - (model.capacity / maxCapacity.toFloat()) * height
                 Offset(x, y)
@@ -439,7 +447,7 @@ fun CapacityGraph(
 
             val path = Path().apply {
                 moveTo(points.first().x, points.first().y)
-                for (pt in points.drop(1)) {
+                for (pt in points) {
                     lineTo(pt.x, pt.y)
                 }
             }
@@ -449,6 +457,31 @@ fun CapacityGraph(
                 color = primaryColor,
                 style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
             )
+
+            for (i in 0..12) {
+                val hourTime = startTime.plus(i.toLong(), ChronoUnit.HOURS)
+                val x = (Duration.between(startTime, hourTime).toMillis() / duration) * width
+
+                val hour = hourTime.hour
+                val label = hour.toString()
+
+                val textLayoutResult = textMeasurer.measure(
+                    text = AnnotatedString(label),
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        color = labelColor,
+                        textAlign = TextAlign.Center
+                    )
+                )
+
+                drawText(
+                    textLayoutResult = textLayoutResult,
+                    topLeft = Offset(
+                        x - textLayoutResult.size.width / 2f,
+                        height - textLayoutResult.size.height
+                    )
+                )
+            }
         }
     }
 }
@@ -481,7 +514,7 @@ private fun Location(
 ) {
     OvCard {
         Text(
-            text = "Locatie",
+            text = stringResource(R.string.location_title),
             style = MaterialTheme.typography.headlineMedium,
         )
         val onAddressClick = {
@@ -672,6 +705,10 @@ fun DetailsPreview() {
         houseNumber = "1",
         postalCode = "3812 GZ",
     )
+
+    val amsterdamZoneId = ZoneId.of("Europe/Amsterdam")
+    val dateLastData = ZonedDateTime.of(2025, 7, 1, 18, 0,0, 0, amsterdamZoneId)
+    val now = ZonedDateTime.of(2025, 7, 1, 18, 30, 0, 0, amsterdamZoneId)
     val details = DetailsModel(
         "Amersfoort Mondriaanplein",
         OpenState.Open("01:20"),
@@ -695,19 +732,19 @@ fun DetailsPreview() {
             ),
         ),
         listOf(
-            CapacityModel(20, Instant.now().minus(12, ChronoUnit.HOURS)),
-            CapacityModel(19, Instant.now().minus(11, ChronoUnit.HOURS)),
-            CapacityModel(18, Instant.now().minus(10, ChronoUnit.HOURS)),
-            CapacityModel(16, Instant.now().minus(9, ChronoUnit.HOURS)),
-            CapacityModel(16, Instant.now().minus(8, ChronoUnit.HOURS)),
-            CapacityModel(13, Instant.now().minus(7, ChronoUnit.HOURS)),
-            CapacityModel(14, Instant.now().minus(6, ChronoUnit.HOURS)),
-            CapacityModel(15, Instant.now().minus(5, ChronoUnit.HOURS)),
-            CapacityModel(22, Instant.now().minus(4, ChronoUnit.HOURS)),
-            CapacityModel(18, Instant.now().minus(3, ChronoUnit.HOURS)),
-            CapacityModel(14, Instant.now().minus(2, ChronoUnit.HOURS)),
-            CapacityModel(15, Instant.now().minus(1, ChronoUnit.HOURS)),
-            CapacityModel(19, Instant.now())
+            CapacityModel(20, dateLastData.minus(12, ChronoUnit.HOURS)),
+            CapacityModel(19, dateLastData.minus(11, ChronoUnit.HOURS)),
+            CapacityModel(18, dateLastData.minus(10, ChronoUnit.HOURS)),
+            CapacityModel(16, dateLastData.minus(9, ChronoUnit.HOURS)),
+            CapacityModel(16, dateLastData.minus(8, ChronoUnit.HOURS)),
+            CapacityModel(13, dateLastData.minus(7, ChronoUnit.HOURS)),
+            CapacityModel(14, dateLastData.minus(6, ChronoUnit.HOURS)),
+            CapacityModel(15, dateLastData.minus(5, ChronoUnit.HOURS)),
+            CapacityModel(22, dateLastData.minus(4, ChronoUnit.HOURS)),
+            CapacityModel(18, dateLastData.minus(3, ChronoUnit.HOURS)),
+            CapacityModel(14, dateLastData.minus(2, ChronoUnit.HOURS)),
+            CapacityModel(15, dateLastData.minus(1, ChronoUnit.HOURS)),
+            CapacityModel(19, now)
         ),
     )
     DetailsView(

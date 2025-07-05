@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.google.android.gms.maps.model.LatLng
 import nl.ovfietsbeschikbaarheid.R
-import java.time.Instant
+import java.time.ZonedDateTime
 
 data class DetailsModel(
     val description: String,
@@ -26,7 +26,7 @@ data class DetailsModel(
 
 data class CapacityModel(
     val capacity: Int,
-    val dateTime: Instant
+    val dateTime: ZonedDateTime
 )
 
 data class LocationModel(
