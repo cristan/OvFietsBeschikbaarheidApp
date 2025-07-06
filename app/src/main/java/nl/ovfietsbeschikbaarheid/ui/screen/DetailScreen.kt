@@ -101,7 +101,6 @@ import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
 import nl.ovfietsbeschikbaarheid.ui.theme.Red50
 import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
-import nl.ovfietsbeschikbaarheid.util.dutchZone
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsContent
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -408,14 +407,15 @@ private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = Loc
     }
 }
 
+// TODO: skeleton screens
 @Composable
 fun CapacityGraph(
     data: List<CapacityModel>,
     modifier: Modifier = Modifier
 ) {
     if (data.size < 2) return // not enough data
-    val now = remember { ZonedDateTime.now(dutchZone) }
     val startTime = remember { data[0].dateTime.truncatedTo(ChronoUnit.HOURS) }
+    val endTime = data.last().dateTime
     val textMeasurer = rememberTextMeasurer()
 
     OvCard {
@@ -437,7 +437,7 @@ fun CapacityGraph(
             val width = size.width
             val height = size.height
 
-            val duration = Duration.between(startTime, now).toMillis().toFloat()
+            val duration = Duration.between(startTime, endTime).toMillis().toFloat()
 
             // Draw line of the history
             val points = data.map { model ->
