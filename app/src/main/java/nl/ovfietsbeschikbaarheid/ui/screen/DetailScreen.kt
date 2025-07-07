@@ -460,12 +460,12 @@ fun CapacityGraph(
             )
 
             // Draw the hours at the bottom of the x axis
-            for (i in 0..12) {
-                val hourTime = startTime.plus(i.toLong(), ChronoUnit.HOURS)
+            for (i in 0..6) {
+                val hourTime = startTime.plus(i * 2.toLong(), ChronoUnit.HOURS)
                 val x = (Duration.between(startTime, hourTime).toMillis() / duration) * width
 
                 val hour = hourTime.hour
-                val label = hour.toString()
+                val label = hour.toString().padStart(2, '0')+":00"
 
                 val textLayoutResult = textMeasurer.measure(
                     text = AnnotatedString(label),
