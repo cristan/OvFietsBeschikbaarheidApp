@@ -111,6 +111,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Locale
+import kotlin.math.ceil
 
 @Composable
 fun DetailScreen(
@@ -432,17 +433,61 @@ fun CapacityGraph(
         Canvas(
             modifier = modifier
                 .fillMaxWidth()
-                .height(100.dp)
+                .height(140.dp)
         ) {
-            val width = size.width
-            val height = size.height
+            val leftPadding = 24.dp.toPx()
+            val bottomPadding = 16.dp.toPx()
 
+            val graphWidth = size.width - leftPadding
+            val graphHeight = size.height - bottomPadding
+
+            val niceStep = when {
+                maxCapacity <= 10 -> 1
+                maxCapacity <= 25 -> 5
+                maxCapacity <= 50 -> 10
+                maxCapacity <= 100 -> 20
+                maxCapacity <= 200 -> 50
+                maxCapacity <= 500 -> 100
+                else -> 200
+            }
+            val roundedMax = ceil(maxCapacity.toFloat() / niceStep) * niceStep
+
+            // ----- Draw Y grid lines and labels -----
+            for (i in 0..(roundedMax / niceStep).toInt()) {
+                val yVal = i * niceStep
+                val y = graphHeight - (yVal / roundedMax) * graphHeight
+
+                drawLine(
+                    color = Color.LightGray,
+                    start = Offset(leftPadding, y),
+                    end = Offset(leftPadding + graphWidth, y),
+                    strokeWidth = 1.dp.toPx()
+                )
+
+                val label = yVal.toString()
+                val textLayout = textMeasurer.measure(
+                    text = AnnotatedString(label),
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        color = labelColor,
+                        textAlign = TextAlign.Right
+                    )
+                )
+
+                drawText(
+                    textLayoutResult = textLayout,
+                    topLeft = Offset(
+                        x = leftPadding - 8.dp.toPx() - textLayout.size.width,
+                        y = y - textLayout.size.height / 2
+                    )
+                )
+            }
+
+            // ----- Draw the capacity line -----
             val duration = Duration.between(startTime, endTime).toMillis().toFloat()
-
-            // Draw line of the history
             val points = data.map { model ->
-                val x = (Duration.between(startTime, model.dateTime).toMillis() / duration) * width
-                val y = height - (model.capacity / maxCapacity.toFloat()) * height
+                val x = leftPadding + (Duration.between(startTime, model.dateTime).toMillis() / duration) * graphWidth
+                val y = graphHeight - (model.capacity / roundedMax) * graphHeight
                 Offset(x, y)
             }
 
@@ -459,13 +504,11 @@ fun CapacityGraph(
                 style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
             )
 
-            // Draw the hours at the bottom of the x axis
+            // ----- Draw X-axis hour labels (on top, outside plot area) -----
             for (i in 0..6) {
-                val hourTime = startTime.plus(i * 2.toLong(), ChronoUnit.HOURS)
-                val x = (Duration.between(startTime, hourTime).toMillis() / duration) * width
-
-                val hour = hourTime.hour
-                val label = hour.toString().padStart(2, '0')+":00"
+                val hourTime = startTime.plus(i * 2L, ChronoUnit.HOURS)
+                val x = leftPadding + (Duration.between(startTime, hourTime).toMillis() / duration) * graphWidth
+                val label = hourTime.hour.toString().padStart(2, '0') + ":00"
 
                 val textLayoutResult = textMeasurer.measure(
                     text = AnnotatedString(label),
@@ -479,8 +522,8 @@ fun CapacityGraph(
                 drawText(
                     textLayoutResult = textLayoutResult,
                     topLeft = Offset(
-                        x - textLayoutResult.size.width / 2f,
-                        height - textLayoutResult.size.height
+                        x = x - textLayoutResult.size.width / 2f,
+                        y = graphHeight + 8.dp.toPx()
                     )
                 )
             }
@@ -716,7 +759,7 @@ fun DetailsPreview() {
         OpenState.Open("01:20"),
         "Dit OV-fiets uitgiftepunt is open van een kwartier voor vertrek van de eerste trein tot een kwartier na aankomst van de laatste trein.",
         openingHours,
-        68,
+        19,
         105,
         ServiceType.Sleutelautomaat,
         about,
@@ -740,8 +783,8 @@ fun DetailsPreview() {
             CapacityModel(16, dateLastData.minus(9, ChronoUnit.HOURS)),
             CapacityModel(16, dateLastData.minus(8, ChronoUnit.HOURS)),
             CapacityModel(13, dateLastData.minus(7, ChronoUnit.HOURS)),
-            CapacityModel(14, dateLastData.minus(6, ChronoUnit.HOURS)),
-            CapacityModel(15, dateLastData.minus(5, ChronoUnit.HOURS)),
+            CapacityModel(0, dateLastData.minus(6, ChronoUnit.HOURS)),
+            CapacityModel(2, dateLastData.minus(5, ChronoUnit.HOURS)),
             CapacityModel(22, dateLastData.minus(4, ChronoUnit.HOURS)),
             CapacityModel(18, dateLastData.minus(3, ChronoUnit.HOURS)),
             CapacityModel(14, dateLastData.minus(2, ChronoUnit.HOURS)),
