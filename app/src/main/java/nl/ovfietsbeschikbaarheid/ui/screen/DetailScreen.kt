@@ -97,6 +97,7 @@ import nl.ovfietsbeschikbaarheid.model.ServiceType
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
+import nl.ovfietsbeschikbaarheid.ui.theme.Grey40
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
 import nl.ovfietsbeschikbaarheid.ui.theme.Red50
@@ -113,6 +114,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Locale
 import kotlin.math.ceil
+import kotlin.math.max
 
 @Composable
 fun DetailScreen(
@@ -305,7 +307,7 @@ private fun ActualDetails(
         Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
             MainInfo(details)
 
-            CapacityGraph(details.capacityHistory)
+            CapacityGraph(details.capacityHistory, details.capacityPrediction)
 
             details.disruptions?.let {
                 Disruptions(it)
@@ -413,6 +415,7 @@ private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = Loc
 @Composable
 fun CapacityGraph(
     data: List<CapacityModel>,
+    prediction: List<CapacityModel>,
     modifier: Modifier = Modifier
 ) {
     if (data.size < 2) return // not enough data
@@ -427,7 +430,7 @@ fun CapacityGraph(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        val maxCapacity = data.maxOf { it.capacity }.coerceAtLeast(1)
+        val maxCapacity = max(data.maxOf { it.capacity }, prediction.maxOf { it.capacity }).coerceAtLeast(1)
         val primaryColor = MaterialTheme.colorScheme.primary
         val labelColor = MaterialTheme.colorScheme.onBackground
 
@@ -502,6 +505,30 @@ fun CapacityGraph(
             drawPath(
                 path = path,
                 color = primaryColor,
+                style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
+            )
+
+            // Draw the prediction
+            val predictionPoints = prediction.map { model ->
+                val x = leftPadding + (Duration.between(startTime, model.dateTime.plusDays(7)).toMillis() / duration) * graphWidth
+                val y = graphHeight - (model.capacity / roundedMax) * graphHeight
+                Offset(x, y)
+            }
+            // prediction[0].dateTime: 2025-07-05T23:00:16.133611+02:00[Europe/Amsterdam]
+            // prediction[0].dateTime.plusDays(7): 2025-07-12T23:00:16.133611+02:00[Europe/Amsterdam]
+            // startTime: 2025-07-12T00:00+02:00[Europe/Amsterdam]
+
+            // TODO: PathEffect.dashPathEffect()
+            val predictionPath = Path().apply {
+                moveTo(predictionPoints.first().x, predictionPoints.first().y)
+                for (pt in predictionPoints) {
+                    lineTo(pt.x, pt.y)
+                }
+            }
+
+            drawPath(
+                path = predictionPath,
+                color = Grey40,
                 style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
             )
 
@@ -755,6 +782,7 @@ fun DetailsPreview() {
     val amsterdamZoneId = ZoneId.of("Europe/Amsterdam")
     val now = ZonedDateTime.of(2025, 7, 12, 11, 35, 30, 500, amsterdamZoneId)
     val start = ZonedDateTime.of(2025, 7, 12, 0, 1, 25, 250, amsterdamZoneId)
+    val startPrediction = ZonedDateTime.of(2025, 7, 5, 12, 2, 15, 150, amsterdamZoneId)
     val details = DetailsModel(
         "Amersfoort Mondriaanplein",
         OpenState.Open("01:20"),
@@ -792,6 +820,20 @@ fun DetailsPreview() {
             CapacityModel(15, start.plusHours(11)),
             CapacityModel(19, now)
         ),
+        listOf(
+            CapacityModel(25, startPrediction),
+            CapacityModel(27, startPrediction.plusHours(1)),
+            CapacityModel(28, startPrediction.plusHours(2)),
+            CapacityModel(29, startPrediction.plusHours(3)),
+            CapacityModel(30, startPrediction.plusHours(4)),
+            CapacityModel(29, startPrediction.plusHours(5)),
+            CapacityModel(31, startPrediction.plusHours(6)),
+            CapacityModel(32, startPrediction.plusHours(7)),
+            CapacityModel(31, startPrediction.plusHours(8)),
+            CapacityModel(31, startPrediction.plusHours(9)),
+            CapacityModel(32, startPrediction.plusHours(10)),
+            CapacityModel(32, startPrediction.plusHours(11)),
+        )
     )
     DetailsView(
         TestData.testDetailScreenData,

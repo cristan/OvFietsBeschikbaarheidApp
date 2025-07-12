@@ -21,7 +21,8 @@ data class DetailsModel(
     val coordinates: LatLng,
     val stationName: String?,
     val alternatives: List<DetailScreenData>,
-    val capacityHistory: List<CapacityModel>
+    val capacityHistory: List<CapacityModel>,
+    val capacityPrediction: List<CapacityModel>
 )
 
 data class CapacityModel(

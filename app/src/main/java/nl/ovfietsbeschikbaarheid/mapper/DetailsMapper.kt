@@ -5,6 +5,8 @@ import com.google.android.gms.maps.model.LatLng
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
 import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
+import nl.ovfietsbeschikbaarheid.ext.atEndOfDay
+import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
@@ -16,6 +18,7 @@ import nl.ovfietsbeschikbaarheid.util.dutchZone
 import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 import java.util.Locale
 import java.util.TimeZone
 import kotlin.math.max
@@ -101,8 +104,21 @@ object DetailsMapper {
         }
 
         // Let's add the current capacity to the graph. Unfortunately, the current backend call doesn't return a timestamp, so we'll assume now.
-        val currentCapacity = CapacityModel(rentalBikesAvailable ?: 0, ZonedDateTime.now(dutchZone))
+        val nowInNL = ZonedDateTime.now(dutchZone)
+        val currentCapacity = CapacityModel(rentalBikesAvailable ?: 0, nowInNL)
         val historicalCapacities = convertHourlyCapacities(hourlyLocationCapacityDtos).sortedBy { it.dateTime } + currentCapacity
+        val startOfDay = nowInNL.atStartOfDay()
+        val capacitiesToday = historicalCapacities.filter { it.dateTime.isAfter(startOfDay) }
+        val startLastWeek = nowInNL.minusDays(7).plusHours(1).truncatedTo(ChronoUnit.HOURS)
+
+        // plusHours(1) will you straight into next day when it's past 23:00
+        val endLastWeek = if(startLastWeek.hour == 0) {
+            startLastWeek.plusMinutes(10)
+        } else {
+            // We also want the 00:00 hours to complete the day, but that one usually only arrives at something like 00:01
+            startLastWeek.atEndOfDay().plusMinutes(10)
+        }
+        val capacitiesPrediction = historicalCapacities.filter { it.dateTime >= startLastWeek && it.dateTime <= endLastWeek }
 
         return DetailsModel(
             description = payload.description,
@@ -123,7 +139,8 @@ object DetailsMapper {
                     payload.extra.locationCode, it, LocalDateTime.now(TimeZone.getTimeZone("Europe/Amsterdam").toZoneId())
                 )
             },
-            capacityHistory = historicalCapacities,
+            capacityHistory = capacitiesToday,
+            capacityPrediction = capacitiesPrediction
         )
     }
 

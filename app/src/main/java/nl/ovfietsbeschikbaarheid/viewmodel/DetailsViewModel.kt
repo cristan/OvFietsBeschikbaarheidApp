@@ -86,7 +86,7 @@ class DetailsViewModel(
                 }
                 val historyDeferred = async {
                     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX")
-                    val startDate = ZonedDateTime.now(dutchZone).atStartOfDay().withZoneSameInstant(ZoneOffset.UTC).format(formatter)
+                    val startDate = ZonedDateTime.now(dutchZone).minusDays(7).atStartOfDay().withZoneSameInstant(ZoneOffset.UTC).format(formatter)
                     client.getHistory(data.locatonCode, startDate)
                 }
 
