@@ -57,7 +57,7 @@
     <string name="open_state_closes_at">• Sluit om %1$s</string>
     <string name="open_until">Open tot %1$s</string>
     <string name="open_state_open_247">24/7 open</string>
-    <string name="history_title">Geschiedenis</string>
+    <string name="prediction_title">Voorspelling</string>
     <string name="location_title">Locatie</string>
     <string name="opening_hours_title">Openingstijden</string>
 

@@ -96,6 +96,7 @@ import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
+import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
 import nl.ovfietsbeschikbaarheid.ui.theme.Red50
@@ -416,12 +417,12 @@ fun CapacityGraph(
 ) {
     if (data.size < 2) return // not enough data
     val startTime = remember { data[0].dateTime.truncatedTo(ChronoUnit.HOURS) }
-    val endTime = data.last().dateTime
+    val endTime = startTime.withHour(23).withMinute(59).withSecond(59)
     val textMeasurer = rememberTextMeasurer()
 
     OvCard {
         Text(
-            text = stringResource(R.string.history_title),
+            text = stringResource(R.string.prediction_title),
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -458,10 +459,10 @@ fun CapacityGraph(
                 val y = graphHeight - (yVal / roundedMax) * graphHeight
 
                 drawLine(
-                    color = Color.LightGray,
+                    color = if(i == 0) Color.LightGray else Grey10,
                     start = Offset(leftPadding, y),
                     end = Offset(leftPadding + graphWidth, y),
-                    strokeWidth = 1.dp.toPx()
+                    strokeWidth = if(i == 0) 1.dp.toPx() else 2.dp.toPx()
                 )
 
                 val label = yVal.toString()
@@ -506,7 +507,7 @@ fun CapacityGraph(
 
             // ----- Draw X-axis hour labels (on top, outside plot area) -----
             for (i in 0..6) {
-                val hourTime = startTime.plus(i * 2L, ChronoUnit.HOURS)
+                val hourTime = startTime.plus(i * 4L, ChronoUnit.HOURS)
                 val x = leftPadding + (Duration.between(startTime, hourTime).toMillis() / duration) * graphWidth
                 val label = hourTime.hour.toString().padStart(2, '0') + ":00"
 
@@ -752,8 +753,8 @@ fun DetailsPreview() {
     )
 
     val amsterdamZoneId = ZoneId.of("Europe/Amsterdam")
-    val now = ZonedDateTime.now(amsterdamZoneId)
-    val dateLastData = now.truncatedTo(ChronoUnit.HOURS)
+    val now = ZonedDateTime.of(2025, 7, 12, 11, 35, 30, 500, amsterdamZoneId)
+    val start = ZonedDateTime.of(2025, 7, 12, 0, 1, 25, 250, amsterdamZoneId)
     val details = DetailsModel(
         "Amersfoort Mondriaanplein",
         OpenState.Open("01:20"),
@@ -777,18 +778,18 @@ fun DetailsPreview() {
             ),
         ),
         listOf(
-            CapacityModel(20, dateLastData.minus(12, ChronoUnit.HOURS)),
-            CapacityModel(19, dateLastData.minus(11, ChronoUnit.HOURS)),
-            CapacityModel(18, dateLastData.minus(10, ChronoUnit.HOURS)),
-            CapacityModel(16, dateLastData.minus(9, ChronoUnit.HOURS)),
-            CapacityModel(16, dateLastData.minus(8, ChronoUnit.HOURS)),
-            CapacityModel(13, dateLastData.minus(7, ChronoUnit.HOURS)),
-            CapacityModel(0, dateLastData.minus(6, ChronoUnit.HOURS)),
-            CapacityModel(2, dateLastData.minus(5, ChronoUnit.HOURS)),
-            CapacityModel(22, dateLastData.minus(4, ChronoUnit.HOURS)),
-            CapacityModel(18, dateLastData.minus(3, ChronoUnit.HOURS)),
-            CapacityModel(14, dateLastData.minus(2, ChronoUnit.HOURS)),
-            CapacityModel(15, dateLastData.minus(1, ChronoUnit.HOURS)),
+            CapacityModel(20, start),
+            CapacityModel(19, start.plusHours(1)),
+            CapacityModel(18, start.plusHours(2)),
+            CapacityModel(16, start.plusHours(3)),
+            CapacityModel(16, start.plusHours(4)),
+            CapacityModel(13, start.plusHours(5)),
+            CapacityModel(0, start.plusHours(6)),
+            CapacityModel(2, start.plusHours(7)),
+            CapacityModel(22, start.plusHours(8)),
+            CapacityModel(18, start.plusHours(9)),
+            CapacityModel(14, start.plusHours(10)),
+            CapacityModel(15, start.plusHours(11)),
             CapacityModel(19, now)
         ),
     )

@@ -8,6 +8,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import nl.ovfietsbeschikbaarheid.KtorApiClient
+import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
@@ -15,12 +16,14 @@ import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.state.setRefreshing
+import nl.ovfietsbeschikbaarheid.util.dutchZone
 import timber.log.Timber
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 private const val MIN_REFRESH_TIME = 350L
 
@@ -82,7 +85,9 @@ class DetailsViewModel(
                     stationRepository.getCapacities()
                 }
                 val historyDeferred = async {
-                    client.getHistory(data.locatonCode, ZonedDateTime.now(ZoneOffset.UTC).minusHours(13).toString())
+                    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX")
+                    val startDate = ZonedDateTime.now(dutchZone).atStartOfDay().withZoneSameInstant(ZoneOffset.UTC).format(formatter)
+                    client.getHistory(data.locatonCode, startDate)
                 }
 
                 val details = detailsDeferred.await()
