@@ -469,7 +469,7 @@ fun CapacityGraph(
                 val textLayout = textMeasurer.measure(
                     text = AnnotatedString(label),
                     style = TextStyle(
-                        fontSize = 10.sp,
+                        fontSize = 12.sp,
                         color = labelColor,
                         textAlign = TextAlign.Right
                     )
@@ -514,7 +514,7 @@ fun CapacityGraph(
                 val textLayoutResult = textMeasurer.measure(
                     text = AnnotatedString(label),
                     style = TextStyle(
-                        fontSize = 10.sp,
+                        fontSize = 12.sp,
                         color = labelColor,
                         textAlign = TextAlign.Center
                     )
