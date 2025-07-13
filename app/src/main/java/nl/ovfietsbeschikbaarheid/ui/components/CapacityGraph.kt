@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
-import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey40
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import java.time.Duration
@@ -62,6 +61,7 @@ fun CapacityGraph(
         val maxCapacity = max(data.maxOf { it.capacity }, maxPrediction).coerceAtLeast(1)
         val primaryColor = MaterialTheme.colorScheme.primary
         val labelColor = MaterialTheme.colorScheme.onBackground
+        val secondaryContainerColor = MaterialTheme.colorScheme.secondaryContainer
 
         Canvas(
             modifier = modifier
@@ -91,7 +91,7 @@ fun CapacityGraph(
                 val y = graphHeight - (yVal / roundedMax) * graphHeight
 
                 drawLine(
-                    color = if (i == 0) Color.LightGray else Grey10,// TODO: Color.LightGray doesn't look very good in dark mode
+                    color = if (i == 0) Color.LightGray else secondaryContainerColor,
                     start = Offset(leftPadding, y),
                     end = Offset(leftPadding + graphWidth, y),
                     strokeWidth = if (i == 0) 1.dp.toPx() else 2.dp.toPx()
@@ -240,7 +240,7 @@ fun CapacityGraphPreview() {
         CapacityModel(32, startPrediction.plusHours(10)),
         CapacityModel(32, startPrediction.plusHours(11)),
     )
-    
+
     OVFietsBeschikbaarheidTheme {
         Surface {
             CapacityGraph(data, prediction)
