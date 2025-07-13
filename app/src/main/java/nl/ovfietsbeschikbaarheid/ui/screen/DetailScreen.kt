@@ -462,7 +462,7 @@ fun CapacityGraph(
                 val y = graphHeight - (yVal / roundedMax) * graphHeight
 
                 drawLine(
-                    color = if(i == 0) Color.LightGray else Grey10,
+                    color = if(i == 0) Color.LightGray else Grey10,// TODO: Color.LightGray doesn't look very good in dark mode
                     start = Offset(leftPadding, y),
                     end = Offset(leftPadding + graphWidth, y),
                     strokeWidth = if(i == 0) 1.dp.toPx() else 2.dp.toPx()
@@ -508,15 +508,12 @@ fun CapacityGraph(
                 style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
             )
 
-            // Draw the prediction
+            // ----- Draw the prediction -----
             val predictionPoints = prediction.map { model ->
                 val x = leftPadding + (Duration.between(startTime, model.dateTime.plusDays(7)).toMillis() / duration) * graphWidth
                 val y = graphHeight - (model.capacity / roundedMax) * graphHeight
                 Offset(x, y)
             }
-            // prediction[0].dateTime: 2025-07-05T23:00:16.133611+02:00[Europe/Amsterdam]
-            // prediction[0].dateTime.plusDays(7): 2025-07-12T23:00:16.133611+02:00[Europe/Amsterdam]
-            // startTime: 2025-07-12T00:00+02:00[Europe/Amsterdam]
 
             // TODO: PathEffect.dashPathEffect()
             val predictionPath = Path().apply {
@@ -556,6 +553,12 @@ fun CapacityGraph(
                 )
             }
         }
+
+        Text(
+            text = stringResource(R.string.details_prediction_explanation),
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(top = 16.dp)
+        )
     }
 }
 
