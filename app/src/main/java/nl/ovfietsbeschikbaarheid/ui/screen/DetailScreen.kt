@@ -430,7 +430,8 @@ fun CapacityGraph(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        val maxCapacity = max(data.maxOf { it.capacity }, prediction.maxOf { it.capacity }).coerceAtLeast(1)
+        val maxPrediction = if (prediction.isEmpty()) 0 else prediction.maxOf { it.capacity }
+        val maxCapacity = max(data.maxOf { it.capacity }, maxPrediction).coerceAtLeast(1)
         val primaryColor = MaterialTheme.colorScheme.primary
         val labelColor = MaterialTheme.colorScheme.onBackground
 
@@ -509,25 +510,27 @@ fun CapacityGraph(
             )
 
             // ----- Draw the prediction -----
-            val predictionPoints = prediction.map { model ->
-                val x = leftPadding + (Duration.between(startTime, model.dateTime.plusDays(7)).toMillis() / duration) * graphWidth
-                val y = graphHeight - (model.capacity / roundedMax) * graphHeight
-                Offset(x, y)
-            }
-
-            // TODO: PathEffect.dashPathEffect()
-            val predictionPath = Path().apply {
-                moveTo(predictionPoints.first().x, predictionPoints.first().y)
-                for (pt in predictionPoints) {
-                    lineTo(pt.x, pt.y)
+            if (prediction.isNotEmpty()) {
+                val predictionPoints = prediction.map { model ->
+                    val x = leftPadding + (Duration.between(startTime, model.dateTime.plusDays(7)).toMillis() / duration) * graphWidth
+                    val y = graphHeight - (model.capacity / roundedMax) * graphHeight
+                    Offset(x, y)
                 }
-            }
 
-            drawPath(
-                path = predictionPath,
-                color = Grey40,
-                style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
-            )
+                // TODO: PathEffect.dashPathEffect()
+                val predictionPath = Path().apply {
+                    moveTo(predictionPoints.first().x, predictionPoints.first().y)
+                    for (pt in predictionPoints) {
+                        lineTo(pt.x, pt.y)
+                    }
+                }
+
+                drawPath(
+                    path = predictionPath,
+                    color = Grey40,
+                    style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
+                )
+            }
 
             // ----- Draw X-axis hour labels (on top, outside plot area) -----
             for (i in 0..6) {
@@ -821,7 +824,7 @@ fun DetailsPreview() {
             CapacityModel(18, start.plusHours(9)),
             CapacityModel(14, start.plusHours(10)),
             CapacityModel(15, start.plusHours(11)),
-            CapacityModel(19, now)
+            CapacityModel(14, now)
         ),
         listOf(
             CapacityModel(25, startPrediction),
