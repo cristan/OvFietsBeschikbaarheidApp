@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -51,21 +50,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.drawText
-import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -96,9 +86,8 @@ import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
 import nl.ovfietsbeschikbaarheid.state.ScreenState
+import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
-import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
-import nl.ovfietsbeschikbaarheid.ui.theme.Grey40
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
 import nl.ovfietsbeschikbaarheid.ui.theme.Red50
@@ -108,14 +97,10 @@ import nl.ovfietsbeschikbaarheid.viewmodel.DetailsContent
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
-import java.time.Duration
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 import java.util.Locale
-import kotlin.math.ceil
-import kotlin.math.max
 
 @Composable
 fun DetailScreen(
@@ -409,169 +394,6 @@ private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = Loc
                 }
             }
         }
-    }
-}
-
-// TODO: skeleton screens
-@Composable
-fun CapacityGraph(
-    data: List<CapacityModel>,
-    prediction: List<CapacityModel>,
-    modifier: Modifier = Modifier
-) {
-    if (data.size < 2) return // not enough data
-    val startTime = remember { data[0].dateTime.truncatedTo(ChronoUnit.HOURS) }
-    val endTime = startTime.withHour(23).withMinute(59).withSecond(59)
-    val textMeasurer = rememberTextMeasurer()
-
-    OvCard {
-        Text(
-            text = stringResource(R.string.prediction_title),
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        val maxPrediction = if (prediction.isEmpty()) 0 else prediction.maxOf { it.capacity }
-        val maxCapacity = max(data.maxOf { it.capacity }, maxPrediction).coerceAtLeast(1)
-        val primaryColor = MaterialTheme.colorScheme.primary
-        val labelColor = MaterialTheme.colorScheme.onBackground
-
-        Canvas(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(140.dp)
-        ) {
-            val leftPadding = 24.dp.toPx()
-            val bottomPadding = 16.dp.toPx()
-
-            val graphWidth = size.width - leftPadding
-            val graphHeight = size.height - bottomPadding
-
-            val niceStep = when {
-                maxCapacity <= 10 -> 1
-                maxCapacity <= 25 -> 5
-                maxCapacity <= 50 -> 10
-                maxCapacity <= 100 -> 20
-                maxCapacity <= 200 -> 50
-                maxCapacity <= 500 -> 100
-                else -> 200
-            }
-            val roundedMax = ceil(maxCapacity.toFloat() / niceStep) * niceStep
-
-            // ----- Draw Y grid lines and labels -----
-            for (i in 0..(roundedMax / niceStep).toInt()) {
-                val yVal = i * niceStep
-                val y = graphHeight - (yVal / roundedMax) * graphHeight
-
-                drawLine(
-                    color = if(i == 0) Color.LightGray else Grey10,// TODO: Color.LightGray doesn't look very good in dark mode
-                    start = Offset(leftPadding, y),
-                    end = Offset(leftPadding + graphWidth, y),
-                    strokeWidth = if(i == 0) 1.dp.toPx() else 2.dp.toPx()
-                )
-
-                val label = yVal.toString()
-                val textLayout = textMeasurer.measure(
-                    text = AnnotatedString(label),
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        color = labelColor,
-                        textAlign = TextAlign.Right
-                    )
-                )
-
-                drawText(
-                    textLayoutResult = textLayout,
-                    topLeft = Offset(
-                        x = leftPadding - 8.dp.toPx() - textLayout.size.width,
-                        y = y - textLayout.size.height / 2
-                    )
-                )
-            }
-
-            // ----- Draw the capacity line -----
-            val duration = Duration.between(startTime, endTime).toMillis().toFloat()
-            val points = data.map { model ->
-                val x = leftPadding + (Duration.between(startTime, model.dateTime).toMillis() / duration) * graphWidth
-                val y = graphHeight - (model.capacity / roundedMax) * graphHeight
-                Offset(x, y)
-            }
-
-            val path = Path().apply {
-                moveTo(points.first().x, points.first().y)
-                for (pt in points) {
-                    lineTo(pt.x, pt.y)
-                }
-            }
-
-            drawPath(
-                path = path,
-                color = primaryColor,
-                style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
-            )
-
-            // ----- Draw the prediction -----
-            if (prediction.isNotEmpty()) {
-                val predictionPoints = prediction.map { model ->
-                    val x = leftPadding + (Duration.between(startTime, model.dateTime.plusDays(7)).toMillis() / duration) * graphWidth
-                    val y = graphHeight - (model.capacity / roundedMax) * graphHeight
-                    Offset(x, y)
-                }
-
-                val predictionPath = Path().apply {
-                    moveTo(predictionPoints.first().x, predictionPoints.first().y)
-                    for (pt in predictionPoints) {
-                        lineTo(pt.x, pt.y)
-                    }
-                }
-
-                val dashLength = 4.dp.toPx()
-                val gapLength = 12.dp.toPx()
-
-                drawPath(
-                    path = predictionPath,
-                    color = Grey40,
-                    style = Stroke(
-                        width = 4.dp.toPx(),
-                        cap = StrokeCap.Round,
-                        pathEffect = PathEffect.dashPathEffect(
-                            floatArrayOf(dashLength, gapLength),
-                            phase = 0f
-                        )
-                    )
-                )
-            }
-
-            // ----- Draw X-axis hour labels (on top, outside plot area) -----
-            for (i in 0..6) {
-                val hourTime = startTime.plus(i * 4L, ChronoUnit.HOURS)
-                val x = leftPadding + (Duration.between(startTime, hourTime).toMillis() / duration) * graphWidth
-                val label = hourTime.hour.toString().padStart(2, '0') + ":00"
-
-                val textLayoutResult = textMeasurer.measure(
-                    text = AnnotatedString(label),
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        color = labelColor,
-                        textAlign = TextAlign.Center
-                    )
-                )
-
-                drawText(
-                    textLayoutResult = textLayoutResult,
-                    topLeft = Offset(
-                        x = x - textLayoutResult.size.width / 2f,
-                        y = graphHeight + 8.dp.toPx()
-                    )
-                )
-            }
-        }
-
-        Text(
-            text = stringResource(R.string.details_prediction_explanation),
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(top = 16.dp)
-        )
     }
 }
 
