@@ -88,6 +88,7 @@ import nl.ovfietsbeschikbaarheid.model.ServiceType
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
+import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
 import nl.ovfietsbeschikbaarheid.ui.theme.Red50
@@ -358,6 +359,7 @@ private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = Loc
             CircularProgressIndicator(
                 progress = { animatedProgress }, modifier = Modifier.size(220.dp),
                 color = color,
+                trackColor = if (isSystemInDarkTheme()) ProgressIndicatorDefaults.circularDeterminateTrackColor else Grey10,
                 strokeWidth = 36.dp,
                 strokeCap = StrokeCap.Butt,
                 gapSize = 0.dp

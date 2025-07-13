@@ -2,14 +2,21 @@ package nl.ovfietsbeschikbaarheid.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -28,7 +35,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
+import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey40
+import nl.ovfietsbeschikbaarheid.ui.theme.Grey80
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import java.time.Duration
 import java.time.ZoneId
@@ -38,6 +47,27 @@ import kotlin.math.ceil
 import kotlin.math.max
 
 // TODO: skeleton screens
+
+@Composable
+fun SingleChoiceSegmentedButtons(modifier: Modifier = Modifier) {
+    var selectedIndex by remember { mutableIntStateOf(6) }
+    val options = listOf("Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo")
+
+    SingleChoiceSegmentedButtonRow(modifier) {
+        options.forEachIndexed { index, label ->
+            SegmentedButton(
+                shape = SegmentedButtonDefaults.itemShape(
+                    index = index,
+                    count = options.size
+                ),
+                onClick = { selectedIndex = index },
+                selected = index == selectedIndex,
+                label = { Text(label) }
+            )
+        }
+    }
+}
+
 
 @Composable
 fun CapacityGraph(
@@ -57,11 +87,13 @@ fun CapacityGraph(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
+        SingleChoiceSegmentedButtons(modifier = Modifier.padding(bottom = 24.dp).fillMaxWidth())
+
         val maxPrediction = if (prediction.isEmpty()) 0 else prediction.maxOf { it.capacity }
         val maxCapacity = max(data.maxOf { it.capacity }, maxPrediction).coerceAtLeast(1)
         val primaryColor = MaterialTheme.colorScheme.primary
         val labelColor = MaterialTheme.colorScheme.onBackground
-        val secondaryContainerColor = MaterialTheme.colorScheme.secondaryContainer
+        val gridLineColor = if(isSystemInDarkTheme()) Grey80 else Grey10
 
         Canvas(
             modifier = modifier
@@ -91,7 +123,7 @@ fun CapacityGraph(
                 val y = graphHeight - (yVal / roundedMax) * graphHeight
 
                 drawLine(
-                    color = if (i == 0) Color.LightGray else secondaryContainerColor,
+                    color = if (i == 0) Color.LightGray else gridLineColor,
                     start = Offset(leftPadding, y),
                     end = Offset(leftPadding + graphWidth, y),
                     strokeWidth = if (i == 0) 1.dp.toPx() else 2.dp.toPx()

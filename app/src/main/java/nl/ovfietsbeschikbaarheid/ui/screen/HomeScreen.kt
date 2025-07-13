@@ -59,7 +59,7 @@ import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
 import nl.ovfietsbeschikbaarheid.model.OpenState
-import nl.ovfietsbeschikbaarheid.ui.theme.Gray80
+import nl.ovfietsbeschikbaarheid.ui.theme.Grey80
 import nl.ovfietsbeschikbaarheid.ui.theme.Indigo05
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
@@ -305,7 +305,7 @@ private fun HorizontalBar(text: String) {
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                if (isSystemInDarkTheme()) Gray80 else Indigo05
+                if (isSystemInDarkTheme()) Grey80 else Indigo05
             )
             .padding(horizontal = 16.dp, vertical = 8.dp)
     )
