@@ -54,6 +54,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
@@ -517,7 +518,6 @@ fun CapacityGraph(
                     Offset(x, y)
                 }
 
-                // TODO: PathEffect.dashPathEffect()
                 val predictionPath = Path().apply {
                     moveTo(predictionPoints.first().x, predictionPoints.first().y)
                     for (pt in predictionPoints) {
@@ -525,10 +525,20 @@ fun CapacityGraph(
                     }
                 }
 
+                val dashLength = 4.dp.toPx()
+                val gapLength = 12.dp.toPx()
+
                 drawPath(
                     path = predictionPath,
                     color = Grey40,
-                    style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
+                    style = Stroke(
+                        width = 4.dp.toPx(),
+                        cap = StrokeCap.Round,
+                        pathEffect = PathEffect.dashPathEffect(
+                            floatArrayOf(dashLength, gapLength),
+                            phase = 0f
+                        )
+                    )
                 )
             }
 
