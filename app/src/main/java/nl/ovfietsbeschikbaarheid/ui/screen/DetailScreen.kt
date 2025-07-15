@@ -81,6 +81,7 @@ import nl.ovfietsbeschikbaarheid.ext.withStyledLink
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
+import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.model.LocationModel
 import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
@@ -294,7 +295,7 @@ private fun ActualDetails(
         Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
             MainInfo(details)
 
-            CapacityGraph(details.capacityHistory, details.capacityPrediction)
+            CapacityGraph(details.graphDays)
 
             details.disruptions?.let {
                 Disruptions(it)
@@ -623,6 +624,43 @@ fun DetailsPreview() {
     val now = ZonedDateTime.of(2025, 7, 12, 11, 35, 30, 500, amsterdamZoneId)
     val start = ZonedDateTime.of(2025, 7, 12, 0, 1, 25, 250, amsterdamZoneId)
     val startPrediction = ZonedDateTime.of(2025, 7, 5, 12, 2, 15, 150, amsterdamZoneId)
+
+    val history = listOf(
+        CapacityModel(20, start),
+        CapacityModel(19, start.plusHours(1)),
+        CapacityModel(18, start.plusHours(2)),
+        CapacityModel(16, start.plusHours(3)),
+        CapacityModel(16, start.plusHours(4)),
+        CapacityModel(13, start.plusHours(5)),
+        CapacityModel(0, start.plusHours(6)),
+        CapacityModel(2, start.plusHours(7)),
+        CapacityModel(22, start.plusHours(8)),
+        CapacityModel(18, start.plusHours(9)),
+        CapacityModel(14, start.plusHours(10)),
+        CapacityModel(15, start.plusHours(11)),
+        CapacityModel(14, now)
+    )
+    val prediction = listOf(
+        CapacityModel(25, startPrediction),
+        CapacityModel(27, startPrediction.plusHours(1)),
+        CapacityModel(28, startPrediction.plusHours(2)),
+        CapacityModel(29, startPrediction.plusHours(3)),
+        CapacityModel(30, startPrediction.plusHours(4)),
+        CapacityModel(29, startPrediction.plusHours(5)),
+        CapacityModel(31, startPrediction.plusHours(6)),
+        CapacityModel(32, startPrediction.plusHours(7)),
+        CapacityModel(31, startPrediction.plusHours(8)),
+        CapacityModel(31, startPrediction.plusHours(9)),
+        CapacityModel(32, startPrediction.plusHours(10)),
+        CapacityModel(32, startPrediction.plusHours(11)),
+    )
+    val graphDay = GraphDayModel(
+        "M",
+        "Maandag",
+        history,
+        prediction
+    )
+
     val details = DetailsModel(
         "Amersfoort Mondriaanplein",
         OpenState.Open("01:20"),
@@ -645,35 +683,7 @@ fun DetailsPreview() {
                 fetchTime = 1729539103
             ),
         ),
-        listOf(
-            CapacityModel(20, start),
-            CapacityModel(19, start.plusHours(1)),
-            CapacityModel(18, start.plusHours(2)),
-            CapacityModel(16, start.plusHours(3)),
-            CapacityModel(16, start.plusHours(4)),
-            CapacityModel(13, start.plusHours(5)),
-            CapacityModel(0, start.plusHours(6)),
-            CapacityModel(2, start.plusHours(7)),
-            CapacityModel(22, start.plusHours(8)),
-            CapacityModel(18, start.plusHours(9)),
-            CapacityModel(14, start.plusHours(10)),
-            CapacityModel(15, start.plusHours(11)),
-            CapacityModel(14, now)
-        ),
-        listOf(
-            CapacityModel(25, startPrediction),
-            CapacityModel(27, startPrediction.plusHours(1)),
-            CapacityModel(28, startPrediction.plusHours(2)),
-            CapacityModel(29, startPrediction.plusHours(3)),
-            CapacityModel(30, startPrediction.plusHours(4)),
-            CapacityModel(29, startPrediction.plusHours(5)),
-            CapacityModel(31, startPrediction.plusHours(6)),
-            CapacityModel(32, startPrediction.plusHours(7)),
-            CapacityModel(31, startPrediction.plusHours(8)),
-            CapacityModel(31, startPrediction.plusHours(9)),
-            CapacityModel(32, startPrediction.plusHours(10)),
-            CapacityModel(32, startPrediction.plusHours(11)),
-        )
+        listOf(graphDay)
     )
     DetailsView(
         TestData.testDetailScreenData,

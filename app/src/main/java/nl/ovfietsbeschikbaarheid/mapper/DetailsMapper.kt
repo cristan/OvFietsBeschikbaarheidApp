@@ -10,14 +10,17 @@ import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
+import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.model.LocationModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
+import nl.ovfietsbeschikbaarheid.util.dutchLocale
 import nl.ovfietsbeschikbaarheid.util.dutchZone
 import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
+import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit
 import java.util.Locale
 import java.util.TimeZone
@@ -120,6 +123,13 @@ object DetailsMapper {
         }
         val capacitiesPrediction = historicalCapacities.filter { it.dateTime >= startLastWeek && it.dateTime <= endLastWeek }
 
+        val graphToday = GraphDayModel(
+            nowInNL.dayOfWeek.getDisplayName(TextStyle.NARROW, dutchLocale),
+            nowInNL.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale),
+            capacitiesToday,
+            capacitiesPrediction
+        )
+
         return DetailsModel(
             description = payload.description,
             openingHoursInfo = openingHoursInfo,
@@ -139,8 +149,7 @@ object DetailsMapper {
                     payload.extra.locationCode, it, LocalDateTime.now(TimeZone.getTimeZone("Europe/Amsterdam").toZoneId())
                 )
             },
-            capacityHistory = capacitiesToday,
-            capacityPrediction = capacitiesPrediction
+            graphDays = listOf(graphToday)
         )
     }
 

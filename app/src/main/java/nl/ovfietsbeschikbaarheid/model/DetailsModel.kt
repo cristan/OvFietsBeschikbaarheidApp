@@ -21,6 +21,12 @@ data class DetailsModel(
     val coordinates: LatLng,
     val stationName: String?,
     val alternatives: List<DetailScreenData>,
+    val graphDays: List<GraphDayModel>,
+)
+
+data class GraphDayModel (
+    val dayShortName: String,
+    val dayFullName: String,
     val capacityHistory: List<CapacityModel>,
     val capacityPrediction: List<CapacityModel>
 )
