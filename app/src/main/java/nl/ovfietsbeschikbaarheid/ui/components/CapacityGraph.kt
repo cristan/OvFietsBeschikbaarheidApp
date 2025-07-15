@@ -51,7 +51,7 @@ import kotlin.math.max
 @Composable
 fun SingleChoiceSegmentedButtons(modifier: Modifier = Modifier) {
     var selectedIndex by remember { mutableIntStateOf(6) }
-    val options = listOf("Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo")
+    val options = listOf("M", "D", "W", "D", "V", "Z", "Z")
 
     SingleChoiceSegmentedButtonRow(modifier) {
         options.forEachIndexed { index, label ->
