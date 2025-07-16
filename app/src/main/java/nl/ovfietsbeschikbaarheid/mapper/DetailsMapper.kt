@@ -21,6 +21,7 @@ import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import java.time.format.TextStyle
+import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 import java.util.Locale
 import java.util.TimeZone
@@ -105,30 +106,8 @@ object DetailsMapper {
                 null
             }
         }
+        val graphDays = getGraphDays(rentalBikesAvailable, hourlyLocationCapacityDtos)
 
-        // Let's add the current capacity to the graph. Unfortunately, the current backend call doesn't return a timestamp, so we'll assume now.
-        val nowInNL = ZonedDateTime.now(dutchZone)
-        val currentCapacity = CapacityModel(rentalBikesAvailable ?: 0, nowInNL)
-        val historicalCapacities = convertHourlyCapacities(hourlyLocationCapacityDtos).sortedBy { it.dateTime } + currentCapacity
-        val startOfDay = nowInNL.atStartOfDay()
-        val capacitiesToday = historicalCapacities.filter { it.dateTime.isAfter(startOfDay) }
-        val startLastWeek = nowInNL.minusDays(7).plusHours(1).truncatedTo(ChronoUnit.HOURS)
-
-        // plusHours(1) will you straight into next day when it's past 23:00
-        val endLastWeek = if(startLastWeek.hour == 0) {
-            startLastWeek.plusMinutes(10)
-        } else {
-            // We also want the 00:00 hours to complete the day, but that one usually only arrives at something like 00:01
-            startLastWeek.atEndOfDay().plusMinutes(10)
-        }
-        val capacitiesPrediction = historicalCapacities.filter { it.dateTime >= startLastWeek && it.dateTime <= endLastWeek }
-
-        val graphToday = GraphDayModel(
-            nowInNL.dayOfWeek.getDisplayName(TextStyle.NARROW, dutchLocale),
-            nowInNL.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale),
-            capacitiesToday,
-            capacitiesPrediction
-        )
 
         return DetailsModel(
             description = payload.description,
@@ -149,8 +128,84 @@ object DetailsMapper {
                     payload.extra.locationCode, it, LocalDateTime.now(TimeZone.getTimeZone("Europe/Amsterdam").toZoneId())
                 )
             },
-            graphDays = listOf(graphToday)
+            graphDays = graphDays
         )
+    }
+
+    private fun getGraphDays(
+        rentalBikesAvailable: Int?,
+        hourlyLocationCapacityDtos: List<HourlyLocationCapacityDto>
+    ): List<GraphDayModel> {
+        val nowInNL = ZonedDateTime.now(dutchZone)
+
+        // Let's add the current capacity to the graph. Unfortunately, the current backend call doesn't return a timestamp, so we'll assume now.
+        val currentCapacity = CapacityModel(rentalBikesAvailable ?: 0, nowInNL)
+        val historicalCapacities = convertHourlyCapacities(hourlyLocationCapacityDtos).sortedBy { it.dateTime } + currentCapacity
+
+        val dayOfWeek = nowInNL.get(ChronoField.DAY_OF_WEEK)
+
+        val previousDays = (dayOfWeek -1  downTo 1).map { previousDayOffset ->
+            val previousDay = nowInNL.minusDays(previousDayOffset.toLong())
+            val startOfDay = previousDay.atStartOfDay()
+            // We also want the 00:00 hours to complete the day, but that one usually only arrives at something like 00:01
+            val endOfDay = previousDay.atEndOfDay().plusMinutes(10)
+            val capacitiesPastDay = historicalCapacities.filter { it.dateTime.isAfter(startOfDay) && it.dateTime.isBefore(endOfDay) }
+            GraphDayModel(
+                isToday = false,
+                previousDay.dayOfWeek.getDisplayName(TextStyle.NARROW, dutchLocale),
+                previousDay.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale),
+                capacitiesPastDay,
+                emptyList()
+            )
+        }
+
+        val graphToday = getGraphToday(nowInNL, historicalCapacities)
+
+        val nextDays = (1 .. 7 - dayOfWeek).map { nextDayOffset ->
+            val previousDay = nowInNL.plusDays(nextDayOffset.toLong() - 7L)
+            val startOfDay = previousDay.atStartOfDay()
+            // We also want the 00:00 hours to complete the day, but that one usually only arrives at something like 00:01
+            val endOfDay = previousDay.atEndOfDay().plusMinutes(10)
+
+            val capacitiesFutureDay = historicalCapacities.filter { it.dateTime.isAfter(startOfDay) && it.dateTime.isBefore(endOfDay) }
+            GraphDayModel(
+                isToday = false,
+                previousDay.dayOfWeek.getDisplayName(TextStyle.NARROW, dutchLocale),
+                previousDay.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale),
+                emptyList(),
+                capacitiesFutureDay,
+            )
+        }
+
+        val graphDays = previousDays + listOf(graphToday) + nextDays
+        return graphDays
+    }
+
+    private fun getGraphToday(
+        nowInNL: ZonedDateTime,
+        historicalCapacities: List<CapacityModel>
+    ): GraphDayModel {
+        val startOfDay = nowInNL.atStartOfDay()
+        val capacitiesToday = historicalCapacities.filter { it.dateTime.isAfter(startOfDay) }
+        val startLastWeek = nowInNL.minusDays(7).plusHours(1).truncatedTo(ChronoUnit.HOURS)
+
+        // plusHours(1) will you straight into next day when it's past 23:00
+        val endLastWeek = if (startLastWeek.hour == 0) {
+            startLastWeek.plusMinutes(10)
+        } else {
+            // We also want the 00:00 hours to complete the day, but that one usually only arrives at something like 00:01
+            startLastWeek.atEndOfDay().plusMinutes(10)
+        }
+        val capacitiesPrediction = historicalCapacities.filter { it.dateTime >= startLastWeek && it.dateTime <= endLastWeek }
+
+        val graphToday = GraphDayModel(
+            isToday = true,
+            nowInNL.dayOfWeek.getDisplayName(TextStyle.NARROW, dutchLocale),
+            nowInNL.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale),
+            capacitiesToday,
+            capacitiesPrediction
+        )
+        return graphToday
     }
 
     private fun convertHourlyCapacities(hourlyLocationCapacityDtos: List<HourlyLocationCapacityDto>): List<CapacityModel> {

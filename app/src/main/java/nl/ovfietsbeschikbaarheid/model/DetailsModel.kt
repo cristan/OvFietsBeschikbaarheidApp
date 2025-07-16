@@ -25,6 +25,7 @@ data class DetailsModel(
 )
 
 data class GraphDayModel (
+    val isToday: Boolean,
     val dayShortName: String,
     val dayFullName: String,
     val capacityHistory: List<CapacityModel>,

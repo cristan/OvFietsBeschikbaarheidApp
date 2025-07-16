@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import nl.ovfietsbeschikbaarheid.R
+import nl.ovfietsbeschikbaarheid.ext.atEndOfDay
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
 import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
@@ -52,12 +53,6 @@ import kotlin.math.max
 // TODO: skeleton screens
 
 @Composable
-fun SingleChoiceSegmentedButtons(modifier: Modifier = Modifier) {
-
-}
-
-
-@Composable
 fun CapacityGraph(
     graphDays: List<GraphDayModel>,
     modifier: Modifier = Modifier
@@ -71,9 +66,14 @@ fun CapacityGraph(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        var selectedIndex by remember { mutableIntStateOf(0) }
+        var selectedIndex by remember { mutableIntStateOf(graphDays.indexOfFirst { it.isToday }) }
 
-        SingleChoiceSegmentedButtonRow(modifier) {
+        // Use the same max capacity for all days for consistency's sake
+        val maxCapacity = graphDays.maxOf { graphDay ->
+            max(graphDay.capacityHistory.maxOfOrNull { it.capacity } ?: 0, graphDay.capacityPrediction.maxOfOrNull { it.capacity } ?: 0)
+        }
+
+        SingleChoiceSegmentedButtonRow(modifier = Modifier.padding(bottom = 24.dp).fillMaxWidth()) {
             graphDays.forEachIndexed { index, graphDay ->
                 SegmentedButton(
                     shape = SegmentedButtonDefaults.itemShape(
@@ -89,15 +89,10 @@ fun CapacityGraph(
         }
 
         val shownGraphDay = graphDays[selectedIndex]
+
         val history = shownGraphDay.capacityHistory
-        val startTime = remember { history[0].dateTime.truncatedTo(ChronoUnit.HOURS) }
-        val endTime = startTime.withHour(23).withMinute(59).withSecond(59)
-
-        SingleChoiceSegmentedButtons(modifier = Modifier.padding(bottom = 24.dp).fillMaxWidth())
-
         val prediction = shownGraphDay.capacityPrediction
-        val maxPrediction = if (prediction.isEmpty()) 0 else prediction.maxOf { it.capacity }
-        val maxCapacity = max(history.maxOf { it.capacity }, maxPrediction).coerceAtLeast(1)
+
         val primaryColor = MaterialTheme.colorScheme.primary
         val labelColor = MaterialTheme.colorScheme.onBackground
         val gridLineColor = if(isSystemInDarkTheme()) Grey80 else Grey10
@@ -156,30 +151,39 @@ fun CapacityGraph(
             }
 
             // ----- Draw the capacity line -----
+            val startTime = if (history.isNotEmpty())
+                history[0].dateTime.truncatedTo(ChronoUnit.HOURS)
+            else
+                prediction[0].dateTime.truncatedTo(ChronoUnit.DAYS)
+
+            val endTime = startTime.atEndOfDay()
             val duration = Duration.between(startTime, endTime).toMillis().toFloat()
-            val points = history.map { model ->
-                val x = leftPadding + (Duration.between(startTime, model.dateTime).toMillis() / duration) * graphWidth
-                val y = graphHeight - (model.capacity / roundedMax) * graphHeight
-                Offset(x, y)
-            }
-
-            val path = Path().apply {
-                moveTo(points.first().x, points.first().y)
-                for (pt in points) {
-                    lineTo(pt.x, pt.y)
+            if (history.isNotEmpty()) {
+                val points = history.map { model ->
+                    val x = leftPadding + (Duration.between(startTime, model.dateTime).toMillis() / duration) * graphWidth
+                    val y = graphHeight - (model.capacity / roundedMax) * graphHeight
+                    Offset(x, y)
                 }
-            }
 
-            drawPath(
-                path = path,
-                color = primaryColor,
-                style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
-            )
+                val path = Path().apply {
+                    moveTo(points.first().x, points.first().y)
+                    for (pt in points) {
+                        lineTo(pt.x, pt.y)
+                    }
+                }
+
+                drawPath(
+                    path = path,
+                    color = primaryColor,
+                    style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
+                )
+            }
 
             // ----- Draw the prediction -----
             if (prediction.isNotEmpty()) {
+                val startTimePrediction = prediction[0].dateTime.truncatedTo(ChronoUnit.DAYS)
                 val predictionPoints = prediction.map { model ->
-                    val x = leftPadding + (Duration.between(startTime, model.dateTime.plusDays(7)).toMillis() / duration) * graphWidth
+                    val x = leftPadding + (Duration.between(startTimePrediction, model.dateTime).toMillis() / duration) * graphWidth
                     val y = graphHeight - (model.capacity / roundedMax) * graphHeight
                     Offset(x, y)
                 }
@@ -280,6 +284,7 @@ fun CapacityGraphPreview() {
         CapacityModel(32, startPrediction.plusHours(11)),
     )
     val graphDays = GraphDayModel(
+        isToday = true,
         dayFullName = "Maandag",
         dayShortName = "M",
         capacityHistory = data,

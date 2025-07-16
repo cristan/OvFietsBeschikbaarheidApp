@@ -655,6 +655,7 @@ fun DetailsPreview() {
         CapacityModel(32, startPrediction.plusHours(11)),
     )
     val graphDay = GraphDayModel(
+        isToday = true,
         "M",
         "Maandag",
         history,
