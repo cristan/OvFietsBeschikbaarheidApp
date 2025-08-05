@@ -237,6 +237,7 @@ fun CapacityGraph(
             }
         }
 
+        // TODO: show a legend instead with the applicable colors.
         Text(
             text = stringResource(R.string.details_prediction_explanation),
             style = MaterialTheme.typography.bodyMedium,
