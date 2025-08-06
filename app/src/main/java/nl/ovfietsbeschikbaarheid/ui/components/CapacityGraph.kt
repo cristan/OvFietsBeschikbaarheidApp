@@ -3,9 +3,12 @@ package nl.ovfietsbeschikbaarheid.ui.components
 import android.content.res.Configuration
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -17,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -61,7 +65,7 @@ fun CapacityGraph(
 
     OvCard {
         Text(
-            text = stringResource(R.string.prediction_title),
+            text = stringResource(R.string.capacity_graph_title),
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -204,10 +208,7 @@ fun CapacityGraph(
                     style = Stroke(
                         width = 4.dp.toPx(),
                         cap = StrokeCap.Round,
-                        pathEffect = PathEffect.dashPathEffect(
-                            floatArrayOf(dashLength, gapLength),
-                            phase = 0f
-                        )
+                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(dashLength, gapLength))
                     )
                 )
             }
@@ -237,11 +238,64 @@ fun CapacityGraph(
             }
         }
 
-        // TODO: show a legend instead with the applicable colors.
+        Column(
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth()
+        ) {
+            // Primary color line
+            if(history.isNotEmpty()) {
+                LegendItem(
+                    color = MaterialTheme.colorScheme.primary,
+                    text = when {
+                        shownGraphDay.isToday -> "Vandaag"
+                        //shownGraphDay.isEarlierThisWeek -> "Beschikbaarheid deze ${shownGraphDay.dayFullName.lowercase()}"
+                        else -> "Deze ${shownGraphDay.dayFullName.lowercase()}"
+                    }
+                )
+            }
+
+            // Prediction (dotted line)
+            if(prediction.isNotEmpty()) {
+                LegendItem(
+                    color = Grey40,
+                    isDashed = true,
+                    text = "Vorige week ${shownGraphDay.dayFullName.lowercase()}"
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun LegendItem(color: Color, text: String, isDashed: Boolean = false) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(bottom = 4.dp)
+    ) {
+        Canvas(
+            modifier = Modifier
+                .size(width = 24.dp, height = 4.dp)
+                .padding(end = 8.dp)
+        ) {
+            val stroke = Stroke(
+                width = size.height,
+                cap = StrokeCap.Round,
+                pathEffect = if (isDashed) PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 8.dp.toPx())) else null
+            )
+            drawLine(
+                color = color,
+                start = Offset.Zero,
+                end = Offset(size.width, 0f),
+                strokeWidth = size.height,
+                cap = StrokeCap.Round,
+                pathEffect = stroke.pathEffect
+            )
+        }
+
         Text(
-            text = stringResource(R.string.details_prediction_explanation),
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(top = 16.dp)
+            text = text,
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
