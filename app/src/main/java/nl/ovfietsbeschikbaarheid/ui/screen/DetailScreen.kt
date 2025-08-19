@@ -252,7 +252,7 @@ fun DetailsLoader(
 
         OvCard {
             Text(
-                text = "Locatie",
+                text = stringResource(R.string.location_title),
                 style = MaterialTheme.typography.headlineMedium,
             )
 
@@ -331,7 +331,7 @@ private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = Loc
     OvCard {
         Text(stringResource(R.string.details_amount_available))
         val rentalBikesAvailable = details.rentalBikesAvailable
-        val amount = rentalBikesAvailable?.toString() ?: "Onbekend"
+        val amount = rentalBikesAvailable?.toString() ?: stringResource(R.string.details_amount_unknown)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -572,7 +572,7 @@ private fun Alternatives(
 ) {
     OvCard {
         Text(
-            text = if (details.stationName != null) "Op ${details.stationName}" else "Op deze locatie",
+            text = if (details.stationName != null) stringResource(R.string.details_alternatives_at, details.stationName) else stringResource(R.string.details_alternatives_at_this_location),
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )

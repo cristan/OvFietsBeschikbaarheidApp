@@ -248,9 +248,8 @@ fun CapacityGraph(
                 LegendItem(
                     color = MaterialTheme.colorScheme.primary,
                     text = when {
-                        shownGraphDay.isToday -> "Vandaag"
-                        //shownGraphDay.isEarlierThisWeek -> "Beschikbaarheid deze ${shownGraphDay.dayFullName.lowercase()}"
-                        else -> "Deze ${shownGraphDay.dayFullName.lowercase()}"
+                        shownGraphDay.isToday -> stringResource(R.string.graph_today)
+                        else -> stringResource(R.string.graph_this_week_day, shownGraphDay.dayFullName.lowercase())
                     }
                 )
             }
@@ -260,7 +259,7 @@ fun CapacityGraph(
                 LegendItem(
                     color = Grey40,
                     isDashed = true,
-                    text = "Vorige week ${shownGraphDay.dayFullName.lowercase()}"
+                    text = stringResource(R.string.graph_last_week_day, shownGraphDay.dayFullName.lowercase())
                 )
             }
         }
