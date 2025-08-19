@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="nl-NL">
     <string name="app_name">OV-fiets Beschikbaarheid</string>
 
     <string name="content_description_back">Terug</string>
@@ -55,6 +55,9 @@
     <string name="graph_today">Vandaag</string>
     <string name="graph_this_week_day">Deze %1$s</string>
     <string name="graph_last_week_day">Vorige week %1$s</string>
+    <string name="graph_previous_day_content_description">Deze %1$s: minimaal %2$d en maximaal %3$d OV-fietsen</string>
+    <string name="graph_today_content_description">Vandaag: minimaal %1$d en maximaal %2$d OV-fietsen. Vanaf nu op basis van vorige week: minimaal %3$d en maximaal %4$d OV-fietsen.</string>
+    <string name="graph_next_day_content_description">Vorige week %1$s: minimaal %2$d en maximaal %3$d OV-fietsen</string>
 
     <string name="map_available">%1$s beschikbaar</string>
 

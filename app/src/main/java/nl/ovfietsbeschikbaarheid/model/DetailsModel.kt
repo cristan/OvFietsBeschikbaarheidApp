@@ -29,7 +29,8 @@ data class GraphDayModel (
     val dayShortName: String,
     val dayFullName: String,
     val capacityHistory: List<CapacityModel>,
-    val capacityPrediction: List<CapacityModel>
+    val capacityPrediction: List<CapacityModel>,
+    val contentDescription: String,
 )
 
 data class CapacityModel(

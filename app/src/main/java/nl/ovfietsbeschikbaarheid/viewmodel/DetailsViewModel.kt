@@ -29,6 +29,7 @@ private const val MIN_REFRESH_TIME = 350L
 
 class DetailsViewModel(
     private val client: KtorApiClient,
+    private val detailsMapper: DetailsMapper,
     private val overviewRepository: OverviewRepository,
     private val stationRepository: StationRepository
 ) : ViewModel() {
@@ -98,7 +99,7 @@ class DetailsViewModel(
                     return@launch
                 }
 
-                val data = DetailsMapper.convert(details, allLocationsDeferred.await(), allStationsDeferred.await(), capacitiesDeferred.await(), historyDeferred.await())
+                val data = detailsMapper.convert(details, allLocationsDeferred.await(), allStationsDeferred.await(), capacitiesDeferred.await(), historyDeferred.await())
                 val timeElapsed = System.currentTimeMillis() - before
                 if (timeElapsed < minDelay) {
                     delay(minDelay - timeElapsed)

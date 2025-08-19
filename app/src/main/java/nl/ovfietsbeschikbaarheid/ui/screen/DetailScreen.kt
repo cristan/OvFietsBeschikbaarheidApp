@@ -659,7 +659,8 @@ fun DetailsPreview() {
         "M",
         "Maandag",
         history,
-        prediction
+        prediction,
+        "",
     )
 
     val details = DetailsModel(

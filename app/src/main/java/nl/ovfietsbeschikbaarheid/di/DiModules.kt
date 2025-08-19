@@ -3,11 +3,13 @@ package nl.ovfietsbeschikbaarheid.di
 import dev.jordond.compass.geocoder.Geocoder
 import dev.jordond.compass.geocoder.mobile
 import nl.ovfietsbeschikbaarheid.KtorApiClient
+import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
+import nl.ovfietsbeschikbaarheid.util.Translator
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
 import org.koin.core.module.dsl.factoryOf
@@ -22,6 +24,8 @@ fun appModule() = module {
     singleOf(::OverviewRepository)
     singleOf(::StationRepository)
     singleOf(::LocationPermissionHelper)
+    factoryOf(::Translator)
+    factoryOf(::DetailsMapper)
     factoryOf(::LocationLoader)
     factoryOf(::FindNearbyLocationsUseCase)
 

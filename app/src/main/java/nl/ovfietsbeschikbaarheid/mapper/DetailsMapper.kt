@@ -15,6 +15,7 @@ import nl.ovfietsbeschikbaarheid.model.LocationModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
+import nl.ovfietsbeschikbaarheid.util.Translator
 import nl.ovfietsbeschikbaarheid.util.dutchLocale
 import nl.ovfietsbeschikbaarheid.util.dutchZone
 import timber.log.Timber
@@ -27,7 +28,9 @@ import java.util.Locale
 import java.util.TimeZone
 import kotlin.math.max
 
-object DetailsMapper {
+class DetailsMapper(
+    private val translator: Translator
+) {
     private val newLinesAtEnd = Regex("[\\\\n\\s]*\$")
 
     fun convert(
@@ -150,12 +153,18 @@ object DetailsMapper {
             // We also want the 00:00 hours to complete the day, but that one usually only arrives at something like 00:01
             val endOfDay = previousDay.atEndOfDay().plusMinutes(10)
             val capacitiesPastDay = historicalCapacities.filter { it.dateTime.isAfter(startOfDay) && it.dateTime.isBefore(endOfDay) }
+
+            val minCapacity = capacitiesPastDay.minOf { it.capacity }
+            val maxCapacity = capacitiesPastDay.maxOf { it.capacity }
+            val dayFullName = previousDay.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale)
+            val contentDescription = translator.getString(R.string.graph_previous_day_content_description, dayFullName, minCapacity, maxCapacity)
             GraphDayModel(
                 isToday = false,
                 previousDay.dayOfWeek.getDisplayName(TextStyle.NARROW, dutchLocale),
-                previousDay.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale),
+                dayFullName,
                 capacitiesPastDay,
-                emptyList()
+                emptyList(),
+                contentDescription
             )
         }
 
@@ -168,12 +177,17 @@ object DetailsMapper {
             val endOfDay = previousDay.atEndOfDay().plusMinutes(10)
 
             val capacitiesFutureDay = historicalCapacities.filter { it.dateTime.isAfter(startOfDay) && it.dateTime.isBefore(endOfDay) }
+            val minCapacity = capacitiesFutureDay.minOf { it.capacity }
+            val maxCapacity = capacitiesFutureDay.maxOf { it.capacity }
+            val dayFullName = previousDay.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale)
+            val contentDescription = translator.getString(R.string.graph_next_day_content_description, dayFullName, minCapacity, maxCapacity)
             GraphDayModel(
                 isToday = false,
                 previousDay.dayOfWeek.getDisplayName(TextStyle.NARROW, dutchLocale),
-                previousDay.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale),
+                dayFullName,
                 emptyList(),
                 capacitiesFutureDay,
+                contentDescription
             )
         }
 
@@ -198,12 +212,19 @@ object DetailsMapper {
         }
         val capacitiesPrediction = historicalCapacities.filter { it.dateTime >= startLastWeek && it.dateTime <= endLastWeek }
 
+        val minCapacityToday = capacitiesToday.minOf { it.capacity }
+        val maxCapacityToday = capacitiesToday.maxOf { it.capacity }
+        val minCapacityPrediction = capacitiesPrediction.minOf { it.capacity }
+        val maxCapacityPrediction = capacitiesPrediction.maxOf { it.capacity }
+        val contentDescription = translator.getString(R.string.graph_today_content_description, minCapacityToday, maxCapacityToday, minCapacityPrediction, maxCapacityPrediction)
+
         val graphToday = GraphDayModel(
             isToday = true,
             nowInNL.dayOfWeek.getDisplayName(TextStyle.NARROW, dutchLocale),
             nowInNL.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale),
             capacitiesToday,
-            capacitiesPrediction
+            capacitiesPrediction,
+            contentDescription
         )
         return graphToday
     }
@@ -219,17 +240,19 @@ object DetailsMapper {
         }
     }
 
-    @StringRes
-    fun getDayName(dayOfWeek: Int): Int {
-        return when (dayOfWeek) {
-            1 -> R.string.day_1
-            2 -> R.string.day_2
-            3 -> R.string.day_3
-            4 -> R.string.day_4
-            5 -> R.string.day_5
-            6 -> R.string.day_6
-            7 -> R.string.day_7
-            else -> throw Exception("Unexpected day of week $dayOfWeek")
+    companion object {
+        @StringRes
+        fun getDayName(dayOfWeek: Int): Int {
+            return when (dayOfWeek) {
+                1 -> R.string.day_1
+                2 -> R.string.day_2
+                3 -> R.string.day_3
+                4 -> R.string.day_4
+                5 -> R.string.day_5
+                6 -> R.string.day_6
+                7 -> R.string.day_7
+                else -> throw Exception("Unexpected day of week $dayOfWeek")
+            }
         }
     }
 }

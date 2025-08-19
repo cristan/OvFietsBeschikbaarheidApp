@@ -103,6 +103,9 @@ fun CapacityGraph(
 
         Canvas(
             modifier = modifier
+                .semantics {
+                    contentDescription = shownGraphDay.contentDescription
+                }
                 .fillMaxWidth()
                 .height(140.dp)
         ) {
@@ -342,7 +345,8 @@ fun CapacityGraphPreview() {
         dayFullName = "Maandag",
         dayShortName = "M",
         capacityHistory = data,
-        capacityPrediction = prediction
+        capacityPrediction = prediction,
+        contentDescription = "",
     )
 
     OVFietsBeschikbaarheidTheme {
