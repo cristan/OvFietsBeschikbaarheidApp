@@ -154,8 +154,9 @@ class DetailsMapper(
             val endOfDay = previousDay.atEndOfDay().plusMinutes(10)
             val capacitiesPastDay = historicalCapacities.filter { it.dateTime.isAfter(startOfDay) && it.dateTime.isBefore(endOfDay) }
 
-            val minCapacity = capacitiesPastDay.minOf { it.capacity }
-            val maxCapacity = capacitiesPastDay.maxOf { it.capacity }
+            // A fallback to 0 doesn't make too much sense, but this prevents a crash and empty days will be filtered out later
+            val minCapacity = capacitiesPastDay.minOfOrNull { it.capacity } ?: 0
+            val maxCapacity = capacitiesPastDay.maxOfOrNull { it.capacity } ?: 0
             val dayFullName = previousDay.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale)
             val contentDescription = translator.getString(R.string.graph_previous_day_content_description, dayFullName, minCapacity, maxCapacity)
             GraphDayModel(
@@ -177,8 +178,9 @@ class DetailsMapper(
             val endOfDay = previousDay.atEndOfDay().plusMinutes(10)
 
             val capacitiesFutureDay = historicalCapacities.filter { it.dateTime.isAfter(startOfDay) && it.dateTime.isBefore(endOfDay) }
-            val minCapacity = capacitiesFutureDay.minOf { it.capacity }
-            val maxCapacity = capacitiesFutureDay.maxOf { it.capacity }
+            // A fallback to 0 doesn't make too much sense, but this prevents a crash and empty days will be filtered out later
+            val minCapacity = capacitiesFutureDay.minOfOrNull { it.capacity } ?: 0
+            val maxCapacity = capacitiesFutureDay.maxOfOrNull { it.capacity } ?: 0
             val dayFullName = previousDay.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale)
             val contentDescription = translator.getString(R.string.graph_next_day_content_description, dayFullName, minCapacity, maxCapacity)
             GraphDayModel(
@@ -216,10 +218,11 @@ class DetailsMapper(
         }
         val capacitiesPrediction = historicalCapacities.filter { it.dateTime >= startLastWeek && it.dateTime <= endLastWeek }
 
-        val minCapacityToday = capacitiesToday.minOf { it.capacity }
-        val maxCapacityToday = capacitiesToday.maxOf { it.capacity }
-        val minCapacityPrediction = capacitiesPrediction.minOf { it.capacity }
-        val maxCapacityPrediction = capacitiesPrediction.maxOf { it.capacity }
+        // A fallback to 0 doesn't make too much sense, but this prevents a crash and empty days will be filtered out later
+        val minCapacityToday = capacitiesToday.minOfOrNull { it.capacity } ?: 0
+        val maxCapacityToday = capacitiesToday.maxOfOrNull { it.capacity } ?: 0
+        val minCapacityPrediction = capacitiesPrediction.minOfOrNull { it.capacity } ?: 0
+        val maxCapacityPrediction = capacitiesPrediction.maxOfOrNull { it.capacity } ?: 0
         val contentDescription = translator.getString(R.string.graph_today_content_description, minCapacityToday, maxCapacityToday, minCapacityPrediction, maxCapacityPrediction)
 
         val graphToday = GraphDayModel(
