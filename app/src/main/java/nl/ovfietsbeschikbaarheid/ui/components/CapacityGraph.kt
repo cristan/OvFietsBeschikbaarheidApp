@@ -54,8 +54,6 @@ import java.time.temporal.ChronoUnit
 import kotlin.math.ceil
 import kotlin.math.max
 
-// TODO: skeleton screens
-
 @Composable
 fun CapacityGraph(
     graphDays: List<GraphDayModel>,

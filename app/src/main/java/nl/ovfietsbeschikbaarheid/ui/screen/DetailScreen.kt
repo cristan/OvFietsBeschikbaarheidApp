@@ -216,7 +216,10 @@ fun DetailsLoader(
     modifier: Modifier
 ) {
     val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
-    Column(modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
+    Column(modifier
+        .padding(top = 4.dp, start = 20.dp, end = 20.dp)
+        .verticalScroll(rememberScrollState())
+    ) {
         OvCard {
             Text(stringResource(R.string.details_amount_available))
             Box(
@@ -252,6 +255,21 @@ fun DetailsLoader(
 
         OvCard {
             Text(
+                text = stringResource(R.string.capacity_graph_title),
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            Box(
+                modifier = Modifier
+                    .height(270.dp)
+                    .fillMaxWidth()
+                    .shimmerShape(shimmerInstance, shape = RoundedCornerShape(8.dp))
+            )
+        }
+
+        OvCard {
+            Text(
                 text = stringResource(R.string.location_title),
                 style = MaterialTheme.typography.headlineMedium,
             )
@@ -267,15 +285,6 @@ fun DetailsLoader(
             Box(
                 modifier = Modifier
                     .height(276.dp)// 260 dp + 16 dp padding. Not sure where that 16 dp comes from, but ok.
-                    .fillMaxWidth()
-                    .shimmerShape(shimmerInstance, shape = RoundedCornerShape(12.dp))
-            )
-        }
-
-        OvCard {
-            Box(
-                modifier = Modifier
-                    .height(160.dp)
                     .fillMaxWidth()
                     .shimmerShape(shimmerInstance, shape = RoundedCornerShape(12.dp))
             )
