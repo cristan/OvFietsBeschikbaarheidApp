@@ -244,8 +244,8 @@ fun CapacityGraph(
                 .padding(top = 16.dp)
                 .fillMaxWidth()
         ) {
-            // Primary color line. Only show when more than 1 item (otherwise, you can't see the line)
-            if(history.size > 1) {
+            // Primary color line
+            if(history.isNotEmpty()) {
                 LegendItem(
                     color = MaterialTheme.colorScheme.primary,
                     text = when {
