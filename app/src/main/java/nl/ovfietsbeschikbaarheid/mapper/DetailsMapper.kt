@@ -89,11 +89,11 @@ class DetailsMapper(
         val rentalBikesAvailable = payload.extra.rentalBikes
         val maxCapacity =
             if (foundCapacity != null && rentalBikesAvailable != null) {
-                if (foundCapacity > rentalBikesAvailable) {
-                    Timber.w("Found capacity $foundCapacity is greater than rental bikes available $rentalBikesAvailable!")
-                    foundCapacity
-                } else {
+                if (rentalBikesAvailable > foundCapacity) {
+                    Timber.w("Rental bikes available $rentalBikesAvailable is greater than the capacity $foundCapacity!")
                     rentalBikesAvailable
+                } else {
+                    foundCapacity
                 }
             } else foundCapacity ?: rentalBikesAvailable ?: 0
 
