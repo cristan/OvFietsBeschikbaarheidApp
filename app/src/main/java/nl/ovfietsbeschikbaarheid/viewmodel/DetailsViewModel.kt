@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.io.IOException
 import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
@@ -105,7 +106,7 @@ class DetailsViewModel(
                     delay(minDelay - timeElapsed)
                 }
                 _screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
-            } catch (e: Exception) {
+            } catch (e: IOException) {
                 Timber.e(e)
                 _screenState.value = ScreenState.FullPageError
             }

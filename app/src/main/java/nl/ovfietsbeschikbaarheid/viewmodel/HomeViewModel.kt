@@ -11,6 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.io.IOException
 import nl.ovfietsbeschikbaarheid.ext.tryAwait
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
@@ -257,7 +258,7 @@ class HomeViewModel(
                 }
             } catch (e: CancellationException) {
                 // The job got cancelled. That's fine: the new job will show the user what they want.
-            } catch (e: Exception) {
+            } catch (e: IOException) {
                 Timber.e(e, "fetchLocation: Failed to fetch location")
                 _content.value = HomeContent.NetworkError
             }
