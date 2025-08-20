@@ -295,7 +295,9 @@ private fun ActualDetails(
         Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
             MainInfo(details)
 
-            CapacityGraph(details.graphDays)
+            if (details.graphDays.isNotEmpty()) {
+                CapacityGraph(details.graphDays)
+            }
 
             details.disruptions?.let {
                 Disruptions(it)

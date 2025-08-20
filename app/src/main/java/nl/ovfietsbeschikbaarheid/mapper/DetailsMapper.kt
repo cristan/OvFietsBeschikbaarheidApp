@@ -192,6 +192,10 @@ class DetailsMapper(
         }
 
         val graphDays = previousDays + listOf(graphToday) + nextDays
+        if (graphDays.any { it.capacityHistory.isEmpty() && it.capacityPrediction.isEmpty() }) {
+            Timber.e("Empty graph days found! Returning nothing to prevent weird issues.")
+            return emptyList()
+        }
         return graphDays
     }
 
