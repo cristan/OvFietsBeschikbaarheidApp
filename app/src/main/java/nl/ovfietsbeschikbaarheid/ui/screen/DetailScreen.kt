@@ -78,14 +78,18 @@ import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
 import nl.ovfietsbeschikbaarheid.ext.shimmerShape
 import nl.ovfietsbeschikbaarheid.ext.withStyledLink
+import nl.ovfietsbeschikbaarheid.model.CapacityModel
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
+import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.model.LocationModel
 import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
 import nl.ovfietsbeschikbaarheid.state.ScreenState
+import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
+import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
 import nl.ovfietsbeschikbaarheid.ui.theme.Red50
@@ -95,6 +99,8 @@ import nl.ovfietsbeschikbaarheid.viewmodel.DetailsContent
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -210,7 +216,10 @@ fun DetailsLoader(
     modifier: Modifier
 ) {
     val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
-    Column(modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
+    Column(modifier
+        .padding(top = 4.dp, start = 20.dp, end = 20.dp)
+        .verticalScroll(rememberScrollState())
+    ) {
         OvCard {
             Text(stringResource(R.string.details_amount_available))
             Box(
@@ -222,15 +231,19 @@ fun DetailsLoader(
                 CircularProgressIndicator(
                     progress = { 1.0f },
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                    modifier = Modifier.size(220.dp).shimmer(shimmerInstance),
+                    modifier = Modifier
+                        .size(220.dp)
+                        .shimmer(shimmerInstance),
                     strokeWidth = 36.dp,
                     strokeCap = StrokeCap.Butt,
                     gapSize = 0.dp,
 
+                    )
+                Box(
+                    modifier = Modifier
+                        .size(width = 68.dp, height = 54.dp)
+                        .shimmerShape(shimmerInstance)
                 )
-                Box(modifier = Modifier
-                    .size(width = 68.dp, height = 54.dp)
-                    .shimmerShape(shimmerInstance))
             }
             Row(Modifier.align(Alignment.End)) {
                 Text(
@@ -242,27 +255,39 @@ fun DetailsLoader(
 
         OvCard {
             Text(
-                text = "Locatie",
+                text = stringResource(R.string.capacity_graph_title),
                 style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
 
-            Box(modifier = Modifier
-                .padding(vertical = 32.dp)
-                .height(28.dp)
-                .fillMaxWidth()
-                .shimmerShape(shimmerInstance, shape = RoundedCornerShape(8.dp)))
-
-            Box(modifier = Modifier
-                .height(276.dp)// 260 dp + 16 dp padding. Not sure where that 16 dp comes from, but ok.
-                .fillMaxWidth()
-                .shimmerShape(shimmerInstance, shape = RoundedCornerShape(12.dp)))
+            Box(
+                modifier = Modifier
+                    .height(270.dp)
+                    .fillMaxWidth()
+                    .shimmerShape(shimmerInstance, shape = RoundedCornerShape(8.dp))
+            )
         }
 
         OvCard {
-            Box(modifier = Modifier
-                .height(160.dp)
-                .fillMaxWidth()
-                .shimmerShape(shimmerInstance, shape = RoundedCornerShape(12.dp)))
+            Text(
+                text = stringResource(R.string.location_title),
+                style = MaterialTheme.typography.headlineMedium,
+            )
+
+            Box(
+                modifier = Modifier
+                    .padding(vertical = 32.dp)
+                    .height(28.dp)
+                    .fillMaxWidth()
+                    .shimmerShape(shimmerInstance, shape = RoundedCornerShape(8.dp))
+            )
+
+            Box(
+                modifier = Modifier
+                    .height(276.dp)// 260 dp + 16 dp padding. Not sure where that 16 dp comes from, but ok.
+                    .fillMaxWidth()
+                    .shimmerShape(shimmerInstance, shape = RoundedCornerShape(12.dp))
+            )
         }
     }
 }
@@ -279,11 +304,22 @@ private fun ActualDetails(
         Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
             MainInfo(details)
 
+            if (details.graphDays.isNotEmpty()) {
+                CapacityGraph(details.graphDays)
+            }
+
             details.disruptions?.let {
                 Disruptions(it)
             }
 
-            Location(details.location, details.coordinates, details.directions, details.description, details.rentalBikesAvailable, onLocationClicked)
+            Location(
+                details.location,
+                details.coordinates,
+                details.directions,
+                details.description,
+                details.rentalBikesAvailable,
+                onLocationClicked
+            )
 
             ExtraInfo(details)
 
@@ -302,11 +338,11 @@ private fun ActualDetails(
 }
 
 @Composable
-private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,) {
+private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
     OvCard {
         Text(stringResource(R.string.details_amount_available))
         val rentalBikesAvailable = details.rentalBikesAvailable
-        val amount = rentalBikesAvailable?.toString() ?: "Onbekend"
+        val amount = rentalBikesAvailable?.toString() ?: stringResource(R.string.details_amount_unknown)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -335,6 +371,7 @@ private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = Loc
             CircularProgressIndicator(
                 progress = { animatedProgress }, modifier = Modifier.size(220.dp),
                 color = color,
+                trackColor = if (isSystemInDarkTheme()) ProgressIndicatorDefaults.circularDeterminateTrackColor else Grey10,
                 strokeWidth = 36.dp,
                 strokeCap = StrokeCap.Butt,
                 gapSize = 0.dp
@@ -392,10 +429,17 @@ private fun Disruptions(disruptions: String) {
 }
 
 @Composable
-private fun Location(location: LocationModel?, coordinates: LatLng, directions: String?, description: String, rentalBikesAvailable: Int?, onNavigateClicked: (String) -> Unit) {
+private fun Location(
+    location: LocationModel?,
+    coordinates: LatLng,
+    directions: String?,
+    description: String,
+    rentalBikesAvailable: Int?,
+    onNavigateClicked: (String) -> Unit
+) {
     OvCard {
         Text(
-            text = "Locatie",
+            text = stringResource(R.string.location_title),
             style = MaterialTheme.typography.headlineMedium,
         )
         val onAddressClick = {
@@ -539,7 +583,7 @@ private fun Alternatives(
 ) {
     OvCard {
         Text(
-            text = if (details.stationName != null) "Op ${details.stationName}" else "Op deze locatie",
+            text = if (details.stationName != null) stringResource(R.string.details_alternatives_at, details.stationName) else stringResource(R.string.details_alternatives_at_this_location),
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )
@@ -586,12 +630,56 @@ fun DetailsPreview() {
         houseNumber = "1",
         postalCode = "3812 GZ",
     )
+
+    val amsterdamZoneId = ZoneId.of("Europe/Amsterdam")
+    val now = ZonedDateTime.of(2025, 7, 12, 11, 35, 30, 500, amsterdamZoneId)
+    val start = ZonedDateTime.of(2025, 7, 12, 0, 1, 25, 250, amsterdamZoneId)
+    val startPrediction = ZonedDateTime.of(2025, 7, 5, 12, 2, 15, 150, amsterdamZoneId)
+
+    val history = listOf(
+        CapacityModel(20, start),
+        CapacityModel(19, start.plusHours(1)),
+        CapacityModel(18, start.plusHours(2)),
+        CapacityModel(16, start.plusHours(3)),
+        CapacityModel(16, start.plusHours(4)),
+        CapacityModel(13, start.plusHours(5)),
+        CapacityModel(0, start.plusHours(6)),
+        CapacityModel(2, start.plusHours(7)),
+        CapacityModel(22, start.plusHours(8)),
+        CapacityModel(18, start.plusHours(9)),
+        CapacityModel(14, start.plusHours(10)),
+        CapacityModel(15, start.plusHours(11)),
+        CapacityModel(14, now)
+    )
+    val prediction = listOf(
+        CapacityModel(25, startPrediction),
+        CapacityModel(27, startPrediction.plusHours(1)),
+        CapacityModel(28, startPrediction.plusHours(2)),
+        CapacityModel(29, startPrediction.plusHours(3)),
+        CapacityModel(30, startPrediction.plusHours(4)),
+        CapacityModel(29, startPrediction.plusHours(5)),
+        CapacityModel(31, startPrediction.plusHours(6)),
+        CapacityModel(32, startPrediction.plusHours(7)),
+        CapacityModel(31, startPrediction.plusHours(8)),
+        CapacityModel(31, startPrediction.plusHours(9)),
+        CapacityModel(32, startPrediction.plusHours(10)),
+        CapacityModel(32, startPrediction.plusHours(11)),
+    )
+    val graphDay = GraphDayModel(
+        isToday = true,
+        "M",
+        "Maandag",
+        history,
+        prediction,
+        "",
+    )
+
     val details = DetailsModel(
         "Amersfoort Mondriaanplein",
         OpenState.Open("01:20"),
         "Dit OV-fiets uitgiftepunt is open van een kwartier voor vertrek van de eerste trein tot een kwartier na aankomst van de laatste trein.",
         openingHours,
-        68,
+        19,
         105,
         ServiceType.Sleutelautomaat,
         about,
@@ -604,9 +692,11 @@ fun DetailsPreview() {
             DetailScreenData(
                 title = "Amersfoort Centraal",
                 uri = "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-amf001",
+                locatonCode = "amf001",
                 fetchTime = 1729539103
-            )
+            ),
         ),
+        listOf(graphDay)
     )
     DetailsView(
         TestData.testDetailScreenData,

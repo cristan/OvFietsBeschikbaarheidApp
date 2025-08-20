@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="nl-NL">
     <string name="app_name">OV-fiets Beschikbaarheid</string>
 
     <string name="content_description_back">Terug</string>
@@ -42,11 +42,22 @@
     <string name="home_no_gps_location">Geen locatie gevonden</string>
 
     <string name="details_amount_available">OV-fietsen beschikbaar</string>
+    <string name="details_amount_unknown">Onbekend</string>
     <string name="details_capacity">Max aantal: %1$d</string>
     <string name="details_coordinates">Coördinaten: %1$f, %2$f</string>
 
     <string name="details_no_data_title">Geen data</string>
     <string name="details_no_data_message">Geen data ontvangen voor %1$s sinds %2$s.</string>
+
+    <string name="details_alternatives_at">Op %1$s</string>
+    <string name="details_alternatives_at_this_location">Op deze locatie</string>
+
+    <string name="graph_today">Vandaag</string>
+    <string name="graph_this_week_day">Deze %1$s</string>
+    <string name="graph_last_week_day">Vorige week %1$s</string>
+    <string name="graph_previous_day_content_description">Deze %1$s: minimaal %2$d en maximaal %3$d OV-fietsen</string>
+    <string name="graph_today_content_description">Vandaag: minimaal %1$d en maximaal %2$d OV-fietsen. Vanaf nu op basis van vorige week: minimaal %3$d en maximaal %4$d OV-fietsen.</string>
+    <string name="graph_next_day_content_description">Vorige week %1$s: minimaal %2$d en maximaal %3$d OV-fietsen</string>
 
     <string name="map_available">%1$s beschikbaar</string>
 
@@ -57,6 +68,8 @@
     <string name="open_state_closes_at">• Sluit om %1$s</string>
     <string name="open_until">Open tot %1$s</string>
     <string name="open_state_open_247">24/7 open</string>
+    <string name="capacity_graph_title">Beschikbaarheid</string>
+    <string name="location_title">Locatie</string>
     <string name="opening_hours_title">Openingstijden</string>
 
     <string name="service_type_manned">Bemenst</string>
