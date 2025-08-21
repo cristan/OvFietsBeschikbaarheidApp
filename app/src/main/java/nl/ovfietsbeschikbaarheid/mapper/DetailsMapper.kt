@@ -96,7 +96,7 @@ class DetailsMapper(
                     foundCapacity
                 }
             } else foundCapacity ?: rentalBikesAvailable ?: 0
-
+        val maxCapacityFromHistory = hourlyLocationCapacityDtos.maxOfOrNull { it.document.fields.first.integerValue.toInt() } ?: 0
 
         val serviceType = when (payload.extra.serviceType) {
             "Bemenst" -> ServiceType.Bemenst
@@ -117,7 +117,7 @@ class DetailsMapper(
             openingHoursInfo = openingHoursInfo,
             openingHours = openingHoursModels,
             rentalBikesAvailable = rentalBikesAvailable,
-            capacity = max(rentalBikesAvailable ?: 0, maxCapacity),
+            capacity = max(maxCapacity, maxCapacityFromHistory),
             serviceType = serviceType,
             directions = if (directions != "") directions else null,
             about = about,
