@@ -7,14 +7,14 @@ plugins {
 
 android {
     namespace = "nl.ovfietsbeschikbaarheid"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "nl.ovfietsbeschikbaarheid"
         minSdk = 26
-        targetSdk = 35
-        versionCode = 19
-        versionName = "2.5.0"
+        targetSdk = 36
+        versionCode = 20
+        versionName = "3.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.google.android.gms.maps.model.LatLng
 import nl.ovfietsbeschikbaarheid.R
+import java.time.ZonedDateTime
 
 data class DetailsModel(
     val description: String,
@@ -20,6 +21,21 @@ data class DetailsModel(
     val coordinates: LatLng,
     val stationName: String?,
     val alternatives: List<DetailScreenData>,
+    val graphDays: List<GraphDayModel>,
+)
+
+data class GraphDayModel (
+    val isToday: Boolean,
+    val dayShortName: String,
+    val dayFullName: String,
+    val capacityHistory: List<CapacityModel>,
+    val capacityPrediction: List<CapacityModel>,
+    val contentDescription: String,
+)
+
+data class CapacityModel(
+    val capacity: Int,
+    val dateTime: ZonedDateTime
 )
 
 data class LocationModel(

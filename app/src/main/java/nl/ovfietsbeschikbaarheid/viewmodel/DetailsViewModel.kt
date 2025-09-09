@@ -4,9 +4,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.io.IOException
 import nl.ovfietsbeschikbaarheid.KtorApiClient
+import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
@@ -14,15 +17,20 @@ import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.state.setRefreshing
+import nl.ovfietsbeschikbaarheid.util.dutchZone
 import timber.log.Timber
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 private const val MIN_REFRESH_TIME = 350L
 
 class DetailsViewModel(
     private val client: KtorApiClient,
+    private val detailsMapper: DetailsMapper,
     private val overviewRepository: OverviewRepository,
     private val stationRepository: StationRepository
 ) : ViewModel() {
@@ -38,25 +46,19 @@ class DetailsViewModel(
     fun screenLaunched(data: DetailScreenData) {
         this.data = data
         _title.value = data.title
-        viewModelScope.launch {
-            doRefresh()
-        }
+        doRefresh()
     }
 
     fun onReturnToScreenTriggered() {
         if (screenState.value is ScreenState.Loaded) {
             _screenState.setRefreshing()
-            viewModelScope.launch {
-                doRefresh()
-            }
+            doRefresh()
         }
     }
 
     fun onPullToRefresh() {
-        viewModelScope.launch {
-            _screenState.setRefreshing()
-            doRefresh(MIN_REFRESH_TIME)
-        }
+        _screenState.setRefreshing()
+        doRefresh(MIN_REFRESH_TIME)
     }
 
     fun onRetryClick() {
@@ -66,29 +68,48 @@ class DetailsViewModel(
         }
     }
 
-    private suspend fun doRefresh(minDelay: Long = 0L) {
-        try {
-            val before = System.currentTimeMillis()
-            val details = client.getDetails(data.uri)
-            if (details == null) {
-                val fetchTimeInstant = Instant.ofEpochSecond(data.fetchTime)
-                val lastFetched = LocalDateTime.ofInstant(fetchTimeInstant, ZoneId.of("Europe/Amsterdam"))!!
-                _screenState.value = ScreenState.Loaded(DetailsContent.NotFound(data.title, lastFetched))
-                return
+    private fun doRefresh(minDelay: Long = 0L) {
+        viewModelScope.launch {
+            try {
+                val before = System.currentTimeMillis()
+
+                val detailsDeferred = async {
+                    client.getDetails(data.uri)
+                }
+                val allLocationsDeferred = async {
+                    // No need to go for the non-cached locations: these are only for the alternatives, and these barely change at all
+                    overviewRepository.getCachedOrLoad()
+                }
+                val allStationsDeferred = async {
+                    stationRepository.getAllStations()
+                }
+                val capacitiesDeferred = async {
+                    stationRepository.getCapacities()
+                }
+                val historyDeferred = async {
+                    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX")
+                    val startDate = ZonedDateTime.now(dutchZone).minusDays(7).atStartOfDay().withZoneSameInstant(ZoneOffset.UTC).format(formatter)
+                    client.getHistory(data.locatonCode, startDate)
+                }
+
+                val details = detailsDeferred.await()
+                if (details == null) {
+                    val fetchTimeInstant = Instant.ofEpochSecond(data.fetchTime)
+                    val lastFetched = LocalDateTime.ofInstant(fetchTimeInstant, ZoneId.of("Europe/Amsterdam"))!!
+                    _screenState.value = ScreenState.Loaded(DetailsContent.NotFound(data.title, lastFetched))
+                    return@launch
+                }
+
+                val data = detailsMapper.convert(details, allLocationsDeferred.await(), allStationsDeferred.await(), capacitiesDeferred.await(), historyDeferred.await())
+                val timeElapsed = System.currentTimeMillis() - before
+                if (timeElapsed < minDelay) {
+                    delay(minDelay - timeElapsed)
+                }
+                _screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
+            } catch (e: IOException) {
+                Timber.e(e)
+                _screenState.value = ScreenState.FullPageError
             }
-            val allStations = stationRepository.getAllStations()
-            val capabilities = stationRepository.getCapacities()
-            // No need to go for the non-cached locations: these are only for the alternatives, and these barely change at all
-            val allLocations = overviewRepository.getCachedOrLoad()
-            val data = DetailsMapper.convert(details, allLocations, allStations, capabilities)
-            val timeElapsed = System.currentTimeMillis() - before
-            if (timeElapsed < minDelay) {
-                delay(minDelay - timeElapsed)
-            }
-            _screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
-        } catch (e: Exception) {
-            Timber.e(e)
-            _screenState.value = ScreenState.FullPageError
         }
     }
 
