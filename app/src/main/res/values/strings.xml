@@ -34,7 +34,7 @@
 
     <string name="loading">Aan het laden</string>
 
-    <string name="home_nearby">In de buurt</string>
+    <string name="home_nearby">Bij jou in de buurt</string>
     <string name="home_search_label">Locatie</string>
 
     <string name="home_no_search_results_for">Geen zoekresultaten voor \"%1$s\"</string>
