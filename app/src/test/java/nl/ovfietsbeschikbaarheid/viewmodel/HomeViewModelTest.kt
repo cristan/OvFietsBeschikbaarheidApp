@@ -1,5 +1,6 @@
 package nl.ovfietsbeschikbaarheid.viewmodel
 
+import com.google.android.play.core.review.ReviewManager
 import dev.jordond.compass.Coordinates
 import dev.jordond.compass.permissions.PermissionState
 import io.mockk.coEvery
@@ -21,6 +22,7 @@ import nl.ovfietsbeschikbaarheid.testutils.shouldBeEqualTo
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
+import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
 import org.junit.Rule
 import org.junit.Test
 import java.net.UnknownHostException
@@ -42,7 +44,9 @@ class HomeViewModelTest {
     private val overviewRepository: OverviewRepository = mockk()
     private val locationPermissionHelper: LocationPermissionHelper = mockk(relaxUnitFun = true)
     private val locationLoader: LocationLoader = mockk()
-    private val viewModel = HomeViewModel(findNearbyLocationsUseCase, overviewRepository, locationPermissionHelper, locationLoader)
+    private val ratingEligibilityService: RatingEligibilityService = mockk(relaxed = true)
+    private val reviewManager: ReviewManager = mockk()
+    private val viewModel = HomeViewModel(findNearbyLocationsUseCase, overviewRepository, locationPermissionHelper, locationLoader, ratingEligibilityService, reviewManager)
 
     @Test
     fun `starting up the app when you have all the permissions and everything works - GPS first`() = runTest {
