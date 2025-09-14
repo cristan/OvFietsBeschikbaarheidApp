@@ -15,9 +15,9 @@ This app is designed to find how many OV-fiets bikes are available as quick as p
 </div>
 
 ## Features
-* See locations nearby via GPS
-* Geocoding: see locations nearby the location you've typed
-* Show additional information like address, opening hours and other locations at the same station.
+* Quickly see nearby locations' availability via GPS
+* A history graph which shows the availability over time
+* Extended info like the address, opening hours etc
 
 ## About the code
 Data comes from [openOV](https://openov.nl) and is hosted by the open source [OvFietsBackend](https://github.com/cristan/OvFietsBackend).
