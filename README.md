@@ -8,16 +8,16 @@
 [![Ktor](https://img.shields.io/badge/Ktor-%20-blue?logo=kotlin)](https://ktor.io/)
 [![Google Maps](https://img.shields.io/badge/Google%20Maps-%20-blue?logo=google-maps)](https://github.com/googlemaps/android-maps-compose)
 
-This app is designed to find how many OV-fiets bikes are available as quick as possible.
+This app is designed to find how many OV-fiets bikes are available as quickly as possible.
 
 <div align="center">
 <img src="resources/screenshots/phone/screenshot1.png" alt="Screenshot 1" width="45%"> <img src="resources/screenshots/phone/screenshot2.png" alt="Screenshot 2" width="45%">
 </div>
 
 ## Features
-* See locations nearby via GPS
-* Geocoding: see locations nearby the location you've typed
-* Show additional information like address, opening hours and other locations at the same station.
+* Quickly see nearby locations' availability via GPS
+* A history graph which shows the availability over time
+* Extended info like the address, opening hours etc
 
 ## About the code
 Data comes from [openOV](https://openov.nl) and is hosted by the open source [OvFietsBackend](https://github.com/cristan/OvFietsBackend).
