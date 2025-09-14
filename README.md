@@ -8,7 +8,7 @@
 [![Ktor](https://img.shields.io/badge/Ktor-%20-blue?logo=kotlin)](https://ktor.io/)
 [![Google Maps](https://img.shields.io/badge/Google%20Maps-%20-blue?logo=google-maps)](https://github.com/googlemaps/android-maps-compose)
 
-This app is designed to find how many OV-fiets bikes are available as quick as possible.
+This app is designed to find how many OV-fiets bikes are available as quickly as possible.
 
 <div align="center">
 <img src="resources/screenshots/phone/screenshot1.png" alt="Screenshot 1" width="45%"> <img src="resources/screenshots/phone/screenshot2.png" alt="Screenshot 2" width="45%">
