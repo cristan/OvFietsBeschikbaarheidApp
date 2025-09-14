@@ -18,7 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,7 +68,7 @@ fun CapacityGraph(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        var selectedIndex by remember { mutableIntStateOf(graphDays.indexOfFirst { it.isToday }) }
+        var selectedIndex by rememberSaveable { mutableIntStateOf(graphDays.indexOfFirst { it.isToday }) }
 
         // Use the same max capacity for all days for consistency's sake
         val maxCapacity = graphDays.maxOf { graphDay ->
