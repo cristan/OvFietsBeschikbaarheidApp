@@ -1,9 +1,12 @@
 package nl.ovfietsbeschikbaarheid.viewmodel
 
+import android.app.Activity
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.play.core.review.ReviewInfo
+import com.google.android.play.core.review.ReviewManager
 import dev.jordond.compass.Coordinates
 import dev.jordond.compass.permissions.PermissionState
 import kotlinx.coroutines.Deferred
@@ -19,6 +22,7 @@ import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
+import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
 import timber.log.Timber
 import java.time.Duration
 import java.time.Instant
@@ -28,7 +32,9 @@ class HomeViewModel(
     private val findNearbyLocationsUseCase: FindNearbyLocationsUseCase,
     private val overviewRepository: OverviewRepository,
     private val locationPermissionHelper: LocationPermissionHelper,
-    private val locationLoader: LocationLoader
+    private val locationLoader: LocationLoader,
+    private val ratingEligibilityService: RatingEligibilityService,
+    private val reviewManager: ReviewManager
 ) : ViewModel() {
 
     private val _searchTerm = mutableStateOf("")
@@ -37,6 +43,9 @@ class HomeViewModel(
     // The initial value doesn't really matter: it gets overwritten right away anyway
     private val _content = mutableStateOf<HomeContent>(HomeContent.InitialEmpty)
     val content: State<HomeContent> = _content
+
+    private val _reviewInfo = mutableStateOf<ReviewInfo?>(null)
+    val reviewInfo: State<ReviewInfo?> = _reviewInfo
 
     private lateinit var locations: Deferred<List<LocationOverviewModel>>
     private var lastLoadedCoordinates: Coordinates? = null
@@ -255,13 +264,39 @@ class HomeViewModel(
                     Timber.d("awaitAndShowLocationsWithDistance: using loaded coordinates")
                     val locationsWithDistance = LocationsMapper.withDistance(allLocations, loadedCoordinates)
                     _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now())
+
+                    ratingEligibilityService.onGpsContentViewed()
+                    if(ratingEligibilityService.shouldRequestRating()) {
+                        requestRating()
+                    }
                 }
-            } catch (e: CancellationException) {
+            } catch (_: CancellationException) {
                 // The job got cancelled. That's fine: the new job will show the user what they want.
             } catch (e: IOException) {
                 Timber.e(e, "fetchLocation: Failed to fetch location")
                 _content.value = HomeContent.NetworkError
             }
         }
+    }
+
+    private fun requestRating() {
+        val request = reviewManager.requestReviewFlow()
+        request.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                _reviewInfo.value = task.result
+            } else {
+                Timber.e(task.exception, "Failed to request review flow")
+            }
+        }
+    }
+
+    fun launchReviewFlow(activity: Activity, reviewInfo: ReviewInfo) {
+        reviewManager.launchReviewFlow(activity, reviewInfo)
+            .addOnCompleteListener { _ ->
+                viewModelScope.launch {
+                    ratingEligibilityService.onRatingPrompted()
+                }
+                _reviewInfo.value = null
+            }
     }
 }
