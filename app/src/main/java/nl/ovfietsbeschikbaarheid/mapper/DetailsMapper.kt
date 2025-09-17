@@ -79,7 +79,7 @@ class DetailsMapper(
 
                     // Don't pick yourself
                     it.locationCode != locationDTO.extra.locationCode
-        }.map { DetailScreenData(it.title, it.uri, it.locationCode, it.fetchTime) }
+        }.map { DetailScreenData(it.title, it.locationCode, it.fetchTime) }
 
         val foundCapacity = capacities[locationDTO.extra.locationCode.lowercase(Locale.UK)]
         if (foundCapacity == null) {

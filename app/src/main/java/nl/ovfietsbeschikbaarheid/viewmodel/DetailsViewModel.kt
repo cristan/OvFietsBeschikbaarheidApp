@@ -76,7 +76,7 @@ class DetailsViewModel(
                 val before = System.currentTimeMillis()
 
                 val detailsDeferred = async {
-                    detailsRepository.getDetails(data.locatonCode)
+                    detailsRepository.getDetails(data.locationCode)
                 }
                 val allLocationsDeferred = async {
                     // No need to go for the non-cached locations: these are only for the alternatives, and these barely change at all
@@ -91,7 +91,7 @@ class DetailsViewModel(
                 val historyDeferred = async {
                     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX")
                     val startDate = ZonedDateTime.now(dutchZone).minusDays(7).atStartOfDay().withZoneSameInstant(ZoneOffset.UTC).format(formatter)
-                    client.getHistory(data.locatonCode, startDate)
+                    client.getHistory(data.locationCode, startDate)
                 }
 
                 val details = detailsDeferred.await()

@@ -1,3 +1,3 @@
 package nl.ovfietsbeschikbaarheid.model
 
-data class DetailScreenData(val title: String, val uri: String, val locatonCode: String, val fetchTime: Long)
+data class DetailScreenData(val title: String, val locationCode: String, val fetchTime: Long)
