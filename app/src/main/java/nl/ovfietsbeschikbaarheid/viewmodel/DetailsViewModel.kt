@@ -13,6 +13,7 @@ import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
+import nl.ovfietsbeschikbaarheid.repository.DetailsRepository
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.state.ScreenState
@@ -32,7 +33,8 @@ class DetailsViewModel(
     private val client: KtorApiClient,
     private val detailsMapper: DetailsMapper,
     private val overviewRepository: OverviewRepository,
-    private val stationRepository: StationRepository
+    private val stationRepository: StationRepository,
+    private val detailsRepository: DetailsRepository
 ) : ViewModel() {
 
     private val _screenState = mutableStateOf<ScreenState<DetailsContent>>(ScreenState.Loading)
@@ -74,7 +76,7 @@ class DetailsViewModel(
                 val before = System.currentTimeMillis()
 
                 val detailsDeferred = async {
-                    client.getDetails(data.uri)
+                    detailsRepository.getDetails(data.locatonCode)
                 }
                 val allLocationsDeferred = async {
                     // No need to go for the non-cached locations: these are only for the alternatives, and these barely change at all

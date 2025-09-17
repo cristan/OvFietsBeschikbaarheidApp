@@ -7,6 +7,7 @@ import dev.jordond.compass.geocoder.Geocoder
 import dev.jordond.compass.geocoder.mobile
 import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
+import nl.ovfietsbeschikbaarheid.repository.DetailsRepository
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.RatingStorageRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
@@ -35,6 +36,7 @@ fun appModule() = module {
     singleOf(::RatingEligibilityService)
     singleOf(::OverviewRepository)
     singleOf(::StationRepository)
+    singleOf(::DetailsRepository)
     singleOf(::LocationPermissionHelper)
     factoryOf(::Translator)
     factoryOf(::DetailsMapper)

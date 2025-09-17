@@ -45,7 +45,7 @@ class KtorApiClient {
         return locations
     }
 
-    suspend fun getDetails(detailUri: String): DetailsDTO? {
+    suspend fun getNSApiDetails(detailUri: String): DetailsDTO? {
         Timber.i("Loading $detailUri")
         val (result, timeTaken) = measureTimedValue {
             httpClient.get(detailUri)

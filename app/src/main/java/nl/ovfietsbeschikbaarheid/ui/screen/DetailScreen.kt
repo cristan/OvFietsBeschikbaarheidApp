@@ -78,11 +78,11 @@ import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
 import nl.ovfietsbeschikbaarheid.ext.shimmerShape
 import nl.ovfietsbeschikbaarheid.ext.withStyledLink
+import nl.ovfietsbeschikbaarheid.model.AddressModel
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.GraphDayModel
-import nl.ovfietsbeschikbaarheid.model.LocationModel
 import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
@@ -430,7 +430,7 @@ private fun Disruptions(disruptions: String) {
 
 @Composable
 private fun Location(
-    location: LocationModel?,
+    location: AddressModel?,
     coordinates: LatLng,
     directions: String?,
     description: String,
@@ -624,7 +624,7 @@ fun DetailsPreview() {
     val about =
         "Je huurt hier een OV-fiets met het nieuwe OV-fietsslot, waarbij je OV-chipkaart de sleutel is. Meer informatie vind je op ov-fiets.nl/slot.\r\n\r\nAan de andere kant van het station vind je de bemenste fietsenstalling. Ook hier kun je een OV-fiets huren."
     val directions = "Volg vanaf het station de borden Mondriaanplein. U vindt de stalling recht voor de uitgang van het station."
-    val locationModel = LocationModel(
+    val addressModel = AddressModel(
         city = "Amersfoort",
         street = "Piet Mondriaanplein",
         houseNumber = "1",
@@ -685,7 +685,7 @@ fun DetailsPreview() {
         about,
         "Helaas kunt u hier op dit moment geen OV-fiets huren. Onze excuses voor dit ongemak. Raadpleeg de NS Reisplanner app of website (ns.nl/ov-fiets) voor de dichtstbijzijnde OV-fiets verhuurlocatie.",
         directions,
-        locationModel,
+        addressModel,
         LatLng(52.15446, 5.37339),
         "Amersfoort",
         listOf(

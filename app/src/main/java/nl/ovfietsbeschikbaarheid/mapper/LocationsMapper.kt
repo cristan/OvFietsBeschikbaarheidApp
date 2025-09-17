@@ -3,6 +3,7 @@ package nl.ovfietsbeschikbaarheid.mapper
 import dev.jordond.compass.Coordinates
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.ext.distanceTo
+import nl.ovfietsbeschikbaarheid.ext.getMinutesSinceLastUpdate
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
@@ -11,7 +12,6 @@ import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.time.Instant
-import java.time.temporal.ChronoUnit
 import kotlin.math.roundToInt
 
 object LocationsMapper {
@@ -39,12 +39,10 @@ object LocationsMapper {
             Pair("OV-ebike Maastricht", "Maastricht - OV-ebike"),
         )
 
-        val lastUpdateTimestamp = locations.maxOf { it.extra.fetchTime }
-        val lastUpdateInstant = Instant.ofEpochSecond(lastUpdateTimestamp)
-        val lastUpdateAgo = lastUpdateInstant.until(Instant.now(), ChronoUnit.MINUTES)
-        val lastUpdateTooLongAgo = lastUpdateAgo > 120
+        val minutesSinceLastUpdate = locations.getMinutesSinceLastUpdate(Instant.now())
+        val lastUpdateTooLongAgo = minutesSinceLastUpdate > 15
         if (lastUpdateTooLongAgo) {
-            Timber.e("The last update (at $lastUpdateTimestamp) was $lastUpdateAgo minutes ago")
+            Timber.e("The last update was $minutesSinceLastUpdate minutes ago")
         }
 
         return locations.map { toMap ->
