@@ -105,14 +105,6 @@ private fun AboutView(
                 Text(
                     modifier = Modifier.padding(top = 4.dp),
                     text = buildAnnotatedString {
-                        append(stringResource(R.string.about_credits_text_2))
-                        withStyledLink(text = "ovfietsbeschikbaar.nl", url = "https://ovfietsbeschikbaar.nl")
-                        append(stringResource(R.string.about_credits_text_3))
-                    }
-                )
-                Text(
-                    modifier = Modifier.padding(top = 4.dp),
-                    text = buildAnnotatedString {
                         append(stringResource(R.string.about_credits_text_4))
                         withStyledLink(
                             text = stringResource(R.string.about_credits_text_5),
