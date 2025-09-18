@@ -87,9 +87,6 @@ class DetailsViewModel(
                     val allStationsDeferred = async {
                         stationRepository.getAllStations()
                     }
-                    val capacitiesDeferred = async {
-                        stationRepository.getCapacities()
-                    }
                     val historyDeferred = async {
                         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX")
                         val startDate =
@@ -109,7 +106,6 @@ class DetailsViewModel(
                         details,
                         allLocationsDeferred.await(),
                         allStationsDeferred.await(),
-                        capacitiesDeferred.await(),
                         historyDeferred.await()
                     )
                     val timeElapsed = System.currentTimeMillis() - before

@@ -24,9 +24,7 @@ import java.time.ZonedDateTime
 import java.time.format.TextStyle
 import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
-import java.util.Locale
 import java.util.TimeZone
-import kotlin.math.max
 
 class DetailsMapper(
     private val translator: Translator
@@ -37,7 +35,6 @@ class DetailsMapper(
         locationDTO: LocationDTO,
         allLocations: List<LocationOverviewModel>,
         allStations: Map<String, String>,
-        capacities: Map<String, Int>,
         hourlyLocationCapacityDtos: List<HourlyLocationCapacityDto>
     ): DetailsModel {
 
@@ -81,21 +78,7 @@ class DetailsMapper(
                     it.locationCode != locationDTO.extra.locationCode
         }.map { DetailScreenData(it.title, it.locationCode, it.fetchTime) }
 
-        val foundCapacity = capacities[locationDTO.extra.locationCode.lowercase(Locale.UK)]
-        if (foundCapacity == null) {
-            Timber.w("No capacity found for ${locationDTO.extra.locationCode}!")
-        }
         val rentalBikesAvailable = locationDTO.extra.rentalBikes
-        val maxCapacity =
-            if (foundCapacity != null && rentalBikesAvailable != null) {
-                if (rentalBikesAvailable > foundCapacity) {
-                    Timber.w("Rental bikes available $rentalBikesAvailable is greater than the capacity $foundCapacity!")
-                    rentalBikesAvailable
-                } else {
-                    foundCapacity
-                }
-            } else foundCapacity ?: rentalBikesAvailable ?: 0
-        val maxCapacityFromHistory = hourlyLocationCapacityDtos.maxOfOrNull { it.document.fields.first.integerValue.toInt() } ?: 0
 
         val serviceType = when (locationDTO.extra.serviceType) {
             "Bemenst" -> ServiceType.Bemenst
@@ -116,7 +99,7 @@ class DetailsMapper(
             openingHoursInfo = openingHoursInfo,
             openingHours = openingHoursModels,
             rentalBikesAvailable = rentalBikesAvailable,
-            capacity = max(maxCapacity, maxCapacityFromHistory),
+            capacity = locationDTO.maxCapacity,
             serviceType = serviceType,
             directions = if (directions != "") directions else null,
             about = about,

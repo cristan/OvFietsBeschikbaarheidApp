@@ -22,6 +22,8 @@ data class LocationDTO(
     // Weirdly nullable, see Ermelo
     val openingHours: List<OpeningHoursDTO>? = null,
     val infoImages: List<InfoImage>,
+
+    val maxCapacity: Int,
 )
 
 @Serializable
