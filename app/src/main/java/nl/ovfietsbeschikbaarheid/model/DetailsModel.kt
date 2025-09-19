@@ -17,7 +17,7 @@ data class DetailsModel(
     val about: String?,
     val disruptions: String?,
     val directions: String?,
-    val location: LocationModel?,
+    val location: AddressModel?,
     val coordinates: LatLng,
     val stationName: String?,
     val alternatives: List<DetailScreenData>,
@@ -38,7 +38,7 @@ data class CapacityModel(
     val dateTime: ZonedDateTime
 )
 
-data class LocationModel(
+data class AddressModel(
     val city: String,
     val street: String,
     val houseNumber: String,

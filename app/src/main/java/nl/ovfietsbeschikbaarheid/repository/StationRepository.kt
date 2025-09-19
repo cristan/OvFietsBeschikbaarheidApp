@@ -1,7 +1,6 @@
 package nl.ovfietsbeschikbaarheid.repository
 
 import android.content.Context
-import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import kotlinx.serialization.json.Json
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.dto.Station
@@ -12,7 +11,6 @@ class StationRepository(
     private val context: Context
 ) {
     private var cachedStations: Map<String, String>? = null
-    private var cachedCapacities: Map<String, Int>? = null
 
     private val json = Json
 
@@ -32,39 +30,5 @@ class StationRepository(
         Timber.d("Loaded stations in $timeTaken")
         cachedStations = stations
         return stations
-    }
-
-    /**
-     * Returns a map between location code and the station's capacity.
-     * Note that the location code is always lowercase here, which it isn't always at other instances (Prinsendam is has the code Rtd003 for example)
-     */
-    fun getCapacities(): Map<String, Int> {
-        cachedCapacities?.let {
-            return it
-        }
-        val (capabilities, timeTaken) = measureTimedValue {
-            val maxAvailableStream = context.resources.openRawResource(R.raw.max_2017_2023)
-            val capabilities = HashMap<String, Int>()
-            csvReader { delimiter = ';' }.readAll(maxAvailableStream)
-                .drop(1)
-                .forEach { line ->
-                    val code = line[0]
-                    val maxAvailabilities = line
-                        .drop(2)
-                        .map { maxAvailability ->
-                            if (maxAvailability.isEmpty()) {
-                                0
-                            } else {
-                                maxAvailability.toInt()
-                            }
-                        }
-                    capabilities[code] = maxAvailabilities.max()
-                }
-            capabilities
-        }
-        Timber.d("Loaded capacities in $timeTaken")
-
-        cachedCapacities = capabilities
-        return capabilities
     }
 }

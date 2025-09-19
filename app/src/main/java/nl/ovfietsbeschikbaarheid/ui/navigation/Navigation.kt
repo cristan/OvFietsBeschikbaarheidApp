@@ -23,10 +23,10 @@ object Home
 object Info
 
 @Serializable
-data class DetailScreen(val title: String, val uri: String, val locationCode: String, val fetchTime: Long)
+data class DetailScreen(val title: String, val locationCode: String, val fetchTime: Long)
 
 @Serializable
-data class DetailScreenAlternative(val title: String, val uri: String, val locationCode: String, val fetchTime: Long)
+data class DetailScreenAlternative(val title: String, val locationCode: String, val fetchTime: Long)
 
 @Composable
 fun Navigation() {
@@ -37,7 +37,7 @@ fun Navigation() {
             HomeScreen(
                 onInfoClicked = { navController.navigate(Info) },
                 onLocationClick = {
-                    navController.navigate(DetailScreen(it.title, it.uri, it.locationCode, it.fetchTime))
+                    navController.navigate(DetailScreen(it.title, it.locationCode, it.fetchTime))
                 }
             )
         }
@@ -48,12 +48,12 @@ fun Navigation() {
         }
         slideInOutComposable<DetailScreen> { backStackEntry ->
             val detailScreen: DetailScreen = backStackEntry.toRoute()
-            val detailScreenData = DetailScreenData(detailScreen.title, detailScreen.uri, detailScreen.locationCode, detailScreen.fetchTime)
+            val detailScreenData = DetailScreenData(detailScreen.title, detailScreen.locationCode, detailScreen.fetchTime)
             NavigableDetailScreen(navController, detailScreenData)
         }
         composable<DetailScreenAlternative> { backStackEntry ->
             val detailScreenAlternative: DetailScreenAlternative = backStackEntry.toRoute()
-            val detailScreenData = DetailScreenData(detailScreenAlternative.title, detailScreenAlternative.uri, detailScreenAlternative.locationCode, detailScreenAlternative.fetchTime)
+            val detailScreenData = DetailScreenData(detailScreenAlternative.title, detailScreenAlternative.locationCode, detailScreenAlternative.fetchTime)
             NavigableDetailScreen(navController, detailScreenData)
         }
     }
@@ -64,7 +64,7 @@ private fun NavigableDetailScreen(navController: NavHostController, detailScreen
     DetailScreen(
         detailScreenData = detailScreenData,
         onAlternativeClicked = { alternative ->
-            navController.navigate(DetailScreenAlternative(alternative.title, alternative.uri, alternative.locatonCode, alternative.fetchTime))
+            navController.navigate(DetailScreenAlternative(alternative.title, alternative.locationCode, alternative.fetchTime))
         },
         onBackClicked = {
             navController.popBackStack<Home>(inclusive = false)

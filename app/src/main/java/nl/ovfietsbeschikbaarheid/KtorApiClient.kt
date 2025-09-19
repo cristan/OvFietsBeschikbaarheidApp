@@ -2,9 +2,8 @@ package nl.ovfietsbeschikbaarheid
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.logging.LogLevel
-import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -27,9 +26,15 @@ class KtorApiClient {
         install(ContentNegotiation) {
             json(json)
         }
-        install(Logging) {
-            level = LogLevel.ALL
-        }
+//        install(Logging) {
+//            logger = object : Logger {
+//                override fun log(message: String) {
+//                    Timber.d(message)
+//                }
+//            }
+//            level = LogLevel.ALL
+//        }
+        install(HttpCache)
     }
 
     suspend fun getLocations(): List<LocationDTO> {
@@ -40,7 +45,7 @@ class KtorApiClient {
         return locations
     }
 
-    suspend fun getDetails(detailUri: String): DetailsDTO? {
+    suspend fun getNSApiDetails(detailUri: String): DetailsDTO? {
         Timber.i("Loading $detailUri")
         val (result, timeTaken) = measureTimedValue {
             httpClient.get(detailUri)
