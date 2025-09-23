@@ -223,13 +223,28 @@ class HomeViewModel(
     private fun loadLocation() {
         if (!locationPermissionHelper.isGpsTurnedOn()) {
             _content.value = HomeContent.GpsTurnedOff
+            fetchPriceDataIndependently()
         } else if (!locationPermissionHelper.hasGpsPermission()) {
             val showRationale = locationPermissionHelper.shouldShowLocationRationale()
             val state = if (!showRationale) AskPermissionState.Initial else AskPermissionState.Denied
             _content.value = HomeContent.AskGpsPermission(state)
+            fetchPriceDataIndependently()
         } else {
             _content.value = HomeContent.Loading
             awaitAndShowLocationsWithDistance()
+        }
+    }
+
+    private fun fetchPriceDataIndependently() {
+        viewModelScope.launch {
+            try {
+                val loadedOverviewData = overviewData.await()
+                _pricePer24Hours.value = loadedOverviewData.pricePer24Hours
+            } catch (e: Exception) {
+                // Whenever this fails, we just don't know the price per 24 hours.
+                // That's fine for now, we won't bother the user that their internet apparently doesn't work until they approve loading GPS locations
+                Timber.e(e, "fetchPriceDataIndependently: Failed to fetch overview data for price.")
+            }
         }
     }
 
