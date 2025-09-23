@@ -241,7 +241,7 @@ class HomeViewModelTest {
         stubGpsOk()
         every { overviewRepository.filterLocations(any(), any()) } answers { callOriginal() }
 
-        coEvery { overviewRepository.getAllLocations() } coAnswers {
+        coEvery { overviewRepository.getOverviewData() } coAnswers {
             delay(1000L)
             listOf(TestData.testLocationOverviewModel)
         }
@@ -265,7 +265,7 @@ class HomeViewModelTest {
     @Test
     fun `locations could not be loaded from the backend which is successfully retried`() = runTest {
         stubGpsOk()
-        coEvery { overviewRepository.getAllLocations() } throws UnknownHostException()
+        coEvery { overviewRepository.getOverviewData() } throws UnknownHostException()
 
         viewModel.onScreenLaunched()
 
@@ -285,7 +285,7 @@ class HomeViewModelTest {
     fun `data gets reloaded when the user types at the network error screen`() = runTest {
         // Start with network error
         stubGpsOk()
-        coEvery { overviewRepository.getAllLocations() } throws UnknownHostException()
+        coEvery { overviewRepository.getOverviewData() } throws UnknownHostException()
 
         viewModel.onScreenLaunched()
 
@@ -305,7 +305,7 @@ class HomeViewModelTest {
     fun `app doesn't crash when you search at the network error screen and you still don't have internet`() = runTest {
         // Start with network error
         stubGpsOk()
-        coEvery { overviewRepository.getAllLocations() } throws UnknownHostException()
+        coEvery { overviewRepository.getOverviewData() } throws UnknownHostException()
 
         viewModel.onScreenLaunched()
 
@@ -327,7 +327,7 @@ class HomeViewModelTest {
         viewModel.onReturnedToScreen()
 
         // Even though we have returned to the screen, the data isn't reloaded because it was right after
-        coVerify(exactly = 1) { overviewRepository.getAllLocations() }
+        coVerify(exactly = 1) { overviewRepository.getOverviewData() }
 
         val inFiveAndAHalfMinutes = Instant.now()
             .plusSeconds(TimeUnit.MINUTES.toSeconds(5))
@@ -335,7 +335,7 @@ class HomeViewModelTest {
 
         viewModel.onReturnedToScreen(inFiveAndAHalfMinutes)
 
-        coVerify(exactly = 2) { overviewRepository.getAllLocations() }
+        coVerify(exactly = 2) { overviewRepository.getOverviewData() }
 
         val viewModelContent = viewModel.content.value
         assertIs<HomeContent.GpsContent>(viewModelContent)
@@ -363,7 +363,7 @@ class HomeViewModelTest {
 
         viewModel.onPullToRefresh()
 
-        coVerify(exactly = 2) { overviewRepository.getAllLocations() }
+        coVerify(exactly = 2) { overviewRepository.getOverviewData() }
         coVerify(exactly = 2) { locationLoader.loadCurrentCoordinates() }
 
         val viewModelContent = viewModel.content.value
@@ -399,7 +399,7 @@ class HomeViewModelTest {
         allLocations: List<LocationOverviewModel> = listOf(TestData.testLocationOverviewModel),
         delay: Long = 0L
     ) {
-        coEvery { overviewRepository.getAllLocations() } coAnswers {
+        coEvery { overviewRepository.getOverviewData() } coAnswers {
             if (delay != 0L) {
                 delay(delay)
             }

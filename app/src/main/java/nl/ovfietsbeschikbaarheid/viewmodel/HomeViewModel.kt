@@ -18,6 +18,7 @@ import kotlinx.io.IOException
 import nl.ovfietsbeschikbaarheid.ext.tryAwait
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
+import nl.ovfietsbeschikbaarheid.model.OverviewDataModel
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
@@ -47,7 +48,10 @@ class HomeViewModel(
     private val _reviewInfo = mutableStateOf<ReviewInfo?>(null)
     val reviewInfo: State<ReviewInfo?> = _reviewInfo
 
-    private lateinit var locations: Deferred<List<LocationOverviewModel>>
+    private val _pricePer24Hours = mutableStateOf<String?>(null)
+    val pricePer24Hours: State<String?> = _pricePer24Hours
+
+    private lateinit var overviewData: Deferred<OverviewDataModel>
     private var lastLoadedCoordinates: Coordinates? = null
 
     private var loadGpsLocationJob: Job? = null
@@ -61,8 +65,8 @@ class HomeViewModel(
         Timber.d("screenLaunched called ${System.currentTimeMillis()}")
         if (content.value is HomeContent.InitialEmpty) {
             // Screen launched for the first time
-            locations = viewModelScope.async {
-                overviewRepository.getAllLocations()
+            overviewData = viewModelScope.async {
+                overviewRepository.getOverviewData()
             }
             loadLocation()
         } else {
@@ -118,8 +122,8 @@ class HomeViewModel(
     }
 
     private fun refresh() {
-        locations = viewModelScope.async {
-            overviewRepository.getAllLocations()
+        overviewData = viewModelScope.async {
+            overviewRepository.getOverviewData()
         }
         lastLoadedCoordinates = null
         awaitAndShowLocationsWithDistance()
@@ -171,9 +175,9 @@ class HomeViewModel(
         showSearchTermJob?.cancel()
 
         // When you start typing while the location loading failed and we're not already loading the location, start loading the locations again
-        if (locations.isCompleted && locations.getCompletionExceptionOrNull() != null) {
-            locations = viewModelScope.async {
-                overviewRepository.getAllLocations()
+        if (overviewData.isCompleted && overviewData.getCompletionExceptionOrNull() != null) {
+            overviewData = viewModelScope.async {
+                overviewRepository.getOverviewData()
             }
         }
 
@@ -182,7 +186,9 @@ class HomeViewModel(
         } else {
             showSearchTermJob = viewModelScope.launch {
                 try {
-                    showSearchTerm(searchTerm, locations.await())
+                    val loadedOverviewData = overviewData.await()
+                    _pricePer24Hours.value = loadedOverviewData.pricePer24Hours
+                    showSearchTerm(searchTerm, loadedOverviewData.locations)
                 } catch (e: Exception) {
                     Timber.e(e, "onSearchTermChanged: Failed to fetch locations.")
                     _content.value = HomeContent.NetworkError
@@ -237,7 +243,8 @@ class HomeViewModel(
                     lastLoadedCoordinates ?: locationLoader.loadCurrentCoordinates()
                 }
                 Timber.d("awaitAndShowLocationsWithDistance: awaiting locations")
-                val allLocations = locations.await()
+                val loadedOverviewData = overviewData.await()
+                _pricePer24Hours.value = loadedOverviewData.pricePer24Hours
 
                 // The locations have loaded. When we're not already showing locations by distance...
                 if (_content.value !is HomeContent.GpsContent) {
@@ -248,7 +255,7 @@ class HomeViewModel(
                         // with isRefreshing = true while the coordinates continue loading.
                         val lastKnownCoordinates = locationLoader.getLastKnownCoordinates()
                         if (lastKnownCoordinates != null) {
-                            val locationsWithDistance = LocationsMapper.withDistance(allLocations, lastKnownCoordinates)
+                            val locationsWithDistance = LocationsMapper.withDistance(loadedOverviewData.locations, lastKnownCoordinates)
                             Timber.d("awaitAndShowLocationsWithDistance: using last known coordinates")
                             _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now(), isRefreshing = true)
                         }
@@ -262,7 +269,7 @@ class HomeViewModel(
                     _content.value = HomeContent.NoGpsLocation
                 } else {
                     Timber.d("awaitAndShowLocationsWithDistance: using loaded coordinates")
-                    val locationsWithDistance = LocationsMapper.withDistance(allLocations, loadedCoordinates)
+                    val locationsWithDistance = LocationsMapper.withDistance(loadedOverviewData.locations, loadedCoordinates)
                     _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now())
 
                     ratingEligibilityService.onGpsContentViewed()

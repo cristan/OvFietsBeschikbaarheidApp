@@ -20,7 +20,7 @@ import nl.ovfietsbeschikbaarheid.ui.screen.HomeScreen
 object Home
 
 @Serializable
-object Info
+data class AboutScreen(val pricePer24Hours: String?)
 
 @Serializable
 data class DetailScreen(val title: String, val locationCode: String, val fetchTime: Long)
@@ -35,14 +35,17 @@ fun Navigation() {
     NavHost(navController = navController, startDestination = Home) {
         composable<Home> {
             HomeScreen(
-                onInfoClicked = { navController.navigate(Info) },
+                onInfoClicked = { pricePer24Hours -> navController.navigate(AboutScreen(pricePer24Hours)) },
                 onLocationClick = {
                     navController.navigate(DetailScreen(it.title, it.locationCode, it.fetchTime))
                 }
             )
         }
-        slideInOutComposable<Info> {
-            AboutScreen(onBackClicked = {
+        slideInOutComposable<AboutScreen> { backStackEntry ->
+            val aboutScreen: AboutScreen = backStackEntry.toRoute()
+            AboutScreen(
+                pricePer24Hours = aboutScreen.pricePer24Hours,
+                onBackClicked = {
                 navController.popBackStack<Home>(inclusive = false)
             })
         }

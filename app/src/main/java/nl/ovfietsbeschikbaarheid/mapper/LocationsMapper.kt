@@ -82,4 +82,14 @@ object LocationsMapper {
                 LocationOverviewWithDistanceModel(formattedDistance, it)
             }
     }
+
+    fun getPricePer24Hours(locations: List<LocationDTO>): String? {
+        val regex = Regex(".*Je betaalt € ([\\d,]+) per 24 uur\\..*")
+        return locations
+            .asSequence()
+            .flatMap { it.infoImages.asSequence() }
+            .map { it.body }
+            .mapNotNull { regex.find(it)?.groupValues?.get(1) }
+            .firstOrNull()
+    }
 }

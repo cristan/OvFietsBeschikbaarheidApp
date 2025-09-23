@@ -16,7 +16,7 @@ class LocationsDataTest {
         val stationRepository = StationRepository(context)
         val allStations = stationRepository.getAllStations()
         runBlocking {
-            val allLocations = OverviewRepository().getAllLocations()
+            val allLocations = OverviewRepository().getOverviewData()
 
             val lastUpdateTimestamp = allLocations.maxOf { it.fetchTime }
             val lastUpdateInstant = Instant.ofEpochSecond(lastUpdateTimestamp)
@@ -33,6 +33,9 @@ class LocationsDataTest {
                     error("Station ${it.stationCode} not found for $it")
                 }
             }
+
+            // TODO: check if we can determine the price
+            // TODO: check replacements
         }
     }
 }

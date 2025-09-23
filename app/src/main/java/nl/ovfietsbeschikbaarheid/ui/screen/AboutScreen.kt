@@ -35,10 +35,11 @@ import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
 
 @Composable
 fun AboutScreen(
+    pricePer24Hours: String?,
     onBackClicked: () -> Unit
 ) {
     AboutView(
-        "4,65",
+        pricePer24Hours,
         onBackClicked
     )
 }
@@ -87,7 +88,7 @@ private fun AboutView(
                 Text(
                     text = buildAnnotatedString {
                         if (pricePer24Hours != null) {
-                            append("Huur een OV-fiets voor €${pricePer24Hours} per 24 uur, op meer dan 300 locaties. ")
+                            append("Huur een OV-fiets op meer dan 300 locaties voor €${pricePer24Hours} per 24 uur. ")
                         } else {
                             append("Huur een OV-fiets op meer dan 300 locaties. ")
                         }
@@ -141,13 +142,13 @@ private fun AboutView(
 
                 Text(
                     text = buildAnnotatedString {
-                        append("Deze app is open source (broncode op ")
+                        append("Deze app is open source (broncode ")
 
                         pushLink(
                             LinkAnnotation.Url("https://github.com/cristan/OvFietsBeschikbaarheidApp")
                         )
                         withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
-                            append("GitHub")
+                            append("op GitHub")
                         }
                         pop()
 
@@ -158,7 +159,12 @@ private fun AboutView(
                             url = "https://www.freepik.com/free-vector/map-white-background_4485469.htm"
                         )
                         append(stringResource(R.string.about_credits_text_6))
-                        append("\n\nFeedback? Tevreden? Laat een review achter in de Play Store 🙂.")
+                        append("\n\nFeedback? Tevreden? Laat een review achter ")
+                        withStyledLink(
+                            text = "in de Play Store",
+                            url = "https://play.google.com/store/apps/details?id=nl.ovfietsbeschikbaarheid"
+                        )
+                        append(" 🙂")
                     },
                     modifier = Modifier.padding(top = 8.dp),
                     style = MaterialTheme.typography.bodyLarge
