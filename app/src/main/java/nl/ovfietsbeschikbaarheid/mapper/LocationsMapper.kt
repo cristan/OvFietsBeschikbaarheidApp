@@ -15,30 +15,28 @@ import java.time.Instant
 import kotlin.math.roundToInt
 
 object LocationsMapper {
+    val replacements = hashMapOf(
+        Pair("s-Hertogenbosch", "'s-Hertogenbosch"),
+        Pair("Delft, Fietsenstalling", "Delft"),
+        Pair("Leiden Centraal,Uitgang LUMC", "Leiden Centraal, Uitgang LUMC"),
+
+        Pair("Hollandse Rading OV-fiets", "Hollandse Rading"),
+        Pair("Vianen OV-fiets", "Vianen"),
+        Pair("OV-fiets - Maastricht", "Maastricht"),
+        Pair("OV-fiets Kesteren", "Kesteren"),
+        Pair("OV-fiets Den Haag Ypenburg", "Den Haag Ypenburg"),
+
+        Pair("Openbare fietsenstalling gemeente Groningen : Fietsenstalling Europapark", "Groningen Europapark"),
+        Pair("Gilze Rijen", "Gilze-Rijen"),
+
+        // All of these also help with the alphabetical order
+        Pair("OV-ebike Arnhem Centrum", "Arnhem Centrum - OV-ebike"),
+        Pair("OV-ebike Driebergen-Zeist", "Driebergen-Zeist - OV-ebike"),
+        Pair("OV-ebike Groningen", "Groningen - OV-ebike"),
+        Pair("OV-ebike Maastricht", "Maastricht - OV-ebike"),
+    )
+
     fun map(locations: List<LocationDTO>): List<LocationOverviewModel> {
-        val replacements = hashMapOf(
-            Pair("s-Hertogenbosch", "'s-Hertogenbosch"),
-            Pair("Delft, Fietsenstalling", "Delft"),
-            Pair("Leiden Centraal,Uitgang LUMC", "Leiden Centraal, Uitgang LUMC"),
-
-            Pair("Hollandse Rading OV-fiets", "Hollandse Rading"),
-            Pair("Vianen OV-fiets", "Vianen"),
-            Pair("OV-fiets - Maastricht", "Maastricht"),
-            Pair("OV-fiets Kesteren", "Kesteren"),
-            Pair("OV-fiets Den Haag Ypenburg", "Den Haag Ypenburg"),
-
-            Pair("Openbare fietsenstalling gemeente Groningen : Fietsenstalling Europapark", "Groningen Europapark"),
-            Pair("Gilze Rijen", "Gilze-Rijen"),
-
-            // All the other locations at Utrecht start with the word Utrecht, including the other P+Rs. Use the same scheme to make sure they're sorted together.
-            Pair("P + R Utrecht Science Park (De Uithof)", "Utrecht P+R Science Park (De Uithof)"),
-            // All of these also help with the alphabetical order
-            Pair("OV-ebike Arnhem Centrum", "Arnhem Centrum - OV-ebike"),
-            Pair("OV-ebike Driebergen-Zeist", "Driebergen-Zeist - OV-ebike"),
-            Pair("OV-ebike Groningen", "Groningen - OV-ebike"),
-            Pair("OV-ebike Maastricht", "Maastricht - OV-ebike"),
-        )
-
         val minutesSinceLastUpdate = locations.getMinutesSinceLastUpdate(Instant.now())
         val lastUpdateTooLongAgo = minutesSinceLastUpdate > 15
         if (lastUpdateTooLongAgo) {

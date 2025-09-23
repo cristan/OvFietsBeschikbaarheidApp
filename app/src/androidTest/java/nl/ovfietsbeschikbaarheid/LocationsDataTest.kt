@@ -2,7 +2,7 @@ package nl.ovfietsbeschikbaarheid
 
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.runBlocking
-import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
+import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import org.junit.Test
 import java.time.Instant
@@ -16,7 +16,10 @@ class LocationsDataTest {
         val stationRepository = StationRepository(context)
         val allStations = stationRepository.getAllStations()
         runBlocking {
-            val allLocations = OverviewRepository().getOverviewData()
+            val httpClient = KtorApiClient()
+            val locations = httpClient.getLocations()
+            val allLocations = LocationsMapper.map(locations)
+            val pricePer24Hours = LocationsMapper.getPricePer24Hours(locations)
 
             val lastUpdateTimestamp = allLocations.maxOf { it.fetchTime }
             val lastUpdateInstant = Instant.ofEpochSecond(lastUpdateTimestamp)
@@ -34,8 +37,15 @@ class LocationsDataTest {
                 }
             }
 
-            // TODO: check if we can determine the price
-            // TODO: check replacements
+            if (pricePer24Hours == null) {
+                error("Could not determine the price per 24 hours!")
+            }
+
+            LocationsMapper.replacements.keys.forEach { replacementOriginal ->
+                if(!locations.any { it.description == replacementOriginal }) {
+                    error("Replacement $replacementOriginal not found")
+                }
+            }
         }
     }
 }
