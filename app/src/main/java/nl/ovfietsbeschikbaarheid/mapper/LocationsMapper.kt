@@ -21,8 +21,8 @@ object LocationsMapper {
             Pair("Delft, Fietsenstalling", "Delft"),
             Pair("Leiden Centraal,Uitgang LUMC", "Leiden Centraal, Uitgang LUMC"),
 
-            Pair("Hollandse Rading OV-fiets ", "Hollandse Rading"),
-            Pair("Vianen OV-fiets ", "Vianen"),
+            Pair("Hollandse Rading OV-fiets", "Hollandse Rading"),
+            Pair("Vianen OV-fiets", "Vianen"),
             Pair("OV-fiets - Maastricht", "Maastricht"),
             Pair("OV-fiets Kesteren", "Kesteren"),
             Pair("OV-fiets Den Haag Ypenburg", "Den Haag Ypenburg"),
