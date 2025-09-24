@@ -11,18 +11,25 @@
 
     <string name="about_title">Info</string>
     <string name="about_ov_fiets_title">Over de OV-fiets</string>
-    <string name="about_ov_fiets_text_1">Met je OV-chipkaart kun je een OV-fiets huren. Je hebt hiervoor een abonnement nodig dat je gratis online kunt afsluiten. Meer informatie vind je op\u0020</string>
-    <string name="about_ov_fiets_text_2">.</string>
+    <string name="about_ov_fiets_text_1_with_amount">Huur een OV-fiets op meer dan 300 locaties voor €%1$s per 24 uur.\u0020</string>
+    <string name="about_ov_fiets_text_1_without_amount">Huur een OV-fiets op meer dan 300 locaties.\u0020</string>
+    <string name="about_ov_fiets_text_2">Activeer hiervoor gratis een abonnement met je OV-chipkaart via\u0020</string>
+    <string name="about_ov_fiets_text_3">.</string>
+
+    <string name="about_lock_title">Over het slot</string>
+    <string name="about_lock_text_1">Op de meeste locaties gebruik je je OV-chipkaart als sleutel. De instructies vind je op de bagagedrager of via\u0020</string>
+    <string name="about_lock_text_2">.</string>
+
     <string name="about_app_title">Over deze app</string>
-    <string name="about_app_text_1">Deze app is open source! Bekijk de broncode op\u0020</string>
-    <string name="about_app_text_2">. De app is niet gelieerd aan de NS (de exploitant van de OV-fiets).</string>
-    <string name="about_credits_title">Credits</string>
-    <string name="about_credits_text_1">De data wordt geleverd door OpenOV, met de NS als uiteindelijke bron.</string>
-    <string name="about_credits_text_2">Het totale aantal fietsen per locatie komt van\u0020</string>
-    <string name="about_credits_text_3">.</string>
-    <string name="about_credits_text_4">Het kaarticoon is gemaakt door\u0020</string>
-    <string name="about_credits_text_5">brgfx op Freepik</string>
-    <string name="about_credits_text_6">.</string>
+    <string name="about_app_text_1">Deze app is open source (broncode\u0020</string>
+    <string name="about_app_text_1_on_github">op GitHub</string>
+    <string name="about_app_text_2">). Het is niet door NS ontwikkeld, de data komt via OpenOV.\u0020</string>
+    <string name="about_app_text_3">Het kaarticoon is gemaakt door\u0020</string>
+    <string name="about_app_text_4">brgfx op Freepik</string>
+    <string name="about_app_text_5">.</string>
+    <string name="about_app_text_6">Feedback? Tevreden? Laat een review achter\u0020</string>
+    <string name="about_app_text_7">in de Play Store</string>
+    <string name="about_app_text_8">\u0020🙂</string>
 
     <string name="gps_rationale_initial_button">OV-fiets locaties in je buurt</string>
     <string name="gps_rationale_denied_rationale">Toestemming is nodig om OV-fiets locaties in de buurt te tonen</string>

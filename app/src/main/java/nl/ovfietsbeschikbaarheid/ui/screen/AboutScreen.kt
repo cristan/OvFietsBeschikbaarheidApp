@@ -82,18 +82,18 @@ private fun AboutView(
             ) {
                 // TODO: move these new texts to strings.xml
                 Text(
-                    text = "Over de OV-fiets",
+                    text = stringResource(R.string.about_ov_fiets_title),
                     style = MaterialTheme.typography.headlineLarge
                 )
 
                 Text(
                     text = buildAnnotatedString {
                         if (pricePer24Hours != null) {
-                            append("Huur een OV-fiets op meer dan 300 locaties voor €${pricePer24Hours} per 24 uur. ")
+                            append(stringResource(R.string.about_ov_fiets_text_1_with_amount, pricePer24Hours))
                         } else {
-                            append("Huur een OV-fiets op meer dan 300 locaties. ")
+                            append(stringResource(R.string.about_ov_fiets_text_1_without_amount))
                         }
-                        append("Activeer hiervoor gratis een abonnement met je OV-chipkaart via ")
+                        append(stringResource(R.string.about_ov_fiets_text_2))
 
                         pushLink(
                             LinkAnnotation.Url("https://ns.nl/ov-fiets")
@@ -101,7 +101,7 @@ private fun AboutView(
                         withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
                             append("ns.nl/ov-fiets")
                         }
-                        append(".")
+                        append(stringResource(R.string.about_ov_fiets_text_3))
                         pop()
                     },
                     modifier = Modifier.padding(top = 8.dp),
@@ -111,14 +111,13 @@ private fun AboutView(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = "Over het slot",
+                    text = stringResource(R.string.about_lock_title),
                     style = MaterialTheme.typography.headlineLarge
                 )
 
                 Text(
                     text = buildAnnotatedString {
-                        append("Op de meeste locaties gebruik je je OV-chipkaart als sleutel. ")
-                        append("De instructies vind je op de bagagedrager of via ")
+                        append(stringResource(R.string.about_lock_text_1))
 
                         pushLink(
                             LinkAnnotation.Url("https://ov-fiets.nl/slot")
@@ -128,7 +127,7 @@ private fun AboutView(
                         }
                         pop()
 
-                        append(".")
+                        append(stringResource(R.string.about_lock_text_2))
                     },
                     modifier = Modifier.padding(top = 8.dp),
                     style = MaterialTheme.typography.bodyLarge
@@ -137,35 +136,36 @@ private fun AboutView(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = "Over deze app",
+                    text = stringResource(R.string.about_app_title),
                     style = MaterialTheme.typography.headlineLarge
                 )
 
                 Text(
                     text = buildAnnotatedString {
-                        append("Deze app is open source (broncode ")
+                        append(stringResource(R.string.about_app_text_1))
 
                         pushLink(
                             LinkAnnotation.Url("https://github.com/cristan/OvFietsBeschikbaarheidApp")
                         )
                         withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
-                            append("op GitHub")
+                            append(stringResource(R.string.about_app_text_1_on_github))
                         }
                         pop()
 
-                        append("). Het is niet door NS ontwikkeld, de data komt via OpenOV. ")
-                        append(stringResource(R.string.about_credits_text_4))
+                        append(stringResource(R.string.about_app_text_2))
+                        append(stringResource(R.string.about_app_text_3))
                         withStyledLink(
-                            text = stringResource(R.string.about_credits_text_5),
+                            text = stringResource(R.string.about_app_text_4),
                             url = "https://www.freepik.com/free-vector/map-white-background_4485469.htm"
                         )
-                        append(stringResource(R.string.about_credits_text_6))
-                        append("\n\nFeedback? Tevreden? Laat een review achter ")
+                        append(stringResource(R.string.about_app_text_5))
+                        append("\n\n")
+                        append(stringResource(R.string.about_app_text_6))
                         withStyledLink(
-                            text = "in de Play Store",
+                            text = stringResource(R.string.about_app_text_7),
                             url = "https://play.google.com/store/apps/details?id=nl.ovfietsbeschikbaarheid"
                         )
-                        append(" 🙂")
+                        append(stringResource(R.string.about_app_text_8))
                     },
                     modifier = Modifier.padding(top = 8.dp),
                     style = MaterialTheme.typography.bodyLarge
