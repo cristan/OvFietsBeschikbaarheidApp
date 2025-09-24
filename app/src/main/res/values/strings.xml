@@ -21,15 +21,14 @@
     <string name="about_lock_text_2">.</string>
 
     <string name="about_app_title">Over deze app</string>
-    <string name="about_app_text_1">Deze app is open source (broncode\u0020</string>
+    <string name="about_app_text_1">Deze app is niet door NS ontwikkeld en is open source: de broncode staat\u0020</string>
     <string name="about_app_text_1_on_github">op GitHub</string>
-    <string name="about_app_text_2">). Het is niet door NS ontwikkeld, de data komt via OpenOV.\u0020</string>
-    <string name="about_app_text_3">Het kaarticoon is gemaakt door\u0020</string>
-    <string name="about_app_text_4">brgfx op Freepik</string>
-    <string name="about_app_text_5">.</string>
-    <string name="about_app_text_6">Feedback? Tevreden? Laat een review achter\u0020</string>
-    <string name="about_app_text_7">in de Play Store</string>
-    <string name="about_app_text_8">\u0020🙂</string>
+    <string name="about_app_text_2">. De data komt via OpenOV. Het kaarticoon is gemaakt door\u0020</string>
+    <string name="about_app_text_3">brgfx op Freepik</string>
+    <string name="about_app_text_4">.</string>
+    <string name="about_app_text_5">Feedback? Tevreden? Laat een review achter\u0020</string>
+    <string name="about_app_text_6">in de Play Store</string>
+    <string name="about_app_text_7">\u0020🙂</string>
 
     <string name="gps_rationale_initial_button">OV-fiets locaties in je buurt</string>
     <string name="gps_rationale_denied_rationale">Toestemming is nodig om OV-fiets locaties in de buurt te tonen</string>

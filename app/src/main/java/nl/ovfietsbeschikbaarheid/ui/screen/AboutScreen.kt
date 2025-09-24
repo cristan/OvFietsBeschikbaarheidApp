@@ -153,19 +153,18 @@ private fun AboutView(
                         pop()
 
                         append(stringResource(R.string.about_app_text_2))
-                        append(stringResource(R.string.about_app_text_3))
                         withStyledLink(
-                            text = stringResource(R.string.about_app_text_4),
+                            text = stringResource(R.string.about_app_text_3),
                             url = "https://www.freepik.com/free-vector/map-white-background_4485469.htm"
                         )
-                        append(stringResource(R.string.about_app_text_5))
+                        append(stringResource(R.string.about_app_text_4))
                         append("\n\n")
-                        append(stringResource(R.string.about_app_text_6))
+                        append(stringResource(R.string.about_app_text_5))
                         withStyledLink(
-                            text = stringResource(R.string.about_app_text_7),
+                            text = stringResource(R.string.about_app_text_6),
                             url = "https://play.google.com/store/apps/details?id=nl.ovfietsbeschikbaarheid"
                         )
-                        append(stringResource(R.string.about_app_text_8))
+                        append(stringResource(R.string.about_app_text_7))
                     },
                     modifier = Modifier.padding(top = 8.dp),
                     style = MaterialTheme.typography.bodyLarge
