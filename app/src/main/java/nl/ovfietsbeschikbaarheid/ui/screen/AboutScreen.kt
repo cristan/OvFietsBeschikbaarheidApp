@@ -80,7 +80,6 @@ private fun AboutView(
                     .verticalScroll(rememberScrollState())
                     .padding(20.dp)
             ) {
-                // TODO: move these new texts to strings.xml
                 Text(
                     text = stringResource(R.string.about_ov_fiets_title),
                     style = MaterialTheme.typography.headlineLarge
