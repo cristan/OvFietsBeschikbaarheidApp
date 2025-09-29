@@ -16,6 +16,7 @@ import kotlinx.coroutines.test.runTest
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
+import nl.ovfietsbeschikbaarheid.model.OverviewDataModel
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.testutils.MainDispatcherRule
 import nl.ovfietsbeschikbaarheid.testutils.shouldBeEqualTo
@@ -243,7 +244,7 @@ class HomeViewModelTest {
 
         coEvery { overviewRepository.getOverviewData() } coAnswers {
             delay(1000L)
-            listOf(TestData.testLocationOverviewModel)
+            OverviewDataModel(listOf(TestData.testLocationOverviewModel), "4,65")
         }
 
         viewModel.onScreenLaunched()
@@ -403,7 +404,7 @@ class HomeViewModelTest {
             if (delay != 0L) {
                 delay(delay)
             }
-            allLocations
+            OverviewDataModel(allLocations, "4,65")
         }
 
         // This doesn't call a backend, so the regular method can be called.
