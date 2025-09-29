@@ -3,9 +3,10 @@ package nl.ovfietsbeschikbaarheid.repository
 import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
+import nl.ovfietsbeschikbaarheid.model.OverviewDataModel
 
 class OverviewRepository {
-    private var lastResult: List<LocationOverviewModel>? = null
+    private var lastResult: OverviewDataModel? = null
 
     private val httpClient = KtorApiClient()
 
@@ -14,17 +15,23 @@ class OverviewRepository {
      * In the off chance there is no cached result (which should only happen if the app ran out of memory),
      * the data is loaded again. This will throw an exception when there is no internet for example.
      */
-    suspend fun getCachedOrLoad(): List<LocationOverviewModel> {
+    suspend fun getCachedOrLoad(): OverviewDataModel {
         lastResult?.let {
             return it
         }
-        return getAllLocations()
+        return getOverviewData()
     }
 
-    suspend fun getAllLocations(): List<LocationOverviewModel> {
-        val locations = LocationsMapper.map(httpClient.getLocations())
-        lastResult = locations
-        return locations
+    suspend fun getOverviewData(): OverviewDataModel {
+        val locations = httpClient.getLocations()
+        val mappedLocations = LocationsMapper.map(locations)
+        val pricePer24Hours = LocationsMapper.getPricePer24Hours(locations)
+        val result = OverviewDataModel(
+            locations = mappedLocations,
+            pricePer24Hours = pricePer24Hours,
+        )
+        lastResult = result
+        return result
     }
 
     fun filterLocations(allLocations: List<LocationOverviewModel>, searchTerm: String): List<LocationOverviewModel> {

@@ -104,7 +104,7 @@ class DetailsViewModel(
 
                     val data = detailsMapper.convert(
                         details,
-                        allLocationsDeferred.await(),
+                        allLocationsDeferred.await().locations,
                         allStationsDeferred.await(),
                         historyDeferred.await()
                     )

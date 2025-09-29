@@ -79,18 +79,19 @@ import java.util.TimeZone
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
-    onInfoClicked: () -> Unit,
+    onInfoClicked: (pricePer24Hours: String?) -> Unit,
     onLocationClick: (LocationOverviewModel) -> Unit
 ) {
     val searchTerm by viewModel.searchTerm
     val screen by viewModel.content
     val reviewInfo by viewModel.reviewInfo
+    val pricePer20Hours by viewModel.pricePer24Hours
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.onScreenLaunched()
     }
-    
+
     LaunchedEffect(reviewInfo) {
         reviewInfo?.let {
             viewModel.launchReviewFlow(context as Activity, it)
@@ -109,7 +110,7 @@ fun HomeScreen(
         viewModel::onRequestPermissionsClicked,
         viewModel::onTurnOnGpsClicked,
         viewModel::onPullToRefresh,
-        onInfoClicked,
+        { onInfoClicked(pricePer20Hours) },
         onLocationClick,
         viewModel::onRetryClicked,
     )
@@ -179,10 +180,20 @@ private fun HomeView(
                                 ) {
                                     Column(modifier = Modifier.weight(1f)) {
                                         Row {
-                                            Box(Modifier.size(width = 140.dp, height = 24.dp).padding(bottom = 4.dp, top = 2.dp).shimmerShape(shimmerInstance))
+                                            Box(
+                                                Modifier
+                                                    .size(width = 140.dp, height = 24.dp)
+                                                    .padding(bottom = 4.dp, top = 2.dp)
+                                                    .shimmerShape(shimmerInstance)
+                                            )
                                         }
                                         Row {
-                                            Box(Modifier.size(width = 60.dp, height = 20.dp).padding(top = 4.dp).shimmerShape(shimmerInstance))
+                                            Box(
+                                                Modifier
+                                                    .size(width = 60.dp, height = 20.dp)
+                                                    .padding(top = 4.dp)
+                                                    .shimmerShape(shimmerInstance)
+                                            )
                                         }
                                     }
 
@@ -195,7 +206,10 @@ private fun HomeView(
                                     Box(
                                         modifier = Modifier.padding(start = 8.dp),
                                     ) {
-                                        Box(Modifier.size(width = 24.dp, height = 20.dp).padding(top = 4.dp).shimmerShape(shimmerInstance))
+                                        Box(Modifier
+                                            .size(width = 24.dp, height = 20.dp)
+                                            .padding(top = 4.dp)
+                                            .shimmerShape(shimmerInstance))
 
                                         // Placeholder so all numbers are left aligned. Text, so it scales when people have a larger font size
                                         Text(

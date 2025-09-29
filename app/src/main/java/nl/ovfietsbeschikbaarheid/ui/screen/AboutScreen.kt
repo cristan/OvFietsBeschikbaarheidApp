@@ -2,6 +2,9 @@ package nl.ovfietsbeschikbaarheid.ui.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -18,7 +21,11 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.ovfietsbeschikbaarheid.R
@@ -28,9 +35,11 @@ import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
 
 @Composable
 fun AboutScreen(
+    pricePer24Hours: String?,
     onBackClicked: () -> Unit
 ) {
     AboutView(
+        pricePer24Hours,
         onBackClicked
     )
 }
@@ -38,6 +47,7 @@ fun AboutScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AboutView(
+    pricePer24Hours: String?,
     onBackClicked: () -> Unit
 ) {
     OVFietsBeschikbaarheidTheme {
@@ -54,7 +64,10 @@ private fun AboutView(
                     },
                     navigationIcon = {
                         IconButton(onClick = onBackClicked) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.content_description_back))
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.content_description_back)
+                            )
                         }
                     },
                 )
@@ -63,55 +76,98 @@ private fun AboutView(
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
+                    .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(20.dp)
             ) {
+                // TODO: move these new texts to strings.xml
                 Text(
                     text = stringResource(R.string.about_ov_fiets_title),
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = MaterialTheme.typography.headlineLarge
                 )
 
                 Text(
-                    modifier = Modifier.padding(top = 4.dp),
                     text = buildAnnotatedString {
-                        append(stringResource(R.string.about_ov_fiets_text_1))
-                        withStyledLink(text = "ns.nl/ov-fiets", url = "https://ns.nl/ov-fiets")
+                        if (pricePer24Hours != null) {
+                            append(stringResource(R.string.about_ov_fiets_text_1_with_amount, pricePer24Hours))
+                        } else {
+                            append(stringResource(R.string.about_ov_fiets_text_1_without_amount))
+                        }
                         append(stringResource(R.string.about_ov_fiets_text_2))
-                    }
+
+                        pushLink(
+                            LinkAnnotation.Url("https://ns.nl/ov-fiets")
+                        )
+                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
+                            append("ns.nl/ov-fiets")
+                        }
+                        append(stringResource(R.string.about_ov_fiets_text_3))
+                        pop()
+                    },
+                    modifier = Modifier.padding(top = 8.dp),
+                    style = MaterialTheme.typography.bodyLarge
                 )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    text = stringResource(R.string.about_lock_title),
+                    style = MaterialTheme.typography.headlineLarge
+                )
+
+                Text(
+                    text = buildAnnotatedString {
+                        append(stringResource(R.string.about_lock_text_1))
+
+                        pushLink(
+                            LinkAnnotation.Url("https://ov-fiets.nl/slot")
+                        )
+                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
+                            append("ov-fiets.nl/slot")
+                        }
+                        pop()
+
+                        append(stringResource(R.string.about_lock_text_2))
+                    },
+                    modifier = Modifier.padding(top = 8.dp),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
                     text = stringResource(R.string.about_app_title),
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(top = 20.dp)
+                    style = MaterialTheme.typography.headlineLarge
                 )
+
                 Text(
-                    modifier = Modifier.padding(top = 4.dp),
                     text = buildAnnotatedString {
                         append(stringResource(R.string.about_app_text_1))
-                        withStyledLink(text = "github.com/cristan/OvFietsBeschikbaarheidApp", url = "https://github.com/cristan/OvFietsBeschikbaarheidApp")
+
+                        pushLink(
+                            LinkAnnotation.Url("https://github.com/cristan/OvFietsBeschikbaarheidApp")
+                        )
+                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
+                            append(stringResource(R.string.about_app_text_1_on_github))
+                        }
+                        pop()
+
                         append(stringResource(R.string.about_app_text_2))
-                    }
-                )
-                Text(
-                    text = stringResource(R.string.about_credits_title),
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(top = 20.dp)
-                )
-                Text(
-                    modifier = Modifier.padding(top = 4.dp),
-                    text = stringResource(R.string.about_credits_text_1)
-                )
-                Text(
-                    modifier = Modifier.padding(top = 4.dp),
-                    text = buildAnnotatedString {
-                        append(stringResource(R.string.about_credits_text_4))
                         withStyledLink(
-                            text = stringResource(R.string.about_credits_text_5),
+                            text = stringResource(R.string.about_app_text_3),
                             url = "https://www.freepik.com/free-vector/map-white-background_4485469.htm"
                         )
-                        append(stringResource(R.string.about_credits_text_6))
-                    }
+                        append(stringResource(R.string.about_app_text_4))
+                        append("\n\n")
+                        append(stringResource(R.string.about_app_text_5))
+                        withStyledLink(
+                            text = stringResource(R.string.about_app_text_6),
+                            url = "https://play.google.com/store/apps/details?id=nl.ovfietsbeschikbaarheid"
+                        )
+                        append(stringResource(R.string.about_app_text_7))
+                    },
+                    modifier = Modifier.padding(top = 8.dp),
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
         }
@@ -123,5 +179,7 @@ private fun AboutView(
 @Composable
 fun AboutPreview() {
     AboutView(
-        onBackClicked = {})
+        "4,65",
+        onBackClicked = {}
+    )
 }

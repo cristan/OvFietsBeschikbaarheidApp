@@ -16,6 +16,7 @@ import kotlinx.coroutines.test.runTest
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
+import nl.ovfietsbeschikbaarheid.model.OverviewDataModel
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.testutils.MainDispatcherRule
 import nl.ovfietsbeschikbaarheid.testutils.shouldBeEqualTo
@@ -241,9 +242,9 @@ class HomeViewModelTest {
         stubGpsOk()
         every { overviewRepository.filterLocations(any(), any()) } answers { callOriginal() }
 
-        coEvery { overviewRepository.getAllLocations() } coAnswers {
+        coEvery { overviewRepository.getOverviewData() } coAnswers {
             delay(1000L)
-            listOf(TestData.testLocationOverviewModel)
+            OverviewDataModel(listOf(TestData.testLocationOverviewModel), "4,65")
         }
 
         viewModel.onScreenLaunched()
@@ -265,7 +266,7 @@ class HomeViewModelTest {
     @Test
     fun `locations could not be loaded from the backend which is successfully retried`() = runTest {
         stubGpsOk()
-        coEvery { overviewRepository.getAllLocations() } throws UnknownHostException()
+        coEvery { overviewRepository.getOverviewData() } throws UnknownHostException()
 
         viewModel.onScreenLaunched()
 
@@ -285,7 +286,7 @@ class HomeViewModelTest {
     fun `data gets reloaded when the user types at the network error screen`() = runTest {
         // Start with network error
         stubGpsOk()
-        coEvery { overviewRepository.getAllLocations() } throws UnknownHostException()
+        coEvery { overviewRepository.getOverviewData() } throws UnknownHostException()
 
         viewModel.onScreenLaunched()
 
@@ -305,7 +306,7 @@ class HomeViewModelTest {
     fun `app doesn't crash when you search at the network error screen and you still don't have internet`() = runTest {
         // Start with network error
         stubGpsOk()
-        coEvery { overviewRepository.getAllLocations() } throws UnknownHostException()
+        coEvery { overviewRepository.getOverviewData() } throws UnknownHostException()
 
         viewModel.onScreenLaunched()
 
@@ -327,7 +328,7 @@ class HomeViewModelTest {
         viewModel.onReturnedToScreen()
 
         // Even though we have returned to the screen, the data isn't reloaded because it was right after
-        coVerify(exactly = 1) { overviewRepository.getAllLocations() }
+        coVerify(exactly = 1) { overviewRepository.getOverviewData() }
 
         val inFiveAndAHalfMinutes = Instant.now()
             .plusSeconds(TimeUnit.MINUTES.toSeconds(5))
@@ -335,7 +336,7 @@ class HomeViewModelTest {
 
         viewModel.onReturnedToScreen(inFiveAndAHalfMinutes)
 
-        coVerify(exactly = 2) { overviewRepository.getAllLocations() }
+        coVerify(exactly = 2) { overviewRepository.getOverviewData() }
 
         val viewModelContent = viewModel.content.value
         assertIs<HomeContent.GpsContent>(viewModelContent)
@@ -363,7 +364,7 @@ class HomeViewModelTest {
 
         viewModel.onPullToRefresh()
 
-        coVerify(exactly = 2) { overviewRepository.getAllLocations() }
+        coVerify(exactly = 2) { overviewRepository.getOverviewData() }
         coVerify(exactly = 2) { locationLoader.loadCurrentCoordinates() }
 
         val viewModelContent = viewModel.content.value
@@ -399,11 +400,11 @@ class HomeViewModelTest {
         allLocations: List<LocationOverviewModel> = listOf(TestData.testLocationOverviewModel),
         delay: Long = 0L
     ) {
-        coEvery { overviewRepository.getAllLocations() } coAnswers {
+        coEvery { overviewRepository.getOverviewData() } coAnswers {
             if (delay != 0L) {
                 delay(delay)
             }
-            allLocations
+            OverviewDataModel(allLocations, "4,65")
         }
 
         // This doesn't call a backend, so the regular method can be called.
