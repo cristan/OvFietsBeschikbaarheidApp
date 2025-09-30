@@ -21,7 +21,6 @@ This app is designed to find how many OV-fiets bikes are available as quickly as
 
 ## About the code
 Data comes from [openOV](https://openov.nl) and is hosted by the open source [OvFietsBackend](https://github.com/cristan/OvFietsBackend).
-This data is combined with the total availability per station which is kindly provided by [ovfietsbeschikbaar.nl](https://ovfietsbeschikbaar.nl/).
 
 The code is pretty much using the latest technologies available (at least at the time of writing)
 * 100% Jetpack Compose
