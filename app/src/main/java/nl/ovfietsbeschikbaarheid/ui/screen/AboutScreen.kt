@@ -100,8 +100,8 @@ private fun AboutView(
                         withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
                             append("ns.nl/ov-fiets")
                         }
-                        append(stringResource(R.string.about_ov_fiets_text_3))
                         pop()
+                        append(stringResource(R.string.about_ov_fiets_text_3))
                     },
                     modifier = Modifier.padding(top = 8.dp),
                     style = MaterialTheme.typography.bodyLarge
