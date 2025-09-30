@@ -21,11 +21,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.LinkAnnotation
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.ovfietsbeschikbaarheid.R
@@ -94,13 +90,8 @@ private fun AboutView(
                         }
                         append(stringResource(R.string.about_ov_fiets_text_2))
 
-                        pushLink(
-                            LinkAnnotation.Url("https://ns.nl/ov-fiets")
-                        )
-                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
-                            append("ns.nl/ov-fiets")
-                        }
-                        pop()
+                        withStyledLink("https://ns.nl/ov-fiets", "ns.nl/ov-fiets")
+
                         append(stringResource(R.string.about_ov_fiets_text_3))
                     },
                     modifier = Modifier.padding(top = 8.dp),
@@ -118,13 +109,7 @@ private fun AboutView(
                     text = buildAnnotatedString {
                         append(stringResource(R.string.about_lock_text_1))
 
-                        pushLink(
-                            LinkAnnotation.Url("https://ov-fiets.nl/slot")
-                        )
-                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
-                            append("ov-fiets.nl/slot")
-                        }
-                        pop()
+                        withStyledLink("https://ov-fiets.nl/slot", "ov-fiets.nl/slot")
 
                         append(stringResource(R.string.about_lock_text_2))
                     },
@@ -143,25 +128,22 @@ private fun AboutView(
                     text = buildAnnotatedString {
                         append(stringResource(R.string.about_app_text_1))
 
-                        pushLink(
-                            LinkAnnotation.Url("https://github.com/cristan/OvFietsBeschikbaarheidApp")
+                        withStyledLink(
+                            url = "https://github.com/cristan/OvFietsBeschikbaarheidApp",
+                            text = stringResource(R.string.about_app_text_1_on_github)
                         )
-                        withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
-                            append(stringResource(R.string.about_app_text_1_on_github))
-                        }
-                        pop()
 
                         append(stringResource(R.string.about_app_text_2))
                         withStyledLink(
-                            text = stringResource(R.string.about_app_text_3),
-                            url = "https://www.freepik.com/free-vector/map-white-background_4485469.htm"
+                            url = "https://www.freepik.com/free-vector/map-white-background_4485469.htm",
+                            text = stringResource(R.string.about_app_text_3)
                         )
                         append(stringResource(R.string.about_app_text_4))
                         append("\n\n")
                         append(stringResource(R.string.about_app_text_5))
                         withStyledLink(
-                            text = stringResource(R.string.about_app_text_6),
-                            url = "https://play.google.com/store/apps/details?id=nl.ovfietsbeschikbaarheid"
+                            url = "https://play.google.com/store/apps/details?id=nl.ovfietsbeschikbaarheid",
+                            text = stringResource(R.string.about_app_text_6)
                         )
                         append(stringResource(R.string.about_app_text_7))
                     },
