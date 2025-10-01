@@ -40,8 +40,6 @@ class DetailsMapper(
 
         val directions = locationDTO.infoImages.find { it.title == "Routebeschrijving" }?.body
             ?.replace(newLinesAtEnd, "")
-            // Just for Rotterdam Kralingse Zoom
-            ?.replace("&amp;", "&")
         val about = locationDTO.infoImages.find { it.title == "Bijzonderheden" }?.body?.replace(newLinesAtEnd, "")
         // Filled in example Leiden Centraal, Centrumzijde
         val openingHoursInfo = locationDTO.infoImages.find { it.title == "Info openingstijden" }?.body
