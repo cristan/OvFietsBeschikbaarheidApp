@@ -7,5 +7,5 @@ import java.time.temporal.ChronoUnit
 fun List<LocationDTO>.getMinutesSinceLastUpdate(now: Instant): Long {
     val lastUpdateTimestamp = this.maxOf { it.extra.fetchTime }
     val lastUpdateInstant = Instant.ofEpochSecond(lastUpdateTimestamp)
-    return lastUpdateInstant.until(Instant.now(), ChronoUnit.MINUTES)
+    return lastUpdateInstant.until(now, ChronoUnit.MINUTES)
 }
