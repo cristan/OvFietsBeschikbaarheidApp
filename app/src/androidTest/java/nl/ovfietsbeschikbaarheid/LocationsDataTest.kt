@@ -25,7 +25,7 @@ class LocationsDataTest {
             val lastUpdateInstant = Instant.ofEpochSecond(lastUpdateTimestamp)
             val lastUpdateAgo = lastUpdateInstant.until(Instant.now(), ChronoUnit.MINUTES)
             println("The last update (at $lastUpdateTimestamp) was $lastUpdateAgo minutes ago")
-            if(lastUpdateAgo > 10) {
+            if (lastUpdateAgo > 10) {
                 error("The last update (at $lastUpdateTimestamp) was $lastUpdateAgo minutes ago")
             }
 
@@ -42,7 +42,7 @@ class LocationsDataTest {
             }
 
             LocationsMapper.replacements.keys.forEach { replacementOriginal ->
-                if(!locations.any { it.description == replacementOriginal }) {
+                if (!locations.any { it.description == replacementOriginal }) {
                     error("Replacement $replacementOriginal not found")
                 }
             }

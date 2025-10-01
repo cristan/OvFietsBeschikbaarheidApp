@@ -10,13 +10,13 @@
     <string name="full_page_error_retry">Probeer opnieuw</string>
 
     <string name="about_title">Info</string>
-    <string name="about_ov_fiets_title">Over de OV-fiets</string>
+    <string name="about_ov_fiets_title">De OV-fiets huren</string>
     <string name="about_ov_fiets_text_1_with_amount">Huur een OV-fiets op meer dan 300 locaties voor €%1$s per 24 uur.\u0020</string>
     <string name="about_ov_fiets_text_1_without_amount">Huur een OV-fiets op meer dan 300 locaties.\u0020</string>
     <string name="about_ov_fiets_text_2">Activeer hiervoor gratis een abonnement met je OV-chipkaart via\u0020</string>
-    <string name="about_ov_fiets_text_3">.</string>
+    <string name="about_ov_fiets_text_3">.\n\nJe kan maximaal 2 fietsen huren met 1 abonnement.</string>
 
-    <string name="about_lock_title">Over het slot</string>
+    <string name="about_lock_title">Het slot gebruiken</string>
     <string name="about_lock_text_1">Op de meeste locaties gebruik je je OV-chipkaart als sleutel. De instructies vind je op de bagagedrager of via\u0020</string>
     <string name="about_lock_text_2">.</string>
 
