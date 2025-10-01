@@ -7,6 +7,7 @@ import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.ext.atEndOfDay
 import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
+import nl.ovfietsbeschikbaarheid.ext.getServiceType
 import nl.ovfietsbeschikbaarheid.model.AddressModel
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
@@ -14,7 +15,6 @@ import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
-import nl.ovfietsbeschikbaarheid.model.ServiceType
 import nl.ovfietsbeschikbaarheid.util.Translator
 import nl.ovfietsbeschikbaarheid.util.dutchLocale
 import nl.ovfietsbeschikbaarheid.util.dutchZone
@@ -41,7 +41,7 @@ class DetailsMapper(
         val directions = locationDTO.infoImages.find { it.title == "Routebeschrijving" }?.body
             ?.replace(newLinesAtEnd, "")
         val about = locationDTO.infoImages.find { it.title == "Bijzonderheden" }?.body?.replace(newLinesAtEnd, "")
-        // Filled in example Leiden Centraal, Centrumzijde
+        // Filled in for example at Leiden Centraal, Centrumzijde
         val openingHoursInfo = locationDTO.infoImages.find { it.title == "Info openingstijden" }?.body
         val disruptions = locationDTO.infoImages.find { it.title == "Storing" }?.body
 
@@ -78,17 +78,6 @@ class DetailsMapper(
 
         val rentalBikesAvailable = locationDTO.extra.rentalBikes
 
-        val serviceType = when (locationDTO.extra.serviceType) {
-            "Bemenst" -> ServiceType.Bemenst
-            "Kluizen" -> ServiceType.Kluizen
-            "Sleutelautomaat" -> ServiceType.Sleutelautomaat
-            "Box" -> ServiceType.Box
-            null -> if (locationDTO.link.uri.contains("Zelfservice", ignoreCase = true)) ServiceType.Zelfservice else null
-            else -> {
-                Timber.w("Unknown service type: ${locationDTO.extra.serviceType}")
-                null
-            }
-        }
         val graphDays = getGraphDays(rentalBikesAvailable, hourlyLocationCapacityDtos)
 
 
@@ -98,7 +87,7 @@ class DetailsMapper(
             openingHours = openingHoursModels,
             rentalBikesAvailable = rentalBikesAvailable,
             capacity = locationDTO.maxCapacity,
-            serviceType = serviceType,
+            serviceType = locationDTO.getServiceType(),
             directions = if (directions != "") directions else null,
             about = about,
             disruptions = disruptions,
