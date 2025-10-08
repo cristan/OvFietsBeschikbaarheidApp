@@ -1,8 +1,8 @@
 package nl.ovfietsbeschikbaarheid.repository
 
 import nl.ovfietsbeschikbaarheid.KtorApiClient
-import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.ext.getMinutesSinceLastUpdate
+import nl.ovfietsbeschikbaarheid.shared.dto.LocationDTO
 import timber.log.Timber
 import java.time.Instant
 

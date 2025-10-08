@@ -3,7 +3,7 @@ package nl.ovfietsbeschikbaarheid.repository
 import android.content.Context
 import kotlinx.serialization.json.Json
 import nl.ovfietsbeschikbaarheid.R
-import nl.ovfietsbeschikbaarheid.dto.Station
+import nl.ovfietsbeschikbaarheid.shared.dto.Station
 import timber.log.Timber
 import kotlin.time.measureTimedValue
 

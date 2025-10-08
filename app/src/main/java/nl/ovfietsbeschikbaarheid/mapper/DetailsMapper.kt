@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import com.google.android.gms.maps.model.LatLng
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
-import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.ext.atEndOfDay
 import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
 import nl.ovfietsbeschikbaarheid.ext.getServiceType
@@ -14,6 +13,7 @@ import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
+import nl.ovfietsbeschikbaarheid.shared.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.shared.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.util.Translator
 import nl.ovfietsbeschikbaarheid.util.dutchLocale
@@ -45,15 +45,20 @@ class DetailsMapper(
         val openingHoursInfo = locationDTO.infoImages.find { it.title == "Info openingstijden" }?.body
         val disruptions = locationDTO.infoImages.find { it.title == "Storing" }?.body
 
+        // TODO: revert to using this inline once this is in shared as well
+        val city = locationDTO.city
+        val street = locationDTO.street
+        val houseNumber = locationDTO.houseNumber
+        val postalCode = locationDTO.postalCode
         val location =
-            if (locationDTO.city == "" || locationDTO.city == null || locationDTO.street == null || locationDTO.houseNumber == null || locationDTO.postalCode == null) {
+            if (city == "" || city == null || street == null || houseNumber == null || postalCode == null) {
                 null
             } else {
                 AddressModel(
-                    city = locationDTO.city.trim(),
-                    street = locationDTO.street.trim(),
-                    houseNumber = locationDTO.houseNumber.trim(),
-                    postalCode = locationDTO.postalCode.trim().replace("  ", " "),
+                    city = city.trim(),
+                    street = street.trim(),
+                    houseNumber = houseNumber.trim(),
+                    postalCode = postalCode.trim().replace("  ", " "),
                 )
             }
 

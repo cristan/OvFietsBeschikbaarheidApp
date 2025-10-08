@@ -10,9 +10,9 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
 import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
-import nl.ovfietsbeschikbaarheid.dto.LocationDTO
+import nl.ovfietsbeschikbaarheid.shared.dto.DetailsDTO
+import nl.ovfietsbeschikbaarheid.shared.dto.LocationDTO
 import timber.log.Timber
 import kotlin.time.measureTimedValue
 

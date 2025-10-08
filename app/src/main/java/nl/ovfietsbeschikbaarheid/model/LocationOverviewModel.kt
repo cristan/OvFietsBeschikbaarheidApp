@@ -1,6 +1,6 @@
 package nl.ovfietsbeschikbaarheid.model
 
-import nl.ovfietsbeschikbaarheid.dto.OpeningHoursDTO
+import nl.ovfietsbeschikbaarheid.shared.dto.OpeningHoursDTO
 
 data class LocationOverviewModel(
     val title: String,

@@ -1,12 +1,12 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
 import dev.jordond.compass.Coordinates
-import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.ext.distanceTo
 import nl.ovfietsbeschikbaarheid.ext.getMinutesSinceLastUpdate
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
+import nl.ovfietsbeschikbaarheid.shared.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.util.dutchLocale
 import timber.log.Timber
 import java.text.DecimalFormat

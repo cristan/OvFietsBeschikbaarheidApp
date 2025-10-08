@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
+    kotlin("plugin.serialization") version "2.0.0"
 }
 
 kotlin {
@@ -60,6 +61,8 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
+                implementation(libs.ktor.client.serialization)
+                implementation(libs.ktor.client.serialization.json)
                 // Add KMP dependencies here
             }
         }

@@ -1,8 +1,8 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
 import nl.ovfietsbeschikbaarheid.R
-import nl.ovfietsbeschikbaarheid.dto.OpeningHoursDTO
 import nl.ovfietsbeschikbaarheid.model.OpenState
+import nl.ovfietsbeschikbaarheid.shared.dto.OpeningHoursDTO
 import org.junit.Test
 import java.time.LocalDateTime
 import java.time.Month

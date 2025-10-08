@@ -1,7 +1,7 @@
 package nl.ovfietsbeschikbaarheid.ext
 
-import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.model.ServiceType
+import nl.ovfietsbeschikbaarheid.shared.dto.LocationDTO
 import timber.log.Timber
 import java.time.Instant
 import java.time.temporal.ChronoUnit

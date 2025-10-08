@@ -1,4 +1,4 @@
-package nl.ovfietsbeschikbaarheid.dto
+package nl.ovfietsbeschikbaarheid.shared.dto
 
 import kotlinx.serialization.Serializable
 
