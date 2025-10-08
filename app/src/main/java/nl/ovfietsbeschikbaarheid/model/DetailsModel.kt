@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.google.android.gms.maps.model.LatLng
 import nl.ovfietsbeschikbaarheid.R
+import nl.ovfietsbeschikbaarheid.shared.model.DetailScreenData
 import java.time.ZonedDateTime
 
 data class DetailsModel(

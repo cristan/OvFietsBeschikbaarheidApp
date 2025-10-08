@@ -10,11 +10,11 @@ import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
 import nl.ovfietsbeschikbaarheid.ext.getServiceType
 import nl.ovfietsbeschikbaarheid.model.AddressModel
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
-import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
+import nl.ovfietsbeschikbaarheid.shared.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.util.Translator
 import nl.ovfietsbeschikbaarheid.util.dutchLocale
 import nl.ovfietsbeschikbaarheid.util.dutchZone

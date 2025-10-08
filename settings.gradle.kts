@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "OV-fiets Beschikbaarheid"
 include(":app")
- 
+include(":shared")

@@ -1,8 +1,8 @@
 package nl.ovfietsbeschikbaarheid
 
-import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
+import nl.ovfietsbeschikbaarheid.shared.model.DetailScreenData
 
 object TestData {
     val testLocationOverviewModel = LocationOverviewModel(

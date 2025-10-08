@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
-import nl.ovfietsbeschikbaarheid.model.DetailScreenData
+import nl.ovfietsbeschikbaarheid.shared.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.ui.screen.AboutScreen
 import nl.ovfietsbeschikbaarheid.ui.screen.DetailScreen
 import nl.ovfietsbeschikbaarheid.ui.screen.HomeScreen
