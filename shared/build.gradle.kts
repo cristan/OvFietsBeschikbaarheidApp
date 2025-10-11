@@ -5,6 +5,12 @@ plugins {
     kotlin("plugin.serialization") version "2.0.0"
 }
 
+//compose.resources {
+////    publicResClass = false
+//    packageOfResClass = "nl.ovfietsbeschikbaarheid.resources"
+////    generateResClass = auto
+//}
+
 kotlin {
 
     // Target declarations - add or remove as needed below. These define
