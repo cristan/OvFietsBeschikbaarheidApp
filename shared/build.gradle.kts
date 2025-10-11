@@ -3,13 +3,16 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.android.lint)
     kotlin("plugin.serialization") version "2.0.0"
+
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.compose.multiplatform)
 }
 
-//compose.resources {
-////    publicResClass = false
-//    packageOfResClass = "nl.ovfietsbeschikbaarheid.resources"
-////    generateResClass = auto
-//}
+compose.resources {
+//    publicResClass = false
+    packageOfResClass = "nl.ovfietsbeschikbaarheid.resources"
+//    generateResClass = auto
+}
 
 kotlin {
 
