@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+    <!-- TODO: The theme can probably be replaced by @style/Theme.AppCompat.DayNight.NoActionBar directly -->
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
