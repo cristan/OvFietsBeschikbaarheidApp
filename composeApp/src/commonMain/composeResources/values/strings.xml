@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="nl-NL">
+<resources>
     <string name="app_name">OV-fiets Beschikbaarheid</string>
 
     <string name="content_description_back">Terug</string>
