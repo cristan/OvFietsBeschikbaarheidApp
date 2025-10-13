@@ -15,7 +15,6 @@ import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
-import nl.ovfietsbeschikbaarheid.util.Translator
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
 import org.koin.android.ext.koin.androidContext
@@ -38,7 +37,6 @@ fun appModule() = module {
     singleOf(::StationRepository)
     singleOf(::DetailsRepository)
     singleOf(::LocationPermissionHelper)
-    factoryOf(::Translator)
     factoryOf(::DetailsMapper)
     factoryOf(::LocationLoader)
     factoryOf(::FindNearbyLocationsUseCase)

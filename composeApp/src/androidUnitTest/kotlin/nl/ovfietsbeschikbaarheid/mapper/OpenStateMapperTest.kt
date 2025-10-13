@@ -1,8 +1,10 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
-import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.dto.OpeningHoursDTO
 import nl.ovfietsbeschikbaarheid.model.OpenState
+import nl.ovfietsbeschikbaarheid.resources.Res
+import nl.ovfietsbeschikbaarheid.resources.day_1
+import nl.ovfietsbeschikbaarheid.resources.day_tomorrow
 import org.junit.Test
 import java.time.LocalDateTime
 import java.time.Month
@@ -68,7 +70,7 @@ class OpenStateMapperTest {
 
         val thursdayAt18Past20 = LocalDateTime.of(2024, Month.JULY, 4, 17, 45)
 
-        assertEquals(OpenState.Closed(R.string.day_tomorrow, "07:45"), OpenStateMapper.getOpenState("emn001", openingHours, thursdayAt18Past20))
+        assertEquals(OpenState.Closed(Res.string.day_tomorrow, "07:45"), OpenStateMapper.getOpenState("emn001", openingHours, thursdayAt18Past20))
     }
 
     @Test
@@ -83,10 +85,10 @@ class OpenStateMapperTest {
         )
 
         val fridayAfterClosing = LocalDateTime.of(2024, Month.JULY, 5, 22, 0)
-        assertEquals(OpenState.Closed(R.string.day_1, "05:45"), OpenStateMapper.getOpenState("btl001", openingHours, fridayAfterClosing))
+        assertEquals(OpenState.Closed(Res.string.day_1, "05:45"), OpenStateMapper.getOpenState("btl001", openingHours, fridayAfterClosing))
 
         val saturdayAt6oClock = LocalDateTime.of(2024, Month.JULY, 6, 6, 0)
-        assertEquals(OpenState.Closed(R.string.day_1, "05:45"), OpenStateMapper.getOpenState("btl001", openingHours, saturdayAt6oClock))
+        assertEquals(OpenState.Closed(Res.string.day_1, "05:45"), OpenStateMapper.getOpenState("btl001", openingHours, saturdayAt6oClock))
     }
 
     @Test

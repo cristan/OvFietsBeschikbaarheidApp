@@ -1,9 +1,15 @@
 package nl.ovfietsbeschikbaarheid.model
 
 import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import com.google.android.gms.maps.model.LatLng
 import nl.ovfietsbeschikbaarheid.R
+import nl.ovfietsbeschikbaarheid.resources.Res
+import nl.ovfietsbeschikbaarheid.resources.service_type_box
+import nl.ovfietsbeschikbaarheid.resources.service_type_key_box
+import nl.ovfietsbeschikbaarheid.resources.service_type_key_selfservice
+import nl.ovfietsbeschikbaarheid.resources.service_type_lockers
+import nl.ovfietsbeschikbaarheid.resources.service_type_manned
+import org.jetbrains.compose.resources.StringResource
 import java.time.ZonedDateTime
 
 data class DetailsModel(
@@ -46,8 +52,7 @@ data class AddressModel(
 )
 
 data class OpeningHoursModel(
-    @StringRes
-    val dayOfWeek: Int,
+    val dayOfWeek: StringResource,
     val startTime: String,
     val endTime: String,
 )
@@ -56,16 +61,16 @@ sealed class OpenState {
     data object Open247 : OpenState()
     data class Open(val closingTime: String) : OpenState()
     data class Closing(val closingTime: String) : OpenState()
-    data class Closed(@StringRes val openDay: Int?, val openTime: String) : OpenState()
+    data class Closed(val openDay: StringResource?, val openTime: String) : OpenState()
 }
 
-enum class ServiceType(@StringRes val textRes: Int, @DrawableRes val icon: Int) {
-    Bemenst(R.string.service_type_manned, R.drawable.baseline_person_24),
+enum class ServiceType(val textRes: StringResource, @DrawableRes val icon: Int) {
+    Bemenst(Res.string.service_type_manned, R.drawable.baseline_person_24),
     // See: https://www.ns.nl/fietsenstallingen/abonnementen/fietskluizen.html
-    Kluizen(R.string.service_type_lockers, R.drawable.fietskluizen_icon),
+    Kluizen(Res.string.service_type_lockers, R.drawable.fietskluizen_icon),
     // No idea what this is, but there are only 2, so it doesn't matter that much
-    Box(R.string.service_type_box, R.drawable.fietskluizen_icon),
-    Sleutelautomaat(R.string.service_type_key_box, R.drawable.baseline_key_24),
+    Box(Res.string.service_type_box, R.drawable.fietskluizen_icon),
+    Sleutelautomaat(Res.string.service_type_key_box, R.drawable.baseline_key_24),
     // Example: https://www.debeeldunie.nl/stock-photo-nederland-cuijk-14-07-2015-fietsenstalling-voor-ov-fietsen-op-reportage-image00157529.html
-    Zelfservice(R.string.service_type_key_selfservice, R.drawable.garage_home_24dp),
+    Zelfservice(Res.string.service_type_key_selfservice, R.drawable.garage_home_24dp),
 }

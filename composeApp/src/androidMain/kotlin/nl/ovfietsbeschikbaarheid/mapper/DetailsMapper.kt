@@ -1,8 +1,6 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
-import androidx.annotation.StringRes
 import com.google.android.gms.maps.model.LatLng
-import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.ext.atEndOfDay
@@ -15,9 +13,21 @@ import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
-import nl.ovfietsbeschikbaarheid.util.Translator
+import nl.ovfietsbeschikbaarheid.resources.Res
+import nl.ovfietsbeschikbaarheid.resources.day_1
+import nl.ovfietsbeschikbaarheid.resources.day_2
+import nl.ovfietsbeschikbaarheid.resources.day_3
+import nl.ovfietsbeschikbaarheid.resources.day_4
+import nl.ovfietsbeschikbaarheid.resources.day_5
+import nl.ovfietsbeschikbaarheid.resources.day_6
+import nl.ovfietsbeschikbaarheid.resources.day_7
+import nl.ovfietsbeschikbaarheid.resources.graph_next_day_content_description
+import nl.ovfietsbeschikbaarheid.resources.graph_previous_day_content_description
+import nl.ovfietsbeschikbaarheid.resources.graph_today_content_description
 import nl.ovfietsbeschikbaarheid.util.dutchLocale
 import nl.ovfietsbeschikbaarheid.util.dutchZone
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
 import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
@@ -26,12 +36,10 @@ import java.time.temporal.ChronoField
 import java.time.temporal.ChronoUnit
 import java.util.TimeZone
 
-class DetailsMapper(
-    private val translator: Translator
-) {
+class DetailsMapper() {
     private val newLinesAtEnd = Regex("[\\\\n\\s]*\$")
 
-    fun convert(
+    suspend fun convert(
         locationDTO: LocationDTO,
         allLocations: List<LocationOverviewModel>,
         allStations: Map<String, String>,
@@ -104,7 +112,7 @@ class DetailsMapper(
         )
     }
 
-    private fun getGraphDays(
+    private suspend fun getGraphDays(
         rentalBikesAvailable: Int?,
         hourlyLocationCapacityDtos: List<HourlyLocationCapacityDto>
     ): List<GraphDayModel> {
@@ -127,7 +135,7 @@ class DetailsMapper(
             val minCapacity = capacitiesPastDay.minOfOrNull { it.capacity } ?: 0
             val maxCapacity = capacitiesPastDay.maxOfOrNull { it.capacity } ?: 0
             val dayFullName = previousDay.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale)
-            val contentDescription = translator.getString(R.string.graph_previous_day_content_description, dayFullName, minCapacity, maxCapacity)
+            val contentDescription = getString(Res.string.graph_previous_day_content_description, dayFullName, minCapacity, maxCapacity)
             GraphDayModel(
                 isToday = false,
                 previousDay.dayOfWeek.getDisplayName(TextStyle.NARROW, dutchLocale),
@@ -151,7 +159,7 @@ class DetailsMapper(
             val minCapacity = capacitiesFutureDay.minOfOrNull { it.capacity } ?: 0
             val maxCapacity = capacitiesFutureDay.maxOfOrNull { it.capacity } ?: 0
             val dayFullName = previousDay.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale)
-            val contentDescription = translator.getString(R.string.graph_next_day_content_description, dayFullName, minCapacity, maxCapacity)
+            val contentDescription = getString(Res.string.graph_next_day_content_description, dayFullName, minCapacity, maxCapacity)
             GraphDayModel(
                 isToday = false,
                 previousDay.dayOfWeek.getDisplayName(TextStyle.NARROW, dutchLocale),
@@ -170,7 +178,7 @@ class DetailsMapper(
         return graphDays
     }
 
-    private fun getGraphToday(
+    private suspend fun getGraphToday(
         nowInNL: ZonedDateTime,
         historicalCapacities: List<CapacityModel>
     ): GraphDayModel {
@@ -192,7 +200,7 @@ class DetailsMapper(
         val maxCapacityToday = capacitiesToday.maxOfOrNull { it.capacity } ?: 0
         val minCapacityPrediction = capacitiesPrediction.minOfOrNull { it.capacity } ?: 0
         val maxCapacityPrediction = capacitiesPrediction.maxOfOrNull { it.capacity } ?: 0
-        val contentDescription = translator.getString(R.string.graph_today_content_description, minCapacityToday, maxCapacityToday, minCapacityPrediction, maxCapacityPrediction)
+        val contentDescription = getString(Res.string.graph_today_content_description, minCapacityToday, maxCapacityToday, minCapacityPrediction, maxCapacityPrediction)
 
         val graphToday = GraphDayModel(
             isToday = true,
@@ -217,16 +225,15 @@ class DetailsMapper(
     }
 
     companion object {
-        @StringRes
-        fun getDayName(dayOfWeek: Int): Int {
+        fun getDayName(dayOfWeek: Int): StringResource {
             return when (dayOfWeek) {
-                1 -> R.string.day_1
-                2 -> R.string.day_2
-                3 -> R.string.day_3
-                4 -> R.string.day_4
-                5 -> R.string.day_5
-                6 -> R.string.day_6
-                7 -> R.string.day_7
+                1 -> Res.string.day_1
+                2 -> Res.string.day_2
+                3 -> Res.string.day_3
+                4 -> Res.string.day_4
+                5 -> Res.string.day_5
+                6 -> Res.string.day_6
+                7 -> Res.string.day_7
                 else -> throw Exception("Unexpected day of week $dayOfWeek")
             }
         }

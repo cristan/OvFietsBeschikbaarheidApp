@@ -43,10 +43,13 @@ import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.ext.atEndOfDay
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
 import nl.ovfietsbeschikbaarheid.model.GraphDayModel
+import nl.ovfietsbeschikbaarheid.resources.Res
+import nl.ovfietsbeschikbaarheid.resources.capacity_graph_title
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey40
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey80
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
+import org.jetbrains.compose.resources.stringResource
 import java.time.Duration
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -63,7 +66,7 @@ fun CapacityGraph(
 
     OvCard {
         Text(
-            text = stringResource(R.string.capacity_graph_title),
+            text = stringResource(Res.string.capacity_graph_title),
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )

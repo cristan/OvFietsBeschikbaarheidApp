@@ -86,6 +86,17 @@ import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
+import nl.ovfietsbeschikbaarheid.resources.Res
+import nl.ovfietsbeschikbaarheid.resources.day_1
+import nl.ovfietsbeschikbaarheid.resources.day_2
+import nl.ovfietsbeschikbaarheid.resources.day_3
+import nl.ovfietsbeschikbaarheid.resources.day_4
+import nl.ovfietsbeschikbaarheid.resources.day_5
+import nl.ovfietsbeschikbaarheid.resources.day_6
+import nl.ovfietsbeschikbaarheid.resources.day_7
+import nl.ovfietsbeschikbaarheid.resources.open_state_closed
+import nl.ovfietsbeschikbaarheid.resources.open_state_opens_later_at
+import nl.ovfietsbeschikbaarheid.resources.open_state_opens_today_at
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
@@ -97,6 +108,7 @@ import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsContent
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
+import org.jetbrains.compose.resources.stringResource
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
 import java.time.ZoneId
@@ -386,12 +398,12 @@ private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = Loc
             Row(Modifier.align(Alignment.End)) {
                 when (openState) {
                     is OpenState.Closed -> {
-                        Text(text = stringResource(R.string.open_state_closed), color = Red50)
+                        Text(text = stringResource(Res.string.open_state_closed), color = Red50)
                         if (openState.openDay != null) {
                             val openDay = stringResource(openState.openDay).lowercase(Locale.UK)
-                            Text(text = " " + stringResource(R.string.open_state_opens_later_at, openDay, openState.openTime))
+                            Text(text = " " + stringResource(Res.string.open_state_opens_later_at, openDay, openState.openTime))
                         } else {
-                            Text(text = " " + stringResource(R.string.open_state_opens_today_at, openState.openTime))
+                            Text(text = " " + stringResource(Res.string.open_state_opens_today_at, openState.openTime))
                         }
                     }
 
@@ -617,7 +629,7 @@ fun DetailsLoadingPreview() {
 @Composable
 fun DetailsPreview() {
     val dayNames =
-        listOf(R.string.day_1, R.string.day_2, R.string.day_3, R.string.day_4, R.string.day_5, R.string.day_6, R.string.day_7)
+        listOf(Res.string.day_1, Res.string.day_2, Res.string.day_3, Res.string.day_4, Res.string.day_5, Res.string.day_6, Res.string.day_7)
     val openingHours = dayNames.map { day ->
         OpeningHoursModel(day, "04:45", "01:15")
     }
