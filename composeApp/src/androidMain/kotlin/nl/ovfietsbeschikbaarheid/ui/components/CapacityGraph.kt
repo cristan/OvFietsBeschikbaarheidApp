@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
@@ -39,12 +38,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.ext.atEndOfDay
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
 import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.resources.Res
 import nl.ovfietsbeschikbaarheid.resources.capacity_graph_title
+import nl.ovfietsbeschikbaarheid.resources.graph_last_week_day
+import nl.ovfietsbeschikbaarheid.resources.graph_this_week_day
+import nl.ovfietsbeschikbaarheid.resources.graph_today
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey40
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey80
@@ -252,8 +253,8 @@ fun CapacityGraph(
                 LegendItem(
                     color = MaterialTheme.colorScheme.primary,
                     text = when {
-                        shownGraphDay.isToday -> stringResource(R.string.graph_today)
-                        else -> stringResource(R.string.graph_this_week_day, shownGraphDay.dayFullName.lowercase())
+                        shownGraphDay.isToday -> stringResource(Res.string.graph_today)
+                        else -> stringResource(Res.string.graph_this_week_day, shownGraphDay.dayFullName.lowercase())
                     }
                 )
             }
@@ -263,7 +264,7 @@ fun CapacityGraph(
                 LegendItem(
                     color = Grey40,
                     isDashed = true,
-                    text = stringResource(R.string.graph_last_week_day, shownGraphDay.dayFullName.lowercase())
+                    text = stringResource(Res.string.graph_last_week_day, shownGraphDay.dayFullName.lowercase())
                 )
             }
         }

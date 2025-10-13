@@ -54,7 +54,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -87,6 +86,9 @@ import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
 import nl.ovfietsbeschikbaarheid.resources.Res
+import nl.ovfietsbeschikbaarheid.resources.capacity_graph_title
+import nl.ovfietsbeschikbaarheid.resources.content_description_back
+import nl.ovfietsbeschikbaarheid.resources.content_description_navigate
 import nl.ovfietsbeschikbaarheid.resources.day_1
 import nl.ovfietsbeschikbaarheid.resources.day_2
 import nl.ovfietsbeschikbaarheid.resources.day_3
@@ -94,9 +96,24 @@ import nl.ovfietsbeschikbaarheid.resources.day_4
 import nl.ovfietsbeschikbaarheid.resources.day_5
 import nl.ovfietsbeschikbaarheid.resources.day_6
 import nl.ovfietsbeschikbaarheid.resources.day_7
+import nl.ovfietsbeschikbaarheid.resources.details_alternatives_at
+import nl.ovfietsbeschikbaarheid.resources.details_alternatives_at_this_location
+import nl.ovfietsbeschikbaarheid.resources.details_amount_available
+import nl.ovfietsbeschikbaarheid.resources.details_amount_unknown
+import nl.ovfietsbeschikbaarheid.resources.details_capacity
+import nl.ovfietsbeschikbaarheid.resources.details_coordinates
+import nl.ovfietsbeschikbaarheid.resources.details_no_data_message
+import nl.ovfietsbeschikbaarheid.resources.details_no_data_title
+import nl.ovfietsbeschikbaarheid.resources.location_title
+import nl.ovfietsbeschikbaarheid.resources.map_available
 import nl.ovfietsbeschikbaarheid.resources.open_state_closed
+import nl.ovfietsbeschikbaarheid.resources.open_state_closes_at
+import nl.ovfietsbeschikbaarheid.resources.open_state_closing_soon
+import nl.ovfietsbeschikbaarheid.resources.open_state_open_247
 import nl.ovfietsbeschikbaarheid.resources.open_state_opens_later_at
 import nl.ovfietsbeschikbaarheid.resources.open_state_opens_today_at
+import nl.ovfietsbeschikbaarheid.resources.open_until
+import nl.ovfietsbeschikbaarheid.resources.opening_hours_title
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
@@ -185,7 +202,7 @@ private fun DetailsView(
                         IconButton(onClick = onBackClicked) {
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(R.string.content_description_back)
+                                contentDescription = stringResource(Res.string.content_description_back)
                             )
                         }
                     },
@@ -211,8 +228,8 @@ private fun DetailsView(
                             val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.forLanguageTag("nl"))
                             val formattedDate = formatter.format(details.data.lastFetched)
                             FullPageError(
-                                title = stringResource(R.string.details_no_data_title),
-                                message = stringResource(R.string.details_no_data_message, details.data.locationTitle, formattedDate),
+                                title = stringResource(Res.string.details_no_data_title),
+                                message = stringResource(Res.string.details_no_data_message, details.data.locationTitle, formattedDate),
                                 onRetry = onRetry
                             )
                         }
@@ -233,7 +250,7 @@ fun DetailsLoader(
         .verticalScroll(rememberScrollState())
     ) {
         OvCard {
-            Text(stringResource(R.string.details_amount_available))
+            Text(stringResource(Res.string.details_amount_available))
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -259,7 +276,7 @@ fun DetailsLoader(
             }
             Row(Modifier.align(Alignment.End)) {
                 Text(
-                    stringResource(R.string.open_until, "23:33"),
+                    stringResource(Res.string.open_until, "23:33"),
                     modifier = Modifier.shimmerShape(shimmerInstance)
                 )
             }
@@ -267,7 +284,7 @@ fun DetailsLoader(
 
         OvCard {
             Text(
-                text = stringResource(R.string.capacity_graph_title),
+                text = stringResource(Res.string.capacity_graph_title),
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
@@ -282,7 +299,7 @@ fun DetailsLoader(
 
         OvCard {
             Text(
-                text = stringResource(R.string.location_title),
+                text = stringResource(Res.string.location_title),
                 style = MaterialTheme.typography.headlineMedium,
             )
 
@@ -352,9 +369,9 @@ private fun ActualDetails(
 @Composable
 private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
     OvCard {
-        Text(stringResource(R.string.details_amount_available))
+        Text(stringResource(Res.string.details_amount_available))
         val rentalBikesAvailable = details.rentalBikesAvailable
-        val amount = rentalBikesAvailable?.toString() ?: stringResource(R.string.details_amount_unknown)
+        val amount = rentalBikesAvailable?.toString() ?: stringResource(Res.string.details_amount_unknown)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -408,15 +425,15 @@ private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = Loc
                     }
 
                     is OpenState.Closing -> {
-                        Text(text = stringResource(R.string.open_state_closing_soon), color = Orange50)
-                        Text(" " + stringResource(R.string.open_state_closes_at, openState.closingTime))
+                        Text(text = stringResource(Res.string.open_state_closing_soon), color = Orange50)
+                        Text(" " + stringResource(Res.string.open_state_closes_at, openState.closingTime))
                     }
 
                     is OpenState.Open -> {
-                        Text(stringResource(R.string.open_until, openState.closingTime))
+                        Text(stringResource(Res.string.open_until, openState.closingTime))
                     }
 
-                    OpenState.Open247 -> Text(stringResource(R.string.open_state_open_247))
+                    OpenState.Open247 -> Text(stringResource(Res.string.open_state_open_247))
                 }
             }
         }
@@ -451,7 +468,7 @@ private fun Location(
 ) {
     OvCard {
         Text(
-            text = stringResource(R.string.location_title),
+            text = stringResource(Res.string.location_title),
             style = MaterialTheme.typography.headlineMedium,
         )
         val onAddressClick = {
@@ -480,14 +497,14 @@ private fun Location(
                         Text("${location.street} ${location.houseNumber}")
                         Text("${location.postalCode} ${location.city}")
                     } else {
-                        Text(stringResource(R.string.details_coordinates, coordinates.latitude, coordinates.longitude))
+                        Text(stringResource(Res.string.details_coordinates, coordinates.latitude, coordinates.longitude))
                     }
                 }
 
                 Icon(
                     painter = painterResource(id = R.drawable.baseline_directions_24),
                     tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = stringResource(R.string.content_description_navigate),
+                    contentDescription = stringResource(Res.string.content_description_navigate),
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -516,7 +533,7 @@ private fun Location(
                 //                    icon = Icons.Filled.,
                 state = rememberUpdatedMarkerState(position = coordinates),
                 title = description,
-                snippet = stringResource(R.string.map_available, rentalBikesAvailable?.toString() ?: "??")
+                snippet = stringResource(Res.string.map_available, rentalBikesAvailable?.toString() ?: "??")
             )
         }
     }
@@ -545,7 +562,7 @@ private fun ExtraInfo(details: DetailsModel) {
                 contentDescription = null,
                 modifier = Modifier.padding(end = 8.dp)
             )
-            Text(stringResource(R.string.details_capacity, details.capacity))
+            Text(stringResource(Res.string.details_capacity, details.capacity))
         }
 
         if (details.about != null) {
@@ -572,7 +589,7 @@ private fun ExtraInfo(details: DetailsModel) {
 private fun OpeningHours(details: DetailsModel) {
     OvCard {
         Text(
-            text = stringResource(R.string.opening_hours_title),
+            text = stringResource(Res.string.opening_hours_title),
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )
@@ -595,7 +612,7 @@ private fun Alternatives(
 ) {
     OvCard {
         Text(
-            text = if (details.stationName != null) stringResource(R.string.details_alternatives_at, details.stationName) else stringResource(R.string.details_alternatives_at_this_location),
+            text = if (details.stationName != null) stringResource(Res.string.details_alternatives_at, details.stationName) else stringResource(Res.string.details_alternatives_at_this_location),
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )

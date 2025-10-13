@@ -11,17 +11,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import nl.ovfietsbeschikbaarheid.R
+import nl.ovfietsbeschikbaarheid.resources.Res
+import nl.ovfietsbeschikbaarheid.resources.full_page_error_retry
+import nl.ovfietsbeschikbaarheid.resources.full_page_error_text
+import nl.ovfietsbeschikbaarheid.resources.full_page_error_title
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun FullPageError(
-    title: String = stringResource(R.string.full_page_error_title),
-    message: String = stringResource(R.string.full_page_error_text),
+    title: String = stringResource(Res.string.full_page_error_title),
+    message: String = stringResource(Res.string.full_page_error_text),
     onRetry: () -> Unit
 ) {
     Column(
@@ -51,7 +54,7 @@ fun FullPageError(
             onClick = onRetry
         ) {
             Text(
-                text = stringResource(R.string.full_page_error_retry),
+                text = stringResource(Res.string.full_page_error_retry),
             )
         }
     }

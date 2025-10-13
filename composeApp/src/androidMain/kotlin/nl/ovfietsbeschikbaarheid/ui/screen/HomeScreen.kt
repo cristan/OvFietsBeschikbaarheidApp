@@ -46,7 +46,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -61,6 +60,25 @@ import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
 import nl.ovfietsbeschikbaarheid.model.OpenState
+import nl.ovfietsbeschikbaarheid.resources.Res
+import nl.ovfietsbeschikbaarheid.resources.app_name
+import nl.ovfietsbeschikbaarheid.resources.content_description_clear_location
+import nl.ovfietsbeschikbaarheid.resources.gps_off_button
+import nl.ovfietsbeschikbaarheid.resources.gps_off_rationale
+import nl.ovfietsbeschikbaarheid.resources.gps_rationale_denied_button
+import nl.ovfietsbeschikbaarheid.resources.gps_rationale_denied_permanently_button
+import nl.ovfietsbeschikbaarheid.resources.gps_rationale_denied_permanently_rationale
+import nl.ovfietsbeschikbaarheid.resources.gps_rationale_denied_rationale
+import nl.ovfietsbeschikbaarheid.resources.gps_rationale_initial_button
+import nl.ovfietsbeschikbaarheid.resources.home_nearby
+import nl.ovfietsbeschikbaarheid.resources.home_no_gps_location
+import nl.ovfietsbeschikbaarheid.resources.home_no_search_results_for
+import nl.ovfietsbeschikbaarheid.resources.home_search_label
+import nl.ovfietsbeschikbaarheid.resources.home_search_results_for
+import nl.ovfietsbeschikbaarheid.resources.open_state_closed
+import nl.ovfietsbeschikbaarheid.resources.open_state_closes_at
+import nl.ovfietsbeschikbaarheid.resources.open_state_closing_soon
+import nl.ovfietsbeschikbaarheid.resources.open_state_opens_today_at
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey80
 import nl.ovfietsbeschikbaarheid.ui.theme.Indigo05
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
@@ -71,6 +89,7 @@ import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
 import nl.ovfietsbeschikbaarheid.viewmodel.AskPermissionState
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeContent
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
+import org.jetbrains.compose.resources.stringResource
 import org.koin.androidx.compose.koinViewModel
 import java.time.Instant
 import java.time.LocalDateTime
@@ -151,8 +170,8 @@ private fun HomeView(
 
                     HomeContent.GpsTurnedOff -> {
                         GpsRequestSomething(
-                            stringResource(R.string.gps_off_rationale),
-                            stringResource(R.string.gps_off_button),
+                            stringResource(Res.string.gps_off_rationale),
+                            stringResource(Res.string.gps_off_button),
                             false,
                             onTurnOnGpsClicked
                         )
@@ -160,7 +179,7 @@ private fun HomeView(
 
                     is HomeContent.NoGpsLocation -> {
                         Text(
-                            text = stringResource(R.string.home_no_gps_location),
+                            text = stringResource(Res.string.home_no_gps_location),
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
                     }
@@ -169,7 +188,7 @@ private fun HomeView(
                         val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
                         LazyColumn(userScrollEnabled = false) {
                             item {
-                                HorizontalBar(stringResource(R.string.home_nearby))
+                                HorizontalBar(stringResource(Res.string.home_nearby))
                             }
                             items(count = 20) {
                                 Row(
@@ -232,7 +251,7 @@ private fun HomeView(
 
                     is HomeContent.NoSearchResults -> {
                         Text(
-                            text = stringResource(R.string.home_no_search_results_for, screen.searchTerm),
+                            text = stringResource(Res.string.home_no_search_results_for, screen.searchTerm),
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
                     }
@@ -247,7 +266,7 @@ private fun HomeView(
                             }
                             screen.nearbyLocations?.let { nearbyLocations ->
                                 item {
-                                    HorizontalBar(stringResource(R.string.home_search_results_for, screen.searchTerm))
+                                    HorizontalBar(stringResource(Res.string.home_search_results_for, screen.searchTerm))
                                 }
                                 items(nearbyLocations) { location ->
                                     LocationCard(location.location, location.distance) {
@@ -278,7 +297,7 @@ private fun HomeTopAppBar(onInfoClicked: () -> Unit) {
             titleContentColor = Yellow50,
         ),
         title = {
-            Text(stringResource(R.string.app_name))
+            Text(stringResource(Res.string.app_name))
         },
         actions = {
             IconButton(onClick = onInfoClicked) {
@@ -306,7 +325,7 @@ private fun GpsContent(
     ) {
         LazyColumn {
             item {
-                HorizontalBar(stringResource(R.string.home_nearby))
+                HorizontalBar(stringResource(Res.string.home_nearby))
             }
             items(gpsContent.locations) { location ->
                 LocationCard(location.location, location.distance) {
@@ -340,14 +359,14 @@ private fun HorizontalBar(text: String) {
 private fun AskForGpsPermission(state: AskPermissionState, onRequestLocationClicked: (AskPermissionState) -> Unit) {
     val rationaleText = when (state) {
         AskPermissionState.Initial -> null
-        AskPermissionState.Denied -> stringResource(R.string.gps_rationale_denied_rationale)
-        AskPermissionState.DeniedPermanently -> stringResource(R.string.gps_rationale_denied_permanently_rationale)
+        AskPermissionState.Denied -> stringResource(Res.string.gps_rationale_denied_rationale)
+        AskPermissionState.DeniedPermanently -> stringResource(Res.string.gps_rationale_denied_permanently_rationale)
     }
 
     val buttonText = when (state) {
-        AskPermissionState.Initial -> stringResource(R.string.gps_rationale_initial_button)
-        AskPermissionState.Denied -> stringResource(R.string.gps_rationale_denied_button)
-        AskPermissionState.DeniedPermanently -> stringResource(R.string.gps_rationale_denied_permanently_button)
+        AskPermissionState.Initial -> stringResource(Res.string.gps_rationale_initial_button)
+        AskPermissionState.Denied -> stringResource(Res.string.gps_rationale_denied_button)
+        AskPermissionState.DeniedPermanently -> stringResource(Res.string.gps_rationale_denied_permanently_button)
     }
 
     val showButtonIcon = state == AskPermissionState.Initial
@@ -412,7 +431,7 @@ private fun SearchField(
         onValueChange = {
             onSearchTermChanged(it)
         },
-        label = { Text(stringResource(R.string.home_search_label)) },
+        label = { Text(stringResource(Res.string.home_search_label)) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp),
@@ -421,7 +440,7 @@ private fun SearchField(
             if (searchTerm.isNotEmpty()) {
                 Icon(
                     Icons.Default.Clear,
-                    contentDescription = stringResource(R.string.content_description_clear_location),
+                    contentDescription = stringResource(Res.string.content_description_clear_location),
                     modifier = Modifier
                         .clickable {
                             onSearchTermChanged("")
@@ -469,13 +488,13 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
                             )
                         }
                         Text(
-                            text = stringResource(R.string.open_state_closed),
+                            text = stringResource(Res.string.open_state_closed),
                             color = Red50,
                             style = MaterialTheme.typography.bodyMedium
                         )
                         if (openState.openDay == null) {
                             Text(
-                                text = " " + stringResource(R.string.open_state_opens_today_at, openState.openTime),
+                                text = " " + stringResource(Res.string.open_state_opens_today_at, openState.openTime),
                                 color = Color.Gray,
                                 style = MaterialTheme.typography.bodyMedium,
                             )
@@ -490,12 +509,12 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
                             )
                         }
                         Text(
-                            text = stringResource(R.string.open_state_closing_soon),
+                            text = stringResource(Res.string.open_state_closing_soon),
                             color = Orange50,
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         Text(
-                            text = " " + stringResource(R.string.open_state_closes_at, openState.closingTime),
+                            text = " " + stringResource(Res.string.open_state_closes_at, openState.closingTime),
                             color = Color.Gray,
                             style = MaterialTheme.typography.bodyMedium,
                         )

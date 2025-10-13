@@ -1,0 +1,3 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="nl-NL">
+    <string name="app_name">OV-fiets Beschikbaarheid</string>
+</resources>
