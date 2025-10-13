@@ -1,14 +1,17 @@
 package nl.ovfietsbeschikbaarheid.model
 
-import androidx.annotation.DrawableRes
 import com.google.android.gms.maps.model.LatLng
-import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.resources.Res
+import nl.ovfietsbeschikbaarheid.resources.baseline_key_24
+import nl.ovfietsbeschikbaarheid.resources.baseline_person_24
+import nl.ovfietsbeschikbaarheid.resources.fietskluizen_icon
+import nl.ovfietsbeschikbaarheid.resources.garage_home_24dp
 import nl.ovfietsbeschikbaarheid.resources.service_type_box
 import nl.ovfietsbeschikbaarheid.resources.service_type_key_box
 import nl.ovfietsbeschikbaarheid.resources.service_type_key_selfservice
 import nl.ovfietsbeschikbaarheid.resources.service_type_lockers
 import nl.ovfietsbeschikbaarheid.resources.service_type_manned
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import java.time.ZonedDateTime
 
@@ -64,13 +67,13 @@ sealed class OpenState {
     data class Closed(val openDay: StringResource?, val openTime: String) : OpenState()
 }
 
-enum class ServiceType(val textRes: StringResource, @DrawableRes val icon: Int) {
-    Bemenst(Res.string.service_type_manned, R.drawable.baseline_person_24),
+enum class ServiceType(val textRes: StringResource, val icon: DrawableResource) {
+    Bemenst(Res.string.service_type_manned, Res.drawable.baseline_person_24),
     // See: https://www.ns.nl/fietsenstallingen/abonnementen/fietskluizen.html
-    Kluizen(Res.string.service_type_lockers, R.drawable.fietskluizen_icon),
+    Kluizen(Res.string.service_type_lockers, Res.drawable.fietskluizen_icon),
     // No idea what this is, but there are only 2, so it doesn't matter that much
-    Box(Res.string.service_type_box, R.drawable.fietskluizen_icon),
-    Sleutelautomaat(Res.string.service_type_key_box, R.drawable.baseline_key_24),
+    Box(Res.string.service_type_box, Res.drawable.fietskluizen_icon),
+    Sleutelautomaat(Res.string.service_type_key_box, Res.drawable.baseline_key_24),
     // Example: https://www.debeeldunie.nl/stock-photo-nederland-cuijk-14-07-2015-fietsenstalling-voor-ov-fietsen-op-reportage-image00157529.html
-    Zelfservice(Res.string.service_type_key_selfservice, R.drawable.garage_home_24dp),
+    Zelfservice(Res.string.service_type_key_selfservice, Res.drawable.garage_home_24dp),
 }

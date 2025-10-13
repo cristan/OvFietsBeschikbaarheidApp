@@ -45,13 +45,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
-import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
 import nl.ovfietsbeschikbaarheid.ext.shimmerShape
@@ -62,6 +60,7 @@ import nl.ovfietsbeschikbaarheid.model.LocationType
 import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.resources.Res
 import nl.ovfietsbeschikbaarheid.resources.app_name
+import nl.ovfietsbeschikbaarheid.resources.baseline_electric_bike_24
 import nl.ovfietsbeschikbaarheid.resources.content_description_clear_location
 import nl.ovfietsbeschikbaarheid.resources.gps_off_button
 import nl.ovfietsbeschikbaarheid.resources.gps_off_rationale
@@ -75,10 +74,12 @@ import nl.ovfietsbeschikbaarheid.resources.home_no_gps_location
 import nl.ovfietsbeschikbaarheid.resources.home_no_search_results_for
 import nl.ovfietsbeschikbaarheid.resources.home_search_label
 import nl.ovfietsbeschikbaarheid.resources.home_search_results_for
+import nl.ovfietsbeschikbaarheid.resources.map_white_background
 import nl.ovfietsbeschikbaarheid.resources.open_state_closed
 import nl.ovfietsbeschikbaarheid.resources.open_state_closes_at
 import nl.ovfietsbeschikbaarheid.resources.open_state_closing_soon
 import nl.ovfietsbeschikbaarheid.resources.open_state_opens_today_at
+import nl.ovfietsbeschikbaarheid.resources.pedal_bike_24px
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey80
 import nl.ovfietsbeschikbaarheid.ui.theme.Indigo05
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
@@ -89,6 +90,7 @@ import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
 import nl.ovfietsbeschikbaarheid.viewmodel.AskPermissionState
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeContent
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.androidx.compose.koinViewModel
 import java.time.Instant
@@ -217,7 +219,7 @@ private fun HomeView(
                                     }
 
                                     Icon(
-                                        painter = painterResource(id = R.drawable.pedal_bike_24px),
+                                        painter = painterResource(Res.drawable.pedal_bike_24px),
                                         tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
                                         contentDescription = null,
                                         modifier = Modifier.align(Alignment.CenterVertically)
@@ -388,7 +390,7 @@ private fun GpsRequestSomething(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(id = R.drawable.map_white_background),
+            painter = painterResource(Res.drawable.map_white_background),
             contentDescription = null,
             modifier = Modifier
                 .padding(bottom = 16.dp)
@@ -524,9 +526,9 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
         }
 
         location.rentalBikesAvailable?.let {
-            val iconRes = if (location.type == LocationType.EBike) R.drawable.baseline_electric_bike_24 else R.drawable.pedal_bike_24px
+            val iconRes = if (location.type == LocationType.EBike) Res.drawable.baseline_electric_bike_24 else Res.drawable.pedal_bike_24px
             Icon(
-                painter = painterResource(id = iconRes),
+                painter = painterResource(iconRes),
                 tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
                 contentDescription = null,
                 modifier = Modifier.align(Alignment.CenterVertically)

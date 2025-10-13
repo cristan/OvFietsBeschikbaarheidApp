@@ -53,7 +53,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -72,7 +71,6 @@ import com.google.maps.android.compose.rememberUpdatedMarkerState
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
-import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
 import nl.ovfietsbeschikbaarheid.ext.shimmerShape
@@ -86,6 +84,7 @@ import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
 import nl.ovfietsbeschikbaarheid.resources.Res
+import nl.ovfietsbeschikbaarheid.resources.baseline_directions_24
 import nl.ovfietsbeschikbaarheid.resources.capacity_graph_title
 import nl.ovfietsbeschikbaarheid.resources.content_description_back
 import nl.ovfietsbeschikbaarheid.resources.content_description_navigate
@@ -114,6 +113,7 @@ import nl.ovfietsbeschikbaarheid.resources.open_state_opens_later_at
 import nl.ovfietsbeschikbaarheid.resources.open_state_opens_today_at
 import nl.ovfietsbeschikbaarheid.resources.open_until
 import nl.ovfietsbeschikbaarheid.resources.opening_hours_title
+import nl.ovfietsbeschikbaarheid.resources.pedal_bike_24px
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
@@ -125,6 +125,7 @@ import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
 import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsContent
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
@@ -502,7 +503,7 @@ private fun Location(
                 }
 
                 Icon(
-                    painter = painterResource(id = R.drawable.baseline_directions_24),
+                    painter = painterResource(Res.drawable.baseline_directions_24),
                     tint = MaterialTheme.colorScheme.primary,
                     contentDescription = stringResource(Res.string.content_description_navigate),
                     modifier = Modifier.size(24.dp)
@@ -545,7 +546,7 @@ private fun ExtraInfo(details: DetailsModel) {
         details.serviceType?.let {
             Row {
                 Icon(
-                    painter = painterResource(id = it.icon),
+                    painter = painterResource(it.icon),
                     tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     contentDescription = null,
                     modifier = Modifier.padding(end = 8.dp)
@@ -557,7 +558,7 @@ private fun ExtraInfo(details: DetailsModel) {
         val bottomPadding = if (details.about != null) 8.dp else 0.dp
         Row(Modifier.padding(bottom = bottomPadding)) {
             Icon(
-                painter = painterResource(id = R.drawable.pedal_bike_24px),
+                painter = painterResource(Res.drawable.pedal_bike_24px),
                 tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
                 contentDescription = null,
                 modifier = Modifier.padding(end = 8.dp)
