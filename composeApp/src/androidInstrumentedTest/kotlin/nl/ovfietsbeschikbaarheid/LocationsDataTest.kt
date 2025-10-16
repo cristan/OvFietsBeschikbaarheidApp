@@ -5,9 +5,11 @@ import kotlinx.coroutines.runBlocking
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import org.junit.Test
-import java.time.Instant
-import java.time.temporal.ChronoUnit
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 class LocationsDataTest {
 
     @Test
@@ -22,8 +24,8 @@ class LocationsDataTest {
             val pricePer24Hours = LocationsMapper.getPricePer24Hours(locations)
 
             val lastUpdateTimestamp = allLocations.maxOf { it.fetchTime }
-            val lastUpdateInstant = Instant.ofEpochSecond(lastUpdateTimestamp)
-            val lastUpdateAgo = lastUpdateInstant.until(Instant.now(), ChronoUnit.MINUTES)
+            val lastUpdateInstant = Instant.fromEpochSeconds(lastUpdateTimestamp)
+            val lastUpdateAgo = (Clock.System.now() - lastUpdateInstant).inWholeMinutes
             println("The last update (at $lastUpdateTimestamp) was $lastUpdateAgo minutes ago")
             if (lastUpdateAgo > 10) {
                 error("The last update (at $lastUpdateTimestamp) was $lastUpdateAgo minutes ago")

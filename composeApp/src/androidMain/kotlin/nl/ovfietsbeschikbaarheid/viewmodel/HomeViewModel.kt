@@ -25,10 +25,12 @@ import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
 import timber.log.Timber
-import java.time.Duration
-import java.time.Instant
 import java.util.concurrent.CancellationException
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 class HomeViewModel(
     private val findNearbyLocationsUseCase: FindNearbyLocationsUseCase,
     private val overviewRepository: OverviewRepository,
@@ -74,7 +76,7 @@ class HomeViewModel(
         }
     }
 
-    fun onReturnedToScreen(now: Instant = Instant.now()) {
+    fun onReturnedToScreen(now: Instant = Clock.System.now()) {
         Timber.d("onReturnedToScreen called")
         val currentlyShown = _content.value
         when {
@@ -98,7 +100,8 @@ class HomeViewModel(
 
             currentlyShown is HomeContent.GpsContent -> {
                 // Do basically a pull to refresh when re-entering this screen when the data is 5 minutes or more old
-                if (Duration.between(currentlyShown.fetchTime, now).toMinutes() >= 5) {
+                val inWholeMinutes = (now - currentlyShown.fetchTime).inWholeMinutes
+                if (inWholeMinutes >= 5) {
                     val currentContent = _content.value
                     if (currentContent is HomeContent.GpsContent) {
                         _content.value = currentContent.copy(isRefreshing = true)
@@ -272,7 +275,7 @@ class HomeViewModel(
                         if (lastKnownCoordinates != null) {
                             val locationsWithDistance = LocationsMapper.withDistance(loadedOverviewData.locations, lastKnownCoordinates)
                             Timber.d("awaitAndShowLocationsWithDistance: using last known coordinates")
-                            _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now(), isRefreshing = true)
+                            _content.value = HomeContent.GpsContent(locationsWithDistance, Clock.System.now(), isRefreshing = true)
                         }
                     }
                 }
@@ -285,7 +288,7 @@ class HomeViewModel(
                 } else {
                     Timber.d("awaitAndShowLocationsWithDistance: using loaded coordinates")
                     val locationsWithDistance = LocationsMapper.withDistance(loadedOverviewData.locations, loadedCoordinates)
-                    _content.value = HomeContent.GpsContent(locationsWithDistance, Instant.now())
+                    _content.value = HomeContent.GpsContent(locationsWithDistance, Clock.System.now())
 
                     ratingEligibilityService.onGpsContentViewed()
                     if(ratingEligibilityService.shouldRequestRating()) {

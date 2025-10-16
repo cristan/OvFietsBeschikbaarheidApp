@@ -71,8 +71,13 @@ import com.google.maps.android.compose.rememberUpdatedMarkerState
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
+import nl.ovfietsbeschikbaarheid.ext.dutchTimeZone
 import nl.ovfietsbeschikbaarheid.ext.shimmerShape
 import nl.ovfietsbeschikbaarheid.ext.withStyledLink
 import nl.ovfietsbeschikbaarheid.model.AddressModel
@@ -129,10 +134,8 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.androidx.compose.koinViewModel
 import java.net.URLEncoder
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlin.time.ExperimentalTime
 
 @Composable
 fun DetailScreen(
@@ -226,11 +229,9 @@ private fun DetailsView(
                         }
 
                         is DetailsContent.NotFound -> {
-                            val formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.forLanguageTag("nl"))
-                            val formattedDate = formatter.format(details.data.lastFetched)
                             FullPageError(
                                 title = stringResource(Res.string.details_no_data_title),
-                                message = stringResource(Res.string.details_no_data_message, details.data.locationTitle, formattedDate),
+                                message = stringResource(Res.string.details_no_data_message, details.data.locationTitle, details.data.formattedLastFetchedDate),
                                 onRetry = onRetry
                             )
                         }
@@ -642,6 +643,7 @@ fun DetailsLoadingPreview() {
     )
 }
 
+@OptIn(ExperimentalTime::class)
 @Preview(heightDp = 2000)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark mode")
 @Composable
@@ -661,39 +663,38 @@ fun DetailsPreview() {
         postalCode = "3812 GZ",
     )
 
-    val amsterdamZoneId = ZoneId.of("Europe/Amsterdam")
-    val now = ZonedDateTime.of(2025, 7, 12, 11, 35, 30, 500, amsterdamZoneId)
-    val start = ZonedDateTime.of(2025, 7, 12, 0, 1, 25, 250, amsterdamZoneId)
-    val startPrediction = ZonedDateTime.of(2025, 7, 5, 12, 2, 15, 150, amsterdamZoneId)
+    val now = LocalDateTime(2025, 7, 12, 11, 35, 30, 500).toInstant(dutchTimeZone)
+    val start = LocalDateTime(2025, 7, 12, 0, 1, 25, 250).toInstant(dutchTimeZone)
+    val startPrediction = LocalDateTime(2025, 7, 5, 12, 2, 15, 150).toInstant(dutchTimeZone)
 
     val history = listOf(
         CapacityModel(20, start),
-        CapacityModel(19, start.plusHours(1)),
-        CapacityModel(18, start.plusHours(2)),
-        CapacityModel(16, start.plusHours(3)),
-        CapacityModel(16, start.plusHours(4)),
-        CapacityModel(13, start.plusHours(5)),
-        CapacityModel(0, start.plusHours(6)),
-        CapacityModel(2, start.plusHours(7)),
-        CapacityModel(22, start.plusHours(8)),
-        CapacityModel(18, start.plusHours(9)),
-        CapacityModel(14, start.plusHours(10)),
-        CapacityModel(15, start.plusHours(11)),
+        CapacityModel(19, start.plus(1, DateTimeUnit.HOUR)),
+        CapacityModel(18, start.plus(2, DateTimeUnit.HOUR)),
+        CapacityModel(16, start.plus(3, DateTimeUnit.HOUR)),
+        CapacityModel(16, start.plus(4, DateTimeUnit.HOUR)),
+        CapacityModel(13, start.plus(5, DateTimeUnit.HOUR)),
+        CapacityModel(0, start.plus(6, DateTimeUnit.HOUR)),
+        CapacityModel(2, start.plus(7, DateTimeUnit.HOUR)),
+        CapacityModel(22, start.plus(8, DateTimeUnit.HOUR)),
+        CapacityModel(18, start.plus(9, DateTimeUnit.HOUR)),
+        CapacityModel(14, start.plus(10, DateTimeUnit.HOUR)),
+        CapacityModel(15, start.plus(11, DateTimeUnit.HOUR)),
         CapacityModel(14, now)
     )
     val prediction = listOf(
         CapacityModel(25, startPrediction),
-        CapacityModel(27, startPrediction.plusHours(1)),
-        CapacityModel(28, startPrediction.plusHours(2)),
-        CapacityModel(29, startPrediction.plusHours(3)),
-        CapacityModel(30, startPrediction.plusHours(4)),
-        CapacityModel(29, startPrediction.plusHours(5)),
-        CapacityModel(31, startPrediction.plusHours(6)),
-        CapacityModel(32, startPrediction.plusHours(7)),
-        CapacityModel(31, startPrediction.plusHours(8)),
-        CapacityModel(31, startPrediction.plusHours(9)),
-        CapacityModel(32, startPrediction.plusHours(10)),
-        CapacityModel(32, startPrediction.plusHours(11)),
+        CapacityModel(27, startPrediction.plus(1, DateTimeUnit.HOUR)),
+        CapacityModel(28, startPrediction.plus(2, DateTimeUnit.HOUR)),
+        CapacityModel(29, startPrediction.plus(3, DateTimeUnit.HOUR)),
+        CapacityModel(30, startPrediction.plus(4, DateTimeUnit.HOUR)),
+        CapacityModel(29, startPrediction.plus(5, DateTimeUnit.HOUR)),
+        CapacityModel(31, startPrediction.plus(6, DateTimeUnit.HOUR)),
+        CapacityModel(32, startPrediction.plus(7, DateTimeUnit.HOUR)),
+        CapacityModel(31, startPrediction.plus(8, DateTimeUnit.HOUR)),
+        CapacityModel(31, startPrediction.plus(9, DateTimeUnit.HOUR)),
+        CapacityModel(32, startPrediction.plus(10, DateTimeUnit.HOUR)),
+        CapacityModel(32, startPrediction.plus(11, DateTimeUnit.HOUR)),
     )
     val graphDay = GraphDayModel(
         isToday = true,

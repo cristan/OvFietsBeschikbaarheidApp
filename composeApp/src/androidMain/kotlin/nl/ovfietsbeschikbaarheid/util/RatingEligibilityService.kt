@@ -1,11 +1,14 @@
 package nl.ovfietsbeschikbaarheid.util
 
 import kotlinx.coroutines.flow.first
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
 import nl.ovfietsbeschikbaarheid.repository.RatingStorageRepository
-import java.time.Instant
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 class RatingEligibilityService(
     private val ratingStorageRepository: RatingStorageRepository
 ) {
@@ -15,7 +18,7 @@ class RatingEligibilityService(
         private const val DAYS_BETWEEN_REQUESTS = 180
     }
 
-    suspend fun shouldRequestRating(now: Instant = Instant.now()): Boolean {
+    suspend fun shouldRequestRating(now: Instant = Clock.System.now()): Boolean {
         val visitDates = ratingStorageRepository.dailyVisitDates.first()
         if (visitDates.size < REQUIRED_UNIQUE_VISITS) {
             return false
@@ -26,15 +29,15 @@ class RatingEligibilityService(
             return true
         }
 
-        val daysSinceLastPrompt = ChronoUnit.DAYS.between(Instant.ofEpochMilli(lastRatingPromptTimestamp), now)
+        val daysSinceLastPrompt = (now - Instant.fromEpochMilliseconds(lastRatingPromptTimestamp)).inWholeDays
         return daysSinceLastPrompt < DAYS_BETWEEN_REQUESTS
     }
 
     suspend fun onGpsContentViewed() {
-        ratingStorageRepository.recordNewVisit(LocalDate.now())
+        ratingStorageRepository.recordNewVisit(Clock.System.todayIn(TimeZone.currentSystemDefault()))
     }
 
     suspend fun onRatingPrompted() {
-        ratingStorageRepository.recordRatingPromptedAndClearDailyVisits(Instant.now())
+        ratingStorageRepository.recordRatingPromptedAndClearDailyVisits(Clock.System.now())
     }
 }

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package nl.ovfietsbeschikbaarheid.ui.screen
 
 import android.app.Activity
@@ -50,8 +52,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
+import kotlinx.datetime.toLocalDateTime
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
+import nl.ovfietsbeschikbaarheid.ext.dutchTimeZone
 import nl.ovfietsbeschikbaarheid.ext.shimmerShape
 import nl.ovfietsbeschikbaarheid.mapper.OpenStateMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
@@ -93,10 +97,11 @@ import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.androidx.compose.koinViewModel
-import java.time.Instant
-import java.time.LocalDateTime
-import java.util.TimeZone
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
@@ -456,7 +461,7 @@ private fun SearchField(
 @Composable
 fun LocationCard(location: LocationOverviewModel, distance: String? = null, onClick: () -> Unit) {
     val openState = if (location.openingHours == null) null else OpenStateMapper.getOpenState(
-        location.locationCode, location.openingHours, LocalDateTime.now(TimeZone.getTimeZone("Europe/Amsterdam").toZoneId())
+        location.locationCode, location.openingHours, Clock.System.now().toLocalDateTime(dutchTimeZone)
     )
     val hasDataInBottom = distance != null || openState is OpenState.Closed || openState is OpenState.Closing
     Row(
@@ -660,5 +665,5 @@ fun GpsResultsPreview() {
             )
         ),
     )
-    TestHomeView("", HomeContent.GpsContent(locations, Instant.ofEpochMilli(1731442462000)))
+    TestHomeView("", HomeContent.GpsContent(locations, Instant.fromEpochSeconds(1731442462)))
 }

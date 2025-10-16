@@ -4,8 +4,10 @@ import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.ext.getMinutesSinceLastUpdate
 import timber.log.Timber
-import java.time.Instant
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class DetailsRepository(
     private val client: KtorApiClient,
 ) {
@@ -19,7 +21,7 @@ class DetailsRepository(
             return null
         }
 
-        val minutesSinceLastUpdate = allLocations.getMinutesSinceLastUpdate(Instant.now())
+        val minutesSinceLastUpdate = allLocations.getMinutesSinceLastUpdate(Clock.System.now())
         val lastUpdateTooLongAgo = minutesSinceLastUpdate > 15
         if (lastUpdateTooLongAgo) {
             Timber.e("The last update was $minutesSinceLastUpdate minutes ago")

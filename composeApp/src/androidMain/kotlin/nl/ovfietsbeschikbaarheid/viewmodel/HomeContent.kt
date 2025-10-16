@@ -2,8 +2,10 @@ package nl.ovfietsbeschikbaarheid.viewmodel
 
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
-import java.time.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 sealed class HomeContent {
     // Initial empty state while we set things up.
     data object InitialEmpty : HomeContent()
@@ -18,7 +20,7 @@ sealed class HomeContent {
 
     data object NoGpsLocation : HomeContent()
 
-    data class GpsContent(
+    data class GpsContent (
         val locations: List<LocationOverviewWithDistanceModel>,
         val fetchTime: Instant,
         val isRefreshing: Boolean = false

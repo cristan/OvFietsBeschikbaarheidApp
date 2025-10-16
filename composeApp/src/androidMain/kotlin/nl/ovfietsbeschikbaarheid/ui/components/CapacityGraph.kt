@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package nl.ovfietsbeschikbaarheid.ui.components
 
 import android.content.res.Configuration
@@ -38,7 +40,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import nl.ovfietsbeschikbaarheid.ext.atEndOfDay
+import nl.ovfietsbeschikbaarheid.ext.dutchTimeZone
+import nl.ovfietsbeschikbaarheid.ext.millisecondsUntil
+import nl.ovfietsbeschikbaarheid.ext.truncateToDay
+import nl.ovfietsbeschikbaarheid.ext.truncateToHour
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
 import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.resources.Res
@@ -51,12 +62,9 @@ import nl.ovfietsbeschikbaarheid.ui.theme.Grey40
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey80
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import org.jetbrains.compose.resources.stringResource
-import java.time.Duration
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
 import kotlin.math.ceil
 import kotlin.math.max
+import kotlin.time.ExperimentalTime
 
 @Composable
 fun CapacityGraph(
@@ -161,15 +169,15 @@ fun CapacityGraph(
 
             // ----- Draw the capacity line -----
             val startTime = if (history.isNotEmpty())
-                history[0].dateTime.truncatedTo(ChronoUnit.HOURS)
+                history[0].createTime.toLocalDateTime(dutchTimeZone).truncateToHour()
             else
-                prediction[0].dateTime.truncatedTo(ChronoUnit.DAYS)
+                prediction[0].createTime.toLocalDateTime(dutchTimeZone).truncateToDay()
 
             val endTime = startTime.atEndOfDay()
-            val duration = Duration.between(startTime, endTime).toMillis().toFloat()
+            val duration = startTime.millisecondsUntil(endTime).toFloat()
             if (history.isNotEmpty()) {
                 val points = history.map { model ->
-                    val x = leftPadding + (Duration.between(startTime, model.dateTime).toMillis() / duration) * graphWidth
+                    val x = leftPadding + ((model.createTime - startTime.toInstant(dutchTimeZone)).inWholeMilliseconds / duration) * graphWidth
                     val y = graphHeight - (model.capacity / roundedMax) * graphHeight
                     Offset(x, y)
                 }
@@ -190,9 +198,9 @@ fun CapacityGraph(
 
             // ----- Draw the prediction -----
             if (prediction.isNotEmpty()) {
-                val startTimePrediction = prediction[0].dateTime.truncatedTo(ChronoUnit.DAYS)
+                val startTimePrediction = prediction[0].createTime.toLocalDateTime(dutchTimeZone).truncateToDay().toInstant(dutchTimeZone)
                 val predictionPoints = prediction.map { model ->
-                    val x = leftPadding + (Duration.between(startTimePrediction, model.dateTime).toMillis() / duration) * graphWidth
+                    val x = leftPadding + ((model.createTime - startTimePrediction).inWholeMilliseconds / duration) * graphWidth
                     val y = graphHeight - (model.capacity / roundedMax) * graphHeight
                     Offset(x, y)
                 }
@@ -220,8 +228,8 @@ fun CapacityGraph(
 
             // ----- Draw X-axis hour labels (on top, outside plot area) -----
             for (i in 0..6) {
-                val hourTime = startTime.plus(i * 4L, ChronoUnit.HOURS)
-                val x = leftPadding + (Duration.between(startTime, hourTime).toMillis() / duration) * graphWidth
+                val hourTime = startTime.toInstant(dutchTimeZone).plus(i * 4, DateTimeUnit.HOUR).toLocalDateTime(dutchTimeZone)
+                val x = leftPadding + (startTime.millisecondsUntil(hourTime) / duration) * graphWidth
                 val label = hourTime.hour.toString().padStart(2, '0') + ":00"
 
                 val textLayoutResult = textMeasurer.measure(
@@ -308,39 +316,39 @@ fun LegendItem(color: Color, text: String, isDashed: Boolean = false) {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark mode")
 @Composable
 fun CapacityGraphPreview() {
-    val amsterdamZoneId = ZoneId.of("Europe/Amsterdam")
-    val now = ZonedDateTime.of(2025, 7, 12, 11, 35, 30, 500, amsterdamZoneId)
-    val start = ZonedDateTime.of(2025, 7, 12, 0, 1, 25, 250, amsterdamZoneId)
-    val startPrediction = ZonedDateTime.of(2025, 7, 5, 12, 2, 15, 150, amsterdamZoneId)
+    val now = LocalDateTime(2025, 7, 12, 11, 35, 30, 500).toInstant(dutchTimeZone)
+    val start = LocalDateTime(2025, 7, 12, 0, 1, 25, 250).toInstant(dutchTimeZone)
+
+    val startPrediction = LocalDateTime(2025, 7, 5, 12, 2, 15, 150).toInstant(dutchTimeZone)
 
     val data = listOf(
         CapacityModel(20, start),
-        CapacityModel(19, start.plusHours(1)),
-        CapacityModel(18, start.plusHours(2)),
-        CapacityModel(16, start.plusHours(3)),
-        CapacityModel(16, start.plusHours(4)),
-        CapacityModel(13, start.plusHours(5)),
-        CapacityModel(0, start.plusHours(6)),
-        CapacityModel(2, start.plusHours(7)),
-        CapacityModel(22, start.plusHours(8)),
-        CapacityModel(18, start.plusHours(9)),
-        CapacityModel(14, start.plusHours(10)),
-        CapacityModel(15, start.plusHours(11)),
+        CapacityModel(19, start.plus(1, DateTimeUnit.HOUR)),
+        CapacityModel(18, start.plus(2, DateTimeUnit.HOUR)),
+        CapacityModel(16, start.plus(3, DateTimeUnit.HOUR)),
+        CapacityModel(16, start.plus(4, DateTimeUnit.HOUR)),
+        CapacityModel(13, start.plus(5, DateTimeUnit.HOUR)),
+        CapacityModel(0, start.plus(6, DateTimeUnit.HOUR)),
+        CapacityModel(2, start.plus(7, DateTimeUnit.HOUR)),
+        CapacityModel(22, start.plus(8, DateTimeUnit.HOUR)),
+        CapacityModel(18, start.plus(9, DateTimeUnit.HOUR)),
+        CapacityModel(14, start.plus(10, DateTimeUnit.HOUR)),
+        CapacityModel(15, start.plus(11, DateTimeUnit.HOUR)),
         CapacityModel(14, now)
     )
     val prediction = listOf(
         CapacityModel(25, startPrediction),
-        CapacityModel(27, startPrediction.plusHours(1)),
-        CapacityModel(28, startPrediction.plusHours(2)),
-        CapacityModel(29, startPrediction.plusHours(3)),
-        CapacityModel(30, startPrediction.plusHours(4)),
-        CapacityModel(29, startPrediction.plusHours(5)),
-        CapacityModel(31, startPrediction.plusHours(6)),
-        CapacityModel(32, startPrediction.plusHours(7)),
-        CapacityModel(31, startPrediction.plusHours(8)),
-        CapacityModel(31, startPrediction.plusHours(9)),
-        CapacityModel(32, startPrediction.plusHours(10)),
-        CapacityModel(32, startPrediction.plusHours(11)),
+        CapacityModel(27, startPrediction.plus(1, DateTimeUnit.HOUR)),
+        CapacityModel(28, startPrediction.plus(2, DateTimeUnit.HOUR)),
+        CapacityModel(29, startPrediction.plus(3, DateTimeUnit.HOUR)),
+        CapacityModel(30, startPrediction.plus(4, DateTimeUnit.HOUR)),
+        CapacityModel(29, startPrediction.plus(5, DateTimeUnit.HOUR)),
+        CapacityModel(31, startPrediction.plus(6, DateTimeUnit.HOUR)),
+        CapacityModel(32, startPrediction.plus(7, DateTimeUnit.HOUR)),
+        CapacityModel(31, startPrediction.plus(8, DateTimeUnit.HOUR)),
+        CapacityModel(31, startPrediction.plus(9, DateTimeUnit.HOUR)),
+        CapacityModel(32, startPrediction.plus(10, DateTimeUnit.HOUR)),
+        CapacityModel(32, startPrediction.plus(11, DateTimeUnit.HOUR)),
     )
     val graphDays = GraphDayModel(
         isToday = true,

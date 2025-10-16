@@ -58,7 +58,7 @@ class KtorApiClient {
     }
 
     suspend fun getHistory(code: String, startDate: String): List<HourlyLocationCapacityDto> {
-        Timber.i("Loading the history of $code")
+        Timber.i("Loading the history of $code since $startDate")
         val body = """
         {
             "structuredQuery": {

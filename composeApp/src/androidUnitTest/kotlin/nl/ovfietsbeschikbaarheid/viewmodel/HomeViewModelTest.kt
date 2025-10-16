@@ -13,6 +13,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.plus
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
@@ -27,15 +29,15 @@ import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
 import org.junit.Rule
 import org.junit.Test
 import java.net.UnknownHostException
-import java.time.Instant
-import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalTime::class)
 class HomeViewModelTest {
 
     @get:Rule
@@ -330,9 +332,9 @@ class HomeViewModelTest {
         // Even though we have returned to the screen, the data isn't reloaded because it was right after
         coVerify(exactly = 1) { overviewRepository.getOverviewData() }
 
-        val inFiveAndAHalfMinutes = Instant.now()
-            .plusSeconds(TimeUnit.MINUTES.toSeconds(5))
-            .plusSeconds(30)
+        val inFiveAndAHalfMinutes = Clock.System.now()
+            .plus(5, DateTimeUnit.MINUTE)
+            .plus(30, DateTimeUnit.SECOND)
 
         viewModel.onReturnedToScreen(inFiveAndAHalfMinutes)
 

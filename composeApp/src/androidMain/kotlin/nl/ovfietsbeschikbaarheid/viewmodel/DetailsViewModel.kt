@@ -8,8 +8,19 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.char
+import kotlinx.datetime.minus
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
+import nl.ovfietsbeschikbaarheid.ext.dutchTimeZone
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
@@ -18,18 +29,15 @@ import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.state.setRefreshing
-import nl.ovfietsbeschikbaarheid.util.dutchZone
 import timber.log.Timber
 import java.io.IOException
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 private const val MIN_REFRESH_TIME = 350L
 
+@OptIn(ExperimentalTime::class)
 class DetailsViewModel(
     private val client: KtorApiClient,
     private val detailsMapper: DetailsMapper,
@@ -88,17 +96,30 @@ class DetailsViewModel(
                         stationRepository.getAllStations()
                     }
                     val historyDeferred = async {
-                        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssX")
-                        val startDate =
-                            ZonedDateTime.now(dutchZone).minusDays(7).atStartOfDay().withZoneSameInstant(ZoneOffset.UTC).format(formatter)
+                        val customFormat = LocalDateTime.Format {
+                            date(LocalDate.Formats.ISO)
+                            char('T')
+                            time(LocalTime.Formats.ISO)
+                            char('Z')
+                        }
+
+                        val startDate = Clock.System.now()
+                            .minus(7, DateTimeUnit.DAY, dutchTimeZone)
+                            .toLocalDateTime(TimeZone.currentSystemDefault()).atStartOfDay()
+                            .toInstant(dutchTimeZone).toLocalDateTime(TimeZone.UTC)
+                            .format(customFormat)
+
                         client.getHistory(data.locationCode, startDate)
                     }
 
                     val details = detailsDeferred.await()
                     if (details == null) {
-                        val fetchTimeInstant = Instant.ofEpochSecond(data.fetchTime)
-                        val lastFetched = LocalDateTime.ofInstant(fetchTimeInstant, ZoneId.of("Europe/Amsterdam"))!!
-                        _screenState.value = ScreenState.Loaded(DetailsContent.NotFound(data.title, lastFetched))
+                        val fetchTimeInstant = Instant.fromEpochSeconds(data.fetchTime)
+
+                        // Not perfect. Before, we formatted this to dd MMMM yyyy which looks nicer to Dutch people's eyes.
+                        // Not a big problem though: this screen being shown should be exceedingly rare
+                        val formattedDate = fetchTimeInstant.toLocalDateTime(dutchTimeZone).date.toString()
+                        _screenState.value = ScreenState.Loaded(DetailsContent.NotFound(data.title, formattedDate))
                         return@supervisorScope
                     }
 
@@ -129,6 +150,6 @@ class DetailsViewModel(
 }
 
 sealed class DetailsContent {
-    data class NotFound(val locationTitle: String, val lastFetched: LocalDateTime) : DetailsContent()
+    data class NotFound(val locationTitle: String, val formattedLastFetchedDate: String) : DetailsContent()
     data class Content(val details: DetailsModel) : DetailsContent()
 }

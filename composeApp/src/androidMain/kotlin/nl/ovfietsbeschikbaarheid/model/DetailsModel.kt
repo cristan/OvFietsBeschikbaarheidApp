@@ -13,7 +13,8 @@ import nl.ovfietsbeschikbaarheid.resources.service_type_lockers
 import nl.ovfietsbeschikbaarheid.resources.service_type_manned
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
-import java.time.ZonedDateTime
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 data class DetailsModel(
     val description: String,
@@ -42,9 +43,10 @@ data class GraphDayModel (
     val contentDescription: String,
 )
 
+@OptIn(ExperimentalTime::class)
 data class CapacityModel(
     val capacity: Int,
-    val dateTime: ZonedDateTime
+    val createTime: Instant
 )
 
 data class AddressModel(

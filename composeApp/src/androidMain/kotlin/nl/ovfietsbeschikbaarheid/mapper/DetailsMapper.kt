@@ -1,11 +1,23 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.datetime.DateTimePeriod
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
-import nl.ovfietsbeschikbaarheid.ext.atEndOfDay
-import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
+import nl.ovfietsbeschikbaarheid.ext.atEndOfDayIn
+import nl.ovfietsbeschikbaarheid.ext.dutchTimeZone
 import nl.ovfietsbeschikbaarheid.ext.getServiceType
+import nl.ovfietsbeschikbaarheid.ext.toFullDayOfWeek
+import nl.ovfietsbeschikbaarheid.ext.toIsoDayNumber
+import nl.ovfietsbeschikbaarheid.ext.toNarrowDayOfWeek
+import nl.ovfietsbeschikbaarheid.ext.truncateToHour
 import nl.ovfietsbeschikbaarheid.model.AddressModel
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
@@ -24,18 +36,14 @@ import nl.ovfietsbeschikbaarheid.resources.day_7
 import nl.ovfietsbeschikbaarheid.resources.graph_next_day_content_description
 import nl.ovfietsbeschikbaarheid.resources.graph_previous_day_content_description
 import nl.ovfietsbeschikbaarheid.resources.graph_today_content_description
-import nl.ovfietsbeschikbaarheid.util.dutchLocale
-import nl.ovfietsbeschikbaarheid.util.dutchZone
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
 import timber.log.Timber
-import java.time.LocalDateTime
-import java.time.ZonedDateTime
-import java.time.format.TextStyle
-import java.time.temporal.ChronoField
-import java.time.temporal.ChronoUnit
-import java.util.TimeZone
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 class DetailsMapper() {
     private val newLinesAtEnd = Regex("[\\\\n\\s]*\$")
 
@@ -105,7 +113,7 @@ class DetailsMapper() {
             alternatives = alternatives,
             openState = locationDTO.openingHours?.let {
                 OpenStateMapper.getOpenState(
-                    locationDTO.extra.locationCode, it, LocalDateTime.now(TimeZone.getTimeZone("Europe/Amsterdam").toZoneId())
+                    locationDTO.extra.locationCode, it, Clock.System.now().toLocalDateTime(dutchTimeZone)
                 )
             },
             graphDays = graphDays
@@ -116,29 +124,33 @@ class DetailsMapper() {
         rentalBikesAvailable: Int?,
         hourlyLocationCapacityDtos: List<HourlyLocationCapacityDto>
     ): List<GraphDayModel> {
-        val nowInNL = ZonedDateTime.now(dutchZone)
+        val now = Clock.System.now()
+        val nowInNL: LocalDateTime = now.toLocalDateTime(dutchTimeZone)
 
         // Let's add the current capacity to the graph. Unfortunately, the current backend call doesn't return a timestamp, so we'll assume now.
-        val currentCapacity = CapacityModel(rentalBikesAvailable ?: 0, nowInNL)
-        val historicalCapacities = convertHourlyCapacities(hourlyLocationCapacityDtos).sortedBy { it.dateTime } + currentCapacity
+        val currentCapacity = CapacityModel(rentalBikesAvailable ?: 0, now)
+        val historicalCapacities = convertHourlyCapacities(hourlyLocationCapacityDtos).sortedBy { it.createTime } + currentCapacity
 
-        val dayOfWeek = nowInNL.get(ChronoField.DAY_OF_WEEK)
+        val currentDayOfWeek = nowInNL.date.dayOfWeek.toIsoDayNumber()
 
-        val previousDays = (dayOfWeek -1  downTo 1).map { previousDayOffset ->
-            val previousDay = nowInNL.minusDays(previousDayOffset.toLong())
-            val startOfDay = previousDay.atStartOfDay()
+
+        val previousDays = (currentDayOfWeek - 1 downTo 1).map { previousDayOffset ->
+            val previousDay = now.minus(previousDayOffset, DateTimeUnit.DAY, dutchTimeZone)
+
+            val previousDate = previousDay.toLocalDateTime(dutchTimeZone).date
+            val startOfDay = previousDate.atStartOfDayIn(dutchTimeZone)
             // We also want the 00:00 hours to complete the day, but that one usually only arrives at something like 00:01
-            val endOfDay = previousDay.atEndOfDay().plusMinutes(10)
-            val capacitiesPastDay = historicalCapacities.filter { it.dateTime.isAfter(startOfDay) && it.dateTime.isBefore(endOfDay) }
+            val endOfDay = previousDay.toLocalDateTime(dutchTimeZone).atEndOfDayIn(dutchTimeZone).plus(10, DateTimeUnit.MINUTE)
+            val capacitiesPastDay = historicalCapacities.filter { it.createTime > startOfDay && it.createTime < endOfDay }
 
             // A fallback to 0 doesn't make too much sense, but this prevents a crash and empty days will be filtered out later
             val minCapacity = capacitiesPastDay.minOfOrNull { it.capacity } ?: 0
             val maxCapacity = capacitiesPastDay.maxOfOrNull { it.capacity } ?: 0
-            val dayFullName = previousDay.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale)
+            val dayFullName = previousDate.toFullDayOfWeek()
             val contentDescription = getString(Res.string.graph_previous_day_content_description, dayFullName, minCapacity, maxCapacity)
             GraphDayModel(
                 isToday = false,
-                previousDay.dayOfWeek.getDisplayName(TextStyle.NARROW, dutchLocale),
+                previousDate.toNarrowDayOfWeek(),
                 dayFullName,
                 capacitiesPastDay,
                 emptyList(),
@@ -146,23 +158,25 @@ class DetailsMapper() {
             )
         }
 
-        val graphToday = getGraphToday(nowInNL, historicalCapacities)
+        val graphToday = getGraphToday(now, nowInNL, historicalCapacities)
 
-        val nextDays = (1 .. 7 - dayOfWeek).map { nextDayOffset ->
-            val previousDay = nowInNL.plusDays(nextDayOffset.toLong() - 7L)
-            val startOfDay = previousDay.atStartOfDay()
+        val nextDays = (1..7 - currentDayOfWeek).map { nextDayOffset ->
+            val previousDay = now.plus(nextDayOffset - 7, DateTimeUnit.DAY, dutchTimeZone)
+            val previousDayDateTime = previousDay.toLocalDateTime(dutchTimeZone)
+            val previousDate = previousDayDateTime.date
+            val startOfDay = previousDate.atStartOfDayIn(dutchTimeZone)
             // We also want the 00:00 hours to complete the day, but that one usually only arrives at something like 00:01
-            val endOfDay = previousDay.atEndOfDay().plusMinutes(10)
+            val endOfDay = previousDayDateTime.atEndOfDayIn(dutchTimeZone).plus(10, DateTimeUnit.MINUTE)
 
-            val capacitiesFutureDay = historicalCapacities.filter { it.dateTime.isAfter(startOfDay) && it.dateTime.isBefore(endOfDay) }
+            val capacitiesFutureDay = historicalCapacities.filter { it.createTime > startOfDay && it.createTime < endOfDay }
             // A fallback to 0 doesn't make too much sense, but this prevents a crash and empty days will be filtered out later
             val minCapacity = capacitiesFutureDay.minOfOrNull { it.capacity } ?: 0
             val maxCapacity = capacitiesFutureDay.maxOfOrNull { it.capacity } ?: 0
-            val dayFullName = previousDay.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale)
+            val dayFullName = previousDay.toLocalDateTime(dutchTimeZone).date.toFullDayOfWeek()
             val contentDescription = getString(Res.string.graph_next_day_content_description, dayFullName, minCapacity, maxCapacity)
             GraphDayModel(
                 isToday = false,
-                previousDay.dayOfWeek.getDisplayName(TextStyle.NARROW, dutchLocale),
+                previousDay.toLocalDateTime(dutchTimeZone).date.toNarrowDayOfWeek(),
                 dayFullName,
                 emptyList(),
                 capacitiesFutureDay,
@@ -179,33 +193,43 @@ class DetailsMapper() {
     }
 
     private suspend fun getGraphToday(
-        nowInNL: ZonedDateTime,
+        now: Instant,
+        nowInNL: LocalDateTime,
         historicalCapacities: List<CapacityModel>
     ): GraphDayModel {
-        val startOfDay = nowInNL.atStartOfDay()
-        val capacitiesToday = historicalCapacities.filter { it.dateTime.isAfter(startOfDay) }
-        val startLastWeek = nowInNL.minusDays(7).plusHours(1).truncatedTo(ChronoUnit.HOURS)
+        val startOfDay = nowInNL.date.atStartOfDayIn(dutchTimeZone)
+        val capacitiesToday = historicalCapacities.filter { it.createTime > startOfDay }
+
+        // After the beginning of the next hour, we want to show data from the next week
+        val startLastWeek = now.plus(DateTimePeriod(days = -7, hours = 1), dutchTimeZone).toLocalDateTime(dutchTimeZone).truncateToHour()
+        val startLastWeekInstant = startLastWeek.toInstant(dutchTimeZone)
 
         // plusHours(1) will you straight into next day when it's past 23:00
         val endLastWeek = if (startLastWeek.hour == 0) {
-            startLastWeek.plusMinutes(10)
+            startLastWeekInstant.plus(10, DateTimeUnit.MINUTE)
         } else {
             // We also want the 00:00 hours to complete the day, but that one usually only arrives at something like 00:01
-            startLastWeek.atEndOfDay().plusMinutes(10)
+            startLastWeek.atEndOfDayIn(dutchTimeZone).plus(10, DateTimeUnit.MINUTE)
         }
-        val capacitiesPrediction = historicalCapacities.filter { it.dateTime >= startLastWeek && it.dateTime <= endLastWeek }
+        val capacitiesPrediction = historicalCapacities.filter { it.createTime >= startLastWeekInstant && it.createTime <= endLastWeek }
 
         // A fallback to 0 doesn't make too much sense, but this prevents a crash and empty days will be filtered out later
         val minCapacityToday = capacitiesToday.minOfOrNull { it.capacity } ?: 0
         val maxCapacityToday = capacitiesToday.maxOfOrNull { it.capacity } ?: 0
         val minCapacityPrediction = capacitiesPrediction.minOfOrNull { it.capacity } ?: 0
         val maxCapacityPrediction = capacitiesPrediction.maxOfOrNull { it.capacity } ?: 0
-        val contentDescription = getString(Res.string.graph_today_content_description, minCapacityToday, maxCapacityToday, minCapacityPrediction, maxCapacityPrediction)
+        val contentDescription = getString(
+            Res.string.graph_today_content_description,
+            minCapacityToday,
+            maxCapacityToday,
+            minCapacityPrediction,
+            maxCapacityPrediction
+        )
 
         val graphToday = GraphDayModel(
             isToday = true,
-            nowInNL.dayOfWeek.getDisplayName(TextStyle.NARROW, dutchLocale),
-            nowInNL.dayOfWeek.getDisplayName(TextStyle.FULL, dutchLocale),
+            nowInNL.date.toNarrowDayOfWeek(),
+            nowInNL.date.toFullDayOfWeek(),
             capacitiesToday,
             capacitiesPrediction,
             contentDescription
@@ -216,10 +240,10 @@ class DetailsMapper() {
     private fun convertHourlyCapacities(hourlyLocationCapacityDtos: List<HourlyLocationCapacityDto>): List<CapacityModel> {
         return hourlyLocationCapacityDtos.map {
             val firstCapacity = it.document.fields.first.integerValue.toInt()
-            val dateTime = it.document.createTime
+            val createTime = it.document.createTime
             CapacityModel(
                 firstCapacity,
-                dateTime.withZoneSameInstant(dutchZone)
+                createTime
             )
         }
     }

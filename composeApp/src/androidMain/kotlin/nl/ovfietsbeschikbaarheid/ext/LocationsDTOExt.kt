@@ -3,13 +3,14 @@ package nl.ovfietsbeschikbaarheid.ext
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.model.ServiceType
 import timber.log.Timber
-import java.time.Instant
-import java.time.temporal.ChronoUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 fun List<LocationDTO>.getMinutesSinceLastUpdate(now: Instant): Long {
     val lastUpdateTimestamp = this.maxOf { it.extra.fetchTime }
-    val lastUpdateInstant = Instant.ofEpochSecond(lastUpdateTimestamp)
-    return lastUpdateInstant.until(now, ChronoUnit.MINUTES)
+    val lastUpdateInstant = Instant.fromEpochSeconds(lastUpdateTimestamp)
+    return (now - lastUpdateInstant).inWholeMinutes
 }
 
 fun LocationDTO.getServiceType(): ServiceType? {

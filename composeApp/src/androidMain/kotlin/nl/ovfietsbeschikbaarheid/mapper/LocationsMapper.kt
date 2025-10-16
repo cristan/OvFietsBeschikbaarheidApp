@@ -11,8 +11,9 @@ import nl.ovfietsbeschikbaarheid.util.dutchLocale
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
-import java.time.Instant
 import kotlin.math.roundToInt
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 object LocationsMapper {
     val replacements = hashMapOf(
@@ -36,8 +37,9 @@ object LocationsMapper {
         Pair("OV-ebike Maastricht", "Maastricht - OV-ebike"),
     )
 
+    @OptIn(ExperimentalTime::class)
     fun map(locations: List<LocationDTO>): List<LocationOverviewModel> {
-        val minutesSinceLastUpdate = locations.getMinutesSinceLastUpdate(Instant.now())
+        val minutesSinceLastUpdate = locations.getMinutesSinceLastUpdate(Clock.System.now())
         val lastUpdateTooLongAgo = minutesSinceLastUpdate > 15
         if (lastUpdateTooLongAgo) {
             Timber.e("The last update was $minutesSinceLastUpdate minutes ago")

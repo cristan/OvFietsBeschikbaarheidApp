@@ -7,10 +7,11 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.time.Instant
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import kotlinx.datetime.LocalDate
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 class RatingStorageRepository(private val dataStore: DataStore<Preferences>) {
 
     private object RatingPrefKeys {
@@ -25,7 +26,7 @@ class RatingStorageRepository(private val dataStore: DataStore<Preferences>) {
 
     suspend fun recordNewVisit(today: LocalDate) {
         dataStore.edit {
-            val today = today.format(DateTimeFormatter.ISO_LOCAL_DATE)
+            val today = today.toString()
             val currentDates = it[RatingPrefKeys.DAILY_VISIT_DATES] ?: emptySet()
             if (!currentDates.contains(today)) {
                 it[RatingPrefKeys.DAILY_VISIT_DATES] = currentDates + today
@@ -44,7 +45,7 @@ class RatingStorageRepository(private val dataStore: DataStore<Preferences>) {
      */
     suspend fun recordRatingPromptedAndClearDailyVisits(now: Instant) {
         dataStore.edit { settings ->
-            settings[RatingPrefKeys.LAST_RATING_PROMPT_TIMESTAMP] = now.toEpochMilli()
+            settings[RatingPrefKeys.LAST_RATING_PROMPT_TIMESTAMP] = now.toEpochMilliseconds()
             settings[RatingPrefKeys.DAILY_VISIT_DATES] = emptySet()
         }
     }

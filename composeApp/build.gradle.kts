@@ -33,6 +33,8 @@ kotlin {
     
     sourceSets {
         androidMain.dependencies {
+            implementation(libs.kotlinx.datetime)
+
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
 
@@ -70,6 +72,7 @@ kotlin {
             implementation(libs.play.services.coroutines)
         }
         commonMain.dependencies {
+            implementation(libs.kotlinx.datetime)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
