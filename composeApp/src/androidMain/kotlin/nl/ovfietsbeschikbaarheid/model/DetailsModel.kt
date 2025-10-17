@@ -1,6 +1,5 @@
 package nl.ovfietsbeschikbaarheid.model
 
-import com.google.android.gms.maps.model.LatLng
 import nl.ovfietsbeschikbaarheid.resources.Res
 import nl.ovfietsbeschikbaarheid.resources.baseline_key_24
 import nl.ovfietsbeschikbaarheid.resources.baseline_person_24
@@ -28,7 +27,8 @@ data class DetailsModel(
     val disruptions: String?,
     val directions: String?,
     val location: AddressModel?,
-    val coordinates: LatLng,
+    val latitude: Double,
+    val longitude: Double,
     val stationName: String?,
     val alternatives: List<DetailScreenData>,
     val graphDays: List<GraphDayModel>,

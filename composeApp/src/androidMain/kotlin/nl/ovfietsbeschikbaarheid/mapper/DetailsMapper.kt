@@ -1,6 +1,5 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
@@ -108,7 +107,8 @@ class DetailsMapper() {
             about = about,
             disruptions = disruptions,
             location = location,
-            coordinates = LatLng(locationDTO.lat, locationDTO.lng),
+            latitude = locationDTO.lat,
+            longitude = locationDTO.lng,
             stationName = allStations[locationDTO.stationCode],
             alternatives = alternatives,
             openState = locationDTO.openingHours?.let {

@@ -345,7 +345,8 @@ private fun ActualDetails(
 
             Location(
                 details.location,
-                details.coordinates,
+                details.latitude,
+                details.longitude,
                 details.directions,
                 details.description,
                 details.rentalBikesAvailable,
@@ -462,12 +463,14 @@ private fun Disruptions(disruptions: String) {
 @Composable
 private fun Location(
     location: AddressModel?,
-    coordinates: LatLng,
+    latitude: Double,
+    longitude: Double,
     directions: String?,
     description: String,
     rentalBikesAvailable: Int?,
     onNavigateClicked: (String) -> Unit
 ) {
+    val coordinates = LatLng(latitude, longitude)
     OvCard {
         Text(
             text = stringResource(Res.string.location_title),
@@ -717,7 +720,8 @@ fun DetailsPreview() {
         "Helaas kunt u hier op dit moment geen OV-fiets huren. Onze excuses voor dit ongemak. Raadpleeg de NS Reisplanner app of website (ns.nl/ov-fiets) voor de dichtstbijzijnde OV-fiets verhuurlocatie.",
         directions,
         addressModel,
-        LatLng(52.15446, 5.37339),
+        52.15446,
+        5.37339,
         "Amersfoort",
         listOf(
             DetailScreenData(
