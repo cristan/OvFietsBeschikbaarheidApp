@@ -30,5 +30,5 @@ private fun getDistanceFromLatLon(lat1: Double, lon1: Double, lat2: Double, lon2
 }
 
 private fun deg2rad(degrees: Double): Double {
-    return degrees * (Math.PI / 180)
+    return degrees * (3.141592653589793 / 180)
 }

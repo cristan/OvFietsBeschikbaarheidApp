@@ -42,7 +42,6 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.ktx)
             implementation(libs.androidx.activity.compose)
             implementation(project.dependencies.platform(libs.androidx.compose.bom))
-            implementation(libs.androidx.datastore.preferences)
             implementation(libs.play.review.ktx)
             implementation(libs.androidx.ui)
             implementation(libs.androidx.ui.graphics)
@@ -54,8 +53,6 @@ kotlin {
             implementation(libs.kermit)
             implementation(libs.compose.shimmer)
 
-            implementation(libs.compass.geocoder)
-            implementation(libs.compass.geocoder.mobile)
             implementation(libs.compass.permissions.mobile)
 
             implementation(project.dependencies.platform(libs.koin.bom))
@@ -63,13 +60,12 @@ kotlin {
             implementation(libs.koin.androidx.compose)
 
             implementation(libs.ktor.client.android)
-            implementation(libs.ktor.client.serialization)
-            implementation(libs.ktor.client.serialization.json)
-            implementation(libs.ktor.client.contentnegotiation)
-            implementation(libs.ktor.client.logging)
 
             implementation(libs.play.services.location)
             implementation(libs.play.services.coroutines)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.ios)
         }
         commonMain.dependencies {
             implementation(libs.kotlinx.datetime)
@@ -81,6 +77,18 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.kermit)
+            implementation(libs.compose.shimmer)
+
+            implementation(libs.ktor.client.serialization)
+            implementation(libs.ktor.client.serialization.json)
+            implementation(libs.ktor.client.contentnegotiation)
+            implementation(libs.ktor.client.logging)
+
+            implementation(libs.compass.geocoder)
+            implementation(libs.compass.geocoder.mobile)
+
+            implementation(libs.androidx.datastore.preferences)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
