@@ -16,6 +16,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.plus
 import nl.ovfietsbeschikbaarheid.TestData
+import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.model.OverviewDataModel
@@ -23,6 +24,7 @@ import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.testutils.MainDispatcherRule
 import nl.ovfietsbeschikbaarheid.testutils.shouldBeEqualTo
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
+import nl.ovfietsbeschikbaarheid.util.DecimalFormatter
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
@@ -47,9 +49,10 @@ class HomeViewModelTest {
     private val overviewRepository: OverviewRepository = mockk()
     private val locationPermissionHelper: LocationPermissionHelper = mockk(relaxUnitFun = true)
     private val locationLoader: LocationLoader = mockk()
+    private val locationsMapper = LocationsMapper(DecimalFormatter())
     private val ratingEligibilityService: RatingEligibilityService = mockk(relaxed = true)
     private val reviewManager: ReviewManager = mockk()
-    private val viewModel = HomeViewModel(findNearbyLocationsUseCase, overviewRepository, locationPermissionHelper, locationLoader, ratingEligibilityService, reviewManager)
+    private val viewModel = HomeViewModel(findNearbyLocationsUseCase, overviewRepository, locationPermissionHelper, locationLoader, locationsMapper, ratingEligibilityService, reviewManager)
 
     @Test
     fun `starting up the app when you have all the permissions and everything works - GPS first`() = runTest {

@@ -36,6 +36,7 @@ class HomeViewModel(
     private val overviewRepository: OverviewRepository,
     private val locationPermissionHelper: LocationPermissionHelper,
     private val locationLoader: LocationLoader,
+    private val locationsMapper: LocationsMapper,
     private val ratingEligibilityService: RatingEligibilityService,
     private val reviewManager: ReviewManager
 ) : ViewModel() {
@@ -273,7 +274,7 @@ class HomeViewModel(
                         // with isRefreshing = true while the coordinates continue loading.
                         val lastKnownCoordinates = locationLoader.getLastKnownCoordinates()
                         if (lastKnownCoordinates != null) {
-                            val locationsWithDistance = LocationsMapper.withDistance(loadedOverviewData.locations, lastKnownCoordinates)
+                            val locationsWithDistance = locationsMapper.withDistance(loadedOverviewData.locations, lastKnownCoordinates)
                             Logger.d("awaitAndShowLocationsWithDistance: using last known coordinates")
                             _content.value = HomeContent.GpsContent(locationsWithDistance, Clock.System.now(), isRefreshing = true)
                         }
@@ -287,7 +288,7 @@ class HomeViewModel(
                     _content.value = HomeContent.NoGpsLocation
                 } else {
                     Logger.d("awaitAndShowLocationsWithDistance: using loaded coordinates")
-                    val locationsWithDistance = LocationsMapper.withDistance(loadedOverviewData.locations, loadedCoordinates)
+                    val locationsWithDistance = locationsMapper.withDistance(loadedOverviewData.locations, loadedCoordinates)
                     _content.value = HomeContent.GpsContent(locationsWithDistance, Clock.System.now())
 
                     ratingEligibilityService.onGpsContentViewed()

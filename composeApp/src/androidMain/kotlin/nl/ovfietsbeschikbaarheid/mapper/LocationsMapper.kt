@@ -8,14 +8,14 @@ import nl.ovfietsbeschikbaarheid.ext.getMinutesSinceLastUpdate
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
-import nl.ovfietsbeschikbaarheid.util.dutchLocale
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
+import nl.ovfietsbeschikbaarheid.util.DecimalFormatter
 import kotlin.math.roundToInt
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-object LocationsMapper {
+class LocationsMapper(
+    private val decimalFormatter: DecimalFormatter
+) {
     val replacements = hashMapOf(
         Pair("s-Hertogenbosch", "'s-Hertogenbosch"),
         Pair("Delft, Fietsenstalling", "Delft"),
@@ -63,13 +63,6 @@ object LocationsMapper {
     }
 
     fun withDistance(locations: List<LocationOverviewModel>, currentCoordinates: Coordinates): List<LocationOverviewWithDistanceModel> {
-        val symbols = DecimalFormatSymbols(dutchLocale)
-
-        val kmFormat = DecimalFormat().apply {
-            minimumFractionDigits = 1
-            maximumFractionDigits = 1
-            decimalFormatSymbols = symbols
-        }
         return locations
             .sortedBy { it.distanceTo(currentCoordinates) }
             .map {
@@ -77,7 +70,7 @@ object LocationsMapper {
                 val formattedDistance = if (distance < 1000) {
                     "${distance.roundToInt()} m"
                 } else {
-                    "${kmFormat.format(distance / 1000)} km"
+                    "${decimalFormatter.format(distance / 1000, 1)} km"
                 }
                 LocationOverviewWithDistanceModel(formattedDistance, it)
             }

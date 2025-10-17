@@ -5,7 +5,9 @@ import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OverviewDataModel
 
-class OverviewRepository {
+class OverviewRepository(
+    private val locationsMapper: LocationsMapper
+) {
     private var lastResult: OverviewDataModel? = null
 
     private val httpClient = KtorApiClient()
@@ -24,8 +26,8 @@ class OverviewRepository {
 
     suspend fun getOverviewData(): OverviewDataModel {
         val locations = httpClient.getLocations()
-        val mappedLocations = LocationsMapper.map(locations)
-        val pricePer24Hours = LocationsMapper.getPricePer24Hours(locations)
+        val mappedLocations = locationsMapper.map(locations)
+        val pricePer24Hours = locationsMapper.getPricePer24Hours(locations)
         val result = OverviewDataModel(
             locations = mappedLocations,
             pricePer24Hours = pricePer24Hours,

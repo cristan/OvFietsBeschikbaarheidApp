@@ -4,6 +4,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.runBlocking
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
+import nl.ovfietsbeschikbaarheid.util.DecimalFormatter
 import org.junit.Test
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -16,12 +17,13 @@ class LocationsDataTest {
     fun test() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val stationRepository = StationRepository(context)
+        val locationsMapper = LocationsMapper(DecimalFormatter())
         val allStations = stationRepository.getAllStations()
         runBlocking {
             val httpClient = KtorApiClient()
             val locations = httpClient.getLocations()
-            val allLocations = LocationsMapper.map(locations)
-            val pricePer24Hours = LocationsMapper.getPricePer24Hours(locations)
+            val allLocations = locationsMapper.map(locations)
+            val pricePer24Hours = locationsMapper.getPricePer24Hours(locations)
 
             val lastUpdateTimestamp = allLocations.maxOf { it.fetchTime }
             val lastUpdateInstant = Instant.fromEpochSeconds(lastUpdateTimestamp)
@@ -43,7 +45,7 @@ class LocationsDataTest {
                 error("Could not determine the price per 24 hours!")
             }
 
-            LocationsMapper.replacements.keys.forEach { replacementOriginal ->
+            locationsMapper.replacements.keys.forEach { replacementOriginal ->
                 if (!locations.any { it.description == replacementOriginal }) {
                     error("Replacement $replacementOriginal not found")
                 }

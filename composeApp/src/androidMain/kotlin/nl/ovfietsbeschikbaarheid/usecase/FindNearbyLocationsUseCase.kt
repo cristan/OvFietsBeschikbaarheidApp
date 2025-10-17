@@ -8,7 +8,8 @@ import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 
 class FindNearbyLocationsUseCase(
-    private val geocoder: Geocoder
+    private val geocoder: Geocoder,
+    private val locationsMapper: LocationsMapper,
 ) {
     suspend operator fun invoke(
         searchTerm: String,
@@ -24,7 +25,7 @@ class FindNearbyLocationsUseCase(
 
         return if (coordinates != null) {
             val foundCoordinates = coordinates.find { it.isInTheNetherlands() } ?: coordinates[0]
-            LocationsMapper.withDistance(allLocations, foundCoordinates)
+            locationsMapper.withDistance(allLocations, foundCoordinates)
         } else {
             null
         }

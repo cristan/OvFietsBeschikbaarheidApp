@@ -7,11 +7,13 @@ import dev.jordond.compass.geocoder.Geocoder
 import dev.jordond.compass.geocoder.mobile
 import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
+import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.repository.DetailsRepository
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.RatingStorageRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
+import nl.ovfietsbeschikbaarheid.util.DecimalFormatter
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
@@ -37,7 +39,9 @@ fun appModule() = module {
     singleOf(::StationRepository)
     singleOf(::DetailsRepository)
     singleOf(::LocationPermissionHelper)
+    factoryOf(::DecimalFormatter)
     factoryOf(::DetailsMapper)
+    factoryOf(::LocationsMapper)
     factoryOf(::LocationLoader)
     factoryOf(::FindNearbyLocationsUseCase)
 
