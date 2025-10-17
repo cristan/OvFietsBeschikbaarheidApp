@@ -1,15 +1,12 @@
 package nl.ovfietsbeschikbaarheid.repository
 
-import android.content.Context
 import co.touchlab.kermit.Logger
 import kotlinx.serialization.json.Json
-import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.dto.Station
+import nl.ovfietsbeschikbaarheid.resources.Res
 import kotlin.time.measureTimedValue
 
-class StationRepository(
-    private val context: Context
-) {
+class StationRepository() {
     private var cachedStations: Map<String, String>? = null
 
     private val json = Json
@@ -17,16 +14,16 @@ class StationRepository(
     /**
      * Returns a map between station code and station name
      */
-    fun getAllStations(): Map<String, String> {
+    suspend fun getAllStations(): Map<String, String> {
         cachedStations?.let {
             return it
         }
         val (stations, timeTaken) = measureTimedValue {
-            val stationsStream = context.resources.openRawResource(R.raw.stations)
-            val inputAsString = stationsStream.bufferedReader().use { it.readText() }
-            json.decodeFromString<List<Station>>(inputAsString)
+            val stationsJsonString = Res.readBytes("files/stations.json").decodeToString()
+            json.decodeFromString<List<Station>>(stationsJsonString)
                 .associate { it.code to it.name }
         }
+
         Logger.d("Loaded stations in $timeTaken")
         cachedStations = stations
         return stations

@@ -1,6 +1,5 @@
 package nl.ovfietsbeschikbaarheid
 
-import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.runBlocking
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
@@ -15,11 +14,10 @@ class LocationsDataTest {
 
     @Test
     fun test() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val stationRepository = StationRepository(context)
+        val stationRepository = StationRepository()
         val locationsMapper = LocationsMapper(DecimalFormatter())
-        val allStations = stationRepository.getAllStations()
         runBlocking {
+            val allStations = stationRepository.getAllStations()
             val httpClient = KtorApiClient()
             val locations = httpClient.getLocations()
             val allLocations = locationsMapper.map(locations)
