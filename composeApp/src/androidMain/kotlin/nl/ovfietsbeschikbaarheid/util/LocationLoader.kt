@@ -1,6 +1,5 @@
 package nl.ovfietsbeschikbaarheid.util
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.LOCATION_SERVICE
 import android.location.Location
@@ -26,7 +25,7 @@ class LocationLoader(
         LocationServices.getFusedLocationProviderClient(context)
     }
 
-    @SuppressLint("MissingPermission")
+    @Suppress("MissingPermission")
     suspend fun getLastKnownCoordinates(): Coordinates? {
         val playServicesAvailable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)
         if (playServicesAvailable != ConnectionResult.SUCCESS) {
@@ -35,7 +34,7 @@ class LocationLoader(
         return fusedLocationClient.lastLocation.await()?.toCoordinates()
     }
 
-    @SuppressLint("MissingPermission")
+    @Suppress("MissingPermission")
     suspend fun loadCurrentCoordinates(): Coordinates? {
         Logger.d("Loading location")
         val playServicesAvailable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)
@@ -63,7 +62,7 @@ class LocationLoader(
     }
 }
 
-@SuppressLint("MissingPermission")
+@Suppress("MissingPermission")
 private suspend fun LocationManager.awaitCurrentLocation(): Location? {
     return suspendCancellableCoroutine { continuation ->
         val locationListener = object : LocationListener {

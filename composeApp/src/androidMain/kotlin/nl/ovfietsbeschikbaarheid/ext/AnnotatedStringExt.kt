@@ -1,6 +1,5 @@
 package nl.ovfietsbeschikbaarheid.ext
 
-import android.annotation.SuppressLint
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.AnnotatedString
@@ -10,7 +9,7 @@ import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 
-@SuppressLint("ComposableNaming")
+@Suppress("ComposableNaming")
 @Composable
 fun AnnotatedString.Builder.withStyledLink(
     url: String,
