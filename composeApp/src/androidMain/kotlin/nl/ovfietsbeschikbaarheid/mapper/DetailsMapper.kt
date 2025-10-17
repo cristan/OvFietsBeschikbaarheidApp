@@ -1,5 +1,6 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
+import co.touchlab.kermit.Logger
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
@@ -37,7 +38,6 @@ import nl.ovfietsbeschikbaarheid.resources.graph_previous_day_content_descriptio
 import nl.ovfietsbeschikbaarheid.resources.graph_today_content_description
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
-import timber.log.Timber
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -186,7 +186,7 @@ class DetailsMapper() {
 
         val graphDays = previousDays + listOf(graphToday) + nextDays
         if (graphDays.any { it.capacityHistory.isEmpty() && it.capacityPrediction.isEmpty() }) {
-            Timber.e("Empty graph days found! Returning nothing to prevent weird issues.")
+            Logger.e("Empty graph days found! Returning nothing to prevent weird issues.")
             return emptyList()
         }
         return graphDays

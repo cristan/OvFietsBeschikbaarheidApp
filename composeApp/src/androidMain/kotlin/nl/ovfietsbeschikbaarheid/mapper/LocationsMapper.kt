@@ -1,5 +1,6 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
+import co.touchlab.kermit.Logger
 import dev.jordond.compass.Coordinates
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.ext.distanceTo
@@ -8,7 +9,6 @@ import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
 import nl.ovfietsbeschikbaarheid.util.dutchLocale
-import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import kotlin.math.roundToInt
@@ -42,7 +42,7 @@ object LocationsMapper {
         val minutesSinceLastUpdate = locations.getMinutesSinceLastUpdate(Clock.System.now())
         val lastUpdateTooLongAgo = minutesSinceLastUpdate > 15
         if (lastUpdateTooLongAgo) {
-            Timber.e("The last update was $minutesSinceLastUpdate minutes ago")
+            Logger.e("The last update was $minutesSinceLastUpdate minutes ago")
         }
 
         return locations.map { toMap ->

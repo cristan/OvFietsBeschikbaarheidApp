@@ -1,11 +1,11 @@
 package nl.ovfietsbeschikbaarheid.usecase
 
+import co.touchlab.kermit.Logger
 import dev.jordond.compass.geocoder.Geocoder
 import nl.ovfietsbeschikbaarheid.ext.isInTheNetherlands
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
-import timber.log.Timber
 
 class FindNearbyLocationsUseCase(
     private val geocoder: Geocoder
@@ -16,7 +16,7 @@ class FindNearbyLocationsUseCase(
     ): List<LocationOverviewWithDistanceModel>? {
         val geoCoderAvailable = geocoder.isAvailable()
         if (!geoCoderAvailable) {
-            Timber.w("No geocoder available!")
+            Logger.w("No geocoder available!")
             return null
         }
 

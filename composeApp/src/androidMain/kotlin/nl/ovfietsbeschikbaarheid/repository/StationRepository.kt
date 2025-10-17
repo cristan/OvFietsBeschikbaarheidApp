@@ -1,10 +1,10 @@
 package nl.ovfietsbeschikbaarheid.repository
 
 import android.content.Context
+import co.touchlab.kermit.Logger
 import kotlinx.serialization.json.Json
 import nl.ovfietsbeschikbaarheid.R
 import nl.ovfietsbeschikbaarheid.dto.Station
-import timber.log.Timber
 import kotlin.time.measureTimedValue
 
 class StationRepository(
@@ -27,7 +27,7 @@ class StationRepository(
             json.decodeFromString<List<Station>>(inputAsString)
                 .associate { it.code to it.name }
         }
-        Timber.d("Loaded stations in $timeTaken")
+        Logger.d("Loaded stations in $timeTaken")
         cachedStations = stations
         return stations
     }

@@ -1,5 +1,6 @@
 package nl.ovfietsbeschikbaarheid
 
+import co.touchlab.kermit.Logger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.cache.HttpCache
@@ -13,7 +14,6 @@ import kotlinx.serialization.json.Json
 import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
 import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
-import timber.log.Timber
 import kotlin.time.measureTimedValue
 
 class KtorApiClient {
@@ -29,7 +29,7 @@ class KtorApiClient {
 //        install(Logging) {
 //            logger = object : Logger {
 //                override fun log(message: String) {
-//                    Timber.d(message)
+//                    Logger.d(message)
 //                }
 //            }
 //            level = LogLevel.ALL
@@ -41,16 +41,16 @@ class KtorApiClient {
         val (locations, timeTaken) = measureTimedValue {
             httpClient.get("https://storage.googleapis.com/ov-fiets-updates/locations.json").body<List<LocationDTO>>()
         }
-        Timber.d("Loaded locations in $timeTaken")
+        Logger.d("Loaded locations in $timeTaken")
         return locations
     }
 
     suspend fun getNSApiDetails(detailUri: String): DetailsDTO? {
-        Timber.i("Loading $detailUri")
+        Logger.i("Loading $detailUri")
         val (result, timeTaken) = measureTimedValue {
             httpClient.get(detailUri)
         }
-        Timber.d("Loaded $detailUri in $timeTaken")
+        Logger.d("Loaded $detailUri in $timeTaken")
         if (result.status.value == 404) {
             return null
         }
@@ -58,7 +58,7 @@ class KtorApiClient {
     }
 
     suspend fun getHistory(code: String, startDate: String): List<HourlyLocationCapacityDto> {
-        Timber.i("Loading the history of $code since $startDate")
+        Logger.i("Loading the history of $code since $startDate")
         val body = """
         {
             "structuredQuery": {
@@ -116,7 +116,7 @@ class KtorApiClient {
             }
             result.body<List<HourlyLocationCapacityDto>>()
         }
-        Timber.d("Loaded the history of $code since $startDate in $timeTaken")
+        Logger.d("Loaded the history of $code since $startDate in $timeTaken")
         return history
     }
 

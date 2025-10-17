@@ -1,9 +1,9 @@
 package nl.ovfietsbeschikbaarheid.repository
 
+import co.touchlab.kermit.Logger
 import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.ext.getMinutesSinceLastUpdate
-import timber.log.Timber
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -17,14 +17,14 @@ class DetailsRepository(
         val location = allLocations.find { it.extra.locationCode == locationCode }
         if (location == null) {
             // Should be super duper rare, only when the location happens to disappear from the list in the meantime between loading the overview and going to the details
-            Timber.w("Location with code $locationCode not found!")
+            Logger.w("Location with code $locationCode not found!")
             return null
         }
 
         val minutesSinceLastUpdate = allLocations.getMinutesSinceLastUpdate(Clock.System.now())
         val lastUpdateTooLongAgo = minutesSinceLastUpdate > 15
         if (lastUpdateTooLongAgo) {
-            Timber.e("The last update was $minutesSinceLastUpdate minutes ago")
+            Logger.e("The last update was $minutesSinceLastUpdate minutes ago")
         }
 
         if (location.extra.rentalBikes == null || lastUpdateTooLongAgo) {

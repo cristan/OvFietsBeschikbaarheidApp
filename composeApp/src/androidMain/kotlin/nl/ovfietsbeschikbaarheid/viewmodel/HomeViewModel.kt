@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import com.google.android.play.core.review.ReviewInfo
 import com.google.android.play.core.review.ReviewManager
 import dev.jordond.compass.Coordinates
@@ -24,7 +25,6 @@ import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
-import timber.log.Timber
 import java.util.concurrent.CancellationException
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -64,7 +64,7 @@ class HomeViewModel(
      * Called when the screen is launched, but also when navigating back from the details screen.
      */
     fun onScreenLaunched() {
-        Timber.d("screenLaunched called ${System.currentTimeMillis()}")
+        Logger.d("screenLaunched called ${System.currentTimeMillis()}")
         if (content.value is HomeContent.InitialEmpty) {
             // Screen launched for the first time
             overviewData = viewModelScope.async {
@@ -77,7 +77,7 @@ class HomeViewModel(
     }
 
     fun onReturnedToScreen(now: Instant = Clock.System.now()) {
-        Timber.d("onReturnedToScreen called")
+        Logger.d("onReturnedToScreen called")
         val currentlyShown = _content.value
         when {
             currentlyShown is HomeContent.GpsTurnedOff && locationPermissionHelper.isGpsTurnedOn() -> {
@@ -118,7 +118,7 @@ class HomeViewModel(
     }
 
     fun onPullToRefresh() {
-        Timber.d("onPullToRefresh called")
+        Logger.d("onPullToRefresh called")
         _content.value = (_content.value as HomeContent.GpsContent).copy(isRefreshing = true)
         // TODO: when this fails, show a snackbar instead of blocking the entire screen
         refresh()
@@ -137,7 +137,7 @@ class HomeViewModel(
     }
 
     fun onRequestPermissionsClicked(currentState: AskPermissionState) {
-        Timber.d("requestGpsPermissions called")
+        Logger.d("requestGpsPermissions called")
 
         if (currentState == AskPermissionState.DeniedPermanently) {
             locationPermissionHelper.openSettings()
@@ -193,7 +193,7 @@ class HomeViewModel(
                     _pricePer24Hours.value = loadedOverviewData.pricePer24Hours
                     showSearchTerm(searchTerm, loadedOverviewData.locations)
                 } catch (e: Exception) {
-                    Timber.e(e, "onSearchTermChanged: Failed to fetch locations.")
+                    Logger.e(e) { "onSearchTermChanged: Failed to fetch locations." }
                     _content.value = HomeContent.NetworkError
                 }
             }
@@ -246,21 +246,21 @@ class HomeViewModel(
             } catch (e: Exception) {
                 // Whenever this fails, we just don't know the price per 24 hours.
                 // That's fine for now, we won't bother the user that their internet apparently doesn't work until they approve loading GPS locations
-                Timber.e(e, "fetchPriceDataIndependently: Failed to fetch overview data for price.")
+                Logger.e(e) { "fetchPriceDataIndependently: Failed to fetch overview data for price." }
             }
         }
     }
 
     private fun awaitAndShowLocationsWithDistance() {
         loadGpsLocationJob = viewModelScope.launch {
-            Timber.d("awaitAndShowLocationsWithDistance: Fetching location")
+            Logger.d("awaitAndShowLocationsWithDistance: Fetching location")
 
             try {
                 // Load the locations and coordinates in parallel
                 val coordinatesDeferred = async {
                     lastLoadedCoordinates ?: locationLoader.loadCurrentCoordinates()
                 }
-                Timber.d("awaitAndShowLocationsWithDistance: awaiting locations")
+                Logger.d("awaitAndShowLocationsWithDistance: awaiting locations")
                 val loadedOverviewData = overviewData.await()
                 _pricePer24Hours.value = loadedOverviewData.pricePer24Hours
 
@@ -274,7 +274,7 @@ class HomeViewModel(
                         val lastKnownCoordinates = locationLoader.getLastKnownCoordinates()
                         if (lastKnownCoordinates != null) {
                             val locationsWithDistance = LocationsMapper.withDistance(loadedOverviewData.locations, lastKnownCoordinates)
-                            Timber.d("awaitAndShowLocationsWithDistance: using last known coordinates")
+                            Logger.d("awaitAndShowLocationsWithDistance: using last known coordinates")
                             _content.value = HomeContent.GpsContent(locationsWithDistance, Clock.System.now(), isRefreshing = true)
                         }
                     }
@@ -286,19 +286,19 @@ class HomeViewModel(
                 if (loadedCoordinates == null) {
                     _content.value = HomeContent.NoGpsLocation
                 } else {
-                    Timber.d("awaitAndShowLocationsWithDistance: using loaded coordinates")
+                    Logger.d("awaitAndShowLocationsWithDistance: using loaded coordinates")
                     val locationsWithDistance = LocationsMapper.withDistance(loadedOverviewData.locations, loadedCoordinates)
                     _content.value = HomeContent.GpsContent(locationsWithDistance, Clock.System.now())
 
                     ratingEligibilityService.onGpsContentViewed()
-                    if(ratingEligibilityService.shouldRequestRating()) {
+                    if (ratingEligibilityService.shouldRequestRating()) {
                         requestRating()
                     }
                 }
             } catch (_: CancellationException) {
                 // The job got cancelled. That's fine: the new job will show the user what they want.
             } catch (e: IOException) {
-                Timber.e(e, "fetchLocation: Failed to fetch location")
+                Logger.e(e) { "fetchLocation: Failed to fetch location" }
                 _content.value = HomeContent.NetworkError
             }
         }
@@ -310,7 +310,7 @@ class HomeViewModel(
             if (task.isSuccessful) {
                 _reviewInfo.value = task.result
             } else {
-                Timber.e(task.exception, "Failed to request review flow")
+                Logger.e(task.exception) { "Failed to request review flow" }
             }
         }
     }

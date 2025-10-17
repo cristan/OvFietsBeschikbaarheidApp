@@ -51,7 +51,7 @@ kotlin {
             implementation(libs.androidx.navigation.compose)
 
             implementation(libs.google.maps.compose)
-            implementation(libs.timber)
+            implementation(libs.kermit)
             implementation(libs.compose.shimmer)
 
             implementation(libs.compass.geocoder)

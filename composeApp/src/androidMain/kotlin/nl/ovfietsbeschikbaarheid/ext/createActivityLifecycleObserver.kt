@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import timber.log.Timber
+import co.touchlab.kermit.Logger
 
 fun createActivityLifecycleObserver(
     block: (ComponentActivity) -> Unit,
@@ -14,7 +14,7 @@ fun createActivityLifecycleObserver(
             if (activity is ComponentActivity) {
                 block(activity)
             } else {
-                Timber.e("Activity is not a ComponentActivity. Cannot attach lifecycle observer.")
+                Logger.e("Activity is not a ComponentActivity. Cannot attach lifecycle observer.")
             }
         }
 

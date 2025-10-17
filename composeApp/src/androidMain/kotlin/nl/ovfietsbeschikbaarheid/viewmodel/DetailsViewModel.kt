@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -29,7 +30,6 @@ import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.state.setRefreshing
-import timber.log.Timber
 import java.io.IOException
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -135,7 +135,7 @@ class DetailsViewModel(
                     }
                     _screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
                 } catch (e: IOException) {
-                    Timber.e(e)
+                    Logger.e(e) { "Error fetching details" }
                     _screenState.value = ScreenState.FullPageError
                 }
 

@@ -6,6 +6,7 @@ import android.content.Context.LOCATION_SERVICE
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import co.touchlab.kermit.Logger
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.CurrentLocationRequest
@@ -16,7 +17,6 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import dev.jordond.compass.Coordinates
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
-import timber.log.Timber
 import kotlin.coroutines.resume
 
 class LocationLoader(
@@ -37,7 +37,7 @@ class LocationLoader(
 
     @SuppressLint("MissingPermission")
     suspend fun loadCurrentCoordinates(): Coordinates? {
-        Timber.d("Loading location")
+        Logger.d("Loading location")
         val playServicesAvailable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)
         if (playServicesAvailable != ConnectionResult.SUCCESS) {
             // No Play Services. Fall back to the old fashioned way.
