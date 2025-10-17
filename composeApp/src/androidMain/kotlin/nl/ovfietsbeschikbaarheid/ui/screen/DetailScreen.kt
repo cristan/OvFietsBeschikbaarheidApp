@@ -5,9 +5,7 @@ import android.content.res.Configuration
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +26,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -49,7 +46,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
@@ -60,14 +56,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.google.android.gms.maps.GoogleMapOptions
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapColorScheme
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.rememberCameraPositionState
-import com.google.maps.android.compose.rememberUpdatedMarkerState
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
@@ -89,10 +77,8 @@ import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
 import nl.ovfietsbeschikbaarheid.resources.Res
-import nl.ovfietsbeschikbaarheid.resources.baseline_directions_24
 import nl.ovfietsbeschikbaarheid.resources.capacity_graph_title
 import nl.ovfietsbeschikbaarheid.resources.content_description_back
-import nl.ovfietsbeschikbaarheid.resources.content_description_navigate
 import nl.ovfietsbeschikbaarheid.resources.day_1
 import nl.ovfietsbeschikbaarheid.resources.day_2
 import nl.ovfietsbeschikbaarheid.resources.day_3
@@ -105,11 +91,9 @@ import nl.ovfietsbeschikbaarheid.resources.details_alternatives_at_this_location
 import nl.ovfietsbeschikbaarheid.resources.details_amount_available
 import nl.ovfietsbeschikbaarheid.resources.details_amount_unknown
 import nl.ovfietsbeschikbaarheid.resources.details_capacity
-import nl.ovfietsbeschikbaarheid.resources.details_coordinates
 import nl.ovfietsbeschikbaarheid.resources.details_no_data_message
 import nl.ovfietsbeschikbaarheid.resources.details_no_data_title
 import nl.ovfietsbeschikbaarheid.resources.location_title
-import nl.ovfietsbeschikbaarheid.resources.map_available
 import nl.ovfietsbeschikbaarheid.resources.open_state_closed
 import nl.ovfietsbeschikbaarheid.resources.open_state_closes_at
 import nl.ovfietsbeschikbaarheid.resources.open_state_closing_soon
@@ -121,6 +105,7 @@ import nl.ovfietsbeschikbaarheid.resources.opening_hours_title
 import nl.ovfietsbeschikbaarheid.resources.pedal_bike_24px
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
+import nl.ovfietsbeschikbaarheid.ui.components.MapComponent
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
@@ -343,7 +328,7 @@ private fun ActualDetails(
                 Disruptions(it)
             }
 
-            Location(
+            MapComponent(
                 details.location,
                 details.latitude,
                 details.longitude,
@@ -456,90 +441,6 @@ private fun Disruptions(disruptions: String) {
     ) {
         Column(Modifier.padding(16.dp)) {
             Text(disruptions, color = Color.White)
-        }
-    }
-}
-
-@Composable
-private fun Location(
-    location: AddressModel?,
-    latitude: Double,
-    longitude: Double,
-    directions: String?,
-    description: String,
-    rentalBikesAvailable: Int?,
-    onNavigateClicked: (String) -> Unit
-) {
-    val coordinates = LatLng(latitude, longitude)
-    OvCard {
-        Text(
-            text = stringResource(Res.string.location_title),
-            style = MaterialTheme.typography.headlineMedium,
-        )
-        val onAddressClick = {
-            if (location != null) {
-                val address =
-                    "${location.street} ${location.houseNumber} ${location.postalCode} ${location.city}"
-                onNavigateClicked(address)
-            } else {
-                onNavigateClicked("${coordinates.latitude}, ${coordinates.longitude}")
-            }
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick = onAddressClick)
-        ) {
-            HorizontalDivider(Modifier.padding(vertical = 16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    if (location != null) {
-                        Text("${location.street} ${location.houseNumber}")
-                        Text("${location.postalCode} ${location.city}")
-                    } else {
-                        Text(stringResource(Res.string.details_coordinates, coordinates.latitude, coordinates.longitude))
-                    }
-                }
-
-                Icon(
-                    painter = painterResource(Res.drawable.baseline_directions_24),
-                    tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = stringResource(Res.string.content_description_navigate),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            HorizontalDivider(Modifier.padding(vertical = 16.dp))
-        }
-
-        if (directions != null) {
-            Text(
-                text = directions,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-        }
-
-        val cameraPositionState = rememberCameraPositionState {
-            position = CameraPosition.fromLatLngZoom(coordinates, 15f)
-        }
-        GoogleMap(
-            modifier = Modifier
-                .height(260.dp)
-                .clip(RoundedCornerShape(12.dp)),
-            cameraPositionState = cameraPositionState,
-            googleMapOptionsFactory = { GoogleMapOptions().mapColorScheme(MapColorScheme.FOLLOW_SYSTEM) }
-        ) {
-            Marker(
-                //                    icon = Icons.Filled.,
-                state = rememberUpdatedMarkerState(position = coordinates),
-                title = description,
-                snippet = stringResource(Res.string.map_available, rentalBikesAvailable?.toString() ?: "??")
-            )
         }
     }
 }
