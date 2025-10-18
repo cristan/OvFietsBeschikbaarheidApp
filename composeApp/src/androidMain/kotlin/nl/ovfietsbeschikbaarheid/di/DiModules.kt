@@ -2,7 +2,6 @@ package nl.ovfietsbeschikbaarheid.di
 
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
-import com.google.android.play.core.review.ReviewManagerFactory
 import dev.jordond.compass.geocoder.Geocoder
 import dev.jordond.compass.geocoder.mobile
 import nl.ovfietsbeschikbaarheid.KtorApiClient
@@ -13,7 +12,9 @@ import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.RatingStorageRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
+import nl.ovfietsbeschikbaarheid.util.AndroidInAppReviewProvider
 import nl.ovfietsbeschikbaarheid.util.DecimalFormatter
+import nl.ovfietsbeschikbaarheid.util.InAppReviewProvider
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
@@ -25,26 +26,30 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val Context.dataStore by preferencesDataStore("settings")
-
 fun appModule() = module {
     factoryOf(::KtorApiClient)
     factory { Geocoder.mobile() }
 
-    single { androidContext().dataStore }
-    single { ReviewManagerFactory.create(androidContext()) }
     singleOf(::RatingStorageRepository)
     singleOf(::RatingEligibilityService)
     singleOf(::OverviewRepository)
     singleOf(::StationRepository)
     singleOf(::DetailsRepository)
-    singleOf(::LocationPermissionHelper)
     factoryOf(::DecimalFormatter)
     factoryOf(::DetailsMapper)
     factoryOf(::LocationsMapper)
-    factoryOf(::LocationLoader)
     factoryOf(::FindNearbyLocationsUseCase)
 
     viewModelOf(::DetailsViewModel)
     viewModelOf(::HomeViewModel)
+}
+
+val Context.dataStore by preferencesDataStore("settings")
+
+fun androidModule() = module {
+    single { androidContext().dataStore }
+    single<AndroidInAppReviewProvider> { AndroidInAppReviewProvider(get()) }
+    single<InAppReviewProvider> { get<AndroidInAppReviewProvider>() }
+    singleOf(::LocationPermissionHelper)
+    factoryOf(::LocationLoader)
 }

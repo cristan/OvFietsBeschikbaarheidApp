@@ -1,13 +1,10 @@
 package nl.ovfietsbeschikbaarheid.viewmodel
 
-import android.app.Activity
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
-import com.google.android.play.core.review.ReviewInfo
-import com.google.android.play.core.review.ReviewManager
 import dev.jordond.compass.Coordinates
 import dev.jordond.compass.permissions.PermissionState
 import kotlinx.coroutines.Deferred
@@ -22,6 +19,7 @@ import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OverviewDataModel
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
+import nl.ovfietsbeschikbaarheid.util.InAppReviewProvider
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
@@ -38,7 +36,7 @@ class HomeViewModel(
     private val locationLoader: LocationLoader,
     private val locationsMapper: LocationsMapper,
     private val ratingEligibilityService: RatingEligibilityService,
-    private val reviewManager: ReviewManager
+    private val inAppReviewProvider: InAppReviewProvider
 ) : ViewModel() {
 
     private val _searchTerm = mutableStateOf("")
@@ -47,9 +45,6 @@ class HomeViewModel(
     // The initial value doesn't really matter: it gets overwritten right away anyway
     private val _content = mutableStateOf<HomeContent>(HomeContent.InitialEmpty)
     val content: State<HomeContent> = _content
-
-    private val _reviewInfo = mutableStateOf<ReviewInfo?>(null)
-    val reviewInfo: State<ReviewInfo?> = _reviewInfo
 
     private val _pricePer24Hours = mutableStateOf<String?>(null)
     val pricePer24Hours: State<String?> = _pricePer24Hours
@@ -293,7 +288,7 @@ class HomeViewModel(
 
                     ratingEligibilityService.onGpsContentViewed()
                     if (ratingEligibilityService.shouldRequestRating()) {
-                        requestRating()
+                        inAppReviewProvider.invokeAppReview()
                     }
                 }
             } catch (_: CancellationException) {
@@ -303,26 +298,5 @@ class HomeViewModel(
                 _content.value = HomeContent.NetworkError
             }
         }
-    }
-
-    private fun requestRating() {
-        val request = reviewManager.requestReviewFlow()
-        request.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                _reviewInfo.value = task.result
-            } else {
-                Logger.e(task.exception) { "Failed to request review flow" }
-            }
-        }
-    }
-
-    fun launchReviewFlow(activity: Activity, reviewInfo: ReviewInfo) {
-        reviewManager.launchReviewFlow(activity, reviewInfo)
-            .addOnCompleteListener { _ ->
-                viewModelScope.launch {
-                    ratingEligibilityService.onRatingPrompted()
-                }
-                _reviewInfo.value = null
-            }
     }
 }

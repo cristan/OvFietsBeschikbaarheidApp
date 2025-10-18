@@ -1,8 +1,10 @@
 package nl.ovfietsbeschikbaarheid.mapper
 
-import android.content.Context
-import androidx.lifecycle.SavedStateHandle
+import androidx.datastore.core.DataStore
 import nl.ovfietsbeschikbaarheid.di.appModule
+import nl.ovfietsbeschikbaarheid.util.InAppReviewProvider
+import nl.ovfietsbeschikbaarheid.util.LocationLoader
+import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import org.junit.Test
 import org.koin.test.KoinTest
 import org.koin.test.verify.verify
@@ -11,9 +13,9 @@ class CheckModulesTest : KoinTest {
 
     @Test
     fun `check all modules`() {
-        // Context is provided separately in MyApplication
-        // SavedStateHandle is supported by Koin out of the box since version 3.3.0: https://insert-koin.io/docs/reference/koin-android/viewmodel/#savedstatehandle-injection-330
-        // I don't know why the verify function doesn't know this.
-        appModule().verify(extraTypes = listOf(Context::class, SavedStateHandle::class))
+        // These classes come from the androidModule
+        appModule().verify(extraTypes =
+            listOf(DataStore::class, InAppReviewProvider::class, LocationPermissionHelper::class, LocationLoader::class)
+        )
     }
 }
