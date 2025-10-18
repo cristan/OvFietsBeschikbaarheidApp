@@ -133,21 +133,7 @@ fun DetailScreen(
         viewModel.screenLaunched(detailScreenData)
     }
 
-    val context = LocalContext.current
-    val onLocationClicked: (String) -> Unit = { address ->
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = "http://maps.google.co.in/maps?q=${
-            URLEncoder.encode(
-                address,
-                "UTF-8"
-            )
-        }".toUri()
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-        if (intent.resolveActivity(context.packageManager) != null) {
-            context.startActivity(intent)
-        }
-    }
+    val onLocationClicked: (String) -> Unit = onLocationClicked()
 
     // Refresh the screen on multitasking back to it
     OnReturnToScreenEffect(viewModel::onReturnToScreenTriggered)
@@ -530,6 +516,26 @@ private fun Alternatives(
             }
         }
     }
+}
+
+@Composable
+private fun onLocationClicked(): (String) -> Unit {
+    val context = LocalContext.current
+    val onLocationClicked: (String) -> Unit = { address ->
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = "http://maps.google.co.in/maps?q=${
+            URLEncoder.encode(
+                address,
+                "UTF-8"
+            )
+        }".toUri()
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        if (intent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(intent)
+        }
+    }
+    return onLocationClicked
 }
 
 @Preview(heightDp = 2000)
