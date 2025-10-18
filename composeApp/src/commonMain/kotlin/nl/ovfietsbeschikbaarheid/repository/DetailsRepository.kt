@@ -33,7 +33,7 @@ class DetailsRepository(
                 extra = location.extra.copy(
                     rentalBikes = nsApiDetails?.payload?.extra?.rentalBikes,
                     // The NS backend doesn't have a fetchTime, so assume right now
-                    fetchTime = System.currentTimeMillis()
+                    fetchTime = Clock.System.now().toEpochMilliseconds()
                 )
             )
         }

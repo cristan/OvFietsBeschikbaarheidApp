@@ -65,7 +65,7 @@ class HomeViewModel(
      * Called when the screen is launched, but also when navigating back from the details screen.
      */
     fun onScreenLaunched() {
-        Logger.d("screenLaunched called ${System.currentTimeMillis()}")
+        Logger.d("screenLaunched called ${Clock.System.now().toEpochMilliseconds()}")
         if (content.value is HomeContent.InitialEmpty) {
             // Screen launched for the first time
             overviewData = viewModelScope.async {

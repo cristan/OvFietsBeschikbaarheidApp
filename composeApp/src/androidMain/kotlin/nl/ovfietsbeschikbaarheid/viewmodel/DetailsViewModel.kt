@@ -83,7 +83,7 @@ class DetailsViewModel(
         viewModelScope.launch {
             supervisorScope {
                 try {
-                    val before = System.currentTimeMillis()
+                    val before = Clock.System.now().toEpochMilliseconds()
 
                     val detailsDeferred = async {
                         detailsRepository.getDetails(data.locationCode)
@@ -129,7 +129,7 @@ class DetailsViewModel(
                         allStationsDeferred.await(),
                         historyDeferred.await()
                     )
-                    val timeElapsed = System.currentTimeMillis() - before
+                    val timeElapsed = Clock.System.now().toEpochMilliseconds() - before
                     if (timeElapsed < minDelay) {
                         delay(minDelay - timeElapsed)
                     }
