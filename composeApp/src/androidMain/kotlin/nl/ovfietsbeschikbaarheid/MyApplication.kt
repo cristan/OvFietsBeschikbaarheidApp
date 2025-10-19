@@ -2,7 +2,7 @@ package nl.ovfietsbeschikbaarheid
 
 import android.app.Application
 import nl.ovfietsbeschikbaarheid.di.androidModule
-import nl.ovfietsbeschikbaarheid.di.appModule
+import nl.ovfietsbeschikbaarheid.di.commonModule
 import nl.ovfietsbeschikbaarheid.ext.createActivityLifecycleObserver
 import nl.ovfietsbeschikbaarheid.util.AndroidInAppReviewProvider
 import nl.ovfietsbeschikbaarheid.util.AndroidPlatformLocationHelper
@@ -30,7 +30,7 @@ class MyApplication : Application() {
         startKoin {
             androidContext(this@MyApplication)
             modules(
-                appModule(),
+                commonModule(),
                 androidModule()
             )
         }

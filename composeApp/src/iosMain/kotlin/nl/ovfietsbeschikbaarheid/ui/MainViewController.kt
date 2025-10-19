@@ -1,4 +1,4 @@
-package nl.ovfietsbeschikbaarheid
+package nl.ovfietsbeschikbaarheid.ui
 
 import androidx.compose.ui.window.ComposeUIViewController
 import nl.ovfietsbeschikbaarheid.ui.screen.AboutScreen
