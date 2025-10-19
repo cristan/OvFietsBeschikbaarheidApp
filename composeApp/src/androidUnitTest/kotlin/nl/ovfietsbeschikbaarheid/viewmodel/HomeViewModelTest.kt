@@ -23,9 +23,9 @@ import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.testutils.MainDispatcherRule
 import nl.ovfietsbeschikbaarheid.testutils.shouldBeEqualTo
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
+import nl.ovfietsbeschikbaarheid.util.AndroidLocationLoader
 import nl.ovfietsbeschikbaarheid.util.DecimalFormatter
 import nl.ovfietsbeschikbaarheid.util.InAppReviewProvider
-import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
 import org.junit.Rule
@@ -48,7 +48,7 @@ class HomeViewModelTest {
     private val findNearbyLocationsUseCase: FindNearbyLocationsUseCase = mockk()
     private val overviewRepository: OverviewRepository = mockk()
     private val locationPermissionHelper: LocationPermissionHelper = mockk(relaxUnitFun = true)
-    private val locationLoader: LocationLoader = mockk()
+    private val locationLoader: AndroidLocationLoader = mockk()
     private val locationsMapper = LocationsMapper(DecimalFormatter())
     private val ratingEligibilityService: RatingEligibilityService = mockk(relaxed = true)
     private val inAppReviewProvider: InAppReviewProvider = mockk()

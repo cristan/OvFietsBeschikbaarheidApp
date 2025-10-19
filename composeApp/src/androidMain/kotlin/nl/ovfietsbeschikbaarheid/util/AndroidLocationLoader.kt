@@ -18,15 +18,15 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
 
-class LocationLoader(
+class AndroidLocationLoader(
     private val context: Context
-){
+) : LocationLoader {
     private val fusedLocationClient by lazy {
         LocationServices.getFusedLocationProviderClient(context)
     }
 
     @Suppress("MissingPermission")
-    suspend fun getLastKnownCoordinates(): Coordinates? {
+    override suspend fun getLastKnownCoordinates(): Coordinates? {
         val playServicesAvailable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)
         if (playServicesAvailable != ConnectionResult.SUCCESS) {
             return null
@@ -35,7 +35,7 @@ class LocationLoader(
     }
 
     @Suppress("MissingPermission")
-    suspend fun loadCurrentCoordinates(): Coordinates? {
+    override suspend fun loadCurrentCoordinates(): Coordinates? {
         Logger.d("Loading location")
         val playServicesAvailable = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)
         if (playServicesAvailable != ConnectionResult.SUCCESS) {
