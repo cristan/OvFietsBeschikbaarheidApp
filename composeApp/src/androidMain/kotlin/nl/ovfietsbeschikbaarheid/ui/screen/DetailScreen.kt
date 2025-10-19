@@ -5,7 +5,9 @@ import android.content.res.Configuration
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +28,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +49,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
@@ -77,8 +81,10 @@ import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
 import nl.ovfietsbeschikbaarheid.resources.Res
+import nl.ovfietsbeschikbaarheid.resources.baseline_directions_24
 import nl.ovfietsbeschikbaarheid.resources.capacity_graph_title
 import nl.ovfietsbeschikbaarheid.resources.content_description_back
+import nl.ovfietsbeschikbaarheid.resources.content_description_navigate
 import nl.ovfietsbeschikbaarheid.resources.day_1
 import nl.ovfietsbeschikbaarheid.resources.day_2
 import nl.ovfietsbeschikbaarheid.resources.day_3
@@ -91,6 +97,7 @@ import nl.ovfietsbeschikbaarheid.resources.details_alternatives_at_this_location
 import nl.ovfietsbeschikbaarheid.resources.details_amount_available
 import nl.ovfietsbeschikbaarheid.resources.details_amount_unknown
 import nl.ovfietsbeschikbaarheid.resources.details_capacity
+import nl.ovfietsbeschikbaarheid.resources.details_coordinates
 import nl.ovfietsbeschikbaarheid.resources.details_no_data_message
 import nl.ovfietsbeschikbaarheid.resources.details_no_data_title
 import nl.ovfietsbeschikbaarheid.resources.location_title
@@ -105,7 +112,7 @@ import nl.ovfietsbeschikbaarheid.resources.opening_hours_title
 import nl.ovfietsbeschikbaarheid.resources.pedal_bike_24px
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
-import nl.ovfietsbeschikbaarheid.ui.components.MapComponent
+import nl.ovfietsbeschikbaarheid.ui.components.NativeMap
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
@@ -202,7 +209,11 @@ private fun DetailsView(
                         is DetailsContent.NotFound -> {
                             FullPageError(
                                 title = stringResource(Res.string.details_no_data_title),
-                                message = stringResource(Res.string.details_no_data_message, details.data.locationTitle, details.data.formattedLastFetchedDate),
+                                message = stringResource(
+                                    Res.string.details_no_data_message,
+                                    details.data.locationTitle,
+                                    details.data.formattedLastFetchedDate
+                                ),
                                 onRetry = onRetry
                             )
                         }
@@ -218,9 +229,10 @@ fun DetailsLoader(
     modifier: Modifier
 ) {
     val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
-    Column(modifier
-        .padding(top = 4.dp, start = 20.dp, end = 20.dp)
-        .verticalScroll(rememberScrollState())
+    Column(
+        modifier
+            .padding(top = 4.dp, start = 20.dp, end = 20.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         OvCard {
             Text(stringResource(Res.string.details_amount_available))
@@ -314,7 +326,7 @@ private fun ActualDetails(
                 Disruptions(it)
             }
 
-            MapComponent(
+            MapView(
                 details.location,
                 details.latitude,
                 details.longitude,
@@ -432,6 +444,78 @@ private fun Disruptions(disruptions: String) {
 }
 
 @Composable
+fun MapView(
+    location: AddressModel?,
+    latitude: Double,
+    longitude: Double,
+    directions: String?,
+    description: String,
+    rentalBikesAvailable: Int?,
+    onNavigateClicked: (String) -> Unit
+) {
+    OvCard {
+        Text(
+            text = stringResource(Res.string.location_title),
+            style = MaterialTheme.typography.headlineMedium,
+        )
+        val onAddressClick = {
+            if (location != null) {
+                val address =
+                    "${location.street} ${location.houseNumber} ${location.postalCode} ${location.city}"
+                onNavigateClicked(address)
+            } else {
+                onNavigateClicked("${latitude}, ${longitude}")
+            }
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onClick = onAddressClick)
+        ) {
+            HorizontalDivider(Modifier.padding(vertical = 16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    if (location != null) {
+                        Text("${location.street} ${location.houseNumber}")
+                        Text("${location.postalCode} ${location.city}")
+                    } else {
+                        Text(stringResource(Res.string.details_coordinates, latitude, longitude))
+                    }
+                }
+
+                Icon(
+                    painter = painterResource(Res.drawable.baseline_directions_24),
+                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = stringResource(Res.string.content_description_navigate),
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
+            HorizontalDivider(Modifier.padding(vertical = 16.dp))
+        }
+
+        if (directions != null) {
+            Text(
+                text = directions,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+        }
+
+        NativeMap(
+            modifier = Modifier
+                .height(260.dp)
+                .clip(RoundedCornerShape(12.dp)),
+            latitude, longitude, description, rentalBikesAvailable
+        )
+    }
+}
+
+@Composable
 private fun ExtraInfo(details: DetailsModel) {
     OvCard {
         details.serviceType?.let {
@@ -504,7 +588,10 @@ private fun Alternatives(
 ) {
     OvCard {
         Text(
-            text = if (details.stationName != null) stringResource(Res.string.details_alternatives_at, details.stationName) else stringResource(Res.string.details_alternatives_at_this_location),
+            text = if (details.stationName != null) stringResource(
+                Res.string.details_alternatives_at,
+                details.stationName
+            ) else stringResource(Res.string.details_alternatives_at_this_location),
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )
