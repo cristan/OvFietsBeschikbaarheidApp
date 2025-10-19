@@ -1,7 +1,5 @@
 package nl.ovfietsbeschikbaarheid.ui.screen
 
-import android.content.Intent
-import android.content.res.Configuration
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
@@ -52,12 +50,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.valentinilk.shimmer.ShimmerBounds
@@ -124,9 +119,8 @@ import nl.ovfietsbeschikbaarheid.viewmodel.DetailsContent
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.androidx.compose.koinViewModel
-import java.net.URLEncoder
-import java.util.Locale
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.ExperimentalTime
 
 @Composable
@@ -403,7 +397,7 @@ private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = Loc
                     is OpenState.Closed -> {
                         Text(text = stringResource(Res.string.open_state_closed), color = Red50)
                         if (openState.openDay != null) {
-                            val openDay = stringResource(openState.openDay).lowercase(Locale.UK)
+                            val openDay = stringResource(openState.openDay).lowercase()
                             Text(text = " " + stringResource(Res.string.open_state_opens_later_at, openDay, openState.openTime))
                         } else {
                             Text(text = " " + stringResource(Res.string.open_state_opens_today_at, openState.openTime))
@@ -464,7 +458,7 @@ fun MapView(
                     "${location.street} ${location.houseNumber} ${location.postalCode} ${location.city}"
                 onNavigateClicked(address)
             } else {
-                onNavigateClicked("${latitude}, ${longitude}")
+                onNavigateClicked("$latitude, $longitude")
             }
         }
         Column(
@@ -606,27 +600,9 @@ private fun Alternatives(
 }
 
 @Composable
-private fun onLocationClicked(): (String) -> Unit {
-    val context = LocalContext.current
-    val onLocationClicked: (String) -> Unit = { address ->
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = "http://maps.google.co.in/maps?q=${
-            URLEncoder.encode(
-                address,
-                "UTF-8"
-            )
-        }".toUri()
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-        if (intent.resolveActivity(context.packageManager) != null) {
-            context.startActivity(intent)
-        }
-    }
-    return onLocationClicked
-}
+expect fun onLocationClicked(): (String) -> Unit
 
 @Preview(heightDp = 2000)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark mode")
 @Composable
 fun DetailsLoadingPreview() {
     DetailsView(
@@ -642,7 +618,6 @@ fun DetailsLoadingPreview() {
 
 @OptIn(ExperimentalTime::class)
 @Preview(heightDp = 2000)
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark mode")
 @Composable
 fun DetailsPreview() {
     val dayNames =
