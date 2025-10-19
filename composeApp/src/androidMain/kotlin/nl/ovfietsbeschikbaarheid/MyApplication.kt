@@ -5,7 +5,7 @@ import nl.ovfietsbeschikbaarheid.di.androidModule
 import nl.ovfietsbeschikbaarheid.di.appModule
 import nl.ovfietsbeschikbaarheid.ext.createActivityLifecycleObserver
 import nl.ovfietsbeschikbaarheid.util.AndroidInAppReviewProvider
-import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
+import nl.ovfietsbeschikbaarheid.util.AndroidPlatformLocationHelper
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -17,11 +17,11 @@ class MyApplication : Application() {
 
         setUpKoin()
 
-        val locationPermissionHelper: LocationPermissionHelper by inject()
+        val locationHelper: AndroidPlatformLocationHelper by inject()
         val androidInAppReviewProvider: AndroidInAppReviewProvider by inject()
 
         registerActivityLifecycleCallbacks(createActivityLifecycleObserver { activity ->
-            locationPermissionHelper.setActivity(activity)
+            locationHelper.setActivity(activity)
             androidInAppReviewProvider.setActivity(activity)
         })
     }

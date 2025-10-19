@@ -13,10 +13,12 @@ import nl.ovfietsbeschikbaarheid.repository.RatingStorageRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
 import nl.ovfietsbeschikbaarheid.util.AndroidInAppReviewProvider
+import nl.ovfietsbeschikbaarheid.util.AndroidPlatformLocationHelper
 import nl.ovfietsbeschikbaarheid.util.DecimalFormatter
 import nl.ovfietsbeschikbaarheid.util.InAppReviewProvider
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
+import nl.ovfietsbeschikbaarheid.util.PlatformLocationHelper
 import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
@@ -50,6 +52,8 @@ fun androidModule() = module {
     single { androidContext().dataStore }
     single<AndroidInAppReviewProvider> { AndroidInAppReviewProvider(get()) }
     single<InAppReviewProvider> { get<AndroidInAppReviewProvider>() }
+    single<AndroidPlatformLocationHelper> { AndroidPlatformLocationHelper(get()) }
+    single<PlatformLocationHelper> { get<AndroidPlatformLocationHelper>() }
     singleOf(::LocationPermissionHelper)
     factoryOf(::LocationLoader)
 }
