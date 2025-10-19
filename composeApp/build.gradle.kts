@@ -47,7 +47,7 @@ kotlin {
             implementation(libs.androidx.ui.graphics)
             implementation(libs.androidx.ui.tooling.preview)
             implementation(libs.androidx.material3)
-            implementation(libs.androidx.navigation.compose)
+
 
             implementation(libs.google.maps.compose)
             implementation(libs.kermit)
@@ -77,6 +77,7 @@ kotlin {
             implementation(libs.compose.shimmer)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.androidx.navigation.compose)
 
             implementation(libs.kermit)
 
