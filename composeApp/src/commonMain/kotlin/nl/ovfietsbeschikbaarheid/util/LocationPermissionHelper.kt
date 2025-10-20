@@ -11,6 +11,8 @@ class LocationPermissionHelper(
 ){
     fun shouldShowLocationRationale(): Boolean = platformLocationHelper.shouldShowLocationRationale()
 
+    fun isDeniedPermanently(): Boolean = platformLocationHelper.isDeniedPermanently()
+
     fun isGpsTurnedOn(): Boolean = platformLocationHelper.isGpsTurnedOn()
 
     fun turnOnGps() = platformLocationHelper.turnOnGps()

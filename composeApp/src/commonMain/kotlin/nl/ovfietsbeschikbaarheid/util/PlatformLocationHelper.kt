@@ -6,4 +6,6 @@ interface PlatformLocationHelper {
     fun turnOnGps()
 
     fun shouldShowLocationRationale(): Boolean
+
+    fun isDeniedPermanently(): Boolean
 }

@@ -86,10 +86,10 @@ class HomeViewModel(
                 loadLocation()
             }
 
-            currentlyShown is HomeContent.AskGpsPermission
-                    && currentlyShown.state == AskPermissionState.DeniedPermanently
-                    && locationPermissionHelper.hasGpsPermission() -> {
+            currentlyShown is HomeContent.AskGpsPermission && locationPermissionHelper.hasGpsPermission() -> {
                 // The user went to the app settings and granted the location permission manually
+                // On iOS, this is the default flow: when you grant permission, we don't get feedback right away
+                //  and we just have permissions when we get back
                 _content.value = HomeContent.Loading
                 awaitAndShowLocationsWithDistance()
             }
@@ -147,8 +147,9 @@ class HomeViewModel(
     private suspend fun requestPermission() {
         val permissionState: PermissionState = locationPermissionHelper.requirePermission()
         when (permissionState) {
-            // Doesn't happen on Android
+            // iOS only: happens after requesting permission. We don't get an answer right away, so we'll do nothing and check again when we return.
             PermissionState.NotDetermined -> Unit
+
             PermissionState.Denied -> {
                 _content.value = HomeContent.AskGpsPermission(AskPermissionState.Denied)
             }
@@ -225,7 +226,15 @@ class HomeViewModel(
             fetchPriceDataIndependently()
         } else if (!locationPermissionHelper.hasGpsPermission()) {
             val showRationale = locationPermissionHelper.shouldShowLocationRationale()
-            val state = if (!showRationale) AskPermissionState.Initial else AskPermissionState.Denied
+            val state = if (!showRationale){
+                AskPermissionState.Initial
+            } else {
+                if(locationPermissionHelper.isDeniedPermanently()) {
+                    AskPermissionState.DeniedPermanently
+                } else {
+                    AskPermissionState.Denied
+                }
+            }
             _content.value = HomeContent.AskGpsPermission(state)
             fetchPriceDataIndependently()
         } else {

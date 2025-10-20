@@ -36,4 +36,7 @@ class AndroidPlatformLocationHelper(private val context: Context): PlatformLocat
             shouldShow
         } ?: false
     }
+
+    // On Android, we just can't know whether it's denied permanently, so return false, and we'll find out when the user presses the button
+    override fun isDeniedPermanently(): Boolean = false
 }
