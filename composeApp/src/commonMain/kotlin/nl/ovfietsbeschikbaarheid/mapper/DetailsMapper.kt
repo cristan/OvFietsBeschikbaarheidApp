@@ -161,22 +161,22 @@ class DetailsMapper() {
         val graphToday = getGraphToday(now, nowInNL, historicalCapacities)
 
         val nextDays = (1..7 - currentDayOfWeek).map { nextDayOffset ->
-            val previousDay = now.plus(nextDayOffset - 7, DateTimeUnit.DAY, dutchTimeZone)
-            val previousDayDateTime = previousDay.toLocalDateTime(dutchTimeZone)
-            val previousDate = previousDayDateTime.date
-            val startOfDay = previousDate.atStartOfDayIn(dutchTimeZone)
+            val nextDay = now.plus(nextDayOffset - 7, DateTimeUnit.DAY, dutchTimeZone)
+            val nextDayDateTime = nextDay.toLocalDateTime(dutchTimeZone)
+            val nextDate = nextDayDateTime.date
+            val startOfDay = nextDate.atStartOfDayIn(dutchTimeZone)
             // We also want the 00:00 hours to complete the day, but that one usually only arrives at something like 00:01
-            val endOfDay = previousDayDateTime.atEndOfDayIn(dutchTimeZone).plus(10, DateTimeUnit.MINUTE)
+            val endOfDay = nextDayDateTime.atEndOfDayIn(dutchTimeZone).plus(10, DateTimeUnit.MINUTE)
 
             val capacitiesFutureDay = historicalCapacities.filter { it.createTime > startOfDay && it.createTime < endOfDay }
             // A fallback to 0 doesn't make too much sense, but this prevents a crash and empty days will be filtered out later
             val minCapacity = capacitiesFutureDay.minOfOrNull { it.capacity } ?: 0
             val maxCapacity = capacitiesFutureDay.maxOfOrNull { it.capacity } ?: 0
-            val dayFullName = previousDay.toLocalDateTime(dutchTimeZone).date.toFullDayOfWeek()
+            val dayFullName = nextDay.toLocalDateTime(dutchTimeZone).date.toFullDayOfWeek()
             val contentDescription = getString(Res.string.graph_next_day_content_description, dayFullName, minCapacity, maxCapacity)
             GraphDayModel(
                 isToday = false,
-                previousDay.toLocalDateTime(dutchTimeZone).date.toNarrowDayOfWeek(),
+                nextDay.toLocalDateTime(dutchTimeZone).date.toNarrowDayOfWeek(),
                 dayFullName,
                 emptyList(),
                 capacitiesFutureDay,
