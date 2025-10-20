@@ -5,9 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.UIKitView
 import kotlinx.cinterop.ExperimentalForeignApi
-import nl.ovfietsbeschikbaarheid.resources.Res
-import nl.ovfietsbeschikbaarheid.resources.map_available
-import org.jetbrains.compose.resources.stringResource
 import platform.CoreLocation.CLLocationCoordinate2DMake
 import platform.MapKit.MKCoordinateRegionMake
 import platform.MapKit.MKCoordinateSpanMake
@@ -21,7 +18,6 @@ actual fun NativeMap(modifier: Modifier, latitude: Double, longitude: Double, de
         latitude,
         longitude
     )
-    val title = stringResource(Res.string.map_available, rentalBikesAvailable?.toString() ?: "??")
 
     UIKitView(
         modifier = modifier.fillMaxSize(),
@@ -36,7 +32,6 @@ actual fun NativeMap(modifier: Modifier, latitude: Double, longitude: Double, de
             mapView.removeAnnotations(mapView.annotations)
 
             val pointAnnotation = MKPointAnnotation().apply {
-                setTitle(title)
                 setCoordinate(clLocation)
             }
             val region = MKCoordinateRegionMake(
