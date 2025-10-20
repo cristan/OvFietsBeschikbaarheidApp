@@ -42,7 +42,7 @@ fun createIosDataStore(): DataStore<Preferences> =
                     create = false,
                     error = null,
                 )
-                requireNotNull(documentDirectory).path + "/$dataStoreFileName"
+                requireNotNull(documentDirectory).path + "/settings.preferences_pb"
             }().toPath()
         }
     )
