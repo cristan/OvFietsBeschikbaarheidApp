@@ -9,6 +9,8 @@ import nl.ovfietsbeschikbaarheid.resources.Res
 import nl.ovfietsbeschikbaarheid.resources.map_available
 import org.jetbrains.compose.resources.stringResource
 import platform.CoreLocation.CLLocationCoordinate2DMake
+import platform.MapKit.MKCoordinateRegionMake
+import platform.MapKit.MKCoordinateSpanMake
 import platform.MapKit.MKMapView
 import platform.MapKit.MKPointAnnotation
 
@@ -37,6 +39,11 @@ actual fun NativeMap(modifier: Modifier, latitude: Double, longitude: Double, de
                 setTitle(title)
                 setCoordinate(clLocation)
             }
+            val region = MKCoordinateRegionMake(
+                clLocation,
+                MKCoordinateSpanMake(0.01, 0.01)
+            )
+            mapView.setRegion(region, animated = true)
             mapView.addAnnotation(pointAnnotation)
             mapView.setCenterCoordinate(clLocation, animated = true)
         }
