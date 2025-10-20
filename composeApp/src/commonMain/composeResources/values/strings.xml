@@ -29,6 +29,7 @@
     <string name="about_app_text_5">Feedback? Tevreden? Laat een review achter\u0020</string>
     <string name="about_app_text_6">in de Play Store</string>
     <string name="about_app_text_7">\u0020🙂</string>
+    <string name="about_app_text_5_ios">Feedback? Tevreden? Laat een review achter in de App Store 🙂</string>
 
     <string name="gps_rationale_initial_button">OV-fiets locaties in je buurt</string>
     <string name="gps_rationale_denied_rationale">Toestemming is nodig om OV-fiets locaties in de buurt te tonen</string>

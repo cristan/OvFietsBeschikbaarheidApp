@@ -28,9 +28,6 @@ import nl.ovfietsbeschikbaarheid.resources.about_app_text_1_on_github
 import nl.ovfietsbeschikbaarheid.resources.about_app_text_2
 import nl.ovfietsbeschikbaarheid.resources.about_app_text_3
 import nl.ovfietsbeschikbaarheid.resources.about_app_text_4
-import nl.ovfietsbeschikbaarheid.resources.about_app_text_5
-import nl.ovfietsbeschikbaarheid.resources.about_app_text_6
-import nl.ovfietsbeschikbaarheid.resources.about_app_text_7
 import nl.ovfietsbeschikbaarheid.resources.about_app_title
 import nl.ovfietsbeschikbaarheid.resources.about_lock_text_1
 import nl.ovfietsbeschikbaarheid.resources.about_lock_text_2
@@ -157,21 +154,18 @@ private fun AboutView(
                             text = stringResource(Res.string.about_app_text_3)
                         )
                         append(stringResource(Res.string.about_app_text_4))
-                        append("\n\n")
-                        append(stringResource(Res.string.about_app_text_5))
-                        withStyledLink(
-                            url = "https://play.google.com/store/apps/details?id=nl.ovfietsbeschikbaarheid",
-                            text = stringResource(Res.string.about_app_text_6)
-                        )
-                        append(stringResource(Res.string.about_app_text_7))
                     },
                     modifier = Modifier.padding(top = 8.dp),
                     style = MaterialTheme.typography.bodyLarge
                 )
+                ReviewCallToAction()
             }
         }
     }
 }
+
+@Composable
+expect fun ReviewCallToAction()
 
 @Preview
 @Composable
