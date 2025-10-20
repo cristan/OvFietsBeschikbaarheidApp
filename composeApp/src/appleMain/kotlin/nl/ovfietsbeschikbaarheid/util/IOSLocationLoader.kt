@@ -1,16 +1,18 @@
 package nl.ovfietsbeschikbaarheid.util
 
 import dev.jordond.compass.Coordinates
+import dev.jordond.compass.geolocation.Locator
+import dev.jordond.compass.geolocation.mobile.mobile
 
 class IOSLocationLoader: LocationLoader {
     override suspend fun getLastKnownCoordinates(): Coordinates? {
-        // TODO: replace with real implementation
-        return Coordinates(latitude = 52.090746, longitude = 5.110702)
+        val locator = Locator.mobile()
+        return locator.lastLocation()?.coordinates
     }
 
     override suspend fun loadCurrentCoordinates(): Coordinates? {
-        // TODO: replace with real implementation
-        return Coordinates(latitude = 52.090746, longitude = 5.110702)
+        val locator = Locator.mobile()
+        return locator.current().coordinates
     }
 
 }

@@ -62,8 +62,9 @@ kotlin {
             implementation(libs.play.services.location)
             implementation(libs.play.services.coroutines)
         }
-        iosMain.dependencies {
+        appleMain.dependencies {
             implementation(libs.ktor.client.ios)
+            implementation(libs.compass.geolocation.mobile)
         }
         commonMain.dependencies {
             implementation(libs.kotlinx.datetime)
