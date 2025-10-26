@@ -33,29 +33,13 @@ kotlin {
     
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.kotlinx.datetime)
-
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-
-            implementation(libs.androidx.core.ktx)
-            implementation(libs.androidx.lifecycle.runtime.ktx)
-            implementation(libs.androidx.activity.compose)
-            implementation(project.dependencies.platform(libs.androidx.compose.bom))
             implementation(libs.play.review.ktx)
-            implementation(libs.androidx.ui)
-            implementation(libs.androidx.ui.graphics)
-            implementation(libs.androidx.ui.tooling.preview)
-            implementation(libs.androidx.material3)
-
 
             implementation(libs.google.maps.compose)
             implementation(libs.kermit)
-            implementation(libs.compose.shimmer)
 
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.android)
-            implementation(libs.koin.androidx.compose)
 
             implementation(libs.ktor.client.android)
 
