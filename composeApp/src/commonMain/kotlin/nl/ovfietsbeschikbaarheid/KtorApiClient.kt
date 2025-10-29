@@ -35,6 +35,7 @@ class KtorApiClient {
 //            level = LogLevel.ALL
 //        }
         install(HttpCache)
+        expectSuccess = true
     }
 
     suspend fun getLocations(): List<LocationDTO> {

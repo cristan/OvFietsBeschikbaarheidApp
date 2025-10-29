@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
+import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -134,11 +135,13 @@ class DetailsViewModel(
                         delay(minDelay - timeElapsed)
                     }
                     _screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
+                } catch (e: ResponseException) {
+                    Logger.e(e) { "Error fetching details" }
+                    _screenState.value = ScreenState.FullPageError
                 } catch (e: IOException) {
                     Logger.e(e) { "Error fetching details" }
                     _screenState.value = ScreenState.FullPageError
                 }
-
             }
         }
     }
