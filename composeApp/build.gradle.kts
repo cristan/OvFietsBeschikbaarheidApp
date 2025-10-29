@@ -20,7 +20,10 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
+    // Dummy task to let CodeQL / Analyze (java-kotlin) complete
+    tasks.register("testClasses")
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
