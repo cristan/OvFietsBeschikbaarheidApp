@@ -1,0 +1,96 @@
+<resources>
+    <string name="app_name">OV-fiets Beschikbaarheid</string>
+
+    <string name="content_description_back">Terug</string>
+    <string name="content_description_clear_location">Locatie opschonen</string>
+    <string name="content_description_navigate">Navigeer</string>
+
+    <string name="full_page_error_title">Ophalen gegevens mislukt</string>
+    <string name="full_page_error_text">Controleer je verbinding en probeer opnieuw.</string>
+    <string name="full_page_error_retry">Probeer opnieuw</string>
+
+    <string name="about_title">Info</string>
+    <string name="about_ov_fiets_title">De OV-fiets huren</string>
+    <string name="about_ov_fiets_text_1_with_amount">Huur een OV-fiets op meer dan 300 locaties voor €%1$s per 24 uur.\u0020</string>
+    <string name="about_ov_fiets_text_1_without_amount">Huur een OV-fiets op meer dan 300 locaties.\u0020</string>
+    <string name="about_ov_fiets_text_2">Activeer hiervoor gratis een abonnement met je OV-chipkaart via\u0020</string>
+    <string name="about_ov_fiets_text_3">.\n\nJe kan maximaal 2 fietsen huren met 1 abonnement.</string>
+
+    <string name="about_lock_title">Het slot gebruiken</string>
+    <string name="about_lock_text_1">Op de meeste locaties gebruik je je OV-chipkaart als sleutel. De instructies vind je op de bagagedrager of via\u0020</string>
+    <string name="about_lock_text_2">.</string>
+
+    <string name="about_app_title">Over deze app</string>
+    <string name="about_app_text_1">Deze app is niet door NS ontwikkeld en is open source: de broncode staat\u0020</string>
+    <string name="about_app_text_1_on_github">op GitHub</string>
+    <string name="about_app_text_2">. De data komt via OpenOV. Het kaarticoon is gemaakt door\u0020</string>
+    <string name="about_app_text_3">brgfx op Freepik</string>
+    <string name="about_app_text_4">.</string>
+    <string name="about_app_text_5">Feedback? Tevreden? Laat een review achter\u0020</string>
+    <string name="about_app_text_6">in de Play Store</string>
+    <string name="about_app_text_7">\u0020🙂</string>
+    <string name="about_app_text_5_ios">Feedback? Tevreden? Laat een review achter in de App Store 🙂</string>
+
+    <string name="gps_rationale_initial_button">OV-fiets locaties in je buurt</string>
+    <string name="gps_rationale_denied_rationale">Toestemming is nodig om OV-fiets locaties in de buurt te tonen</string>
+    <string name="gps_rationale_denied_button">Geef toestemming</string>
+    <string name="gps_rationale_denied_permanently_rationale">Toestemming is nodig om OV-fiets locaties in de buurt te tonen. Geef deze in de app instellingen.</string>
+    <string name="gps_rationale_denied_permanently_button">Naar de app instellingen</string>
+    <string name="gps_off_rationale">GPS is nodig om OV-fiets locaties in de buurt te tonen</string>
+    <string name="gps_off_button">Zet GPS aan</string>
+
+    <string name="loading">Aan het laden</string>
+
+    <string name="home_nearby">Bij jou in de buurt</string>
+    <string name="home_search_label">Locatie</string>
+
+    <string name="home_no_search_results_for">Geen zoekresultaten voor "%1$s"</string>
+    <string name="home_search_results_for">In de buurt van "%1$s"</string>
+    <string name="home_no_gps_location">Geen locatie gevonden</string>
+
+    <string name="details_amount_available">OV-fietsen beschikbaar</string>
+    <string name="details_amount_unknown">Onbekend</string>
+    <string name="details_capacity">Max aantal: %1$d</string>
+    <string name="details_coordinates">Coördinaten: %1$f, %2$f</string>
+
+    <string name="details_no_data_title">Geen data</string>
+    <string name="details_no_data_message">Geen data ontvangen voor %1$s sinds %2$s.</string>
+
+    <string name="details_alternatives_at">Op %1$s</string>
+    <string name="details_alternatives_at_this_location">Op deze locatie</string>
+
+    <string name="graph_today">Vandaag</string>
+    <string name="graph_this_week_day">Deze %1$s</string>
+    <string name="graph_last_week_day">Vorige week %1$s</string>
+    <string name="graph_previous_day_content_description">Deze %1$s: minimaal %2$d en maximaal %3$d OV-fietsen</string>
+    <string name="graph_today_content_description">Vandaag: minimaal %1$d en maximaal %2$d OV-fietsen. Vanaf nu op basis van vorige week: minimaal %3$d en maximaal %4$d OV-fietsen.</string>
+    <string name="graph_next_day_content_description">Vorige week %1$s: minimaal %2$d en maximaal %3$d OV-fietsen</string>
+
+    <string name="map_available">%1$s beschikbaar</string>
+
+    <string name="open_state_closed">Gesloten</string>
+    <string name="open_state_opens_today_at">• Gaat open om %1$s</string>
+    <string name="open_state_opens_later_at">• Gaat %1$s open om %2$s</string>
+    <string name="open_state_closing_soon">Sluit snel</string>
+    <string name="open_state_closes_at">• Sluit om %1$s</string>
+    <string name="open_until">Open tot %1$s</string>
+    <string name="open_state_open_247">24/7 open</string>
+    <string name="capacity_graph_title">Beschikbaarheid</string>
+    <string name="location_title">Locatie</string>
+    <string name="opening_hours_title">Openingstijden</string>
+
+    <string name="service_type_manned">Bemenst</string>
+    <string name="service_type_lockers">Kluizen</string>
+    <string name="service_type_box">Box</string>
+    <string name="service_type_key_box">Sleutelautomaat</string>
+    <string name="service_type_key_selfservice">Zelfservice</string>
+
+    <string name="day_1">Maandag</string>
+    <string name="day_2">Dinsdag</string>
+    <string name="day_3">Woensdag</string>
+    <string name="day_4">Donderdag</string>
+    <string name="day_5">Vrijdag</string>
+    <string name="day_6">Zaterdag</string>
+    <string name="day_7">Zondag</string>
+    <string name="day_tomorrow">morgen</string>
+</resources>

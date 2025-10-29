@@ -34,3 +34,6 @@ google-services.json
 
 # Android Profiling
 *.hprof
+.kotlin
+iosApp/iosApp.xcodeproj/project.xcworkspace/xcuserdata
+iosApp/iosApp.xcodeproj/xcuserdata
