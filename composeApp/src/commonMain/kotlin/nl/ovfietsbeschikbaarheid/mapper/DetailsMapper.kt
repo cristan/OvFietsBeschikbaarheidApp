@@ -93,8 +93,8 @@ class DetailsMapper() {
 
         val rentalBikesAvailable = locationDTO.extra.rentalBikes
 
-        val graphDays = getGraphDays(rentalBikesAvailable, hourlyLocationCapacityDtos)
-
+        val now = Clock.System.now()
+        val graphDays = getGraphDays(rentalBikesAvailable, hourlyLocationCapacityDtos, now)
 
         return DetailsModel(
             description = locationDTO.description,
@@ -113,7 +113,7 @@ class DetailsMapper() {
             alternatives = alternatives,
             openState = locationDTO.openingHours?.let {
                 OpenStateMapper.getOpenState(
-                    locationDTO.extra.locationCode, it, Clock.System.now().toLocalDateTime(dutchTimeZone)
+                    locationDTO.extra.locationCode, it, now.toLocalDateTime(dutchTimeZone)
                 )
             },
             graphDays = graphDays
@@ -122,9 +122,9 @@ class DetailsMapper() {
 
     private suspend fun getGraphDays(
         rentalBikesAvailable: Int?,
-        hourlyLocationCapacityDtos: List<HourlyLocationCapacityDto>
+        hourlyLocationCapacityDtos: List<HourlyLocationCapacityDto>,
+        now: Instant
     ): List<GraphDayModel> {
-        val now = Clock.System.now()
         val nowInNL: LocalDateTime = now.toLocalDateTime(dutchTimeZone)
 
         // Let's add the current capacity to the graph. Unfortunately, the current backend call doesn't return a timestamp, so we'll assume now.
