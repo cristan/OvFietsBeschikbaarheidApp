@@ -38,7 +38,6 @@ import nl.ovfietsbeschikbaarheid.resources.graph_previous_day_content_descriptio
 import nl.ovfietsbeschikbaarheid.resources.graph_today_content_description
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -50,7 +49,8 @@ class DetailsMapper() {
         locationDTO: LocationDTO,
         allLocations: List<LocationOverviewModel>,
         allStations: Map<String, String>,
-        hourlyLocationCapacityDtos: List<HourlyLocationCapacityDto>
+        hourlyLocationCapacityDtos: List<HourlyLocationCapacityDto>,
+        now: Instant
     ): DetailsModel {
 
         val directions = locationDTO.infoImages.find { it.title == "Routebeschrijving" }?.body
@@ -93,7 +93,6 @@ class DetailsMapper() {
 
         val rentalBikesAvailable = locationDTO.extra.rentalBikes
 
-        val now = Clock.System.now()
         val graphDays = getGraphDays(rentalBikesAvailable, hourlyLocationCapacityDtos, now)
 
         return DetailsModel(
@@ -128,8 +127,9 @@ class DetailsMapper() {
         val nowInNL: LocalDateTime = now.toLocalDateTime(dutchTimeZone)
 
         // Let's add the current capacity to the graph. Unfortunately, the current backend call doesn't return a timestamp, so we'll assume now.
-        val currentCapacity = CapacityModel(rentalBikesAvailable ?: 0, now)
-        val historicalCapacities = convertHourlyCapacities(hourlyLocationCapacityDtos).sortedBy { it.createTime } + currentCapacity
+        //val currentCapacity = CapacityModel(rentalBikesAvailable ?: 0, now)
+        val hourlyCapacities = convertHourlyCapacities(hourlyLocationCapacityDtos).filter { it.createTime < now }.sortedBy { it.createTime }
+        val historicalCapacities = hourlyCapacities + hourlyCapacities.last().copy(createTime = now)
 
         val currentDayOfWeek = nowInNL.date.dayOfWeek.toIsoDayNumber()
 
