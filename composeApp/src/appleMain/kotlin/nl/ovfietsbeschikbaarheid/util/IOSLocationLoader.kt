@@ -10,7 +10,8 @@ class IOSLocationLoader(private val locator: Locator): LocationLoader {
     }
 
     override suspend fun loadCurrentCoordinates(): Coordinates? {
-        return locator.current().coordinates
+        return Coordinates(52.09287092917569, 5.111436651758041)
+        //return locator.current().coordinates
     }
 
 }

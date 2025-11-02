@@ -18,6 +18,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.char
 import kotlinx.datetime.minus
+import kotlinx.datetime.number
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.io.IOException
@@ -84,7 +85,10 @@ class DetailsViewModel(
         viewModelScope.launch {
             supervisorScope {
                 try {
-                    val before = Clock.System.now().toEpochMilliseconds()
+                    val reallyNow = Clock.System.now()
+                    val nowInNL: LocalDateTime = reallyNow.toLocalDateTime(dutchTimeZone)
+                    val now = LocalDateTime(nowInNL.year, nowInNL.month.number, nowInNL.day, 12, 40, 0).toInstant(dutchTimeZone)
+                    val before = now.toEpochMilliseconds()
 
                     val detailsDeferred = async {
                         detailsRepository.getDetails(data.locationCode)
@@ -104,7 +108,7 @@ class DetailsViewModel(
                             char('Z')
                         }
 
-                        val startDate = Clock.System.now()
+                        val startDate = now
                             .minus(7, DateTimeUnit.DAY, dutchTimeZone)
                             .toLocalDateTime(dutchTimeZone).atStartOfDay()
                             .toInstant(dutchTimeZone).toLocalDateTime(TimeZone.UTC)
@@ -128,9 +132,10 @@ class DetailsViewModel(
                         details,
                         allLocationsDeferred.await().locations,
                         allStationsDeferred.await(),
-                        historyDeferred.await()
+                        historyDeferred.await(),
+                        now
                     )
-                    val timeElapsed = Clock.System.now().toEpochMilliseconds() - before
+                    val timeElapsed = now.toEpochMilliseconds() - before
                     if (timeElapsed < minDelay) {
                         delay(minDelay - timeElapsed)
                     }

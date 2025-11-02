@@ -20,8 +20,9 @@ class StationRepository() {
         }
         val (stations, timeTaken) = measureTimedValue {
             val stationsJsonString = Res.readBytes("files/stations.json").decodeToString()
-            json.decodeFromString<List<Station>>(stationsJsonString)
-                .associate { it.code to it.name }
+            val stationList = Json.decodeFromString<List<Station>>(stationsJsonString)
+
+            stationList.associate { it.code to it.name }
         }
 
         Logger.d("Loaded stations in $timeTaken")
