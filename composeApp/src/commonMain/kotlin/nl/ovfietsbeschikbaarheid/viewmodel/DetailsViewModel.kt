@@ -106,7 +106,7 @@ class DetailsViewModel(
 
                         val startDate = Clock.System.now()
                             .minus(7, DateTimeUnit.DAY, dutchTimeZone)
-                            .toLocalDateTime(TimeZone.currentSystemDefault()).atStartOfDay()
+                            .toLocalDateTime(dutchTimeZone).atStartOfDay()
                             .toInstant(dutchTimeZone).toLocalDateTime(TimeZone.UTC)
                             .format(customFormat)
 
