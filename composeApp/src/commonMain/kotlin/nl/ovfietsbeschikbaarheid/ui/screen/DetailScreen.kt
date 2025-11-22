@@ -541,7 +541,7 @@ private fun ExtraInfo(details: DetailsModel) {
                 val parts = details.about.split(urlText)
                 val annotatedString = buildAnnotatedString {
                     append(parts[0])
-                    withStyledLink(urlText, "https://$urlText")
+                    withStyledLink("https://$urlText", urlText)
 
                     if (parts.size > 1) {
                         append(parts[1])
