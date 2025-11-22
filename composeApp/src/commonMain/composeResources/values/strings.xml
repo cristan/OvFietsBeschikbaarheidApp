@@ -51,7 +51,7 @@
     <string name="details_amount_available">OV-fietsen beschikbaar</string>
     <string name="details_amount_unknown">Onbekend</string>
     <string name="details_capacity">Max aantal: %1$d</string>
-    <string name="details_coordinates">Coördinaten: %1$f, %2$f</string>
+    <string name="details_coordinates">Coördinaten: %1$d, %2$d</string>
 
     <string name="details_no_data_title">Geen data</string>
     <string name="details_no_data_message">Geen data ontvangen voor %1$s sinds %2$s.</string>
