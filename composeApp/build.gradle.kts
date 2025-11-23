@@ -106,13 +106,13 @@ kotlin {
 
 android {
     namespace = "nl.ovfietsbeschikbaarheid"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "nl.ovfietsbeschikbaarheid"
         minSdk = 26
         targetSdk = 36
-        versionCode = 23
+        versionCode = 24
         versionName = "3.4.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
