@@ -42,7 +42,7 @@ class KtorApiClient {
         val (locations, timeTaken) = measureTimedValue {
             httpClient.get("https://storage.googleapis.com/ov-fiets-updates/locations.json").body<List<LocationDTO>>()
         }
-        Logger.d("Loaded locations in $timeTaken")
+        Logger.d("Loaded OV-fiets locations in $timeTaken")
         return locations
     }
 
