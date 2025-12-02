@@ -37,15 +37,13 @@ fun iosModule() = module {
 fun createIosDataStore(): DataStore<Preferences> =
     PreferenceDataStoreFactory.createWithPath(
         produceFile = {
-            {
-                val documentDirectory: NSURL? = NSFileManager.defaultManager.URLForDirectory(
-                    directory = NSDocumentDirectory,
-                    inDomain = NSUserDomainMask,
-                    appropriateForURL = null,
-                    create = false,
-                    error = null,
-                )
-                requireNotNull(documentDirectory).path + "/settings.preferences_pb"
-            }().toPath()
+            val documentDirectory: NSURL? = NSFileManager.defaultManager.URLForDirectory(
+                directory = NSDocumentDirectory,
+                inDomain = NSUserDomainMask,
+                appropriateForURL = null,
+                create = false,
+                error = null,
+            )
+            (requireNotNull(documentDirectory).path + "/settings.preferences_pb").toPath()
         }
     )
