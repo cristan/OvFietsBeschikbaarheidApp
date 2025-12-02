@@ -3,6 +3,8 @@ package nl.ovfietsbeschikbaarheid.di
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import dev.jordond.compass.geolocation.Locator
+import dev.jordond.compass.geolocation.mobile.mobile
 import kotlinx.cinterop.ExperimentalForeignApi
 import nl.ovfietsbeschikbaarheid.util.DecimalFormatter
 import nl.ovfietsbeschikbaarheid.util.IOSLocationLoader
@@ -23,10 +25,11 @@ import platform.Foundation.NSUserDomainMask
 
 fun iosModule() = module {
     single { createIosDataStore() }
+    single<Locator> { Locator.mobile() }
     single<InAppReviewProvider> { IosInAppReviewProvider() }
     factoryOf<PlatformLocationHelper>(::IOSPlatformLocationHelper)
     singleOf(::LocationPermissionHelper)
-    factoryOf<LocationLoader>(::IOSLocationLoader)
+    factory<LocationLoader> { IOSLocationLoader(get()) }
     factoryOf(::DecimalFormatter)
 }
 
