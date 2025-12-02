@@ -3,6 +3,8 @@ package nl.ovfietsbeschikbaarheid.di
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import dev.jordond.compass.geolocation.Locator
+import dev.jordond.compass.geolocation.mobile.mobile
 import kotlinx.cinterop.ExperimentalForeignApi
 import nl.ovfietsbeschikbaarheid.util.DecimalFormatter
 import nl.ovfietsbeschikbaarheid.util.IOSLocationLoader
@@ -23,10 +25,11 @@ import platform.Foundation.NSUserDomainMask
 
 fun iosModule() = module {
     single { createIosDataStore() }
+    single<Locator> { Locator.mobile() }
     single<InAppReviewProvider> { IosInAppReviewProvider() }
     factoryOf<PlatformLocationHelper>(::IOSPlatformLocationHelper)
     singleOf(::LocationPermissionHelper)
-    factoryOf<LocationLoader>(::IOSLocationLoader)
+    factory<LocationLoader> { IOSLocationLoader(get()) }
     factoryOf(::DecimalFormatter)
 }
 
@@ -34,15 +37,13 @@ fun iosModule() = module {
 fun createIosDataStore(): DataStore<Preferences> =
     PreferenceDataStoreFactory.createWithPath(
         produceFile = {
-            {
-                val documentDirectory: NSURL? = NSFileManager.defaultManager.URLForDirectory(
-                    directory = NSDocumentDirectory,
-                    inDomain = NSUserDomainMask,
-                    appropriateForURL = null,
-                    create = false,
-                    error = null,
-                )
-                requireNotNull(documentDirectory).path + "/settings.preferences_pb"
-            }().toPath()
+            val documentDirectory: NSURL? = NSFileManager.defaultManager.URLForDirectory(
+                directory = NSDocumentDirectory,
+                inDomain = NSUserDomainMask,
+                appropriateForURL = null,
+                create = false,
+                error = null,
+            )
+            (requireNotNull(documentDirectory).path + "/settings.preferences_pb").toPath()
         }
     )
