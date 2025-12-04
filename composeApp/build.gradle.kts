@@ -141,6 +141,15 @@ android {
     }
 }
 
+// Somehow, having different compose-bom versions in here and in maps-compose gives problems when running lint. Override it to use my version.
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "androidx.compose" && requested.name == "compose-bom") {
+            useVersion(libs.versions.composeBom.get())
+        }
+    }
+}
+
 dependencies {
     debugImplementation(compose.uiTooling)
 }
