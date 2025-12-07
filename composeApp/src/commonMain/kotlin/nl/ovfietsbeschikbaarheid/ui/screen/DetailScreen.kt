@@ -602,7 +602,7 @@ private fun Alternatives(
 @Composable
 expect fun onLocationClicked(): (String) -> Unit
 
-@Preview(heightDp = 2000)
+@Preview(heightDp = 1000)
 @Composable
 fun DetailsLoadingPreview() {
     DetailsView(
