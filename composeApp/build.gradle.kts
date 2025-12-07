@@ -67,6 +67,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.androidx.navigation.compose)
+            implementation("org.jetbrains.androidx.navigation3:navigation3-ui:1.0.0-alpha06")
 
             implementation(libs.kermit)
 
@@ -154,4 +155,3 @@ configurations.all {
 dependencies {
     debugImplementation(libs.ui.tooling)
 }
-
