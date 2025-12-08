@@ -54,8 +54,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
@@ -130,7 +128,7 @@ fun DetailScreen(
     onAlternativeClicked: (DetailScreenData) -> Unit,
     onBackClicked: () -> Unit
 ) {
-    LaunchedEffect(Unit) {
+    LaunchedEffect(detailScreenData) {
         viewModel.screenLaunched(detailScreenData)
     }
 
@@ -347,7 +345,7 @@ private fun ActualDetails(
 }
 
 @Composable
-private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
+private fun MainInfo(details: DetailsModel) {
     OvCard {
         Text(stringResource(Res.string.details_amount_available))
         val rentalBikesAvailable = details.rentalBikesAvailable
@@ -373,7 +371,7 @@ private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = Loc
                     stiffness = Spring.StiffnessLow
                 )
             )
-            LaunchedEffect(lifecycleOwner) {
+            LaunchedEffect(details.rentalBikesAvailable, details.capacity) {
                 progress = if (rentalBikesAvailable == null) 0f else rentalBikesAvailable.toFloat() / details.capacity
             }
 
