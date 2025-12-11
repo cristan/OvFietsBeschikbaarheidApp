@@ -8,11 +8,13 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import kotlinx.serialization.Serializable
 import nl.ovfietsbeschikbaarheid.model.DetailScreenData
@@ -37,6 +39,10 @@ fun Navigation() {
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator()
+        ),
         transitionSpec = {
             // Slide in from right when navigating forward
             slideInHorizontally(
