@@ -54,8 +54,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
@@ -70,7 +68,6 @@ import nl.ovfietsbeschikbaarheid.ext.shimmerShape
 import nl.ovfietsbeschikbaarheid.ext.withStyledLink
 import nl.ovfietsbeschikbaarheid.model.AddressModel
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
-import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.model.OpenState
@@ -110,6 +107,7 @@ import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.NativeMap
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
+import nl.ovfietsbeschikbaarheid.ui.navigation.Details
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
@@ -125,12 +123,12 @@ import kotlin.time.ExperimentalTime
 
 @Composable
 fun DetailScreen(
-    detailScreenData: DetailScreenData,
+    detailScreenData: Details,
     viewModel: DetailsViewModel = koinViewModel(),
-    onAlternativeClicked: (DetailScreenData) -> Unit,
+    onAlternativeClicked: (Details) -> Unit,
     onBackClicked: () -> Unit
 ) {
-    LaunchedEffect(Unit) {
+    LaunchedEffect(detailScreenData) {
         viewModel.screenLaunched(detailScreenData)
     }
 
@@ -154,12 +152,12 @@ fun DetailScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DetailsView(
-    detailScreenData: DetailScreenData,
+    detailScreenData: Details,
     details: ScreenState<DetailsContent>,
     onRetry: () -> Unit,
     onPullToRefresh: () -> Unit,
     onLocationClicked: (String) -> Unit,
-    onAlternativeClicked: (DetailScreenData) -> Unit,
+    onAlternativeClicked: (Details) -> Unit,
     onBackClicked: () -> Unit
 ) {
     OVFietsBeschikbaarheidTheme {
@@ -304,7 +302,7 @@ fun DetailsLoader(
 private fun ActualDetails(
     details: DetailsModel,
     onLocationClicked: (String) -> Unit,
-    onAlternativeClicked: (DetailScreenData) -> Unit
+    onAlternativeClicked: (Details) -> Unit
 ) {
     Surface(
         Modifier.verticalScroll(rememberScrollState())
@@ -347,7 +345,7 @@ private fun ActualDetails(
 }
 
 @Composable
-private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current) {
+private fun MainInfo(details: DetailsModel) {
     OvCard {
         Text(stringResource(Res.string.details_amount_available))
         val rentalBikesAvailable = details.rentalBikesAvailable
@@ -373,7 +371,7 @@ private fun MainInfo(details: DetailsModel, lifecycleOwner: LifecycleOwner = Loc
                     stiffness = Spring.StiffnessLow
                 )
             )
-            LaunchedEffect(lifecycleOwner) {
+            LaunchedEffect(details.rentalBikesAvailable, details.capacity) {
                 progress = if (rentalBikesAvailable == null) 0f else rentalBikesAvailable.toFloat() / details.capacity
             }
 
@@ -578,7 +576,7 @@ private fun OpeningHours(details: DetailsModel) {
 @Composable
 private fun Alternatives(
     details: DetailsModel,
-    onAlternativeClicked: (DetailScreenData) -> Unit
+    onAlternativeClicked: (Details) -> Unit
 ) {
     OvCard {
         Text(
@@ -606,7 +604,7 @@ expect fun onLocationClicked(): (String) -> Unit
 @Composable
 fun DetailsLoadingPreview() {
     DetailsView(
-        TestData.testDetailScreenData,
+        TestData.testDetails,
         ScreenState.Loading,
         {},
         {},
@@ -693,7 +691,7 @@ fun DetailsPreview() {
         5.37339,
         "Amersfoort",
         listOf(
-            DetailScreenData(
+            Details(
                 title = "Amersfoort Centraal",
                 locationCode = "amf001",
                 fetchTime = 1729539103
@@ -702,7 +700,7 @@ fun DetailsPreview() {
         listOf(graphDay)
     )
     DetailsView(
-        TestData.testDetailScreenData,
+        TestData.testDetails,
         ScreenState.Loaded(DetailsContent.Content(details)),
         {},
         {},

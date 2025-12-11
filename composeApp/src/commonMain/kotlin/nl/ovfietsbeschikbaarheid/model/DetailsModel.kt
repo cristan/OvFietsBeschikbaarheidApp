@@ -10,6 +10,7 @@ import nl.ovfietsbeschikbaarheid.resources.service_type_key_box
 import nl.ovfietsbeschikbaarheid.resources.service_type_key_selfservice
 import nl.ovfietsbeschikbaarheid.resources.service_type_lockers
 import nl.ovfietsbeschikbaarheid.resources.service_type_manned
+import nl.ovfietsbeschikbaarheid.ui.navigation.Details
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import kotlin.time.ExperimentalTime
@@ -30,7 +31,7 @@ data class DetailsModel(
     val latitude: Double,
     val longitude: Double,
     val stationName: String?,
-    val alternatives: List<DetailScreenData>,
+    val alternatives: List<Details>,
     val graphDays: List<GraphDayModel>,
 )
 
