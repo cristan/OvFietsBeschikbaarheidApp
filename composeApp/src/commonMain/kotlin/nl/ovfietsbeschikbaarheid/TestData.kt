@@ -1,8 +1,8 @@
 package nl.ovfietsbeschikbaarheid
 
-import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
+import nl.ovfietsbeschikbaarheid.ui.navigation.Details
 
 object TestData {
     val testLocationOverviewModel = LocationOverviewModel(
@@ -18,7 +18,7 @@ object TestData {
         openingHours = emptyList()
     )
 
-    val testDetailScreenData = DetailScreenData(
+    val testDetails = Details(
         title = "Amersfoort Mondriaanplein",
         locationCode = "amf002",
         fetchTime = 1729539103,

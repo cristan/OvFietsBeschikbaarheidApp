@@ -68,7 +68,6 @@ import nl.ovfietsbeschikbaarheid.ext.shimmerShape
 import nl.ovfietsbeschikbaarheid.ext.withStyledLink
 import nl.ovfietsbeschikbaarheid.model.AddressModel
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
-import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.model.OpenState
@@ -108,6 +107,7 @@ import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.NativeMap
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
+import nl.ovfietsbeschikbaarheid.ui.navigation.Details
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
@@ -123,9 +123,9 @@ import kotlin.time.ExperimentalTime
 
 @Composable
 fun DetailScreen(
-    detailScreenData: DetailScreenData,
+    detailScreenData: Details,
     viewModel: DetailsViewModel = koinViewModel(),
-    onAlternativeClicked: (DetailScreenData) -> Unit,
+    onAlternativeClicked: (Details) -> Unit,
     onBackClicked: () -> Unit
 ) {
     LaunchedEffect(detailScreenData) {
@@ -152,12 +152,12 @@ fun DetailScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DetailsView(
-    detailScreenData: DetailScreenData,
+    detailScreenData: Details,
     details: ScreenState<DetailsContent>,
     onRetry: () -> Unit,
     onPullToRefresh: () -> Unit,
     onLocationClicked: (String) -> Unit,
-    onAlternativeClicked: (DetailScreenData) -> Unit,
+    onAlternativeClicked: (Details) -> Unit,
     onBackClicked: () -> Unit
 ) {
     OVFietsBeschikbaarheidTheme {
@@ -302,7 +302,7 @@ fun DetailsLoader(
 private fun ActualDetails(
     details: DetailsModel,
     onLocationClicked: (String) -> Unit,
-    onAlternativeClicked: (DetailScreenData) -> Unit
+    onAlternativeClicked: (Details) -> Unit
 ) {
     Surface(
         Modifier.verticalScroll(rememberScrollState())
@@ -576,7 +576,7 @@ private fun OpeningHours(details: DetailsModel) {
 @Composable
 private fun Alternatives(
     details: DetailsModel,
-    onAlternativeClicked: (DetailScreenData) -> Unit
+    onAlternativeClicked: (Details) -> Unit
 ) {
     OvCard {
         Text(
@@ -604,7 +604,7 @@ expect fun onLocationClicked(): (String) -> Unit
 @Composable
 fun DetailsLoadingPreview() {
     DetailsView(
-        TestData.testDetailScreenData,
+        TestData.testDetails,
         ScreenState.Loading,
         {},
         {},
@@ -691,7 +691,7 @@ fun DetailsPreview() {
         5.37339,
         "Amersfoort",
         listOf(
-            DetailScreenData(
+            Details(
                 title = "Amersfoort Centraal",
                 locationCode = "amf001",
                 fetchTime = 1729539103
@@ -700,7 +700,7 @@ fun DetailsPreview() {
         listOf(graphDay)
     )
     DetailsView(
-        TestData.testDetailScreenData,
+        TestData.testDetails,
         ScreenState.Loaded(DetailsContent.Content(details)),
         {},
         {},
