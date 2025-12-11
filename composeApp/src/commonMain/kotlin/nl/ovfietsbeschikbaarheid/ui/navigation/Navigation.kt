@@ -59,6 +59,14 @@ fun Navigation() {
                 targetOffsetX = { it }
             )
         },
+        predictivePopTransitionSpec = {
+            // Slide in from left when navigating back
+            slideInHorizontally(
+                initialOffsetX = { -it },
+            ) togetherWith slideOutHorizontally(
+                targetOffsetX = { it },
+            )
+        },
         entryProvider = { key ->
             when (key) {
                 is Home -> NavEntry(key) {
