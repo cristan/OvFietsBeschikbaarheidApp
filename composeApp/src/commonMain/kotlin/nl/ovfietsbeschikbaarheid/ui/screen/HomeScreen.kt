@@ -183,60 +183,7 @@ private fun HomeView(
                     }
 
                     HomeContent.Loading -> {
-                        val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
-                        LazyColumn(userScrollEnabled = false) {
-                            item {
-                                HorizontalBar(stringResource(Res.string.home_nearby))
-                            }
-                            items(count = 20) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Column(modifier = Modifier.weight(1f)) {
-                                        Row {
-                                            Box(
-                                                Modifier
-                                                    .size(width = 140.dp, height = 24.dp)
-                                                    .padding(bottom = 4.dp, top = 2.dp)
-                                                    .shimmerShape(shimmerInstance)
-                                            )
-                                        }
-                                        Row {
-                                            Box(
-                                                Modifier
-                                                    .size(width = 60.dp, height = 20.dp)
-                                                    .padding(top = 4.dp)
-                                                    .shimmerShape(shimmerInstance)
-                                            )
-                                        }
-                                    }
-
-                                    Icon(
-                                        painter = painterResource(Res.drawable.pedal_bike_24px),
-                                        tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
-                                        contentDescription = null,
-                                        modifier = Modifier.align(Alignment.CenterVertically)
-                                    )
-                                    Box(
-                                        modifier = Modifier.padding(start = 8.dp),
-                                    ) {
-                                        Box(Modifier
-                                            .size(width = 24.dp, height = 20.dp)
-                                            .padding(top = 4.dp)
-                                            .shimmerShape(shimmerInstance))
-
-                                        // Placeholder so all numbers are left aligned. Text, so it scales when people have a larger font size
-                                        Text(
-                                            text = "888",
-                                            color = Color.Transparent
-                                        )
-                                    }
-                                }
-                            }
-                        }
+                        Loading()
                     }
 
                     HomeContent.NetworkError -> {
@@ -279,6 +226,66 @@ private fun HomeView(
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Loading() {
+    val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
+    LazyColumn(userScrollEnabled = false) {
+        item {
+            HorizontalBar(stringResource(Res.string.home_nearby))
+        }
+        items(count = 20) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Row {
+                        Box(
+                            Modifier
+                                .size(width = 140.dp, height = 24.dp)
+                                .padding(bottom = 4.dp, top = 2.dp)
+                                .shimmerShape(shimmerInstance)
+                        )
+                    }
+                    Row {
+                        Box(
+                            Modifier
+                                .size(width = 60.dp, height = 20.dp)
+                                .padding(top = 4.dp)
+                                .shimmerShape(shimmerInstance)
+                        )
+                    }
+                }
+
+                Icon(
+                    painter = painterResource(Res.drawable.pedal_bike_24px),
+                    tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    contentDescription = null,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+                Box(
+                    modifier = Modifier.padding(start = 8.dp),
+                ) {
+                    Box(
+                        Modifier
+                            .size(width = 24.dp, height = 20.dp)
+                            .padding(top = 4.dp)
+                            .shimmerShape(shimmerInstance)
+                    )
+
+                    // Placeholder so all numbers are left aligned. Text, so it scales when people have a larger font size
+                    Text(
+                        text = "888",
+                        color = Color.Transparent
+                    )
                 }
             }
         }
