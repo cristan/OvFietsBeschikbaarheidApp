@@ -322,11 +322,11 @@ private fun ActualDetails(
                             Disruptions(it)
                         }
 
-                        ExtraInfo(details)
-
                         if (details.openingHours.isNotEmpty()) {
                             OpeningHours(details)
                         }
+
+                        ExtraInfo(details)
 
                         if (details.alternatives.isNotEmpty()) {
                             Alternatives(details, onAlternativeClicked)
