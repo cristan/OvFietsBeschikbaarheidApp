@@ -335,7 +335,7 @@ private fun ActualDetails(
                     Spacer(Modifier.width(16.dp))
                     Column(modifier = Modifier.weight(2f)) {
                         if (details.graphDays.isNotEmpty()) {
-                            CapacityGraph(details.graphDays)
+                            CapacityGraph(details.graphDays, chartHeight = 240.dp)
                         }
 
                         MapView(
