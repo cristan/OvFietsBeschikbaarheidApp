@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -308,35 +310,75 @@ private fun ActualDetails(
         Modifier.verticalScroll(rememberScrollState())
     ) {
         Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
-            MainInfo(details)
+            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+            if (windowSizeClass.isWidthAtLeastBreakpoint(600)) {
+                Row {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Gauge(details)
+                        details.disruptions?.let {
+                            Disruptions(it)
+                        }
+                        details.disruptions?.let {
+                            Disruptions(it)
+                        }
 
-            if (details.graphDays.isNotEmpty()) {
-                CapacityGraph(details.graphDays)
+                        ExtraInfo(details)
+
+                        if (details.openingHours.isNotEmpty()) {
+                            OpeningHours(details)
+                        }
+
+                        if (details.alternatives.isNotEmpty()) {
+                            Alternatives(details, onAlternativeClicked)
+                        }
+                    }
+                    Spacer(Modifier.width(16.dp))
+                    Column(modifier = Modifier.weight(2f)) {
+                        if (details.graphDays.isNotEmpty()) {
+                            CapacityGraph(details.graphDays)
+                        }
+
+                        MapView(
+                            details.location,
+                            details.latitude,
+                            details.longitude,
+                            details.directions,
+                            details.description,
+                            details.rentalBikesAvailable,
+                            onLocationClicked
+                        )
+                    }
+                }
+            } else {
+                Gauge(details)
+                if (details.graphDays.isNotEmpty()) {
+                    CapacityGraph(details.graphDays)
+                }
+                details.disruptions?.let {
+                    Disruptions(it)
+                }
+
+                MapView(
+                    details.location,
+                    details.latitude,
+                    details.longitude,
+                    details.directions,
+                    details.description,
+                    details.rentalBikesAvailable,
+                    onLocationClicked
+                )
+
+                ExtraInfo(details)
+
+                if (details.openingHours.isNotEmpty()) {
+                    OpeningHours(details)
+                }
+
+                if (details.alternatives.isNotEmpty()) {
+                    Alternatives(details, onAlternativeClicked)
+                }
             }
 
-            details.disruptions?.let {
-                Disruptions(it)
-            }
-
-            MapView(
-                details.location,
-                details.latitude,
-                details.longitude,
-                details.directions,
-                details.description,
-                details.rentalBikesAvailable,
-                onLocationClicked
-            )
-
-            ExtraInfo(details)
-
-            if (details.openingHours.isNotEmpty()) {
-                OpeningHours(details)
-            }
-
-            if (details.alternatives.isNotEmpty()) {
-                Alternatives(details, onAlternativeClicked)
-            }
             Spacer(
                 Modifier.windowInsetsBottomHeight(WindowInsets.systemBars)
             )
@@ -345,7 +387,7 @@ private fun ActualDetails(
 }
 
 @Composable
-private fun MainInfo(details: DetailsModel) {
+private fun Gauge(details: DetailsModel) {
     OvCard {
         Text(stringResource(Res.string.details_amount_available))
         val rentalBikesAvailable = details.rentalBikesAvailable

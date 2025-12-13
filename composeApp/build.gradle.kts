@@ -68,6 +68,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.androidx.lifecycle.viewmodel.nav3)
             implementation(libs.navigation3.ui)
+            implementation(libs.adaptive.layout)
 
             implementation(libs.kermit)
 
