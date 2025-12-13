@@ -311,7 +311,7 @@ private fun ActualDetails(
     ) {
         Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
             val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-            if (windowSizeClass.isWidthAtLeastBreakpoint(600)) {
+            if (windowSizeClass.isWidthAtLeastBreakpoint(800)) {
                 Row {
                     Column(modifier = Modifier.weight(1f)) {
                         Gauge(details)
