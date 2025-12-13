@@ -363,10 +363,11 @@ private fun ActualDetails(
         Modifier.verticalScroll(rememberScrollState())
     ) {
         val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-        val tabletSized = windowSizeClass.isWidthAtLeastBreakpoint(800)
+        val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(800)
+        val isTabletSized = windowSizeClass.isAtLeastBreakpoint(600, 600)
         val spacing = LocalSpacing.current
         Column(Modifier.padding(start = spacing, end = spacing, bottom = spacing)) {
-            if (tabletSized) {
+            if (hasTabletWidth) {
                 Row {
                     Column(modifier = Modifier.weight(1f)) {
                         Gauge(details)
@@ -387,7 +388,7 @@ private fun ActualDetails(
                     Spacer(Modifier.width(spacing))
                     Column(modifier = Modifier.weight(2f)) {
                         if (details.graphDays.isNotEmpty()) {
-                            CapacityGraph(details.graphDays, chartHeight = 240.dp)
+                            CapacityGraph(details.graphDays, chartHeight = if (isTabletSized) 240.dp else 140.dp)
                         }
 
                         MapView(
@@ -397,7 +398,7 @@ private fun ActualDetails(
                             details.directions,
                             details.description,
                             details.rentalBikesAvailable,
-                            320.dp,
+                            if(isTabletSized) 320.dp else 260.dp,
                             onLocationClicked
                         )
                     }
