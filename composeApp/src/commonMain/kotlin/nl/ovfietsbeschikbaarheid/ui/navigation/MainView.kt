@@ -14,7 +14,7 @@ val LocalSpacing = staticCompositionLocalOf {
 fun MainView() {
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
-    val spacing = if (windowSizeClass.isWidthAtLeastBreakpoint(600)) {
+    val spacing = if (windowSizeClass.isAtLeastBreakpoint(600, 600)) {
         24.dp
     } else {
         16.dp
