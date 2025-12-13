@@ -110,6 +110,7 @@ import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.NativeMap
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
 import nl.ovfietsbeschikbaarheid.ui.navigation.Details
+import nl.ovfietsbeschikbaarheid.ui.navigation.LocalSpacing
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
@@ -309,9 +310,11 @@ private fun ActualDetails(
     Surface(
         Modifier.verticalScroll(rememberScrollState())
     ) {
-        Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
-            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-            if (windowSizeClass.isWidthAtLeastBreakpoint(800)) {
+        val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+        val tabletSized = windowSizeClass.isWidthAtLeastBreakpoint(800)
+        val spacing = LocalSpacing.current
+        Column(Modifier.padding(start = spacing, end = spacing, bottom = spacing)) {
+            if (tabletSized) {
                 Row {
                     Column(modifier = Modifier.weight(1f)) {
                         Gauge(details)
@@ -332,7 +335,7 @@ private fun ActualDetails(
                             Alternatives(details, onAlternativeClicked)
                         }
                     }
-                    Spacer(Modifier.width(16.dp))
+                    Spacer(Modifier.width(spacing))
                     Column(modifier = Modifier.weight(2f)) {
                         if (details.graphDays.isNotEmpty()) {
                             CapacityGraph(details.graphDays, chartHeight = 240.dp)
