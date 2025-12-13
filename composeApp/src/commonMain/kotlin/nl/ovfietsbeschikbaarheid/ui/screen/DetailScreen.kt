@@ -309,7 +309,7 @@ private fun ActualDetails(
     Surface(
         Modifier.verticalScroll(rememberScrollState())
     ) {
-        Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
+        Column(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
             val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
             if (windowSizeClass.isWidthAtLeastBreakpoint(800)) {
                 Row {
