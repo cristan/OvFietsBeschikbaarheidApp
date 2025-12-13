@@ -54,6 +54,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.valentinilk.shimmer.ShimmerBounds
@@ -348,6 +349,7 @@ private fun ActualDetails(
                             details.directions,
                             details.description,
                             details.rentalBikesAvailable,
+                            320.dp,
                             onLocationClicked
                         )
                     }
@@ -368,6 +370,7 @@ private fun ActualDetails(
                     details.directions,
                     details.description,
                     details.rentalBikesAvailable,
+                    260.dp,
                     onLocationClicked
                 )
 
@@ -488,6 +491,7 @@ fun MapView(
     directions: String?,
     description: String,
     rentalBikesAvailable: Int?,
+    mapHeight: Dp ,
     onNavigateClicked: (String) -> Unit
 ) {
     OvCard {
@@ -545,7 +549,7 @@ fun MapView(
 
         NativeMap(
             modifier = Modifier
-                .height(260.dp)
+                .height(mapHeight)
                 .clip(RoundedCornerShape(12.dp)),
             latitude, longitude, description, rentalBikesAvailable
         )
