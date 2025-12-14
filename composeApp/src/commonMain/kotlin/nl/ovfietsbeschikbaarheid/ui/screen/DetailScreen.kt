@@ -233,7 +233,7 @@ fun DetailsLoader(
             .verticalScroll(rememberScrollState())
     ) {
         val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-        val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(600)
+        val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(800)
         if (hasTabletWidth) {
             Row {
                 Column(modifier = Modifier.weight(1f)) {
@@ -363,7 +363,7 @@ private fun ActualDetails(
         Modifier.verticalScroll(rememberScrollState())
     ) {
         val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-        val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(600)
+        val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(800)
         val isTabletSized = windowSizeClass.isAtLeastBreakpoint(600, 600)
         val spacing = LocalSpacing.current
         Column(Modifier.padding(start = spacing, end = spacing, bottom = spacing)) {
