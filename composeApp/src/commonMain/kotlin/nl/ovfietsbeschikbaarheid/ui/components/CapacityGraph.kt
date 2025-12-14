@@ -36,6 +36,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.datetime.DateTimeUnit
@@ -60,7 +62,6 @@ import nl.ovfietsbeschikbaarheid.ui.theme.Grey40
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey80
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import org.jetbrains.compose.resources.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.time.ExperimentalTime
@@ -68,6 +69,7 @@ import kotlin.time.ExperimentalTime
 @Composable
 fun CapacityGraph(
     graphDays: List<GraphDayModel>,
+    chartHeight: Dp = 140.dp,
     modifier: Modifier = Modifier
 ) {
     val textMeasurer = rememberTextMeasurer()
@@ -116,7 +118,7 @@ fun CapacityGraph(
                     contentDescription = shownGraphDay.contentDescription
                 }
                 .fillMaxWidth()
-                .height(140.dp)
+                .height(chartHeight)
         ) {
             val leftPadding = 24.dp.toPx()
             val bottomPadding = 16.dp.toPx()

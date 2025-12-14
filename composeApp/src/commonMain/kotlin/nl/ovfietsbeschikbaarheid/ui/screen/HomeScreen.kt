@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -50,7 +52,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
-import io.ktor.serialization.Configuration
 import kotlinx.datetime.toLocalDateTime
 import nl.ovfietsbeschikbaarheid.TestData
 import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
@@ -155,7 +156,9 @@ private fun HomeView(
         ) { innerPadding ->
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.CenterHorizontally)
+                    .widthIn(max = 800.dp)
                     .padding(innerPadding)
             ) {
                 SearchField(searchTerm, onSearchTermChanged)
@@ -183,60 +186,7 @@ private fun HomeView(
                     }
 
                     HomeContent.Loading -> {
-                        val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
-                        LazyColumn(userScrollEnabled = false) {
-                            item {
-                                HorizontalBar(stringResource(Res.string.home_nearby))
-                            }
-                            items(count = 20) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Column(modifier = Modifier.weight(1f)) {
-                                        Row {
-                                            Box(
-                                                Modifier
-                                                    .size(width = 140.dp, height = 24.dp)
-                                                    .padding(bottom = 4.dp, top = 2.dp)
-                                                    .shimmerShape(shimmerInstance)
-                                            )
-                                        }
-                                        Row {
-                                            Box(
-                                                Modifier
-                                                    .size(width = 60.dp, height = 20.dp)
-                                                    .padding(top = 4.dp)
-                                                    .shimmerShape(shimmerInstance)
-                                            )
-                                        }
-                                    }
-
-                                    Icon(
-                                        painter = painterResource(Res.drawable.pedal_bike_24px),
-                                        tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
-                                        contentDescription = null,
-                                        modifier = Modifier.align(Alignment.CenterVertically)
-                                    )
-                                    Box(
-                                        modifier = Modifier.padding(start = 8.dp),
-                                    ) {
-                                        Box(Modifier
-                                            .size(width = 24.dp, height = 20.dp)
-                                            .padding(top = 4.dp)
-                                            .shimmerShape(shimmerInstance))
-
-                                        // Placeholder so all numbers are left aligned. Text, so it scales when people have a larger font size
-                                        Text(
-                                            text = "888",
-                                            color = Color.Transparent
-                                        )
-                                    }
-                                }
-                            }
-                        }
+                        Loading()
                     }
 
                     HomeContent.NetworkError -> {
@@ -279,6 +229,66 @@ private fun HomeView(
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Loading() {
+    val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
+    LazyColumn(userScrollEnabled = false) {
+        item {
+            HorizontalBar(stringResource(Res.string.home_nearby))
+        }
+        items(count = 20) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Row {
+                        Box(
+                            Modifier
+                                .size(width = 140.dp, height = 24.dp)
+                                .padding(bottom = 4.dp, top = 2.dp)
+                                .shimmerShape(shimmerInstance)
+                        )
+                    }
+                    Row {
+                        Box(
+                            Modifier
+                                .size(width = 60.dp, height = 20.dp)
+                                .padding(top = 4.dp)
+                                .shimmerShape(shimmerInstance)
+                        )
+                    }
+                }
+
+                Icon(
+                    painter = painterResource(Res.drawable.pedal_bike_24px),
+                    tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    contentDescription = null,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+                Box(
+                    modifier = Modifier.padding(start = 8.dp),
+                ) {
+                    Box(
+                        Modifier
+                            .size(width = 24.dp, height = 20.dp)
+                            .padding(top = 4.dp)
+                            .shimmerShape(shimmerInstance)
+                    )
+
+                    // Placeholder so all numbers are left aligned. Text, so it scales when people have a larger font size
+                    Text(
+                        text = "888",
+                        color = Color.Transparent
+                    )
                 }
             }
         }

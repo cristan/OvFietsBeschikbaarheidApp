@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -52,8 +54,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.valentinilk.shimmer.Shimmer
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
@@ -108,6 +112,7 @@ import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.NativeMap
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
 import nl.ovfietsbeschikbaarheid.ui.navigation.Details
+import nl.ovfietsbeschikbaarheid.ui.navigation.LocalSpacing
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import nl.ovfietsbeschikbaarheid.ui.theme.Orange50
@@ -221,78 +226,128 @@ fun DetailsLoader(
     modifier: Modifier
 ) {
     val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
+    val spacing = LocalSpacing.current
     Column(
         modifier
-            .padding(top = 4.dp, start = 20.dp, end = 20.dp)
+            .padding(start = spacing, end = spacing)
             .verticalScroll(rememberScrollState())
     ) {
-        OvCard {
-            Text(stringResource(Res.string.details_amount_available))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    progress = { 1.0f },
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
-                    modifier = Modifier
-                        .size(220.dp)
-                        .shimmer(shimmerInstance),
-                    strokeWidth = 36.dp,
-                    strokeCap = StrokeCap.Butt,
-                    gapSize = 0.dp,
+        val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+        val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(600)
+        if (hasTabletWidth) {
+            Row {
+                Column(modifier = Modifier.weight(1f)) {
+                    LoadingGauge(shimmerInstance)
 
-                    )
-                Box(
-                    modifier = Modifier
-                        .size(width = 68.dp, height = 54.dp)
-                        .shimmerShape(shimmerInstance)
-                )
+                        OvCard {
+                            Text(
+                                text = stringResource(Res.string.opening_hours_title),
+                                style = MaterialTheme.typography.headlineMedium,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(180.dp)
+                                    .shimmerShape(shimmerInstance)
+                            )
+                        }
+                }
+                Spacer(Modifier.width(spacing))
+                Column(modifier = Modifier.weight(2f)) {
+                    LoadingGraph(shimmerInstance)
+
+                    LoadingMap(shimmerInstance)
+                }
             }
-            Row(Modifier.align(Alignment.End)) {
-                Text(
-                    stringResource(Res.string.open_until, "23:33"),
-                    modifier = Modifier.shimmerShape(shimmerInstance)
-                )
-            }
+        } else {
+            LoadingGauge(shimmerInstance)
+
+            LoadingGraph(shimmerInstance)
+
+            LoadingMap(shimmerInstance)
         }
 
-        OvCard {
-            Text(
-                text = stringResource(Res.string.capacity_graph_title),
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+        Spacer(
+            Modifier.windowInsetsBottomHeight(WindowInsets.systemBars)
+        )
+    }
+}
 
+@Composable
+private fun LoadingMap(shimmerInstance: Shimmer) {
+    OvCard {
+        Text(
+            text = stringResource(Res.string.location_title),
+            style = MaterialTheme.typography.headlineMedium,
+        )
+
+        Box(
+            modifier = Modifier
+                .padding(vertical = 32.dp)
+                .height(28.dp)
+                .fillMaxWidth()
+                .shimmerShape(shimmerInstance, shape = RoundedCornerShape(8.dp))
+        )
+
+        Box(
+            modifier = Modifier
+                .height(276.dp)// 260 dp + 16 dp padding. Not sure where that 16 dp comes from, but ok.
+                .fillMaxWidth()
+                .shimmerShape(shimmerInstance, shape = RoundedCornerShape(12.dp))
+        )
+    }
+}
+
+@Composable
+private fun LoadingGraph(shimmerInstance: Shimmer, boxHeight: Dp = 370.dp) {
+    OvCard {
+        Text(
+            text = stringResource(Res.string.capacity_graph_title),
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        Box(
+            modifier = Modifier
+                .height(boxHeight)
+                .fillMaxWidth()
+                .shimmerShape(shimmerInstance, shape = RoundedCornerShape(8.dp))
+        )
+    }
+}
+
+@Composable
+private fun LoadingGauge(shimmerInstance: Shimmer) {
+    OvCard {
+        Text(stringResource(Res.string.details_amount_available))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 24.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                progress = { 1.0f },
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                modifier = Modifier
+                    .size(220.dp)
+                    .shimmer(shimmerInstance),
+                strokeWidth = 36.dp,
+                strokeCap = StrokeCap.Butt,
+                gapSize = 0.dp,
+
+                )
             Box(
                 modifier = Modifier
-                    .height(270.dp)
-                    .fillMaxWidth()
-                    .shimmerShape(shimmerInstance, shape = RoundedCornerShape(8.dp))
+                    .size(width = 68.dp, height = 54.dp)
+                    .shimmerShape(shimmerInstance)
             )
         }
-
-        OvCard {
+        Row(Modifier.align(Alignment.End)) {
             Text(
-                text = stringResource(Res.string.location_title),
-                style = MaterialTheme.typography.headlineMedium,
-            )
-
-            Box(
-                modifier = Modifier
-                    .padding(vertical = 32.dp)
-                    .height(28.dp)
-                    .fillMaxWidth()
-                    .shimmerShape(shimmerInstance, shape = RoundedCornerShape(8.dp))
-            )
-
-            Box(
-                modifier = Modifier
-                    .height(276.dp)// 260 dp + 16 dp padding. Not sure where that 16 dp comes from, but ok.
-                    .fillMaxWidth()
-                    .shimmerShape(shimmerInstance, shape = RoundedCornerShape(12.dp))
+                stringResource(Res.string.open_until, "23:33"),
+                modifier = Modifier.shimmerShape(shimmerInstance)
             )
         }
     }
@@ -307,36 +362,78 @@ private fun ActualDetails(
     Surface(
         Modifier.verticalScroll(rememberScrollState())
     ) {
-        Column(Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp, top = 4.dp)) {
-            MainInfo(details)
+        val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+        val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(600)
+        val isTabletSized = windowSizeClass.isAtLeastBreakpoint(600, 600)
+        val spacing = LocalSpacing.current
+        Column(Modifier.padding(start = spacing, end = spacing, bottom = spacing)) {
+            if (hasTabletWidth) {
+                Row {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Gauge(details)
+                        details.disruptions?.let {
+                            Disruptions(it)
+                        }
 
-            if (details.graphDays.isNotEmpty()) {
-                CapacityGraph(details.graphDays)
+                        if (details.openingHours.isNotEmpty()) {
+                            OpeningHours(details)
+                        }
+
+                        ExtraInfo(details)
+
+                        if (details.alternatives.isNotEmpty()) {
+                            Alternatives(details, onAlternativeClicked)
+                        }
+                    }
+                    Spacer(Modifier.width(spacing))
+                    Column(modifier = Modifier.weight(2f)) {
+                        if (details.graphDays.isNotEmpty()) {
+                            CapacityGraph(details.graphDays, chartHeight = if (isTabletSized) 240.dp else 140.dp)
+                        }
+
+                        MapView(
+                            details.location,
+                            details.latitude,
+                            details.longitude,
+                            details.directions,
+                            details.description,
+                            details.rentalBikesAvailable,
+                            if(isTabletSized) 320.dp else 260.dp,
+                            onLocationClicked
+                        )
+                    }
+                }
+            } else {
+                Gauge(details)
+                if (details.graphDays.isNotEmpty()) {
+                    CapacityGraph(details.graphDays)
+                }
+                details.disruptions?.let {
+                    Disruptions(it)
+                }
+
+                MapView(
+                    details.location,
+                    details.latitude,
+                    details.longitude,
+                    details.directions,
+                    details.description,
+                    details.rentalBikesAvailable,
+                    260.dp,
+                    onLocationClicked
+                )
+
+                ExtraInfo(details)
+
+                if (details.openingHours.isNotEmpty()) {
+                    OpeningHours(details)
+                }
+
+                if (details.alternatives.isNotEmpty()) {
+                    Alternatives(details, onAlternativeClicked)
+                }
             }
 
-            details.disruptions?.let {
-                Disruptions(it)
-            }
-
-            MapView(
-                details.location,
-                details.latitude,
-                details.longitude,
-                details.directions,
-                details.description,
-                details.rentalBikesAvailable,
-                onLocationClicked
-            )
-
-            ExtraInfo(details)
-
-            if (details.openingHours.isNotEmpty()) {
-                OpeningHours(details)
-            }
-
-            if (details.alternatives.isNotEmpty()) {
-                Alternatives(details, onAlternativeClicked)
-            }
             Spacer(
                 Modifier.windowInsetsBottomHeight(WindowInsets.systemBars)
             )
@@ -345,7 +442,7 @@ private fun ActualDetails(
 }
 
 @Composable
-private fun MainInfo(details: DetailsModel) {
+private fun Gauge(details: DetailsModel) {
     OvCard {
         Text(stringResource(Res.string.details_amount_available))
         val rentalBikesAvailable = details.rentalBikesAvailable
@@ -443,6 +540,7 @@ fun MapView(
     directions: String?,
     description: String,
     rentalBikesAvailable: Int?,
+    mapHeight: Dp,
     onNavigateClicked: (String) -> Unit
 ) {
     OvCard {
@@ -500,7 +598,7 @@ fun MapView(
 
         NativeMap(
             modifier = Modifier
-                .height(260.dp)
+                .height(mapHeight)
                 .clip(RoundedCornerShape(12.dp)),
             latitude, longitude, description, rentalBikesAvailable
         )
@@ -616,6 +714,7 @@ fun DetailsLoadingPreview() {
 
 @OptIn(ExperimentalTime::class)
 @Preview(heightDp = 2000)
+@Preview(widthDp = 1483, heightDp = 928)
 @Composable
 fun DetailsPreview() {
     val dayNames =
