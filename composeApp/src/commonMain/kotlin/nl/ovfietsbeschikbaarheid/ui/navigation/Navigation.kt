@@ -4,29 +4,42 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import androidx.savedstate.serialization.SavedStateConfiguration
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 import nl.ovfietsbeschikbaarheid.ui.screen.AboutScreen
 import nl.ovfietsbeschikbaarheid.ui.screen.DetailScreen
 import nl.ovfietsbeschikbaarheid.ui.screen.HomeScreen
 
 @Serializable
-object Home
+object Home: NavKey
 
 @Serializable
-data class Details(val title: String, val locationCode: String, val fetchTime: Long)
+data class Details(val title: String, val locationCode: String, val fetchTime: Long): NavKey
 
 @Serializable
-data class About(val pricePer24Hours: String?)
+data class About(val pricePer24Hours: String?): NavKey
+
+private val config = SavedStateConfiguration {
+    serializersModule = SerializersModule {
+        polymorphic(NavKey::class) {
+            subclass(Home::class, Home.serializer())
+            subclass(Details::class, Details.serializer())
+            subclass(About::class, About.serializer())
+        }
+    }
+}
 
 @Composable
 fun Navigation() {
-    val backStack = remember { mutableStateListOf<Any>(Home) }
+    val backStack = rememberNavBackStack(config, Home)
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
@@ -63,7 +76,7 @@ fun Navigation() {
                             backStack.add(Details(alternative.title, alternative.locationCode, alternative.fetchTime))
                         },
                         onBackClicked = {
-                            backStack.removeRange(1, backStack.size)
+                            backStack.removeAll { it != Home }
                         }
                     )
                 }
@@ -72,7 +85,7 @@ fun Navigation() {
                     AboutScreen(
                         pricePer24Hours = key.pricePer24Hours,
                         onBackClicked = {
-                            backStack.removeRange(1, backStack.size)
+                            backStack.removeAll { it != Home }
                         }
                     )
                 }
