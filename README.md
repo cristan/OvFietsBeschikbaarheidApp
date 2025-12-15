@@ -2,12 +2,11 @@
 [![Build Status](https://github.com/cristan/OvFietsBeschikbaarheidApp/actions/workflows/kmp_ci.yml/badge.svg)](https://github.com/cristan/OvFietsBeschikbaarheidApp/actions/workflows/android_ci.yml)
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-%20-blue?logo=kotlin)](http://kotlinlang.org)
-[![Compose](https://img.shields.io/badge/Compose-%20-blue?logo=android)](https://developer.android.com/compose)
+[![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-%20-8E44AD?logo=jetbrains)](https://www.jetbrains.com/compose-multiplatform/)
 [![Android](https://img.shields.io/badge/Platform-Android-green)](https://play.google.com/store/apps/details?id=nl.ovfietsbeschikbaarheid)
 [![iOS](https://img.shields.io/badge/Platform-iOS-blue)](https://apps.apple.com/us/app/ov-fiets-beschikbaarheid/id6755495730)
 [![Koin](https://img.shields.io/badge/Koin-%20-orange?logo=koin)](https://github.com/InsertKoinIO/koin)
 [![Ktor](https://img.shields.io/badge/Ktor-%20-blue?logo=kotlin)](https://ktor.io/)
-[![Google Maps](https://img.shields.io/badge/Google%20Maps-%20-blue?logo=google-maps)](https://github.com/googlemaps/android-maps-compose)
 
 This app is designed to find how many OV-fiets bikes are available as quickly as possible.
 
@@ -18,15 +17,15 @@ This app is designed to find how many OV-fiets bikes are available as quickly as
 ## Features
 * Quickly see nearby locations' availability via GPS
 * A history graph which shows the availability over time
-* Extended info like the address, opening hours etc
+* Extended info like the address, directions, opening hours etc
 
 ## About the code
 Data comes from [openOV](https://openov.nl) and is hosted by the open source [OvFietsBackend](https://github.com/cristan/OvFietsBackend).
 
 The code is pretty much using the latest technologies available (at least at the time of writing)
-* 100% Jetpack Compose
+* Fully Compose Multiplatform
 * Material Design 3
-* Libraries like Koin, Compass, and Ktor so it can later easily be converted to Compose Multiplatform
+* Navigation3
 * Gradle Kotlin DSL (`.kts`)
 
 ## Contributing

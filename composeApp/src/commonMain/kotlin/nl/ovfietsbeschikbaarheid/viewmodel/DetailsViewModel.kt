@@ -25,13 +25,13 @@ import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
 import nl.ovfietsbeschikbaarheid.ext.dutchTimeZone
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
-import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.repository.DetailsRepository
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.state.setRefreshing
+import nl.ovfietsbeschikbaarheid.ui.navigation.Details
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -50,12 +50,12 @@ class DetailsViewModel(
     private val _screenState = mutableStateOf<ScreenState<DetailsContent>>(ScreenState.Loading)
     val screenState: State<ScreenState<DetailsContent>> = _screenState
 
-    private lateinit var data: DetailScreenData
+    private lateinit var data: Details
 
     private val _title = mutableStateOf("")
     val title: State<String> = _title
 
-    fun screenLaunched(data: DetailScreenData) {
+    fun screenLaunched(data: Details) {
         this.data = data
         _title.value = data.title
         doRefresh()

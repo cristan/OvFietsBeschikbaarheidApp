@@ -20,7 +20,6 @@ import nl.ovfietsbeschikbaarheid.ext.toNarrowDayOfWeek
 import nl.ovfietsbeschikbaarheid.ext.truncateToHour
 import nl.ovfietsbeschikbaarheid.model.AddressModel
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
-import nl.ovfietsbeschikbaarheid.model.DetailScreenData
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
@@ -36,6 +35,7 @@ import nl.ovfietsbeschikbaarheid.resources.day_7
 import nl.ovfietsbeschikbaarheid.resources.graph_next_day_content_description
 import nl.ovfietsbeschikbaarheid.resources.graph_previous_day_content_description
 import nl.ovfietsbeschikbaarheid.resources.graph_today_content_description
+import nl.ovfietsbeschikbaarheid.ui.navigation.Details
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
 import kotlin.time.Clock
@@ -89,7 +89,7 @@ class DetailsMapper() {
 
                     // Don't pick yourself
                     it.locationCode != locationDTO.extra.locationCode
-        }.map { DetailScreenData(it.title, it.locationCode, it.fetchTime) }
+        }.map { Details(it.title, it.locationCode, it.fetchTime) }
 
         val rentalBikesAvailable = locationDTO.extra.rentalBikes
 

@@ -66,7 +66,9 @@ kotlin {
             implementation(libs.compose.shimmer)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(libs.androidx.navigation.compose)
+            implementation(libs.androidx.lifecycle.viewmodel.nav3)
+            implementation(libs.navigation3.ui)
+            implementation(libs.adaptive.layout)
 
             implementation(libs.kermit)
 
@@ -113,8 +115,8 @@ android {
         applicationId = "nl.ovfietsbeschikbaarheid"
         minSdk = 26
         targetSdk = 36
-        versionCode = 26
-        versionName = "3.5.0"
+        versionCode = 27
+        versionName = "3.6.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -154,4 +156,3 @@ configurations.all {
 dependencies {
     debugImplementation(libs.ui.tooling)
 }
-
