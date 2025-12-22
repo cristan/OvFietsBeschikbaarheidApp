@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -57,6 +59,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.window.core.layout.WindowSizeClass
 import com.valentinilk.shimmer.Shimmer
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
@@ -232,12 +235,18 @@ fun DetailsLoader(
             .padding(start = spacing, end = spacing)
             .verticalScroll(rememberScrollState())
     ) {
-        val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-        val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(800)
-        if (hasTabletWidth) {
-            Row {
-                Column(modifier = Modifier.weight(1f)) {
-                    LoadingGauge(shimmerInstance)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentWidth(Alignment.CenterHorizontally)
+                .widthIn(max = 1600.dp)
+        ) {
+            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+            val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)
+            if (hasTabletWidth) {
+                Row {
+                    Column(modifier = Modifier.weight(1f)) {
+                        LoadingGauge(shimmerInstance)
 
                         OvCard {
                             Text(
@@ -252,25 +261,26 @@ fun DetailsLoader(
                                     .shimmerShape(shimmerInstance)
                             )
                         }
-                }
-                Spacer(Modifier.width(spacing))
-                Column(modifier = Modifier.weight(2f)) {
-                    LoadingGraph(shimmerInstance)
+                    }
+                    Spacer(Modifier.width(spacing))
+                    Column(modifier = Modifier.weight(2f)) {
+                        LoadingGraph(shimmerInstance)
 
-                    LoadingMap(shimmerInstance)
+                        LoadingMap(shimmerInstance)
+                    }
                 }
+            } else {
+                LoadingGauge(shimmerInstance)
+
+                LoadingGraph(shimmerInstance)
+
+                LoadingMap(shimmerInstance)
             }
-        } else {
-            LoadingGauge(shimmerInstance)
 
-            LoadingGraph(shimmerInstance)
-
-            LoadingMap(shimmerInstance)
+            Spacer(
+                Modifier.windowInsetsBottomHeight(WindowInsets.systemBars)
+            )
         }
-
-        Spacer(
-            Modifier.windowInsetsBottomHeight(WindowInsets.systemBars)
-        )
     }
 }
 
@@ -362,81 +372,91 @@ private fun ActualDetails(
     Surface(
         Modifier.verticalScroll(rememberScrollState())
     ) {
-        val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-        val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(800)
-        val isTabletSized = windowSizeClass.isAtLeastBreakpoint(600, 600)
-        val spacing = LocalSpacing.current
-        Column(Modifier.padding(start = spacing, end = spacing, bottom = spacing)) {
-            if (hasTabletWidth) {
-                Row {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Gauge(details)
-                        details.disruptions?.let {
-                            Disruptions(it)
-                        }
-
-                        if (details.openingHours.isNotEmpty()) {
-                            OpeningHours(details)
-                        }
-
-                        ExtraInfo(details)
-
-                        if (details.alternatives.isNotEmpty()) {
-                            Alternatives(details, onAlternativeClicked)
-                        }
-                    }
-                    Spacer(Modifier.width(spacing))
-                    Column(modifier = Modifier.weight(2f)) {
-                        if (details.graphDays.isNotEmpty()) {
-                            CapacityGraph(details.graphDays, chartHeight = if (isTabletSized) 240.dp else 140.dp)
-                        }
-
-                        MapView(
-                            details.location,
-                            details.latitude,
-                            details.longitude,
-                            details.directions,
-                            details.description,
-                            details.rentalBikesAvailable,
-                            if(isTabletSized) 320.dp else 260.dp,
-                            onLocationClicked
-                        )
-                    }
-                }
-            } else {
-                Gauge(details)
-                if (details.graphDays.isNotEmpty()) {
-                    CapacityGraph(details.graphDays)
-                }
-                details.disruptions?.let {
-                    Disruptions(it)
-                }
-
-                MapView(
-                    details.location,
-                    details.latitude,
-                    details.longitude,
-                    details.directions,
-                    details.description,
-                    details.rentalBikesAvailable,
-                    260.dp,
-                    onLocationClicked
-                )
-
-                ExtraInfo(details)
-
-                if (details.openingHours.isNotEmpty()) {
-                    OpeningHours(details)
-                }
-
-                if (details.alternatives.isNotEmpty()) {
-                    Alternatives(details, onAlternativeClicked)
-                }
-            }
-
-            Spacer(
-                Modifier.windowInsetsBottomHeight(WindowInsets.systemBars)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentWidth(Alignment.CenterHorizontally)
+                .widthIn(max = 1600.dp)
+        ) {
+            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+            val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)
+            val isTabletSized = windowSizeClass.isAtLeastBreakpoint(
+                WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND,
+                WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND
             )
+            val spacing = LocalSpacing.current
+            Column(Modifier.padding(start = spacing, end = spacing, bottom = spacing)) {
+                if (hasTabletWidth) {
+                    Row {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Gauge(details)
+                            details.disruptions?.let {
+                                Disruptions(it)
+                            }
+
+                            if (details.openingHours.isNotEmpty()) {
+                                OpeningHours(details)
+                            }
+
+                            ExtraInfo(details)
+
+                            if (details.alternatives.isNotEmpty()) {
+                                Alternatives(details, onAlternativeClicked)
+                            }
+                        }
+                        Spacer(Modifier.width(spacing))
+                        Column(modifier = Modifier.weight(2f)) {
+                            if (details.graphDays.isNotEmpty()) {
+                                CapacityGraph(details.graphDays, chartHeight = if (isTabletSized) 240.dp else 140.dp)
+                            }
+
+                            MapView(
+                                details.location,
+                                details.latitude,
+                                details.longitude,
+                                details.directions,
+                                details.description,
+                                details.rentalBikesAvailable,
+                                if (isTabletSized) 320.dp else 260.dp,
+                                onLocationClicked
+                            )
+                        }
+                    }
+                } else {
+                    Gauge(details)
+                    if (details.graphDays.isNotEmpty()) {
+                        CapacityGraph(details.graphDays)
+                    }
+                    details.disruptions?.let {
+                        Disruptions(it)
+                    }
+
+                    MapView(
+                        details.location,
+                        details.latitude,
+                        details.longitude,
+                        details.directions,
+                        details.description,
+                        details.rentalBikesAvailable,
+                        260.dp,
+                        onLocationClicked
+                    )
+
+                    ExtraInfo(details)
+
+                    if (details.openingHours.isNotEmpty()) {
+                        OpeningHours(details)
+                    }
+
+                    if (details.alternatives.isNotEmpty()) {
+                        Alternatives(details, onAlternativeClicked)
+                    }
+                }
+
+                Spacer(
+                    Modifier.windowInsetsBottomHeight(WindowInsets.systemBars)
+                )
+            }
         }
     }
 }

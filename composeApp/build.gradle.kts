@@ -115,8 +115,8 @@ android {
         applicationId = "nl.ovfietsbeschikbaarheid"
         minSdk = 26
         targetSdk = 36
-        versionCode = 27
-        versionName = "3.6.0"
+        versionCode = 28
+        versionName = "3.7.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -141,15 +141,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-    }
-}
-
-// Somehow, having different compose-bom versions in here and in maps-compose gives problems when running lint. Override it to use my version.
-configurations.all {
-    resolutionStrategy.eachDependency {
-        if (requested.group == "androidx.compose" && requested.name == "compose-bom") {
-            useVersion(libs.versions.composeBom.get())
-        }
     }
 }
 
