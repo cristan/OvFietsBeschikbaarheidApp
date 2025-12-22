@@ -23,7 +23,14 @@ import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
 
-fun iosModule() = module {
+fun iosAppModule() = module {
+    includes(
+        commonModule(),
+        iosOnlyModule()
+    )
+}
+
+fun iosOnlyModule() = module {
     single { createIosDataStore() }
     single<Locator> { Locator.mobile() }
     single<InAppReviewProvider> { IosInAppReviewProvider(get()) }

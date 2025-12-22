@@ -17,7 +17,14 @@ import org.koin.dsl.module
 
 val Context.dataStore by preferencesDataStore("settings")
 
-fun androidModule() = module {
+fun androidAppModule() = module {
+    includes(
+        commonModule(),
+        androidOnlyModule()
+    )
+}
+
+fun androidOnlyModule() = module {
     single { androidContext().dataStore }
     single<AndroidInAppReviewProvider> { AndroidInAppReviewProvider(get()) }
     single<InAppReviewProvider> { get<AndroidInAppReviewProvider>() }
