@@ -26,7 +26,7 @@ import platform.Foundation.NSUserDomainMask
 fun iosModule() = module {
     single { createIosDataStore() }
     single<Locator> { Locator.mobile() }
-    single<InAppReviewProvider> { IosInAppReviewProvider() }
+    single<InAppReviewProvider> { IosInAppReviewProvider(get()) }
     factoryOf<PlatformLocationHelper>(::IOSPlatformLocationHelper)
     singleOf(::LocationPermissionHelper)
     factory<LocationLoader> { IOSLocationLoader(get()) }
