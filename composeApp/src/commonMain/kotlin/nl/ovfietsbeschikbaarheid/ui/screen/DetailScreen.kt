@@ -57,7 +57,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_EXPANDED_LOWER_BOUND
+import androidx.window.core.layout.WindowSizeClass
 import com.valentinilk.shimmer.Shimmer
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
@@ -234,7 +234,7 @@ fun DetailsLoader(
             .verticalScroll(rememberScrollState())
     ) {
         val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-        val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_EXPANDED_LOWER_BOUND)
+        val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)
         if (hasTabletWidth) {
             Row {
                 Column(modifier = Modifier.weight(1f)) {
@@ -364,8 +364,8 @@ private fun ActualDetails(
         Modifier.verticalScroll(rememberScrollState())
     ) {
         val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-        val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(WIDTH_DP_EXPANDED_LOWER_BOUND)
-        val isTabletSized = windowSizeClass.isAtLeastBreakpoint(600, 600)
+        val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)
+        val isTabletSized = windowSizeClass.isAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND, WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND)
         val spacing = LocalSpacing.current
         Column(Modifier.padding(start = spacing, end = spacing, bottom = spacing)) {
             if (hasTabletWidth) {
