@@ -18,7 +18,7 @@ fun MainView() {
     val isTabletSized =
         windowSizeClass.isAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND, WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND)
     val spacing = if (isTabletSized) {
-        24.dp
+        16.dp
     } else {
         16.dp
     }
