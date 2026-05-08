@@ -80,7 +80,7 @@ jobs:
           disable-animations: true
           script: ./gradlew :androidApp:connectedDebugAndroidTest
 
-  ios-framework-link:
+  ios-test:
     runs-on: macos-26
 
     steps:
@@ -91,5 +91,5 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'gradle'
-      - name: Compile and link iOS .framework bundle
-        run: ./gradlew :composeApp:linkDebugFrameworkIosSimulatorArm64
+      - name: Run iOS unit tests
+        run: ./gradlew :composeApp:iosSimulatorArm64Test
