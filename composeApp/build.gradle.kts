@@ -1,9 +1,8 @@
-
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidKmpLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
 
@@ -15,9 +14,18 @@ compose.resources {
 }
 
 kotlin {
-    androidTarget {
+    android {
+        namespace = "nl.ovfietsbeschikbaarheid.shared"
+        compileSdk = 36
+        minSdk = 26
+
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
+        }
+
+        withHostTest { isIncludeAndroidResources = true }
+        withDeviceTest {
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
     }
 
@@ -33,7 +41,7 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.play.review.ktx)
@@ -90,60 +98,23 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-        androidUnitTest.dependencies {
-            implementation(libs.junit)
-            implementation(libs.koin.test.junit4)
-            // To get JUnit errors from kotlin.test, to e.g. enable diff windows in failure messages
-            implementation(libs.kotlin.test.junit)
-            implementation(libs.mockk)
-            implementation(libs.kotlinx.coroutines.test)
+        val androidHostTest by getting {
+            dependencies {
+                implementation(libs.junit)
+                implementation(libs.koin.test.junit4)
+                // To get JUnit errors from kotlin.test, to e.g. enable diff windows in failure messages
+                implementation(libs.kotlin.test.junit)
+                implementation(libs.mockk)
+                implementation(libs.kotlinx.coroutines.test)
+            }
         }
-        androidInstrumentedTest.dependencies {
-            implementation(libs.androidx.junit)
-            implementation(libs.androidx.espresso.core)
-            implementation(project.dependencies.platform(libs.androidx.compose.bom))
-            implementation(libs.androidx.ui.test.junit4)
-        }
-    }
-}
-
-android {
-    namespace = "nl.ovfietsbeschikbaarheid"
-    compileSdk = 36
-
-    defaultConfig {
-        applicationId = "nl.ovfietsbeschikbaarheid"
-        minSdk = 26
-        targetSdk = 36
-        versionCode = 28
-        versionName = "3.7.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-    androidResources {
-        // Keeps language resources for only the locales specified below.
-        @Suppress("UnstableApiUsage")
-        localeFilters += listOf("nl", "en")
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        val androidDeviceTest by getting {
+            dependencies {
+                implementation(libs.androidx.junit)
+                implementation(libs.androidx.espresso.core)
+                implementation(project.dependencies.platform(libs.androidx.compose.bom))
+                implementation(libs.androidx.ui.test.junit4)
+            }
         }
     }
-    buildTypes {
-        release {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt")
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-}
-
-dependencies {
-    debugImplementation(libs.ui.tooling)
 }
