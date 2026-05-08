@@ -23,6 +23,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'gradle'
       - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest
       - name: Lint
@@ -38,6 +39,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: 'gradle'
       # /dev/kvm is root:kvm 0660 on ubuntu-latest and the runner user isn't in the
       # kvm group, so hardware virt for the Android emulator is otherwise unreachable.
       # Recipe from reactivecircus/android-emulator-runner README.
