@@ -23,6 +23,9 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
 
+        // Carries Compose Multiplatform resources (.cvr files) through the AAR's Android resource pipeline
+        androidResources { enable = true }
+
         withHostTest { isIncludeAndroidResources = true }
         withDeviceTest {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
