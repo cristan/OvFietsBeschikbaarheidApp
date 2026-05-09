@@ -264,7 +264,7 @@ fun DetailsLoader(
                     }
                     Spacer(Modifier.width(spacing))
                     Column(modifier = Modifier.weight(2f)) {
-                        LoadingGraph(shimmerInstance)
+                        LoadingGraph(shimmerInstance, 350.dp)
 
                         LoadingMap(shimmerInstance)
                     }
@@ -310,7 +310,7 @@ private fun LoadingMap(shimmerInstance: Shimmer) {
 }
 
 @Composable
-private fun LoadingGraph(shimmerInstance: Shimmer, boxHeight: Dp = 370.dp) {
+private fun LoadingGraph(shimmerInstance: Shimmer, boxHeight: Dp = 270.dp) {
     OvCard {
         Text(
             text = stringResource(Res.string.capacity_graph_title),
@@ -407,7 +407,7 @@ private fun ActualDetails(
                         Spacer(Modifier.width(spacing))
                         Column(modifier = Modifier.weight(2f)) {
                             if (details.graphDays.isNotEmpty()) {
-                                CapacityGraph(details.graphDays, chartHeight = if (isTabletSized) 240.dp else 140.dp)
+                                CapacityGraph(details.graphDays, chartHeight = if (isTabletSized) 220.dp else 140.dp)
                             }
 
                             MapView(
@@ -417,7 +417,7 @@ private fun ActualDetails(
                                 details.directions,
                                 details.description,
                                 details.rentalBikesAvailable,
-                                if (isTabletSized) 320.dp else 260.dp,
+                                if (isTabletSized) 300.dp else 260.dp,
                                 onLocationClicked
                             )
                         }

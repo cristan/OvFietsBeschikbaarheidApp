@@ -8,7 +8,7 @@ import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.resources.Res
 import nl.ovfietsbeschikbaarheid.resources.day_1
 import nl.ovfietsbeschikbaarheid.resources.day_tomorrow
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime

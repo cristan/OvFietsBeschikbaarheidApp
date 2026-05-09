@@ -1,30 +1,31 @@
 [versions]
 adaptiveLayout = "1.2.0"
-androidx-lifecycle = "2.10.0-alpha07"
-composeMultiplatform = "1.10.0-rc02"
+androidx-lifecycle = "2.10.0"
+composeMultiplatform = "1.10.3"
 material3 = "1.9.0"
 
-agp = "8.13.2"
-composeShimmer = "1.3.3"
-kermit = "2.0.8"
-kotlin = "2.3.0"
+agp = "9.2.1"
+composeShimmer = "1.4.0"
+kermit = "2.1.0"
+kotlin = "2.3.21"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
-kotlinxCoroutinesTest = "1.10.2"
-kotlinxDatetime = "0.7.1"
-ktor = "3.3.3"
-composeBom = "2025.12.01"
+kotlinxCoroutinesTest = "1.11.0"
+kotlinxDatetime = "0.8.0"
+ktor = "3.4.3"
+composeBom = "2026.03.00"
 materialIconsExtended = "1.7.3"
-mockk = "1.14.7"
-navigation3Ui = "1.0.0-alpha06"
-googleMaps = "7.0.0"
-koin-bom = "4.1.1"
-compass = "2.4.1"
+mockk = "1.14.9"
+navigation3Ui = "1.1.1"
+googleMaps = "8.3.0"
+koin-bom = "4.2.1"
+compass = "3.0.2"
 playServicesLocation = "21.3.0"
-playServicesCoroutines = "1.10.2"
+playServicesCoroutines = "1.11.0"
 playReviewKtx = "2.0.2"
-datastore = "1.2.0"
+datastore = "1.2.1"
+androidxActivityCompose = "1.13.0"
 
 [libraries]
 adaptive-layout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "adaptiveLayout" }
@@ -57,6 +58,7 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivityCompose" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
 androidx-lifecycle-viewmodel-nav3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "androidx-lifecycle" }
@@ -86,6 +88,7 @@ compass-geolocation-mobile = { module = "dev.jordond.compass:geolocation-mobile"
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
+androidKmpLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
