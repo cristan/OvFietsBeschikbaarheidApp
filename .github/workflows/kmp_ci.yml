@@ -29,7 +29,7 @@ jobs:
       - name: Lint
         run: ./gradlew lintDebug
 
-  smoke-test:
+  android-instrumented-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -70,7 +70,7 @@ jobs:
           disable-animations: false
           script: echo "AVD snapshot ready"
 
-      - name: Run instrumented smoke test
+      - name: Run instrumented tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 36
