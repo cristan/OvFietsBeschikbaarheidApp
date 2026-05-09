@@ -64,4 +64,8 @@ dependencies {
     // MyApplication wires up Koin and pulls AndroidPlatformLocationHelper / AndroidInAppReviewProvider
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
+
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
 }
