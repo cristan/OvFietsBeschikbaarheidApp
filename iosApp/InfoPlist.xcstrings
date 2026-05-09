@@ -1,5 +1,5 @@
 {
-  "sourceLanguage" : "en",
+  "sourceLanguage" : "nl",
   "strings" : {
     "CFBundleDisplayName" : {
       "comment" : "Bundle display name",
@@ -44,12 +44,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Your location is used to show OV-fiets locations near you."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Je locatie wordt gebruikt om OV-fiets locaties in je buurt te tonen."
           }
         }
       }

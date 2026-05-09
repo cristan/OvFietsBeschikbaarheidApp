@@ -6,6 +6,8 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Je locatie wordt gebruikt om OV-fiets locaties in je buurt te tonen.</string>
     <key>UILaunchStoryboardName</key>
     <string>Launch Screen</string>
 </dict>
