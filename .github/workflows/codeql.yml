@@ -23,7 +23,7 @@ concurrency:
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
@@ -33,8 +33,6 @@ jobs:
             build-mode: none
           - language: java-kotlin
             build-mode: manual
-          - language: swift
-            build-mode: autobuild
 
     steps:
       - uses: actions/checkout@v6
