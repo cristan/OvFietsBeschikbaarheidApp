@@ -150,7 +150,7 @@ private fun AboutView(
 
                         append(stringResource(Res.string.about_app_text_2))
                         withStyledLink(
-                            url = "https://www.freepik.com/free-vector/map-white-background_4485469.htm",
+                            url = "https://undraw.co",
                             text = stringResource(Res.string.about_app_text_3)
                         )
                         append(stringResource(Res.string.about_app_text_4))
