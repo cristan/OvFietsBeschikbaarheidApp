@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "nl.ovfietsbeschikbaarheid"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "nl.ovfietsbeschikbaarheid"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 29
         versionName = "3.7.1"
 

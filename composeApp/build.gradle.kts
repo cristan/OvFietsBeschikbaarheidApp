@@ -16,7 +16,7 @@ compose.resources {
 kotlin {
     android {
         namespace = "nl.ovfietsbeschikbaarheid.shared"
-        compileSdk = 36
+        compileSdk = 37
         minSdk = 26
 
         compilerOptions {
