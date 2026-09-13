@@ -93,3 +93,5 @@ jobs:
           cache: 'gradle'
       - name: Run iOS unit tests
         run: ./gradlew :composeApp:iosSimulatorArm64Test
+      - name: Run iOS UI tests
+        run: xcodebuild test -project iosApp/iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 17'
