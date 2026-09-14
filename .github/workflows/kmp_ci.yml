@@ -85,6 +85,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+      # simctl returns right away and the simulator keeps booting
+      # we do this to not have to wait on emulator boot later
+      - name: Boot iOS simulator
+        run: |
+          SIMULATOR_UDID=$(xcrun simctl list devices available | grep -E '^\s+iPhone 17 \(' | tail -1 | grep -oE '[0-9A-F-]{36}')
+          echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> "$GITHUB_ENV"
+          xcrun simctl boot "$SIMULATOR_UDID"
       - name: Set up JDK 21
         uses: actions/setup-java@v5
         with:
@@ -99,4 +106,4 @@ jobs:
       - name: Run iOS unit tests
         run: ./gradlew :composeApp:iosSimulatorArm64Test
       - name: Run iOS UI tests
-        run: xcodebuild test -project iosApp/iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 17'
+        run: xcodebuild test -project iosApp/iosApp.xcodeproj -scheme iosApp -destination "id=$SIMULATOR_UDID"
