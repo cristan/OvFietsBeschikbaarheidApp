@@ -16,7 +16,7 @@ compose.resources {
 kotlin {
     android {
         namespace = "nl.ovfietsbeschikbaarheid.shared"
-        compileSdk = 36
+        compileSdk = 37
         minSdk = 26
 
         compilerOptions {
@@ -101,7 +101,7 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-        val androidHostTest by getting {
+        getByName("androidHostTest") {
             dependencies {
                 implementation(libs.junit)
                 implementation(libs.koin.test.junit4)
@@ -111,7 +111,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.test)
             }
         }
-        val androidDeviceTest by getting {
+        getByName("androidDeviceTest") {
             dependencies {
                 implementation(libs.androidx.junit)
                 implementation(libs.androidx.espresso.core)
