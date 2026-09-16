@@ -79,6 +79,14 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ./gradlew :androidApp:connectedDebugAndroidTest
+      - name: Upload instrumented test results
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-instrumented-test-results
+          path: |
+            androidApp/build/reports/androidTests/
+            androidApp/build/outputs/androidTest-results/
 
   ios-test:
     runs-on: macos-26
