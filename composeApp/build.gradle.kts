@@ -114,9 +114,6 @@ kotlin {
         getByName("androidDeviceTest") {
             dependencies {
                 implementation(libs.androidx.junit)
-                implementation(libs.androidx.espresso.core)
-                implementation(project.dependencies.platform(libs.androidx.compose.bom))
-                implementation(libs.androidx.ui.test.junit4)
             }
         }
     }
