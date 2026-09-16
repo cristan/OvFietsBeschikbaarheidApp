@@ -30,7 +30,7 @@ class RatingEligibilityService(
         }
 
         val daysSinceLastPrompt = (now - Instant.fromEpochMilliseconds(lastRatingPromptTimestamp)).inWholeDays
-        return daysSinceLastPrompt < DAYS_BETWEEN_REQUESTS
+        return daysSinceLastPrompt >= DAYS_BETWEEN_REQUESTS
     }
 
     suspend fun onGpsContentViewed() {
