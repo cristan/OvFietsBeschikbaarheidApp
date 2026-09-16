@@ -47,34 +47,34 @@ class DetailsViewModel(
     private val detailsRepository: DetailsRepository
 ) : ViewModel() {
 
-    private val _screenState = mutableStateOf<ScreenState<DetailsContent>>(ScreenState.Loading)
-    val screenState: State<ScreenState<DetailsContent>> = _screenState
+    val screenState: State<ScreenState<DetailsContent>>
+        field = mutableStateOf<ScreenState<DetailsContent>>(ScreenState.Loading)
 
     private lateinit var data: Details
 
-    private val _title = mutableStateOf("")
-    val title: State<String> = _title
+    val title: State<String>
+        field = mutableStateOf("")
 
     fun screenLaunched(data: Details) {
         this.data = data
-        _title.value = data.title
+        title.value = data.title
         doRefresh()
     }
 
     fun onReturnToScreenTriggered() {
         if (screenState.value is ScreenState.Loaded) {
-            _screenState.setRefreshing()
+            screenState.setRefreshing()
             doRefresh()
         }
     }
 
     fun onPullToRefresh() {
-        _screenState.setRefreshing()
+        screenState.setRefreshing()
         doRefresh(MIN_REFRESH_TIME)
     }
 
     fun onRetryClick() {
-        _screenState.value = ScreenState.Loading
+        screenState.value = ScreenState.Loading
         viewModelScope.launch {
             doRefresh()
         }
@@ -120,7 +120,7 @@ class DetailsViewModel(
                         // Not perfect. Before, we formatted this to dd MMMM yyyy which looks nicer to Dutch people's eyes.
                         // Not a big problem though: this screen being shown should be exceedingly rare
                         val formattedDate = fetchTimeInstant.toLocalDateTime(dutchTimeZone).date.toString()
-                        _screenState.value = ScreenState.Loaded(DetailsContent.NotFound(data.title, formattedDate))
+                        screenState.value = ScreenState.Loaded(DetailsContent.NotFound(data.title, formattedDate))
                         return@supervisorScope
                     }
 
@@ -134,13 +134,13 @@ class DetailsViewModel(
                     if (timeElapsed < minDelay) {
                         delay(minDelay - timeElapsed)
                     }
-                    _screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
+                    screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
                 } catch (e: ResponseException) {
                     Logger.e(e) { "Error fetching details" }
-                    _screenState.value = ScreenState.FullPageError
+                    screenState.value = ScreenState.FullPageError
                 } catch (e: IOException) {
                     Logger.e(e) { "Error fetching details" }
-                    _screenState.value = ScreenState.FullPageError
+                    screenState.value = ScreenState.FullPageError
                 }
             }
         }

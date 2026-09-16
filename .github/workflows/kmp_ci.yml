@@ -79,6 +79,14 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ./gradlew :androidApp:connectedDebugAndroidTest
+      - name: Upload instrumented test results
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-instrumented-test-results
+          path: |
+            androidApp/build/reports/androidTests/
+            androidApp/build/outputs/androidTest-results/
 
   ios-test:
     runs-on: macos-26
@@ -91,5 +99,12 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: 'gradle'
+      - name: Kotlin/Native cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.konan
+          key: konan-${{ hashFiles('gradle/libs.versions.toml') }}
       - name: Run iOS unit tests
         run: ./gradlew :composeApp:iosSimulatorArm64Test
+      - name: Run iOS UI tests
+        run: xcodebuild test -project iosApp/iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 17'
