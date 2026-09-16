@@ -24,6 +24,7 @@ class LocationsMapper(
         Pair("Hollandse Rading OV-fiets", "Hollandse Rading"),
         Pair("Vianen OV-fiets", "Vianen"),
         Pair("OV-fiets - Maastricht", "Maastricht"),
+        Pair("OV-fiets Capelle Schollevaar", "Capelle Schollevaar"),
         Pair("OV-fiets Kesteren", "Kesteren"),
         Pair("OV-fiets Den Haag Ypenburg", "Den Haag Ypenburg"),
 

@@ -7,6 +7,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+/**
+ * Tests whether the app even starts.
+ *
+ * Was introduced because a change resulted in a crash on startup because of missing Android resources (fixed in 6321904).
+ * This will find problems like that.
+ */
 @RunWith(AndroidJUnit4::class)
 class MainActivitySmokeTest {
 

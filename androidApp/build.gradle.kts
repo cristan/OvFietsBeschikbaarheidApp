@@ -7,14 +7,14 @@ plugins {
 
 android {
     namespace = "nl.ovfietsbeschikbaarheid"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "nl.ovfietsbeschikbaarheid"
         minSdk = 26
-        targetSdk = 36
-        versionCode = 29
-        versionName = "3.7.1"
+        targetSdk = 37
+        versionCode = 30
+        versionName = "3.7.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -66,6 +66,5 @@ dependencies {
     implementation(libs.koin.android)
 
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
 }
