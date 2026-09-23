@@ -31,7 +31,7 @@ class IOSPlatformLocationHelper : PlatformLocationHelper {
 
     override fun shouldShowLocationRationale() = isGpsAuthorizationDenied()
 
-    // On iOS, there is no distinction between denied and denied permanently like in iOS.
+    // On iOS, there is no distinction between denied and denied permanently like in Android.
     // Once you asked and the user said no, there's nothing we can do except send them to the settings.
     override fun isDeniedPermanently(): Boolean = isGpsAuthorizationDenied()
 

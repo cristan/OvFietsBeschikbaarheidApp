@@ -57,10 +57,10 @@ class OpenStateMapperTest {
             OpeningHoursDTO(6, "10:00", "17:00", false),
         )
 
-        // The first week on 2024 is an easy one: it starts on a monday
-        val fridayAt18Past20 = LocalDateTime(2024, 7, 6, 15, 48)
+        // The first week of July 2024 is an easy one: it starts on a Monday
+        val saturdayAt1548 = LocalDateTime(2024, 7, 6, 15, 48)
 
-        assertEquals(OpenState.Open("17:00"), OpenStateMapper.getOpenState("emn001", openingHours, fridayAt18Past20))
+        assertEquals(OpenState.Open("17:00"), OpenStateMapper.getOpenState("emn001", openingHours, saturdayAt1548))
     }
 
     @Test
@@ -75,9 +75,9 @@ class OpenStateMapperTest {
             OpeningHoursDTO(6, "10:00", "17:00", false),
         )
 
-        val thursdayAt18Past20 = LocalDateTime(2024, 7, 4, 17, 45)
+        val thursdayAt1745 = LocalDateTime(2024, 7, 4, 17, 45)
 
-        assertEquals(OpenState.Closed(Res.string.day_tomorrow, "07:45"), OpenStateMapper.getOpenState("emn001", openingHours, thursdayAt18Past20))
+        assertEquals(OpenState.Closed(Res.string.day_tomorrow, "07:45"), OpenStateMapper.getOpenState("emn001", openingHours, thursdayAt1745))
     }
 
     @Test
@@ -115,7 +115,7 @@ class OpenStateMapperTest {
         val wednesdayDuringTheDay = LocalDateTime(2024, 7, 3, 14, 0)
         assertEquals(OpenState.Open("24:00"), OpenStateMapper.getOpenState("ut906", openingHours, wednesdayDuringTheDay))
 
-        // A case which isn't great yet, is a day like monday here. The app will say the station will be open until 24:00,
+        // A case which isn't great yet, is a day like Monday here. The app will say the station will be open until 24:00,
         // but it will be open until day 4 at 07:00 hours.
         // This is the only place where something like this happens, so I've decided I don't care.
     }
@@ -132,9 +132,9 @@ class OpenStateMapperTest {
             OpeningHoursDTO(6, "10:00", "17:00", false),
         )
 
-        val fridayAt6oClock = LocalDateTime(2024, 7, 1, 7, 45)
+        val mondayAt0745 = LocalDateTime(2024, 7, 1, 7, 45)
 
-        assertEquals(OpenState.Open("17:30"), OpenStateMapper.getOpenState("emn001", openingHours, fridayAt6oClock))
+        assertEquals(OpenState.Open("17:30"), OpenStateMapper.getOpenState("emn001", openingHours, mondayAt0745))
     }
 
     @Test
@@ -153,8 +153,8 @@ class OpenStateMapperTest {
         val friday0030 = LocalDateTime(2024, 7, 5, 0, 30)
         assertEquals(OpenState.Closed(null, "05:00"), OpenStateMapper.getOpenState("ztm002", openingHours, friday0030))
 
-        val saturdayAt1030 = LocalDateTime(2024, 7, 6, 1, 30)
-        assertEquals(OpenState.Closed(null, "06:30"), OpenStateMapper.getOpenState("ztm002", openingHours, saturdayAt1030))
+        val saturdayAt0130 = LocalDateTime(2024, 7, 6, 1, 30)
+        assertEquals(OpenState.Closed(null, "06:30"), OpenStateMapper.getOpenState("ztm002", openingHours, saturdayAt0130))
 
         val saturdayAt0030 = LocalDateTime(2024, 7, 6, 0, 30)
         assertEquals(OpenState.Closing("01:00"), OpenStateMapper.getOpenState("ztm002", openingHours, saturdayAt0030))
@@ -174,8 +174,8 @@ class OpenStateMapperTest {
         )
 
 
-        val friday2359 = LocalDateTime(2024, 7, 5, 23, 58, 30)
-        assertEquals(OpenState.Open("01:00"), OpenStateMapper.getOpenState("ztm003", openingHours, friday2359))
+        val friday2358 = LocalDateTime(2024, 7, 5, 23, 58, 30)
+        assertEquals(OpenState.Open("01:00"), OpenStateMapper.getOpenState("ztm003", openingHours, friday2358))
 
         val thursday2359 = LocalDateTime(2024, 7, 4, 23, 59, 30)
         assertEquals(OpenState.Closing("24:00"), OpenStateMapper.getOpenState("ztm003", openingHours, thursday2359))

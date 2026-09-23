@@ -110,7 +110,7 @@ fun HomeScreen(
 ) {
     val searchTerm by viewModel.searchTerm
     val screen by viewModel.content
-    val pricePer20Hours by viewModel.pricePer24Hours
+    val pricePer24Hours by viewModel.pricePer24Hours
 
     LaunchedEffect(Unit) {
         viewModel.onScreenLaunched()
@@ -128,7 +128,7 @@ fun HomeScreen(
         viewModel::onRequestPermissionsClicked,
         viewModel::onTurnOnGpsClicked,
         viewModel::onPullToRefresh,
-        { onInfoClicked(pricePer20Hours) },
+        { onInfoClicked(pricePer24Hours) },
         onLocationClick,
         viewModel::onRetryClicked,
     )
