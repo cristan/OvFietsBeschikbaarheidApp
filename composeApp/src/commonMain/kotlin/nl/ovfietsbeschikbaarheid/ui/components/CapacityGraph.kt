@@ -174,11 +174,12 @@ fun CapacityGraph(
             else
                 prediction[0].createTime.toLocalDateTime(dutchTimeZone).truncateToDay()
 
+            val startInstant = startTime.toInstant(dutchTimeZone)
             val endTime = startTime.atEndOfDay()
-            val duration = startTime.millisecondsUntil(endTime).toFloat()
+            val duration = startTime.millisecondsUntil(endTime, dutchTimeZone).toFloat()
             if (history.isNotEmpty()) {
                 val points = history.map { model ->
-                    val x = leftPadding + ((model.createTime - startTime.toInstant(dutchTimeZone)).inWholeMilliseconds / duration) * graphWidth
+                    val x = leftPadding + ((model.createTime - startInstant).inWholeMilliseconds / duration) * graphWidth
                     val y = graphHeight - (model.capacity / roundedMax) * graphHeight
                     Offset(x, y)
                 }
@@ -229,8 +230,8 @@ fun CapacityGraph(
 
             // ----- Draw X-axis hour labels (on top, outside plot area) -----
             for (i in 0..6) {
-                val hourTime = startTime.toInstant(dutchTimeZone).plus(i * 4, DateTimeUnit.HOUR).toLocalDateTime(dutchTimeZone)
-                val x = leftPadding + (startTime.millisecondsUntil(hourTime) / duration) * graphWidth
+                val hourTime = startInstant.plus(i * 4, DateTimeUnit.HOUR).toLocalDateTime(dutchTimeZone)
+                val x = leftPadding + (startTime.millisecondsUntil(hourTime, dutchTimeZone) / duration) * graphWidth
                 val label = hourTime.hour.toString().padStart(2, '0') + ":00"
 
                 val textLayoutResult = textMeasurer.measure(
