@@ -10,6 +10,7 @@ import platform.CoreLocation.kCLAuthorizationStatusNotDetermined
 import platform.CoreLocation.kCLAuthorizationStatusRestricted
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
+import platform.UIKit.UIApplicationOpenSettingsURLString
 
 @OptIn(ExperimentalForeignApi::class)
 class IOSPlatformLocationHelper : PlatformLocationHelper {
@@ -22,8 +23,7 @@ class IOSPlatformLocationHelper : PlatformLocationHelper {
     }
 
     override fun turnOnGps() {
-        // Open iOS Settings app to location settings
-        val settingsUrl = NSURL.URLWithString("App-Prefs:Privacy&path=LOCATION")
+        val settingsUrl = NSURL.URLWithString(UIApplicationOpenSettingsURLString)
         settingsUrl?.let { url ->
             UIApplication.sharedApplication.openURL(url)
         }
