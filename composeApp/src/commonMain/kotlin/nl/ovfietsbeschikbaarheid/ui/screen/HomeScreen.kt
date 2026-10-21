@@ -190,7 +190,7 @@ private fun HomeView(
                     }
 
                     HomeContent.NetworkError -> {
-                        FullPageError(onRetry = onRetryClick)
+                        FullPageError(onClick = onRetryClick)
                     }
 
                     is HomeContent.GpsContent -> {

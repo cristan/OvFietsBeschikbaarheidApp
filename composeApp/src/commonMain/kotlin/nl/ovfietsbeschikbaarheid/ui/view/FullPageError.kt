@@ -27,7 +27,8 @@ import org.jetbrains.compose.resources.stringResource
 fun FullPageError(
     title: String = stringResource(Res.string.full_page_error_title),
     message: String = stringResource(Res.string.full_page_error_text),
-    onRetry: () -> Unit
+    buttonText: String = stringResource(Res.string.full_page_error_retry),
+    onClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -55,10 +56,10 @@ fun FullPageError(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 28.dp),
-            onClick = onRetry
+            onClick = onClick
         ) {
             Text(
-                text = stringResource(Res.string.full_page_error_retry),
+                text = buttonText,
             )
         }
     }
