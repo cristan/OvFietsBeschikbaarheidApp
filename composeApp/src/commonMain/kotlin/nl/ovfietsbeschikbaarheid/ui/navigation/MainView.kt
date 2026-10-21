@@ -3,9 +3,14 @@ package nl.ovfietsbeschikbaarheid.ui.navigation
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
+import nl.ovfietsbeschikbaarheid.repository.AppCompatibilityRepository
+import nl.ovfietsbeschikbaarheid.ui.screen.UpdateRequiredScreen
+import org.koin.compose.koinInject
 
 val LocalSpacing = staticCompositionLocalOf {
     16.dp
@@ -23,7 +28,13 @@ fun MainView() {
         16.dp
     }
 
+    val isUpdateRequired by koinInject<AppCompatibilityRepository>().isUpdateRequired.collectAsState()
+
     CompositionLocalProvider(LocalSpacing provides spacing) {
-        Navigation()
+        if (isUpdateRequired) {
+            UpdateRequiredScreen()
+        } else {
+            Navigation()
+        }
     }
 }

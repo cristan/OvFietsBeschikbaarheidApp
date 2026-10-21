@@ -5,6 +5,7 @@ import dev.jordond.compass.geocoder.mobile
 import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
+import nl.ovfietsbeschikbaarheid.repository.AppCompatibilityRepository
 import nl.ovfietsbeschikbaarheid.repository.DetailsRepository
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.RatingStorageRepository
@@ -22,6 +23,7 @@ fun commonModule() = module {
     factoryOf(::KtorApiClient)
     factory { Geocoder.mobile() }
 
+    singleOf(::AppCompatibilityRepository)
     singleOf(::RatingStorageRepository)
     singleOf(::RatingEligibilityService)
     singleOf(::OverviewRepository)

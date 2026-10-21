@@ -2,6 +2,7 @@ package nl.ovfietsbeschikbaarheid
 
 import kotlinx.coroutines.runBlocking
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
+import nl.ovfietsbeschikbaarheid.repository.AppCompatibilityRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.util.DecimalFormatter
 import org.junit.Test
@@ -18,7 +19,7 @@ class LocationsDataTest {
         val locationsMapper = LocationsMapper(DecimalFormatter())
         runBlocking {
             val allStations = stationRepository.getAllStations()
-            val httpClient = KtorApiClient()
+            val httpClient = KtorApiClient(AppCompatibilityRepository())
             val locations = httpClient.getLocations()
             val allLocations = locationsMapper.map(locations)
             val pricePer24Hours = locationsMapper.getPricePer24Hours(locations)

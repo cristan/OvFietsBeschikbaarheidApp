@@ -9,6 +9,10 @@
     <string name="full_page_error_text">Controleer je verbinding en probeer opnieuw.</string>
     <string name="full_page_error_retry">Probeer opnieuw</string>
 
+    <string name="update_required_title">Update nodig</string>
+    <string name="update_required_text">Deze versie van de app werkt niet meer. Update de app om weer te zien hoeveel OV-fietsen er zijn.</string>
+    <string name="update_required_button">Updaten</string>
+
     <string name="about_title">Info</string>
     <string name="about_ov_fiets_title">De OV-fiets huren</string>
     <string name="about_ov_fiets_text_1_with_amount">Huur een OV-fiets op meer dan 300 locaties voor €%1$s per 24 uur.\u0020</string>

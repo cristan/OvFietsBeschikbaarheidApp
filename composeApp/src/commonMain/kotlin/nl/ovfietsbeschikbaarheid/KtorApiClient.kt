@@ -10,13 +10,18 @@ import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.serialization.json.Json
 import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
 import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
+import nl.ovfietsbeschikbaarheid.repository.APP_COMPATIBILITY
+import nl.ovfietsbeschikbaarheid.repository.AppCompatibilityRepository
 import kotlin.time.measureTimedValue
 
-class KtorApiClient {
+class KtorApiClient(
+    private val appCompatibilityRepository: AppCompatibilityRepository
+) {
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -40,7 +45,13 @@ class KtorApiClient {
 
     suspend fun getLocations(): List<LocationDTO> {
         val (locations, timeTaken) = measureTimedValue {
-            httpClient.get("https://storage.googleapis.com/ov-fiets-updates/locations.json").body<List<LocationDTO>>()
+            val response = httpClient.get("https://storage.googleapis.com/ov-fiets-updates/locations.json")
+            val minimumAppCompatibility = response.headers["x-goog-meta-minimum-app-compatibility"]!!.toInt()
+            if (APP_COMPATIBILITY < minimumAppCompatibility) {
+                appCompatibilityRepository.markUpdateRequired()
+                awaitCancellation()
+            }
+            response.body<List<LocationDTO>>()
         }
         Logger.d("Loaded OV-fiets locations in $timeTaken")
         return locations
