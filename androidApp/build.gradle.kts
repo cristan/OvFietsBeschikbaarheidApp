@@ -58,7 +58,6 @@ kotlin {
 dependencies {
     implementation(projects.composeApp)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.ui.tooling)
 
     // MyApplication wires up Koin and pulls AndroidPlatformLocationHelper / AndroidInAppReviewProvider
