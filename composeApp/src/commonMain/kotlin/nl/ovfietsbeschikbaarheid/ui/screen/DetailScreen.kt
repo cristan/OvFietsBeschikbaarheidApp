@@ -40,7 +40,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -241,7 +241,7 @@ fun DetailsLoader(
                 .wrapContentWidth(Alignment.CenterHorizontally)
                 .widthIn(max = 1600.dp)
         ) {
-            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+            val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
             val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)
             if (hasTabletWidth) {
                 Row {
@@ -378,7 +378,7 @@ private fun ActualDetails(
                 .wrapContentWidth(Alignment.CenterHorizontally)
                 .widthIn(max = 1600.dp)
         ) {
-            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+            val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
             val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)
             val isTabletSized = windowSizeClass.isAtLeastBreakpoint(
                 WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND,
