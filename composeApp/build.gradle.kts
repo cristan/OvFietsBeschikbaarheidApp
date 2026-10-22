@@ -19,7 +19,7 @@ kotlin {
         minSdk = 26
 
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
 
         // Carries Compose Multiplatform resources (.cvr files) through the AAR's Android resource pipeline
