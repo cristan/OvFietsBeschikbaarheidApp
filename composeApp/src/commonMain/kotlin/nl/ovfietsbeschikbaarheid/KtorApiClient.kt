@@ -46,8 +46,8 @@ class KtorApiClient(
     suspend fun getLocations(): List<LocationDTO> {
         val (locations, timeTaken) = measureTimedValue {
             val response = httpClient.get("https://storage.googleapis.com/ov-fiets-updates/locations.json")
-            val minimumAppCompatibility = response.headers["x-goog-meta-minimum-app-compatibility"]!!.toInt()
-            if (APP_COMPATIBILITY < minimumAppCompatibility) {
+            val minimumAppCompatibility = response.headers["x-goog-meta-minimum-app-compatibility"]?.toInt()
+            if (minimumAppCompatibility != null && APP_COMPATIBILITY < minimumAppCompatibility) {
                 appCompatibilityRepository.markUpdateRequired()
                 awaitCancellation()
             }
