@@ -25,13 +25,14 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun FullPageError(
+    modifier: Modifier = Modifier,
     title: String = stringResource(Res.string.full_page_error_title),
     message: String = stringResource(Res.string.full_page_error_text),
     buttonText: String = stringResource(Res.string.full_page_error_retry),
     onClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .wrapContentWidth(Alignment.CenterHorizontally)
             .widthIn(max = 600.dp)

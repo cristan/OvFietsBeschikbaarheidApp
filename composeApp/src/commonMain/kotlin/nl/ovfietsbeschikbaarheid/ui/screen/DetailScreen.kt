@@ -193,7 +193,7 @@ private fun DetailsView(
             contentWindowInsets = WindowInsets(0, 0, 0, 0)
         ) { innerPadding ->
             when (details) {
-                ScreenState.FullPageError -> FullPageError(onClick = onRetry)
+                ScreenState.FullPageError -> FullPageError(modifier = Modifier.padding(innerPadding), onClick = onRetry)
                 ScreenState.Loading -> DetailsLoader(modifier = Modifier.padding(innerPadding))
                 is ScreenState.Loaded<DetailsContent> -> {
                     when (details.data) {
@@ -208,6 +208,7 @@ private fun DetailsView(
 
                         is DetailsContent.NotFound -> {
                             FullPageError(
+                                modifier = Modifier.padding(innerPadding),
                                 title = stringResource(Res.string.details_no_data_title),
                                 message = stringResource(
                                     Res.string.details_no_data_message,
