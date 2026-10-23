@@ -15,5 +15,5 @@ expect fun NativeLocationsMap(
     locations: List<LocationOverviewModel>,
     userCoordinates: Coordinates?,
     showsUserLocation: Boolean,
-    onLocationClick: (LocationOverviewModel) -> Unit,
+    onLocationsClick: (List<LocationOverviewModel>) -> Unit,
 )

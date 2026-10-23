@@ -15,6 +15,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -127,21 +128,26 @@ private fun LocationsMap(
     modifier: Modifier,
     onLocationClick: (LocationOverviewModel) -> Unit,
 ) {
-    var selectedLocation by remember { mutableStateOf<LocationOverviewModel?>(null) }
+    var selectedLocations by remember { mutableStateOf<List<LocationOverviewModel>?>(null) }
 
     NativeLocationsMap(
         modifier = modifier.fillMaxSize(),
         locations = content.locations,
         userCoordinates = content.userCoordinates,
         showsUserLocation = content.showsUserLocation,
-        onLocationClick = { selectedLocation = it },
+        onLocationsClick = { selectedLocations = it },
     )
 
-    selectedLocation?.let { location ->
-        ModalBottomSheet(onDismissRequest = { selectedLocation = null }) {
-            LocationSummary(location) {
-                selectedLocation = null
-                onLocationClick(location)
+    selectedLocations?.let { locations ->
+        ModalBottomSheet(onDismissRequest = { selectedLocations = null }) {
+            locations.forEachIndexed { index, location ->
+                if (index > 0) {
+                    HorizontalDivider(Modifier.padding(bottom = 16.dp))
+                }
+                LocationSummary(location) {
+                    selectedLocations = null
+                    onLocationClick(location)
+                }
             }
         }
     }

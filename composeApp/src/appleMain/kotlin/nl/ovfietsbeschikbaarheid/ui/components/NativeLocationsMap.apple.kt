@@ -18,15 +18,21 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.ObjCSignatureOverride
 import kotlinx.cinterop.useContents
 import nl.ovfietsbeschikbaarheid.ext.isInTheNetherlands
+import nl.ovfietsbeschikbaarheid.mapper.MapMarkerMapper
+import nl.ovfietsbeschikbaarheid.mapper.WORLD_WIDTH_DP_AT_ZOOM_LEVEL_0
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
+import nl.ovfietsbeschikbaarheid.model.MapMarker
 import nl.ovfietsbeschikbaarheid.ui.theme.Blue90
 import nl.ovfietsbeschikbaarheid.ui.theme.OvFietsYellow
 import platform.CoreLocation.CLLocationCoordinate2DMake
 import platform.MapKit.MKAnnotationProtocol
 import platform.MapKit.MKAnnotationView
+import platform.MapKit.MKFeatureDisplayPriorityRequired
+import platform.MapKit.MKFeatureVisibility
 import platform.MapKit.MKMapPointForCoordinate
 import platform.MapKit.MKMapRect
 import platform.MapKit.MKMapRectMake
+import platform.MapKit.MKMapRectUnion
 import platform.MapKit.MKMapSizeWorld
 import platform.MapKit.MKMapView
 import platform.MapKit.MKMapViewDelegateProtocol
@@ -36,14 +42,16 @@ import platform.MapKit.MKUserLocation
 import platform.MapKit.MKUserTrackingButton
 import platform.UIKit.NSLayoutConstraint
 import platform.UIKit.UIColor
+import platform.UIKit.UIEdgeInsetsMake
 import platform.UIKit.UIImage
 import platform.UIKit.UIScreen
 import platform.UIKit.systemBackgroundColor
 import platform.darwin.NSObject
+import kotlin.math.log2
 import kotlin.math.pow
 
-private const val LOCATION_ANNOTATION_VIEW_ID = "location"
-private const val WORLD_WIDTH_AT_ZOOM_LEVEL_0 = 256.0
+private const val MAP_MARKER_ANNOTATION_VIEW_ID = "mapMarker"
+private const val ZOOM_IN_PADDING = 64.0
 
 @OptIn(ExperimentalForeignApi::class)
 @Composable
@@ -52,15 +60,16 @@ actual fun NativeLocationsMap(
     locations: List<LocationOverviewModel>,
     userCoordinates: Coordinates?,
     showsUserLocation: Boolean,
-    onLocationClick: (LocationOverviewModel) -> Unit,
+    onLocationsClick: (List<LocationOverviewModel>) -> Unit,
 ) {
     var visibleMapRect by rememberSaveable { mutableStateOf<List<Double>?>(null) }
-    val currentOnLocationClick by rememberUpdatedState(onLocationClick)
+    val currentOnLocationsClick by rememberUpdatedState(onLocationsClick)
     val mapViewDelegate = remember {
         LocationsMapViewDelegate(
+            locations = locations,
             centersOnFirstUserLocation = visibleMapRect == null && userCoordinates == null,
             onVisibleMapRectChanged = { visibleMapRect = it },
-            onLocationClick = { currentOnLocationClick(it) },
+            onLocationsClick = { currentOnLocationsClick(it) },
         )
     }
 
@@ -74,7 +83,6 @@ actual fun NativeLocationsMap(
                         ?: userCoordinates?.let { mapRectAround(it, NEIGHBOURHOOD_ZOOM_LEVEL) }
                         ?: mapRectAround(centerOfTheNetherlands, THE_NETHERLANDS_ZOOM_LEVEL)
                 )
-                addAnnotations(locations.map { LocationAnnotation(it) })
                 if (showsUserLocation) {
                     addUserTrackingButton()
                 }
@@ -91,11 +99,25 @@ actual fun NativeLocationsMap(
 @OptIn(ExperimentalForeignApi::class)
 private fun mapRectAround(center: Coordinates, zoomLevel: Float): CValue<MKMapRect> {
     val screenWidth = UIScreen.mainScreen.bounds.useContents { size.width }
-    val width = MKMapSizeWorld.width * screenWidth / (WORLD_WIDTH_AT_ZOOM_LEVEL_0 * 2.0.pow(zoomLevel.toDouble()))
+    val width = MKMapSizeWorld.width * screenWidth / (WORLD_WIDTH_DP_AT_ZOOM_LEVEL_0 * 2.0.pow(zoomLevel.toDouble()))
     return MKMapPointForCoordinate(CLLocationCoordinate2DMake(center.latitude, center.longitude)).useContents {
         MKMapRectMake(x - width / 2, y - width / 2, width, width)
     }
 }
+
+@OptIn(ExperimentalForeignApi::class)
+private fun MKMapView.zoomLevel(): Int {
+    val visibleWidth = visibleMapRect.useContents { size.width }
+    val viewWidth = bounds.useContents { size.width }
+    return log2(MKMapSizeWorld.width * viewWidth / (WORLD_WIDTH_DP_AT_ZOOM_LEVEL_0 * visibleWidth)).toInt()
+}
+
+@OptIn(ExperimentalForeignApi::class)
+private fun List<LocationOverviewModel>.boundingMapRect(): CValue<MKMapRect> = map { location ->
+    MKMapPointForCoordinate(CLLocationCoordinate2DMake(location.latitude, location.longitude)).useContents {
+        MKMapRectMake(x, y, 0.0, 0.0)
+    }
+}.reduce { mapRect, otherMapRect -> MKMapRectUnion(mapRect, otherMapRect) }
 
 @OptIn(ExperimentalForeignApi::class)
 private fun MKMapView.addUserTrackingButton() {
@@ -114,22 +136,29 @@ private fun MKMapView.addUserTrackingButton() {
 }
 
 @OptIn(ExperimentalForeignApi::class)
-private class LocationAnnotation(val location: LocationOverviewModel) : MKPointAnnotation() {
+private class MapMarkerAnnotation(val mapMarker: MapMarker) : MKPointAnnotation() {
     init {
-        setCoordinate(CLLocationCoordinate2DMake(location.latitude, location.longitude))
-        setTitle(location.title)
+        setCoordinate(CLLocationCoordinate2DMake(mapMarker.latitude, mapMarker.longitude))
+        setTitle(mapMarker.locations.joinToString { it.title })
     }
 }
 
 @OptIn(ExperimentalForeignApi::class)
 private class LocationsMapViewDelegate(
+    private val locations: List<LocationOverviewModel>,
     private var centersOnFirstUserLocation: Boolean,
     private val onVisibleMapRectChanged: (List<Double>) -> Unit,
-    private val onLocationClick: (LocationOverviewModel) -> Unit,
+    private val onLocationsClick: (List<LocationOverviewModel>) -> Unit,
 ) : NSObject(), MKMapViewDelegateProtocol {
 
     override fun mapView(mapView: MKMapView, regionDidChangeAnimated: Boolean) {
         onVisibleMapRectChanged(mapView.visibleMapRect.useContents { listOf(origin.x, origin.y, size.width, size.height) })
+
+        val mapMarkers = MapMarkerMapper.getMapMarkers(locations, mapView.zoomLevel())
+        val shownAnnotations = mapView.annotations.filterIsInstance<MapMarkerAnnotation>()
+        val shownMapMarkers = shownAnnotations.map { it.mapMarker }.toSet()
+        mapView.removeAnnotations(shownAnnotations.filter { it.mapMarker !in mapMarkers })
+        mapView.addAnnotations(mapMarkers.filter { it !in shownMapMarkers }.map { MapMarkerAnnotation(it) })
     }
 
     override fun mapView(mapView: MKMapView, didUpdateUserLocation: MKUserLocation) {
@@ -145,24 +174,36 @@ private class LocationsMapViewDelegate(
 
     @ObjCSignatureOverride
     override fun mapView(mapView: MKMapView, viewForAnnotation: MKAnnotationProtocol): MKAnnotationView? {
-        if (viewForAnnotation !is LocationAnnotation) {
-            return null
-        }
-        val annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(LOCATION_ANNOTATION_VIEW_ID) as MKMarkerAnnotationView?
-            ?: MKMarkerAnnotationView(viewForAnnotation, LOCATION_ANNOTATION_VIEW_ID).apply {
-                markerTintColor = OvFietsYellow.toUIColor()
-                glyphTintColor = Blue90.toUIColor()
-                glyphImage = UIImage.systemImageNamed("bicycle")
-            }
+        val mapMarker = (viewForAnnotation as? MapMarkerAnnotation)?.mapMarker ?: return null
+        val annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier(MAP_MARKER_ANNOTATION_VIEW_ID) as MKMarkerAnnotationView?
+            ?: MKMarkerAnnotationView(viewForAnnotation, MAP_MARKER_ANNOTATION_VIEW_ID)
         annotationView.annotation = viewForAnnotation
+        annotationView.markerTintColor = OvFietsYellow.toUIColor()
+        annotationView.glyphTintColor = Blue90.toUIColor()
+        annotationView.displayPriority = MKFeatureDisplayPriorityRequired
+        if (mapMarker.locations.size == 1) {
+            annotationView.glyphText = null
+            annotationView.glyphImage = UIImage.systemImageNamed("bicycle")
+            annotationView.titleVisibility = MKFeatureVisibility.MKFeatureVisibilityAdaptive
+        } else {
+            annotationView.glyphText = mapMarker.locations.size.toString()
+            annotationView.glyphImage = null
+            annotationView.titleVisibility = MKFeatureVisibility.MKFeatureVisibilityHidden
+        }
         return annotationView
     }
 
     @ObjCSignatureOverride
     override fun mapView(mapView: MKMapView, didSelectAnnotationView: MKAnnotationView) {
-        val annotation = didSelectAnnotationView.annotation as? LocationAnnotation ?: return
+        val annotation = didSelectAnnotationView.annotation as? MapMarkerAnnotation ?: return
         mapView.deselectAnnotation(annotation, animated = false)
-        onLocationClick(annotation.location)
+        val mapMarker = annotation.mapMarker
+        if (MapMarkerMapper.separatesWhenZoomingIn(mapMarker)) {
+            val padding = UIEdgeInsetsMake(ZOOM_IN_PADDING, ZOOM_IN_PADDING, ZOOM_IN_PADDING, ZOOM_IN_PADDING)
+            mapView.setVisibleMapRect(mapMarker.locations.boundingMapRect(), edgePadding = padding, animated = true)
+        } else {
+            onLocationsClick(mapMarker.locations)
+        }
     }
 }
 
