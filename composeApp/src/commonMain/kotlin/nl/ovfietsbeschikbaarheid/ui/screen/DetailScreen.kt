@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,6 +33,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
@@ -41,6 +43,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -54,6 +57,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -76,10 +80,12 @@ import nl.ovfietsbeschikbaarheid.ext.withStyledLink
 import nl.ovfietsbeschikbaarheid.model.AddressModel
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
+import nl.ovfietsbeschikbaarheid.model.DetailsSkeletonModel
 import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
+import nl.ovfietsbeschikbaarheid.model.typicalDetailsSkeleton
 import nl.ovfietsbeschikbaarheid.resources.Res
 import nl.ovfietsbeschikbaarheid.resources.baseline_directions_24
 import nl.ovfietsbeschikbaarheid.resources.capacity_graph_title
@@ -194,7 +200,7 @@ private fun DetailsView(
         ) { innerPadding ->
             when (details) {
                 ScreenState.FullPageError -> FullPageError(modifier = Modifier.padding(innerPadding), onClick = onRetry)
-                ScreenState.Loading -> DetailsLoader(modifier = Modifier.padding(innerPadding))
+                ScreenState.Loading -> DetailsLoader(typicalDetailsSkeleton, modifier = Modifier.padding(innerPadding))
                 is ScreenState.Loaded<DetailsContent> -> {
                     when (details.data) {
                         is DetailsContent.Content -> PullToRefreshBox(
@@ -227,6 +233,7 @@ private fun DetailsView(
 
 @Composable
 fun DetailsLoader(
+    detailsSkeleton: DetailsSkeletonModel,
     modifier: Modifier
 ) {
     val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
@@ -244,38 +251,52 @@ fun DetailsLoader(
         ) {
             val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
             val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)
+            val hasOpeningHours = detailsSkeleton.openingHoursDayCount > 0
             if (hasTabletWidth) {
                 Row {
                     Column(modifier = Modifier.weight(1f)) {
-                        LoadingGauge(shimmerInstance)
+                        LoadingGauge(shimmerInstance, hasOpeningHours)
+                        detailsSkeleton.disruptions?.let {
+                            LoadingDisruptions(shimmerInstance, it)
+                        }
 
-                        OvCard {
-                            Text(
-                                text = stringResource(Res.string.opening_hours_title),
-                                style = MaterialTheme.typography.headlineMedium,
-                                modifier = Modifier.padding(bottom = 8.dp)
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(180.dp)
-                                    .shimmerShape(shimmerInstance)
-                            )
+                        if (hasOpeningHours) {
+                            LoadingOpeningHours(shimmerInstance, detailsSkeleton.openingHoursInfo, detailsSkeleton.openingHoursDayCount)
+                        }
+
+                        LoadingExtraInfo(shimmerInstance, detailsSkeleton.about)
+
+                        if (detailsSkeleton.alternativeCount > 0) {
+                            LoadingAlternatives(shimmerInstance, detailsSkeleton.alternativeCount)
                         }
                     }
                     Spacer(Modifier.width(spacing))
                     Column(modifier = Modifier.weight(2f)) {
                         LoadingGraph(shimmerInstance, 350.dp)
 
-                        LoadingMap(shimmerInstance)
+                        LoadingMap(shimmerInstance, detailsSkeleton.directions)
                     }
                 }
             } else {
-                LoadingGauge(shimmerInstance)
+                LoadingGauge(shimmerInstance, hasOpeningHours)
 
                 LoadingGraph(shimmerInstance)
 
-                LoadingMap(shimmerInstance)
+                detailsSkeleton.disruptions?.let {
+                    LoadingDisruptions(shimmerInstance, it)
+                }
+
+                LoadingMap(shimmerInstance, detailsSkeleton.directions)
+
+                LoadingExtraInfo(shimmerInstance, detailsSkeleton.about)
+
+                if (hasOpeningHours) {
+                    LoadingOpeningHours(shimmerInstance, detailsSkeleton.openingHoursInfo, detailsSkeleton.openingHoursDayCount)
+                }
+
+                if (detailsSkeleton.alternativeCount > 0) {
+                    LoadingAlternatives(shimmerInstance, detailsSkeleton.alternativeCount)
+                }
             }
 
             Spacer(
@@ -286,7 +307,18 @@ fun DetailsLoader(
 }
 
 @Composable
-private fun LoadingMap(shimmerInstance: Shimmer) {
+private fun LoadingDisruptions(shimmerInstance: Shimmer, disruptions: String) {
+    Text(
+        text = disruptions,
+        modifier = Modifier
+            .padding(top = 16.dp)
+            .shimmerShape(shimmerInstance)
+            .padding(16.dp)
+    )
+}
+
+@Composable
+private fun LoadingMap(shimmerInstance: Shimmer, directions: String?) {
     OvCard {
         Text(
             text = stringResource(Res.string.location_title),
@@ -300,6 +332,15 @@ private fun LoadingMap(shimmerInstance: Shimmer) {
                 .fillMaxWidth()
                 .shimmerShape(shimmerInstance, shape = RoundedCornerShape(8.dp))
         )
+
+        if (directions != null) {
+            Text(
+                text = directions,
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .shimmerShape(shimmerInstance)
+            )
+        }
 
         Box(
             modifier = Modifier
@@ -329,7 +370,7 @@ private fun LoadingGraph(shimmerInstance: Shimmer, boxHeight: Dp = 270.dp) {
 }
 
 @Composable
-private fun LoadingGauge(shimmerInstance: Shimmer) {
+private fun LoadingGauge(shimmerInstance: Shimmer, hasOpeningHours: Boolean) {
     OvCard {
         Text(stringResource(Res.string.details_amount_available))
         Box(
@@ -355,14 +396,93 @@ private fun LoadingGauge(shimmerInstance: Shimmer) {
                     .shimmerShape(shimmerInstance)
             )
         }
-        Row(Modifier.align(Alignment.End)) {
+        if (hasOpeningHours) {
+            Row(Modifier.align(Alignment.End)) {
+                Text(
+                    stringResource(Res.string.open_until, "23:33"),
+                    modifier = Modifier.shimmerShape(shimmerInstance)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoadingExtraInfo(shimmerInstance: Shimmer, about: String?) {
+    OvCard {
+        val serviceTypeAndCapacityHeight = lineHeight() * 2
+        Box(
+            modifier = Modifier
+                .size(width = 160.dp, height = serviceTypeAndCapacityHeight)
+                .shimmerShape(shimmerInstance)
+        )
+
+        if (about != null) {
             Text(
-                stringResource(Res.string.open_until, "23:33"),
-                modifier = Modifier.shimmerShape(shimmerInstance)
+                text = about,
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .shimmerShape(shimmerInstance)
             )
         }
     }
 }
+
+@Composable
+private fun LoadingOpeningHours(shimmerInstance: Shimmer, openingHoursInfo: String?, dayCount: Int) {
+    OvCard {
+        Text(
+            text = stringResource(Res.string.opening_hours_title),
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        if (openingHoursInfo != null) {
+            Text(
+                text = openingHoursInfo,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .shimmerShape(shimmerInstance)
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shimmerShape(shimmerInstance)
+        ) {
+            repeat(dayCount) {
+                Text(stringResource(Res.string.day_1))
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoadingAlternatives(shimmerInstance: Shimmer, alternativeCount: Int) {
+    OvCard {
+        Text(
+            text = stringResource(Res.string.details_alternatives_at_this_location),
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier
+                .padding(bottom = 8.dp)
+                .shimmerShape(shimmerInstance)
+        )
+
+        repeat(alternativeCount) {
+            Box(
+                modifier = Modifier
+                    .minimumInteractiveComponentSize()
+                    .height(ButtonDefaults.MinHeight)
+                    .width(200.dp)
+                    .shimmerShape(shimmerInstance)
+            )
+        }
+    }
+}
+
+@Composable
+private fun lineHeight(): Dp = with(LocalDensity.current) { LocalTextStyle.current.lineHeight.toDp() }
 
 @Composable
 private fun ActualDetails(
