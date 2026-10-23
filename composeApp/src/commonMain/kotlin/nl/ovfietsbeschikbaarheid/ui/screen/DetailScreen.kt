@@ -152,9 +152,11 @@ fun DetailScreen(
     OnReturnToScreenEffect(viewModel::onReturnToScreenTriggered)
 
     val details by viewModel.screenState
+    val detailsSkeleton = remember(detailScreenData) { viewModel.getDetailsSkeleton(detailScreenData.locationCode) }
     DetailsView(
         detailScreenData,
         details,
+        detailsSkeleton,
         viewModel::onRetryClick,
         viewModel::onPullToRefresh,
         onLocationClicked,
@@ -168,6 +170,7 @@ fun DetailScreen(
 private fun DetailsView(
     detailScreenData: Details,
     details: ScreenState<DetailsContent>,
+    detailsSkeleton: DetailsSkeletonModel,
     onRetry: () -> Unit,
     onPullToRefresh: () -> Unit,
     onLocationClicked: (String) -> Unit,
@@ -200,7 +203,7 @@ private fun DetailsView(
         ) { innerPadding ->
             when (details) {
                 ScreenState.FullPageError -> FullPageError(modifier = Modifier.padding(innerPadding), onClick = onRetry)
-                ScreenState.Loading -> DetailsLoader(typicalDetailsSkeleton, modifier = Modifier.padding(innerPadding))
+                ScreenState.Loading -> DetailsLoader(detailsSkeleton, modifier = Modifier.padding(innerPadding))
                 is ScreenState.Loaded<DetailsContent> -> {
                     when (details.data) {
                         is DetailsContent.Content -> PullToRefreshBox(
@@ -845,6 +848,7 @@ fun DetailsLoadingPreview() {
     DetailsView(
         TestData.testDetails,
         ScreenState.Loading,
+        typicalDetailsSkeleton,
         {},
         {},
         {},
@@ -942,6 +946,7 @@ fun DetailsPreview() {
     DetailsView(
         TestData.testDetails,
         ScreenState.Loaded(DetailsContent.Content(details)),
+        typicalDetailsSkeleton,
         {},
         {},
         {},

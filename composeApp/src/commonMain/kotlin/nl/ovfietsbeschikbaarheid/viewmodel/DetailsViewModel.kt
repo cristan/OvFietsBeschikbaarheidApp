@@ -25,7 +25,9 @@ import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
 import nl.ovfietsbeschikbaarheid.ext.dutchTimeZone
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
+import nl.ovfietsbeschikbaarheid.mapper.DetailsSkeletonMapper
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
+import nl.ovfietsbeschikbaarheid.model.DetailsSkeletonModel
 import nl.ovfietsbeschikbaarheid.repository.DetailsRepository
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
@@ -54,6 +56,9 @@ class DetailsViewModel(
 
     val title: State<String>
         field = mutableStateOf("")
+
+    fun getDetailsSkeleton(locationCode: String): DetailsSkeletonModel =
+        DetailsSkeletonMapper.getDetailsSkeleton(locationCode, overviewRepository.getCachedLocations())
 
     fun screenLaunched(data: Details) {
         this.data = data
