@@ -29,7 +29,7 @@ class LocationsCacheRepositoryTest {
     }
 
     @Test
-    fun `partially stored locations are ignored`() = runTest {
+    fun `unreadable cached locations are ignored`() = runTest {
         LocationsCacheRepository(cacheDirectory).store(locationsResponse)
         val cacheFile = FileSystem.SYSTEM.list(cacheDirectory).single()
         val storedJson = FileSystem.SYSTEM.read(cacheFile) { readUtf8() }

@@ -3,6 +3,8 @@ package nl.ovfietsbeschikbaarheid.repository
 import co.touchlab.kermit.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -16,6 +18,8 @@ import okio.SYSTEM
 class LocationsCacheRepository(cacheDirectory: Path) {
 
     private val cacheFile = cacheDirectory / "locations.json"
+    private val temporaryCacheFile = cacheDirectory / "locations.json.tmp"
+    private val storeMutex = Mutex()
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -23,12 +27,15 @@ class LocationsCacheRepository(cacheDirectory: Path) {
 
     suspend fun store(locations: List<LocationDTO>) {
         withContext(Dispatchers.IO) {
-            try {
-                FileSystem.SYSTEM.write(cacheFile) {
-                    writeUtf8(json.encodeToString(locations))
+            storeMutex.withLock {
+                try {
+                    FileSystem.SYSTEM.write(temporaryCacheFile) {
+                        writeUtf8(json.encodeToString(locations))
+                    }
+                    FileSystem.SYSTEM.atomicMove(temporaryCacheFile, cacheFile)
+                } catch (e: IOException) {
+                    Logger.e(e) { "Failed to cache the locations" }
                 }
-            } catch (e: IOException) {
-                Logger.e(e) { "Failed to cache the locations" }
             }
         }
     }
