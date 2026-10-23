@@ -1,7 +1,6 @@
 package nl.ovfietsbeschikbaarheid.ext
 
 import kotlinx.datetime.DayOfWeek
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
@@ -37,26 +36,6 @@ val LocalTime.Companion.MAX: LocalTime
 
 val LocalTime.Companion.MIN: LocalTime
     get() = LocalTime(0, 0)
-
-fun LocalDate.toFullDayOfWeek() = when(this.dayOfWeek) {
-    DayOfWeek.MONDAY -> "maandag"
-    DayOfWeek.TUESDAY -> "dinsdag"
-    DayOfWeek.WEDNESDAY -> "woensdag"
-    DayOfWeek.THURSDAY -> "donderdag"
-    DayOfWeek.FRIDAY -> "vrijdag"
-    DayOfWeek.SATURDAY -> "zaterdag"
-    DayOfWeek.SUNDAY ->  "zondag"
-}
-
-fun LocalDate.toNarrowDayOfWeek() = when(this.dayOfWeek) {
-    DayOfWeek.MONDAY -> "M"
-    DayOfWeek.TUESDAY -> "D"
-    DayOfWeek.WEDNESDAY -> "W"
-    DayOfWeek.THURSDAY -> "D"
-    DayOfWeek.FRIDAY -> "V"
-    DayOfWeek.SATURDAY -> "Z"
-    DayOfWeek.SUNDAY -> "Z"
-}
 
 fun DayOfWeek.toIsoDayNumber(): Int = when (this) {
     DayOfWeek.MONDAY -> 1
