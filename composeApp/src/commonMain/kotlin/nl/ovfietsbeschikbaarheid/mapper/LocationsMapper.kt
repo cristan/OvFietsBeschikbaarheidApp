@@ -51,7 +51,7 @@ class LocationsMapper(
         }.sortedBy { it.title }
     }
 
-    fun mapWithoutCapacities(locations: List<LocationDTO>): List<LocationOverviewModel> {
+    fun mapWithoutRentalBikesAvailable(locations: List<LocationDTO>): List<LocationOverviewModel> {
         return locations.map { toLocationOverviewModel(it, rentalBikesAvailable = null) }.sortedBy { it.title }
     }
 

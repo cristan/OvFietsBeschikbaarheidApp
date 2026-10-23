@@ -59,8 +59,8 @@ class HomeViewModelTest {
     private val amsterdamCentraal = Coordinates(52.3788871765137, 4.90027761459351)
 
     @Before
-    fun noCachedLocations() {
-        coEvery { overviewRepository.getCachedLocationsWithoutCapacities() } returns null
+    fun stubNoCachedLocations() {
+        coEvery { overviewRepository.getStoredLocationsWithoutRentalBikesAvailable() } returns null
     }
 
     @Test
@@ -405,9 +405,9 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `cached locations are shown by the last known coordinates until the current capacities are loaded`() = runTest {
+    fun `cached locations are sorted by distance to the last known coordinates until the current capacities are loaded`() = runTest {
         stubLocationsOk(delay = 1000L)
-        coEvery { overviewRepository.getCachedLocationsWithoutCapacities() } returns locationsMapper.mapWithoutCapacities(locationsResponse)
+        coEvery { overviewRepository.getStoredLocationsWithoutRentalBikesAvailable() } returns locationsMapper.mapWithoutRentalBikesAvailable(locationsResponse)
         every { locationPermissionHelper.isGpsTurnedOn() } returns true
         every { locationPermissionHelper.hasGpsPermission() } returns true
         coEvery { locationLoader.getLastKnownCoordinates() } returns amsterdamCentraal
@@ -437,9 +437,9 @@ class HomeViewModelTest {
     fun `reading the cached locations doesn't hold up the current capacities`() = runTest {
         stubGpsOk()
         stubLocationsOk(delay = 500L)
-        coEvery { overviewRepository.getCachedLocationsWithoutCapacities() } coAnswers {
+        coEvery { overviewRepository.getStoredLocationsWithoutRentalBikesAvailable() } coAnswers {
             delay(2000L)
-            locationsMapper.mapWithoutCapacities(locationsResponse)
+            locationsMapper.mapWithoutRentalBikesAvailable(locationsResponse)
         }
         coEvery { locationLoader.getLastKnownCoordinates() } returns amsterdamCentraal
 
@@ -459,9 +459,9 @@ class HomeViewModelTest {
             delay(100L)
             throw UnknownHostException()
         }
-        coEvery { overviewRepository.getCachedLocationsWithoutCapacities() } coAnswers {
+        coEvery { overviewRepository.getStoredLocationsWithoutRentalBikesAvailable() } coAnswers {
             delay(2000L)
-            locationsMapper.mapWithoutCapacities(locationsResponse)
+            locationsMapper.mapWithoutRentalBikesAvailable(locationsResponse)
         }
         coEvery { locationLoader.getLastKnownCoordinates() } returns amsterdamCentraal
 
@@ -478,7 +478,7 @@ class HomeViewModelTest {
     fun `cached locations aren't shown without last known coordinates`() = runTest {
         stubGpsOk()
         stubLocationsOk(delay = 1000L)
-        coEvery { overviewRepository.getCachedLocationsWithoutCapacities() } returns locationsMapper.mapWithoutCapacities(locationsResponse)
+        coEvery { overviewRepository.getStoredLocationsWithoutRentalBikesAvailable() } returns locationsMapper.mapWithoutRentalBikesAvailable(locationsResponse)
         coEvery { locationLoader.getLastKnownCoordinates() } returns null
 
         viewModel.onScreenLaunched()
@@ -488,7 +488,7 @@ class HomeViewModelTest {
 
     @Test
     fun `clearing the search after the current capacities loaded doesn't read the cached locations again`() = runTest {
-        coEvery { overviewRepository.getCachedLocationsWithoutCapacities() } returns locationsMapper.mapWithoutCapacities(locationsResponse)
+        coEvery { overviewRepository.getStoredLocationsWithoutRentalBikesAvailable() } returns locationsMapper.mapWithoutRentalBikesAvailable(locationsResponse)
         coEvery { locationLoader.getLastKnownCoordinates() } returns amsterdamCentraal
         coEvery { findNearbyLocationsUseCase.invoke(any(), any()) } returns null // We're not testing nearby locations here
         stubGpsOk()
@@ -500,12 +500,12 @@ class HomeViewModelTest {
         viewModel.onSearchTermChanged("")
 
         assertIs<HomeContent.GpsContent>(viewModel.content.value)
-        coVerify(exactly = 1) { overviewRepository.getCachedLocationsWithoutCapacities() }
+        coVerify(exactly = 1) { overviewRepository.getStoredLocationsWithoutRentalBikesAvailable() }
     }
 
     @Test
-    fun `the current capacities stay visible while refreshing`() = runTest {
-        coEvery { overviewRepository.getCachedLocationsWithoutCapacities() } returns locationsMapper.mapWithoutCapacities(locationsResponse)
+    fun `cached locations aren't shown while refreshing the current capacities`() = runTest {
+        coEvery { overviewRepository.getStoredLocationsWithoutRentalBikesAvailable() } returns locationsMapper.mapWithoutRentalBikesAvailable(locationsResponse)
         coEvery { locationLoader.getLastKnownCoordinates() } returns amsterdamCentraal
         launchWithEverythingOk()
 

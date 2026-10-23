@@ -316,7 +316,7 @@ class HomeViewModel(
     }
 
     private suspend fun showCachedLocations() {
-        val cachedLocations = overviewRepository.getCachedLocationsWithoutCapacities() ?: return
+        val cachedLocations = overviewRepository.getStoredLocationsWithoutRentalBikesAvailable() ?: return
         val lastKnownCoordinates = locationLoader.getLastKnownCoordinates() ?: return
         Logger.d("showCachedLocations: using cached locations and last known coordinates")
         content.value = HomeContent.LoadingWithCachedLocations(locationsMapper.withDistance(cachedLocations, lastKnownCoordinates))

@@ -312,7 +312,7 @@ private fun LoadingWithCachedLocations(
             HorizontalBar(stringResource(Res.string.home_nearby))
         }
         items(content.locations) { location ->
-            LocationCard(location.location, location.distance, capacityShimmer = shimmerInstance) {
+            LocationCard(location.location, location.distance, rentalBikesShimmer = shimmerInstance) {
                 onLocationClick(location.location)
             }
         }
@@ -489,7 +489,7 @@ private fun SearchField(
 }
 
 @Composable
-fun LocationCard(location: LocationOverviewModel, distance: String? = null, capacityShimmer: Shimmer? = null, onClick: () -> Unit) {
+fun LocationCard(location: LocationOverviewModel, distance: String? = null, rentalBikesShimmer: Shimmer? = null, onClick: () -> Unit) {
     val openState = if (location.openingHours == null) null else OpenStateMapper.getOpenState(
         location.locationCode, location.openingHours, Clock.System.now().toLocalDateTime(dutchTimeZone)
     )
@@ -560,13 +560,13 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, capa
             }
         }
 
-        if (capacityShimmer != null) {
+        if (rentalBikesShimmer != null) {
             RentalBikesAvailable(location.type) {
                 Box(
                     Modifier
                         .size(width = 24.dp, height = 20.dp)
                         .padding(top = 4.dp)
-                        .shimmerShape(capacityShimmer)
+                        .shimmerShape(rentalBikesShimmer)
                 )
             }
         } else {
@@ -580,7 +580,7 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, capa
 }
 
 @Composable
-private fun RowScope.RentalBikesAvailable(type: LocationType, amount: @Composable () -> Unit) {
+private fun RowScope.RentalBikesAvailable(type: LocationType, amountContent: @Composable () -> Unit) {
     val iconRes = if (type == LocationType.EBike) Res.drawable.baseline_electric_bike_24 else Res.drawable.pedal_bike_24px
     Icon(
         painter = painterResource(iconRes),
@@ -591,7 +591,7 @@ private fun RowScope.RentalBikesAvailable(type: LocationType, amount: @Composabl
     Box(
         modifier = Modifier.padding(start = 8.dp),
     ) {
-        amount()
+        amountContent()
 
         // Placeholder so all numbers are left aligned. Text, so it scales when people have a larger font size
         Text(

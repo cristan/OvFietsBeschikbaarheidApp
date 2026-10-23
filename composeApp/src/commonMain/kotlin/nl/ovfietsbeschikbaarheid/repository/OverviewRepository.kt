@@ -44,8 +44,8 @@ class OverviewRepository(
         return result
     }
 
-    suspend fun getCachedLocationsWithoutCapacities(): List<LocationOverviewModel>? {
-        return locationsCacheRepository.getLocations()?.let { locationsMapper.mapWithoutCapacities(it) }
+    suspend fun getStoredLocationsWithoutRentalBikesAvailable(): List<LocationOverviewModel>? {
+        return locationsCacheRepository.getLocations()?.let { locationsMapper.mapWithoutRentalBikesAvailable(it) }
     }
 
     fun filterLocations(allLocations: List<LocationOverviewModel>, searchTerm: String): List<LocationOverviewModel> {
