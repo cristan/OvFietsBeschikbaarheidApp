@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.datetime.toLocalDateTime
 import nl.ovfietsbeschikbaarheid.TestData
+import nl.ovfietsbeschikbaarheid.ext.OnReturnToScreenEffect
 import nl.ovfietsbeschikbaarheid.ext.dutchTimeZone
 import nl.ovfietsbeschikbaarheid.mapper.OpenStateMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
@@ -68,6 +69,8 @@ fun LocationsMapScreen(
     onLocationClick: (LocationOverviewModel) -> Unit,
     onBackClicked: () -> Unit,
 ) {
+    OnReturnToScreenEffect(viewModel::onReturnedToScreen)
+
     val screenState by viewModel.screenState
     LocationsMapView(screenState, viewModel::onRetryClick, onLocationClick, onBackClicked)
 }
@@ -128,24 +131,24 @@ private fun LocationsMap(
     modifier: Modifier,
     onLocationClick: (LocationOverviewModel) -> Unit,
 ) {
-    var selectedLocations by remember { mutableStateOf<List<LocationOverviewModel>?>(null) }
+    var selectedLocationCodes by remember { mutableStateOf<List<String>?>(null) }
 
     NativeLocationsMap(
         modifier = modifier.fillMaxSize(),
         locations = content.locations,
         userCoordinates = content.userCoordinates,
         showsUserLocation = content.showsUserLocation,
-        onLocationsClick = { selectedLocations = it },
+        onLocationsClick = { locations -> selectedLocationCodes = locations.map { it.locationCode } },
     )
 
-    selectedLocations?.let { locations ->
-        ModalBottomSheet(onDismissRequest = { selectedLocations = null }) {
-            locations.forEachIndexed { index, location ->
+    selectedLocationCodes?.let { locationCodes ->
+        ModalBottomSheet(onDismissRequest = { selectedLocationCodes = null }) {
+            content.locations.filter { it.locationCode in locationCodes }.forEachIndexed { index, location ->
                 if (index > 0) {
                     HorizontalDivider(Modifier.padding(bottom = 16.dp))
                 }
                 LocationSummary(location) {
-                    selectedLocations = null
+                    selectedLocationCodes = null
                     onLocationClick(location)
                 }
             }

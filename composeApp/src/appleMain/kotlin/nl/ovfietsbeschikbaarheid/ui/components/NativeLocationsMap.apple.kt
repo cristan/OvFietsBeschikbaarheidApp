@@ -88,6 +88,7 @@ actual fun NativeLocationsMap(
                 }
             }
         },
+        update = { mapView -> mapViewDelegate.showLocations(mapView, locations) },
         modifier = modifier,
         properties = UIKitInteropProperties(
             interactionMode = UIKitInteropInteractionMode.NonCooperative,
@@ -145,15 +146,25 @@ private class MapMarkerAnnotation(val mapMarker: MapMarker) : MKPointAnnotation(
 
 @OptIn(ExperimentalForeignApi::class)
 private class LocationsMapViewDelegate(
-    private val locations: List<LocationOverviewModel>,
+    private var locations: List<LocationOverviewModel>,
     private var centersOnFirstUserLocation: Boolean,
     private val onVisibleMapRectChanged: (List<Double>) -> Unit,
     private val onLocationsClick: (List<LocationOverviewModel>) -> Unit,
 ) : NSObject(), MKMapViewDelegateProtocol {
 
+    fun showLocations(mapView: MKMapView, locations: List<LocationOverviewModel>) {
+        if (locations != this.locations) {
+            this.locations = locations
+            showMapMarkers(mapView)
+        }
+    }
+
     override fun mapView(mapView: MKMapView, regionDidChangeAnimated: Boolean) {
         onVisibleMapRectChanged(mapView.visibleMapRect.useContents { listOf(origin.x, origin.y, size.width, size.height) })
+        showMapMarkers(mapView)
+    }
 
+    private fun showMapMarkers(mapView: MKMapView) {
         val mapMarkers = MapMarkerMapper.getMapMarkers(locations, mapView.zoomLevel())
         val shownAnnotations = mapView.annotations.filterIsInstance<MapMarkerAnnotation>()
         val shownMapMarkers = shownAnnotations.map { it.mapMarker }.toSet()
