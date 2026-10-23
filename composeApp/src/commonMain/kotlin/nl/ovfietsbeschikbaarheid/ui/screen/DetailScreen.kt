@@ -109,7 +109,7 @@ import nl.ovfietsbeschikbaarheid.resources.open_state_opens_later_at
 import nl.ovfietsbeschikbaarheid.resources.open_state_opens_today_at
 import nl.ovfietsbeschikbaarheid.resources.open_until
 import nl.ovfietsbeschikbaarheid.resources.opening_hours_title
-import nl.ovfietsbeschikbaarheid.resources.pedal_bike_24px
+import nl.ovfietsbeschikbaarheid.resources.ov_fiets_24px
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.NativeMap
@@ -644,7 +644,7 @@ private fun ExtraInfo(details: DetailsModel) {
         val bottomPadding = if (details.about != null) 8.dp else 0.dp
         Row(Modifier.padding(bottom = bottomPadding)) {
             Icon(
-                painter = painterResource(Res.drawable.pedal_bike_24px),
+                painter = painterResource(Res.drawable.ov_fiets_24px),
                 tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
                 contentDescription = null,
                 modifier = Modifier.padding(end = 8.dp)
