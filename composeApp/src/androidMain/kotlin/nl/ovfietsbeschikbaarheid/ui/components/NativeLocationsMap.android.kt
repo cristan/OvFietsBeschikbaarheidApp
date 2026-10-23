@@ -29,8 +29,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MarkerComposable
+import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberComposeBitmapDescriptor
 import com.google.maps.android.compose.rememberUpdatedMarkerState
 import dev.jordond.compass.Coordinates
 import kotlinx.coroutines.launch
@@ -68,28 +69,31 @@ actual fun NativeLocationsMap(
         properties = MapProperties(isMyLocationEnabled = showsUserLocation),
         contentPadding = WindowInsets.navigationBars.asPaddingValues(),
     ) {
-        mapMarkers.forEach { mapMarker ->
-            key(mapMarker) {
-                MarkerComposable(
-                    mapMarker.locations.size,
-                    state = rememberUpdatedMarkerState(LatLng(mapMarker.latitude, mapMarker.longitude)),
-                    contentDescription = mapMarker.locations.joinToString { it.title },
-                    anchor = Offset(0.5f, 0.5f),
-                    onClick = {
-                        if (MapMarkerMapper.separatesWhenZoomingIn(mapMarker)) {
-                            val bounds = LatLngBounds.builder().apply {
-                                mapMarker.locations.forEach { include(LatLng(it.latitude, it.longitude)) }
-                            }.build()
-                            coroutineScope.launch {
-                                cameraPositionState.animate(CameraUpdateFactory.newLatLngBounds(bounds, zoomInPadding))
-                            }
-                        } else {
-                            onLocationsClick(mapMarker.locations)
-                        }
-                        true
-                    },
-                ) {
-                    MarkerIcon(mapMarker.locations.size)
+        mapMarkers.groupBy { it.locations.size }.forEach { (locationCount, mapMarkersWithLocationCount) ->
+            key(locationCount) {
+                val icon = rememberComposeBitmapDescriptor(locationCount) { MarkerIcon(locationCount) }
+                mapMarkersWithLocationCount.forEach { mapMarker ->
+                    key(mapMarker) {
+                        Marker(
+                            state = rememberUpdatedMarkerState(LatLng(mapMarker.latitude, mapMarker.longitude)),
+                            contentDescription = mapMarker.locations.joinToString { it.title },
+                            anchor = Offset(0.5f, 0.5f),
+                            icon = icon,
+                            onClick = {
+                                if (MapMarkerMapper.separatesWhenZoomingIn(mapMarker)) {
+                                    val bounds = LatLngBounds.builder().apply {
+                                        mapMarker.locations.forEach { include(LatLng(it.latitude, it.longitude)) }
+                                    }.build()
+                                    coroutineScope.launch {
+                                        cameraPositionState.animate(CameraUpdateFactory.newLatLngBounds(bounds, zoomInPadding))
+                                    }
+                                } else {
+                                    onLocationsClick(mapMarker.locations)
+                                }
+                                true
+                            },
+                        )
+                    }
                 }
             }
         }
