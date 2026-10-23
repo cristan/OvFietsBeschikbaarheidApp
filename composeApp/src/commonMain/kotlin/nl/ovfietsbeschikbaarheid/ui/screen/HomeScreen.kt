@@ -83,7 +83,7 @@ import nl.ovfietsbeschikbaarheid.resources.open_state_closed
 import nl.ovfietsbeschikbaarheid.resources.open_state_closes_at
 import nl.ovfietsbeschikbaarheid.resources.open_state_closing_soon
 import nl.ovfietsbeschikbaarheid.resources.open_state_opens_today_at
-import nl.ovfietsbeschikbaarheid.resources.pedal_bike_24px
+import nl.ovfietsbeschikbaarheid.resources.ov_fiets_24px
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey80
 import nl.ovfietsbeschikbaarheid.ui.theme.Indigo05
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
@@ -269,7 +269,7 @@ private fun Loading() {
                 }
 
                 Icon(
-                    painter = painterResource(Res.drawable.pedal_bike_24px),
+                    painter = painterResource(Res.drawable.ov_fiets_24px),
                     tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
                     contentDescription = null,
                     modifier = Modifier.align(Alignment.CenterVertically)
@@ -532,7 +532,7 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
         }
 
         location.rentalBikesAvailable?.let {
-            val iconRes = if (location.type == LocationType.EBike) Res.drawable.baseline_electric_bike_24 else Res.drawable.pedal_bike_24px
+            val iconRes = if (location.type == LocationType.EBike) Res.drawable.baseline_electric_bike_24 else Res.drawable.ov_fiets_24px
             Icon(
                 painter = painterResource(iconRes),
                 tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
