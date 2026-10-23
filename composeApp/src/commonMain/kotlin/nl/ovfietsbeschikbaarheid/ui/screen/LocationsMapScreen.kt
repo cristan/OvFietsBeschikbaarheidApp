@@ -118,7 +118,7 @@ private fun LocationsMapView(
                     CircularProgressIndicator()
                 }
 
-                is ScreenState.Loaded -> LocationsMap(screenState.data, Modifier.padding(innerPadding), onLocationClick)
+                is ScreenState.Loaded -> LoadedLocationsMap(screenState.data, Modifier.padding(innerPadding), onLocationClick)
             }
         }
     }
@@ -126,7 +126,7 @@ private fun LocationsMapView(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LocationsMap(
+private fun LoadedLocationsMap(
     content: LocationsMapContent,
     modifier: Modifier,
     onLocationClick: (LocationOverviewModel) -> Unit,
