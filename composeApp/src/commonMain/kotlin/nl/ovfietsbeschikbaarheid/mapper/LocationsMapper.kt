@@ -47,20 +47,28 @@ class LocationsMapper(
         }
 
         return locations.map { toMap ->
-            val description = replacements[toMap.description] ?: toMap.description
-            LocationOverviewModel(
-                title = description,
-                rentalBikesAvailable = if (lastUpdateTooLongAgo) null else toMap.extra.rentalBikes,
-                uri = toMap.link.uri,
-                fetchTime = toMap.extra.fetchTime,
-                locationCode = toMap.extra.locationCode,
-                stationCode = toMap.stationCode,
-                latitude = toMap.lat,
-                longitude = toMap.lng,
-                type = if (description.contains("OV-ebike")) LocationType.EBike else LocationType.Regular,
-                openingHours = toMap.openingHours
-            )
+            toLocationOverviewModel(toMap, rentalBikesAvailable = if (lastUpdateTooLongAgo) null else toMap.extra.rentalBikes)
         }.sortedBy { it.title }
+    }
+
+    fun mapWithoutRentalBikesAvailable(locations: List<LocationDTO>): List<LocationOverviewModel> {
+        return locations.map { toLocationOverviewModel(it, rentalBikesAvailable = null) }.sortedBy { it.title }
+    }
+
+    private fun toLocationOverviewModel(location: LocationDTO, rentalBikesAvailable: Int?): LocationOverviewModel {
+        val description = replacements[location.description] ?: location.description
+        return LocationOverviewModel(
+            title = description,
+            rentalBikesAvailable = rentalBikesAvailable,
+            uri = location.link.uri,
+            fetchTime = location.extra.fetchTime,
+            locationCode = location.extra.locationCode,
+            stationCode = location.stationCode,
+            latitude = location.lat,
+            longitude = location.lng,
+            type = if (description.contains("OV-ebike")) LocationType.EBike else LocationType.Regular,
+            openingHours = location.openingHours
+        )
     }
 
     fun withDistance(locations: List<LocationOverviewModel>, currentCoordinates: Coordinates): List<LocationOverviewWithDistanceModel> {

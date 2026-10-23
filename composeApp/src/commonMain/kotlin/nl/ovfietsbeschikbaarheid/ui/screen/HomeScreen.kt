@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,6 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.valentinilk.shimmer.Shimmer
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import kotlinx.datetime.toLocalDateTime
@@ -189,6 +191,10 @@ private fun HomeView(
                         Loading()
                     }
 
+                    is HomeContent.LoadingWithCachedLocations -> {
+                        LoadingWithCachedLocations(screen, onLocationClick)
+                    }
+
                     HomeContent.NetworkError -> {
                         FullPageError(onClick = onRetryClick)
                     }
@@ -291,6 +297,29 @@ private fun Loading() {
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun LoadingWithCachedLocations(
+    content: HomeContent.LoadingWithCachedLocations,
+    onLocationClick: (LocationOverviewModel) -> Unit
+) {
+    val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
+    LazyColumn {
+        item {
+            HorizontalBar(stringResource(Res.string.home_nearby))
+        }
+        items(content.locations) { location ->
+            LocationCard(location.location, location.distance, rentalBikesShimmer = shimmerInstance) {
+                onLocationClick(location.location)
+            }
+        }
+        item {
+            Spacer(
+                Modifier.windowInsetsBottomHeight(WindowInsets.systemBars)
+            )
         }
     }
 }
@@ -460,7 +489,7 @@ private fun SearchField(
 }
 
 @Composable
-fun LocationCard(location: LocationOverviewModel, distance: String? = null, onClick: () -> Unit) {
+fun LocationCard(location: LocationOverviewModel, distance: String? = null, rentalBikesShimmer: Shimmer? = null, onClick: () -> Unit) {
     val openState = if (location.openingHours == null) null else OpenStateMapper.getOpenState(
         location.locationCode, location.openingHours, Clock.System.now().toLocalDateTime(dutchTimeZone)
     )
@@ -531,26 +560,44 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
             }
         }
 
-        location.rentalBikesAvailable?.let {
-            val iconRes = if (location.type == LocationType.EBike) Res.drawable.baseline_electric_bike_24 else Res.drawable.pedal_bike_24px
-            Icon(
-                painter = painterResource(iconRes),
-                tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
-                contentDescription = null,
-                modifier = Modifier.align(Alignment.CenterVertically)
-            )
-            Box(
-                modifier = Modifier.padding(start = 8.dp),
-            ) {
-                Text(text = it.toString())
-
-                // Placeholder so all numbers are left aligned. Text, so it scales when people have a larger font size
-                Text(
-                    text = "888",
-                    color = Color.Transparent
+        if (rentalBikesShimmer != null) {
+            RentalBikesAvailable(location.type) {
+                Box(
+                    Modifier
+                        .size(width = 24.dp, height = 20.dp)
+                        .padding(top = 4.dp)
+                        .shimmerShape(rentalBikesShimmer)
                 )
             }
+        } else {
+            location.rentalBikesAvailable?.let {
+                RentalBikesAvailable(location.type) {
+                    Text(text = it.toString())
+                }
+            }
         }
+    }
+}
+
+@Composable
+private fun RowScope.RentalBikesAvailable(type: LocationType, amountContent: @Composable () -> Unit) {
+    val iconRes = if (type == LocationType.EBike) Res.drawable.baseline_electric_bike_24 else Res.drawable.pedal_bike_24px
+    Icon(
+        painter = painterResource(iconRes),
+        tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
+        contentDescription = null,
+        modifier = Modifier.align(Alignment.CenterVertically)
+    )
+    Box(
+        modifier = Modifier.padding(start = 8.dp),
+    ) {
+        amountContent()
+
+        // Placeholder so all numbers are left aligned. Text, so it scales when people have a larger font size
+        Text(
+            text = "888",
+            color = Color.Transparent
+        )
     }
 }
 
@@ -634,6 +681,28 @@ fun NoGpsPreview() {
 @Composable
 fun LoadingPreview() {
     TestHomeView("", HomeContent.Loading)
+}
+
+@Preview
+@Composable
+fun LoadingWithCachedLocationsPreview() {
+    val locations = listOf(
+        LocationOverviewWithDistanceModel(
+            "800 m",
+            TestData.testLocationOverviewModel.copy(
+                title = "Amsterdam Zuid Mahlerplein",
+                rentalBikesAvailable = null
+            )
+        ),
+        LocationOverviewWithDistanceModel(
+            "1,1 km",
+            TestData.testLocationOverviewModel.copy(
+                title = "Amsterdam Zuid Zuidplein",
+                rentalBikesAvailable = null
+            )
+        ),
+    )
+    TestHomeView("", HomeContent.LoadingWithCachedLocations(locations))
 }
 
 @Preview
