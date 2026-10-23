@@ -69,6 +69,14 @@
     <string name="graph_previous_day_content_description">Deze %1$s: minimaal %2$d en maximaal %3$d OV-fietsen</string>
     <string name="graph_today_content_description">Vandaag: minimaal %1$d en maximaal %2$d OV-fietsen. Vanaf nu op basis van vorige week: minimaal %3$d en maximaal %4$d OV-fietsen.</string>
     <string name="graph_next_day_content_description">Vorige week %1$s: minimaal %2$d en maximaal %3$d OV-fietsen</string>
+    <plurals name="graph_selected_capacity">
+        <item quantity="one">%1$d OV-fiets om %2$s</item>
+        <item quantity="other">%1$d OV-fietsen om %2$s</item>
+    </plurals>
+    <plurals name="graph_selected_capacity_last_week">
+        <item quantity="one">%1$d OV-fiets om %2$s vorige week</item>
+        <item quantity="other">%1$d OV-fietsen om %2$s vorige week</item>
+    </plurals>
 
     <string name="map_available">%1$s beschikbaar</string>
 

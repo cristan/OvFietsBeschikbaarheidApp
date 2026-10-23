@@ -3,6 +3,10 @@
 package nl.ovfietsbeschikbaarheid.ui.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.awaitHorizontalTouchSlopOrCancellation
+import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,16 +23,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
@@ -37,11 +46,15 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.format
+import kotlinx.datetime.format.char
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
@@ -55,16 +68,21 @@ import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.resources.Res
 import nl.ovfietsbeschikbaarheid.resources.capacity_graph_title
 import nl.ovfietsbeschikbaarheid.resources.graph_last_week_day
+import nl.ovfietsbeschikbaarheid.resources.graph_selected_capacity
+import nl.ovfietsbeschikbaarheid.resources.graph_selected_capacity_last_week
 import nl.ovfietsbeschikbaarheid.resources.graph_this_week_day
 import nl.ovfietsbeschikbaarheid.resources.graph_today
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey10
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey40
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey80
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
+import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @Composable
 fun CapacityGraph(
@@ -108,19 +126,61 @@ fun CapacityGraph(
         val history = shownGraphDay.capacityHistory
         val prediction = shownGraphDay.capacityPrediction
 
+        val startTime = if (history.isNotEmpty())
+            history[0].createTime.toLocalDateTime(dutchTimeZone).truncateToHour()
+        else
+            prediction[0].createTime.toLocalDateTime(dutchTimeZone).truncateToDay()
+
+        val startInstant = startTime.toInstant(dutchTimeZone)
+        val endTime = startTime.atEndOfDay()
+        val duration = startTime.millisecondsUntil(endTime, dutchTimeZone).toFloat()
+
+        val historyPoints = history.toGraphPoints(startInstant, duration, isPrediction = false)
+        val predictionPoints = prediction.firstOrNull()?.let { firstPrediction ->
+            val startTimePrediction = firstPrediction.createTime.toLocalDateTime(dutchTimeZone).truncateToDay().toInstant(dutchTimeZone)
+            prediction.toGraphPoints(startTimePrediction, duration, isPrediction = true)
+        }.orEmpty()
+        val graphPoints = historyPoints + predictionPoints
+
+        var selectedPoint by remember(graphPoints) { mutableStateOf<GraphPoint?>(null) }
+        val selectedPointAndText = selectedPoint?.let { it to it.selectedCapacityText() }
+
         val primaryColor = MaterialTheme.colorScheme.primary
         val labelColor = MaterialTheme.colorScheme.onBackground
         val gridLineColor = if(isSystemInDarkTheme()) Grey80 else Grey10
+        val selectionLineColor = MaterialTheme.colorScheme.outline
+        val tooltipBackgroundColor = MaterialTheme.colorScheme.inverseSurface
+        val tooltipTextStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.inverseOnSurface)
 
         Canvas(
             modifier = modifier
                 .semantics {
                     contentDescription = shownGraphDay.contentDescription
                 }
+                .pointerInput(graphPoints) {
+                    val leftPadding = graphLeftPadding.toPx()
+                    fun pointNearest(canvasX: Float) = graphPoints.nearestTo(fractionOfGraphWidth = (canvasX - leftPadding) / (size.width - leftPadding))
+
+                    awaitEachGesture {
+                        val down = awaitFirstDown()
+                        selectedPoint = pointNearest(down.position.x)
+                        val horizontalDragStart = awaitHorizontalTouchSlopOrCancellation(down.id) { change, _ ->
+                            change.consume()
+                            selectedPoint = pointNearest(change.position.x)
+                        }
+                        if (horizontalDragStart != null) {
+                            horizontalDrag(horizontalDragStart.id) { change ->
+                                change.consume()
+                                selectedPoint = pointNearest(change.position.x)
+                            }
+                        }
+                        selectedPoint = null
+                    }
+                }
                 .fillMaxWidth()
                 .height(chartHeight)
         ) {
-            val leftPadding = 24.dp.toPx()
+            val leftPadding = graphLeftPadding.toPx()
             val bottomPadding = 16.dp.toPx()
 
             val graphWidth = size.width - leftPadding
@@ -168,43 +228,27 @@ fun CapacityGraph(
                 )
             }
 
+            fun GraphPoint.toOffset() = Offset(
+                x = leftPadding + fractionOfGraphWidth * graphWidth,
+                y = graphHeight - (capacity / roundedMax) * graphHeight
+            )
+
             // ----- Draw the capacity line -----
-            val startTime = if (history.isNotEmpty())
-                history[0].createTime.toLocalDateTime(dutchTimeZone).truncateToHour()
-            else
-                prediction[0].createTime.toLocalDateTime(dutchTimeZone).truncateToDay()
-
-            val startInstant = startTime.toInstant(dutchTimeZone)
-            val endTime = startTime.atEndOfDay()
-            val duration = startTime.millisecondsUntil(endTime, dutchTimeZone).toFloat()
-            if (history.isNotEmpty()) {
-                val points = history.map { model ->
-                    val x = leftPadding + ((model.createTime - startInstant).inWholeMilliseconds / duration) * graphWidth
-                    val y = graphHeight - (model.capacity / roundedMax) * graphHeight
-                    Offset(x, y)
-                }
-
+            if (historyPoints.isNotEmpty()) {
                 drawPath(
-                    path = smoothPathThrough(points),
+                    path = smoothPathThrough(historyPoints.map { it.toOffset() }),
                     color = primaryColor,
                     style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
                 )
             }
 
             // ----- Draw the prediction -----
-            if (prediction.isNotEmpty()) {
-                val startTimePrediction = prediction[0].createTime.toLocalDateTime(dutchTimeZone).truncateToDay().toInstant(dutchTimeZone)
-                val predictionPoints = prediction.map { model ->
-                    val x = leftPadding + ((model.createTime - startTimePrediction).inWholeMilliseconds / duration) * graphWidth
-                    val y = graphHeight - (model.capacity / roundedMax) * graphHeight
-                    Offset(x, y)
-                }
-
+            if (predictionPoints.isNotEmpty()) {
                 val dashLength = 4.dp.toPx()
                 val gapLength = 12.dp.toPx()
 
                 drawPath(
-                    path = smoothPathThrough(predictionPoints),
+                    path = smoothPathThrough(predictionPoints.map { it.toOffset() }),
                     color = Grey40,
                     style = Stroke(
                         width = 4.dp.toPx(),
@@ -237,6 +281,48 @@ fun CapacityGraph(
                     )
                 )
             }
+
+            selectedPointAndText?.let { (point, selectedCapacityText) ->
+                val markerCenter = point.toOffset()
+                val markerRadius = 6.dp.toPx()
+                drawLine(
+                    color = selectionLineColor,
+                    start = Offset(markerCenter.x, 0f),
+                    end = Offset(markerCenter.x, graphHeight),
+                    strokeWidth = 1.dp.toPx()
+                )
+                drawCircle(
+                    color = if (point.isPrediction) Grey40 else primaryColor,
+                    radius = markerRadius,
+                    center = markerCenter
+                )
+
+                val tooltipHorizontalPadding = 8.dp.toPx()
+                val tooltipVerticalPadding = 4.dp.toPx()
+                val tooltipTextLayout = textMeasurer.measure(
+                    text = selectedCapacityText,
+                    style = tooltipTextStyle,
+                    constraints = Constraints(maxWidth = (size.width - 2 * tooltipHorizontalPadding).toInt())
+                )
+                val tooltipSize = Size(
+                    width = tooltipTextLayout.size.width + 2 * tooltipHorizontalPadding,
+                    height = tooltipTextLayout.size.height + 2 * tooltipVerticalPadding
+                )
+                val tooltipLeft = (markerCenter.x - tooltipSize.width / 2).coerceIn(0f, size.width - tooltipSize.width)
+                val tooltipMarkerGap = 4.dp.toPx()
+                val tooltipAtTopClearsMarker = tooltipSize.height + tooltipMarkerGap <= markerCenter.y - markerRadius
+                val tooltipTop = if (tooltipAtTopClearsMarker) 0f else (markerCenter.y + markerRadius + tooltipMarkerGap).coerceAtMost(size.height - tooltipSize.height)
+                drawRoundRect(
+                    color = tooltipBackgroundColor,
+                    topLeft = Offset(tooltipLeft, tooltipTop),
+                    size = tooltipSize,
+                    cornerRadius = CornerRadius(4.dp.toPx())
+                )
+                drawText(
+                    textLayoutResult = tooltipTextLayout,
+                    topLeft = Offset(tooltipLeft + tooltipHorizontalPadding, tooltipTop + tooltipVerticalPadding)
+                )
+            }
         }
 
         Column(
@@ -265,6 +351,34 @@ fun CapacityGraph(
             }
         }
     }
+}
+
+private val graphLeftPadding = 24.dp
+
+private val hourMinuteFormat = LocalTime.Format {
+    hour()
+    char(':')
+    minute()
+}
+
+private data class GraphPoint(
+    val capacity: Int,
+    val createTime: Instant,
+    val fractionOfGraphWidth: Float,
+    val isPrediction: Boolean,
+)
+
+private fun List<CapacityModel>.toGraphPoints(graphStart: Instant, graphDurationMillis: Float, isPrediction: Boolean) = map { model ->
+    GraphPoint(model.capacity, model.createTime, (model.createTime - graphStart).inWholeMilliseconds / graphDurationMillis, isPrediction)
+}
+
+private fun List<GraphPoint>.nearestTo(fractionOfGraphWidth: Float) = minBy { abs(it.fractionOfGraphWidth - fractionOfGraphWidth) }
+
+@Composable
+private fun GraphPoint.selectedCapacityText(): String {
+    val time = createTime.toLocalDateTime(dutchTimeZone).time.format(hourMinuteFormat)
+    val resource = if (isPrediction) Res.plurals.graph_selected_capacity_last_week else Res.plurals.graph_selected_capacity
+    return pluralStringResource(resource, capacity, capacity, time)
 }
 
 private fun smoothPathThrough(points: List<Offset>) = Path().apply {
