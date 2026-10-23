@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="pedal_bike_600dp" translatesAutoresizingMaskIntoConstraints="NO" id="F3o-1T-uUX">
-                                <color key="tintColor" name="LaunchScreenBike"/>
+                                <color key="tintColor" name="ThemePrimary"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
@@ -40,7 +40,7 @@
     </scenes>
     <resources>
         <image name="pedal_bike_600dp" width="600" height="600"/>
-        <namedColor name="LaunchScreenBike">
+        <namedColor name="ThemePrimary">
             <color red="0.050980392156862744" green="0.27843137254901962" blue="0.63137254901960782" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemBackgroundColor">
