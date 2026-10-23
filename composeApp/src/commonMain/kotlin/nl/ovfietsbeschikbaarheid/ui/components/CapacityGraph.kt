@@ -264,7 +264,7 @@ fun CapacityGraph(
                     color = MaterialTheme.colorScheme.primary,
                     text = when {
                         shownGraphDay.isToday -> stringResource(Res.string.graph_today)
-                        else -> stringResource(Res.string.graph_this_week_day, shownGraphDay.dayFullName.lowercase())
+                        else -> stringResource(Res.string.graph_this_week_day, shownGraphDay.dayFullName)
                     }
                 )
             }
@@ -274,7 +274,7 @@ fun CapacityGraph(
                 LegendItem(
                     color = Grey40,
                     isDashed = true,
-                    text = stringResource(Res.string.graph_last_week_day, shownGraphDay.dayFullName.lowercase())
+                    text = stringResource(Res.string.graph_last_week_day, shownGraphDay.dayFullName)
                 )
             }
         }
@@ -353,7 +353,7 @@ fun CapacityGraphPreview() {
     )
     val graphDays = GraphDayModel(
         isToday = true,
-        dayFullName = "Maandag",
+        dayFullName = "maandag",
         dayShortName = "M",
         capacityHistory = data,
         capacityPrediction = prediction,

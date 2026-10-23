@@ -3,6 +3,7 @@ package nl.ovfietsbeschikbaarheid.mapper
 import co.touchlab.kermit.Logger
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.minus
@@ -14,9 +15,7 @@ import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.ext.atEndOfDayIn
 import nl.ovfietsbeschikbaarheid.ext.dutchTimeZone
 import nl.ovfietsbeschikbaarheid.ext.getServiceType
-import nl.ovfietsbeschikbaarheid.ext.toFullDayOfWeek
 import nl.ovfietsbeschikbaarheid.ext.toIsoDayNumber
-import nl.ovfietsbeschikbaarheid.ext.toNarrowDayOfWeek
 import nl.ovfietsbeschikbaarheid.ext.truncateToHour
 import nl.ovfietsbeschikbaarheid.model.AddressModel
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
@@ -143,11 +142,11 @@ class DetailsMapper() {
             // A fallback to 0 doesn't make too much sense, but this prevents a crash and empty days will be filtered out later
             val minCapacity = capacitiesPastDay.minOfOrNull { it.capacity } ?: 0
             val maxCapacity = capacitiesPastDay.maxOfOrNull { it.capacity } ?: 0
-            val dayFullName = previousDate.toFullDayOfWeek()
+            val dayFullName = getDayFullName(previousDate)
             val contentDescription = getString(Res.string.graph_previous_day_content_description, dayFullName, minCapacity, maxCapacity)
             GraphDayModel(
                 isToday = false,
-                previousDate.toNarrowDayOfWeek(),
+                getDayShortName(dayFullName),
                 dayFullName,
                 capacitiesPastDay,
                 emptyList(),
@@ -169,11 +168,11 @@ class DetailsMapper() {
             // A fallback to 0 doesn't make too much sense, but this prevents a crash and empty days will be filtered out later
             val minCapacity = capacitiesFutureDay.minOfOrNull { it.capacity } ?: 0
             val maxCapacity = capacitiesFutureDay.maxOfOrNull { it.capacity } ?: 0
-            val dayFullName = nextDay.toLocalDateTime(dutchTimeZone).date.toFullDayOfWeek()
+            val dayFullName = getDayFullName(nextDate)
             val contentDescription = getString(Res.string.graph_next_day_content_description, dayFullName, minCapacity, maxCapacity)
             GraphDayModel(
                 isToday = false,
-                nextDay.toLocalDateTime(dutchTimeZone).date.toNarrowDayOfWeek(),
+                getDayShortName(dayFullName),
                 dayFullName,
                 emptyList(),
                 capacitiesFutureDay,
@@ -223,16 +222,21 @@ class DetailsMapper() {
             maxCapacityPrediction
         )
 
+        val dayFullName = getDayFullName(nowInNL.date)
         val graphToday = GraphDayModel(
             isToday = true,
-            nowInNL.date.toNarrowDayOfWeek(),
-            nowInNL.date.toFullDayOfWeek(),
+            getDayShortName(dayFullName),
+            dayFullName,
             capacitiesToday,
             capacitiesPrediction,
             contentDescription
         )
         return graphToday
     }
+
+    private suspend fun getDayFullName(date: LocalDate) = getString(getDayName(date.dayOfWeek.toIsoDayNumber()))
+
+    private fun getDayShortName(dayFullName: String) = dayFullName.first().uppercase()
 
     private fun convertHourlyCapacities(hourlyLocationCapacityDtos: List<HourlyLocationCapacityDto>): List<CapacityModel> {
         return hourlyLocationCapacityDtos.map {
