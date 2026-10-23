@@ -11,19 +11,16 @@ import kotlin.math.sin
 
 const val WORLD_WIDTH_DP_AT_ZOOM_LEVEL_0 = 256.0
 private const val GROUPING_DISTANCE_DP = 40.0
-
-// The locations which are still grouped at this zoom level are only a few meters apart,
-// like an OV-ebike location next to an OV-fiets location. These stay grouped when zooming in further.
-private const val MAX_GROUPING_ZOOM_LEVEL = 17
+private const val LAST_SEPARATING_ZOOM_LEVEL = 17
 
 object MapMarkerMapper {
     fun getMapMarkers(locations: List<LocationOverviewModel>, zoomLevel: Int): List<MapMarker> {
-        val worldWidth = WORLD_WIDTH_DP_AT_ZOOM_LEVEL_0 * 2.0.pow(min(zoomLevel, MAX_GROUPING_ZOOM_LEVEL))
+        val worldWidth = WORLD_WIDTH_DP_AT_ZOOM_LEVEL_0 * 2.0.pow(min(zoomLevel, LAST_SEPARATING_ZOOM_LEVEL))
         return groupLocations(locations, worldWidth, emptyList())
     }
 
     fun separatesWhenZoomingIn(mapMarker: MapMarker): Boolean {
-        return getMapMarkers(mapMarker.locations, MAX_GROUPING_ZOOM_LEVEL).size > 1
+        return getMapMarkers(mapMarker.locations, LAST_SEPARATING_ZOOM_LEVEL).size > 1
     }
 
     private tailrec fun groupLocations(
