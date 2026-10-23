@@ -66,7 +66,7 @@ class MapMarkerMapperTest {
     )
 
     @Test
-    fun `the locations of a station share a marker when the whole city is shown`() {
+    fun `the locations of a station share a marker when a neighbourhood is shown`() {
         val mapMarkers = MapMarkerMapper.getMapMarkers(amsterdamCentraal, zoomLevel = 13)
 
         assertEquals(listOf(MapMarker(52.380095, 4.898784, amsterdamCentraal)), mapMarkers)
