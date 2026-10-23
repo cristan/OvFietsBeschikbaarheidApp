@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -532,25 +533,32 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
         }
 
         location.rentalBikesAvailable?.let {
-            val iconRes = if (location.type == LocationType.EBike) Res.drawable.baseline_electric_bike_24 else Res.drawable.pedal_bike_24px
-            Icon(
-                painter = painterResource(iconRes),
-                tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
-                contentDescription = null,
-                modifier = Modifier.align(Alignment.CenterVertically)
-            )
-            Box(
-                modifier = Modifier.padding(start = 8.dp),
-            ) {
+            RentalBikesAvailable(location.type) {
                 Text(text = it.toString())
-
-                // Placeholder so all numbers are left aligned. Text, so it scales when people have a larger font size
-                Text(
-                    text = "888",
-                    color = Color.Transparent
-                )
             }
         }
+    }
+}
+
+@Composable
+private fun RowScope.RentalBikesAvailable(type: LocationType, amount: @Composable () -> Unit) {
+    val iconRes = if (type == LocationType.EBike) Res.drawable.baseline_electric_bike_24 else Res.drawable.pedal_bike_24px
+    Icon(
+        painter = painterResource(iconRes),
+        tint = if (isSystemInDarkTheme()) Color.White else Color.Black,
+        contentDescription = null,
+        modifier = Modifier.align(Alignment.CenterVertically)
+    )
+    Box(
+        modifier = Modifier.padding(start = 8.dp),
+    ) {
+        amount()
+
+        // Placeholder so all numbers are left aligned. Text, so it scales when people have a larger font size
+        Text(
+            text = "888",
+            color = Color.Transparent
+        )
     }
 }
 
