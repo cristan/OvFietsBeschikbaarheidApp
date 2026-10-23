@@ -262,6 +262,9 @@ class HomeViewModel(
                 val coordinatesDeferred = async {
                     lastLoadedCoordinates ?: locationLoader.loadCurrentCoordinates()
                 }
+                if (content.value == HomeContent.Loading && !overviewData.isCompleted) {
+                    showCachedLocations()
+                }
                 Logger.d("awaitAndShowLocationsWithDistance: awaiting locations")
                 val loadedOverviewData = overviewData.await()
                 pricePer24Hours.value = loadedOverviewData.pricePer24Hours
@@ -304,5 +307,12 @@ class HomeViewModel(
                 content.value = HomeContent.NetworkError
             }
         }
+    }
+
+    private suspend fun showCachedLocations() {
+        val cachedLocations = overviewRepository.getCachedLocationsWithoutCapacities() ?: return
+        val lastKnownCoordinates = locationLoader.getLastKnownCoordinates() ?: return
+        Logger.d("showCachedLocations: using cached locations and last known coordinates")
+        content.value = HomeContent.LoadingWithCachedLocations(locationsMapper.withDistance(cachedLocations, lastKnownCoordinates))
     }
 }

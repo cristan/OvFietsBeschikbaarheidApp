@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import dev.jordond.compass.geolocation.Locator
 import dev.jordond.compass.geolocation.mobile.mobile
 import kotlinx.cinterop.ExperimentalForeignApi
+import nl.ovfietsbeschikbaarheid.repository.LocationsCacheRepository
 import nl.ovfietsbeschikbaarheid.util.DecimalFormatter
 import nl.ovfietsbeschikbaarheid.util.IOSLocationLoader
 import nl.ovfietsbeschikbaarheid.util.IOSPlatformLocationHelper
@@ -14,10 +15,12 @@ import nl.ovfietsbeschikbaarheid.util.IosInAppReviewProvider
 import nl.ovfietsbeschikbaarheid.util.LocationLoader
 import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import nl.ovfietsbeschikbaarheid.util.PlatformLocationHelper
+import okio.Path
 import okio.Path.Companion.toPath
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+import platform.Foundation.NSCachesDirectory
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
@@ -32,6 +35,7 @@ fun iosAppModule() = module {
 
 fun iosOnlyModule() = module {
     single { createIosDataStore() }
+    single { LocationsCacheRepository(getIosCachesDirectory()) }
     single<Locator> { Locator.mobile() }
     single<InAppReviewProvider> { IosInAppReviewProvider(get()) }
     factoryOf<PlatformLocationHelper>(::IOSPlatformLocationHelper)
@@ -54,3 +58,15 @@ fun createIosDataStore(): DataStore<Preferences> =
             (requireNotNull(documentDirectory).path + "/settings.preferences_pb").toPath()
         }
     )
+
+@OptIn(ExperimentalForeignApi::class)
+private fun getIosCachesDirectory(): Path {
+    val cachesDirectory: NSURL? = NSFileManager.defaultManager.URLForDirectory(
+        directory = NSCachesDirectory,
+        inDomain = NSUserDomainMask,
+        appropriateForURL = null,
+        create = false,
+        error = null,
+    )
+    return requireNotNull(cachesDirectory?.path).toPath()
+}

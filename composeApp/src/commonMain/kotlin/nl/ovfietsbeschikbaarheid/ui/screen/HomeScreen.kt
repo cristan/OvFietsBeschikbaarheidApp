@@ -51,6 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.valentinilk.shimmer.Shimmer
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import kotlinx.datetime.toLocalDateTime
@@ -190,6 +191,10 @@ private fun HomeView(
                         Loading()
                     }
 
+                    is HomeContent.LoadingWithCachedLocations -> {
+                        LoadingWithCachedLocations(screen, onLocationClick)
+                    }
+
                     HomeContent.NetworkError -> {
                         FullPageError(onClick = onRetryClick)
                     }
@@ -292,6 +297,29 @@ private fun Loading() {
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun LoadingWithCachedLocations(
+    content: HomeContent.LoadingWithCachedLocations,
+    onLocationClick: (LocationOverviewModel) -> Unit
+) {
+    val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
+    LazyColumn {
+        item {
+            HorizontalBar(stringResource(Res.string.home_nearby))
+        }
+        items(content.locations) { location ->
+            LocationCard(location.location, location.distance, capacityShimmer = shimmerInstance) {
+                onLocationClick(location.location)
+            }
+        }
+        item {
+            Spacer(
+                Modifier.windowInsetsBottomHeight(WindowInsets.systemBars)
+            )
         }
     }
 }
@@ -461,7 +489,7 @@ private fun SearchField(
 }
 
 @Composable
-fun LocationCard(location: LocationOverviewModel, distance: String? = null, onClick: () -> Unit) {
+fun LocationCard(location: LocationOverviewModel, distance: String? = null, capacityShimmer: Shimmer? = null, onClick: () -> Unit) {
     val openState = if (location.openingHours == null) null else OpenStateMapper.getOpenState(
         location.locationCode, location.openingHours, Clock.System.now().toLocalDateTime(dutchTimeZone)
     )
@@ -532,9 +560,20 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
             }
         }
 
-        location.rentalBikesAvailable?.let {
+        if (capacityShimmer != null) {
             RentalBikesAvailable(location.type) {
-                Text(text = it.toString())
+                Box(
+                    Modifier
+                        .size(width = 24.dp, height = 20.dp)
+                        .padding(top = 4.dp)
+                        .shimmerShape(capacityShimmer)
+                )
+            }
+        } else {
+            location.rentalBikesAvailable?.let {
+                RentalBikesAvailable(location.type) {
+                    Text(text = it.toString())
+                }
             }
         }
     }
@@ -642,6 +681,28 @@ fun NoGpsPreview() {
 @Composable
 fun LoadingPreview() {
     TestHomeView("", HomeContent.Loading)
+}
+
+@Preview
+@Composable
+fun LoadingWithCachedLocationsPreview() {
+    val locations = listOf(
+        LocationOverviewWithDistanceModel(
+            "800 m",
+            TestData.testLocationOverviewModel.copy(
+                title = "Amsterdam Zuid Mahlerplein",
+                rentalBikesAvailable = null
+            )
+        ),
+        LocationOverviewWithDistanceModel(
+            "1,1 km",
+            TestData.testLocationOverviewModel.copy(
+                title = "Amsterdam Zuid Zuidplein",
+                rentalBikesAvailable = null
+            )
+        ),
+    )
+    TestHomeView("", HomeContent.LoadingWithCachedLocations(locations))
 }
 
 @Preview

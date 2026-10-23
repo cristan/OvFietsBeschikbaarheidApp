@@ -51,6 +51,10 @@ class LocationsMapper(
         }.sortedBy { it.title }
     }
 
+    fun mapWithoutCapacities(locations: List<LocationDTO>): List<LocationOverviewModel> {
+        return locations.map { toLocationOverviewModel(it, rentalBikesAvailable = null) }.sortedBy { it.title }
+    }
+
     private fun toLocationOverviewModel(location: LocationDTO, rentalBikesAvailable: Int?): LocationOverviewModel {
         val description = replacements[location.description] ?: location.description
         return LocationOverviewModel(
