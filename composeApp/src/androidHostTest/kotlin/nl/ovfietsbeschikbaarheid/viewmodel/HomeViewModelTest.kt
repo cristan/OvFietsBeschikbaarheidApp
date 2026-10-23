@@ -434,6 +434,47 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun `reading the cached locations doesn't hold up the current capacities`() = runTest {
+        stubGpsOk()
+        stubLocationsOk(delay = 500L)
+        coEvery { overviewRepository.getCachedLocationsWithoutCapacities() } coAnswers {
+            delay(2000L)
+            locationsMapper.mapWithoutCapacities(locationsResponse)
+        }
+        coEvery { locationLoader.getLastKnownCoordinates() } returns amsterdamCentraal
+
+        viewModel.onScreenLaunched()
+
+        advanceTimeBy(600L)
+        assertIs<HomeContent.GpsContent>(viewModel.content.value)
+
+        advanceTimeBy(2000L)
+        assertIs<HomeContent.GpsContent>(viewModel.content.value)
+    }
+
+    @Test
+    fun `reading the cached locations doesn't hide a network error`() = runTest {
+        stubGpsOk()
+        coEvery { overviewRepository.getOverviewData() } coAnswers {
+            delay(100L)
+            throw UnknownHostException()
+        }
+        coEvery { overviewRepository.getCachedLocationsWithoutCapacities() } coAnswers {
+            delay(2000L)
+            locationsMapper.mapWithoutCapacities(locationsResponse)
+        }
+        coEvery { locationLoader.getLastKnownCoordinates() } returns amsterdamCentraal
+
+        viewModel.onScreenLaunched()
+
+        advanceTimeBy(200L)
+        viewModel.content.value shouldBeEqualTo HomeContent.NetworkError
+
+        advanceTimeBy(2000L)
+        viewModel.content.value shouldBeEqualTo HomeContent.NetworkError
+    }
+
+    @Test
     fun `cached locations aren't shown without last known coordinates`() = runTest {
         stubGpsOk()
         stubLocationsOk(delay = 1000L)

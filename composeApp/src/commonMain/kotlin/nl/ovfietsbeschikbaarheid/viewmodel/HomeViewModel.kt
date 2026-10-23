@@ -262,11 +262,17 @@ class HomeViewModel(
                 val coordinatesDeferred = async {
                     lastLoadedCoordinates ?: locationLoader.loadCurrentCoordinates()
                 }
-                if (content.value == HomeContent.Loading && !overviewData.isCompleted) {
-                    showCachedLocations()
+                val showCachedLocationsJob = if (content.value == HomeContent.Loading && !overviewData.isCompleted) {
+                    launch { showCachedLocations() }
+                } else {
+                    null
                 }
                 Logger.d("awaitAndShowLocationsWithDistance: awaiting locations")
-                val loadedOverviewData = overviewData.await()
+                val loadedOverviewData = try {
+                    overviewData.await()
+                } finally {
+                    showCachedLocationsJob?.cancel()
+                }
                 pricePer24Hours.value = loadedOverviewData.pricePer24Hours
 
                 // The locations have loaded. When we're not already showing locations by distance...
