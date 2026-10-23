@@ -9,6 +9,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.viewinterop.UIKitInteropInteractionMode
 import androidx.compose.ui.viewinterop.UIKitInteropProperties
 import androidx.compose.ui.viewinterop.UIKitView
@@ -44,7 +46,6 @@ import platform.UIKit.NSLayoutConstraint
 import platform.UIKit.UIColor
 import platform.UIKit.UIEdgeInsetsMake
 import platform.UIKit.UIImage
-import platform.UIKit.UIScreen
 import platform.UIKit.systemBackgroundColor
 import platform.darwin.NSObject
 import kotlin.math.log2
@@ -64,9 +65,11 @@ actual fun NativeLocationsMap(
 ) {
     var visibleMapRect by rememberSaveable { mutableStateOf<List<Double>?>(null) }
     val currentOnLocationsClick by rememberUpdatedState(onLocationsClick)
+    val windowWidth = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.width.toDp().value.toDouble() }
     val mapViewDelegate = remember {
         LocationsMapViewDelegate(
             locations = locations,
+            windowWidth = windowWidth,
             centersOnFirstUserLocation = visibleMapRect == null && userCoordinates == null,
             onVisibleMapRectChanged = { visibleMapRect = it },
             onLocationsClick = { currentOnLocationsClick(it) },
@@ -80,8 +83,8 @@ actual fun NativeLocationsMap(
                 setShowsUserLocation(showsUserLocation)
                 setVisibleMapRect(
                     visibleMapRect?.let { MKMapRectMake(it[0], it[1], it[2], it[3]) }
-                        ?: userCoordinates?.let { mapRectAround(it, NEIGHBOURHOOD_ZOOM_LEVEL) }
-                        ?: mapRectAround(centerOfTheNetherlands, THE_NETHERLANDS_ZOOM_LEVEL)
+                        ?: userCoordinates?.let { mapRectAround(it, NEIGHBOURHOOD_ZOOM_LEVEL, windowWidth) }
+                        ?: mapRectAround(centerOfTheNetherlands, THE_NETHERLANDS_ZOOM_LEVEL, windowWidth)
                 )
                 if (showsUserLocation) {
                     addUserTrackingButton()
@@ -98,9 +101,8 @@ actual fun NativeLocationsMap(
 }
 
 @OptIn(ExperimentalForeignApi::class)
-private fun mapRectAround(center: Coordinates, zoomLevel: Float): CValue<MKMapRect> {
-    val screenWidth = UIScreen.mainScreen.bounds.useContents { size.width }
-    val width = MKMapSizeWorld.width * screenWidth / (WORLD_WIDTH_DP_AT_ZOOM_LEVEL_0 * 2.0.pow(zoomLevel.toDouble()))
+private fun mapRectAround(center: Coordinates, zoomLevel: Float, viewWidth: Double): CValue<MKMapRect> {
+    val width = MKMapSizeWorld.width * viewWidth / (WORLD_WIDTH_DP_AT_ZOOM_LEVEL_0 * 2.0.pow(zoomLevel.toDouble()))
     return MKMapPointForCoordinate(CLLocationCoordinate2DMake(center.latitude, center.longitude)).useContents {
         MKMapRectMake(x - width / 2, y - width / 2, width, width)
     }
@@ -147,6 +149,7 @@ private class MapMarkerAnnotation(val mapMarker: MapMarker) : MKPointAnnotation(
 @OptIn(ExperimentalForeignApi::class)
 private class LocationsMapViewDelegate(
     private var locations: List<LocationOverviewModel>,
+    private val windowWidth: Double,
     private var centersOnFirstUserLocation: Boolean,
     private val onVisibleMapRectChanged: (List<Double>) -> Unit,
     private val onLocationsClick: (List<LocationOverviewModel>) -> Unit,
@@ -179,7 +182,7 @@ private class LocationsMapViewDelegate(
         centersOnFirstUserLocation = false
         val userCoordinates = didUpdateUserLocation.coordinate.useContents { Coordinates(latitude, longitude) }
         if (userCoordinates.isInTheNetherlands()) {
-            mapView.setVisibleMapRect(mapRectAround(userCoordinates, NEIGHBOURHOOD_ZOOM_LEVEL), animated = true)
+            mapView.setVisibleMapRect(mapRectAround(userCoordinates, NEIGHBOURHOOD_ZOOM_LEVEL, windowWidth), animated = true)
         }
     }
 
