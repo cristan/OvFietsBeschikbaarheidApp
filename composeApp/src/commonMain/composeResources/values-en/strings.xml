@@ -1,0 +1,102 @@
+<resources>
+    <string name="content_description_back">Back</string>
+    <string name="content_description_clear_location">Clear location</string>
+    <string name="content_description_navigate">Get directions</string>
+
+    <string name="full_page_error_title">Couldn't load the data</string>
+    <string name="full_page_error_text">Check your connection and try again.</string>
+    <string name="full_page_error_retry">Try again</string>
+
+    <string name="update_required_title">Update required</string>
+    <string name="update_required_text">This version of the app no longer works. Update the app to see OV-fiets availability again.</string>
+    <string name="update_required_button">Update</string>
+
+    <string name="about_title">Info</string>
+    <string name="about_ov_fiets_title">Renting an OV-fiets</string>
+    <string name="about_ov_fiets_text_1_with_amount">Rent an OV-fiets at more than 300 locations for €%1$s per 24 hours.\u0020</string>
+    <string name="about_ov_fiets_text_1_without_amount">Rent an OV-fiets at more than 300 locations.\u0020</string>
+    <string name="about_ov_fiets_text_2">All you need is a free subscription on your OV-chipkaart, which you can activate at\u0020</string>
+    <string name="about_ov_fiets_url">https://ns.nl/en/ov-fiets</string>
+    <string name="about_ov_fiets_url_text">ns.nl/en/ov-fiets</string>
+    <string name="about_ov_fiets_text_3">.\n\nYou can rent up to 2 bikes with 1 subscription.</string>
+
+    <string name="about_lock_title">Using the lock</string>
+    <string name="about_lock_text_1">At most locations, your OV-chipkaart is the key. You'll find instructions on the luggage rack or at\u0020</string>
+    <string name="about_lock_url">https://www.ns.nl/en/service-and-contact/door-to-door-services/ov-fiets/lock</string>
+    <string name="about_lock_url_text">ns.nl</string>
+    <string name="about_lock_text_2">.</string>
+
+    <string name="about_app_title">About this app</string>
+    <string name="about_app_text_1">This app wasn't developed by NS and is open source: the source code is\u0020</string>
+    <string name="about_app_text_1_on_github">on GitHub</string>
+    <string name="about_app_text_2">. The data comes from OpenOV. The map icon was made by\u0020</string>
+    <string name="about_app_text_3">brgfx on Freepik</string>
+    <string name="about_app_text_4">.</string>
+    <string name="about_app_text_5">Feedback? Happy with the app? Leave a review\u0020</string>
+    <string name="about_app_text_6">on Google Play</string>
+    <string name="about_app_text_6_ios">on the App Store</string>
+    <string name="about_app_text_7">\u0020🙂</string>
+
+    <string name="gps_rationale_initial_button">OV-fiets locations near you</string>
+    <string name="gps_rationale_denied_rationale">Permission is needed to show OV-fiets locations near you</string>
+    <string name="gps_rationale_denied_button">Grant permission</string>
+    <string name="gps_rationale_denied_permanently_rationale">Permission is needed to show OV-fiets locations near you. You can grant it in the app settings.</string>
+    <string name="gps_rationale_denied_permanently_button">Open app settings</string>
+    <string name="gps_off_rationale">GPS is needed to show OV-fiets locations near you</string>
+    <string name="gps_off_button">Turn on GPS</string>
+
+    <string name="loading">Loading</string>
+
+    <string name="home_nearby">Near you</string>
+    <string name="home_search_label">Location</string>
+
+    <string name="home_no_search_results_for">No results for "%1$s"</string>
+    <string name="home_search_results_for">Near "%1$s"</string>
+    <string name="home_no_gps_location">Couldn't find your location</string>
+
+    <string name="details_amount_available">Bikes available</string>
+    <string name="details_amount_unknown">Unknown</string>
+    <string name="details_capacity">Capacity: %1$d</string>
+    <string name="details_coordinates">Coordinates: %1$d, %2$d</string>
+
+    <string name="details_no_data_title">No data</string>
+    <string name="details_no_data_message">No data received for %1$s since %2$s.</string>
+
+    <string name="details_alternatives_at">Also at %1$s</string>
+    <string name="details_alternatives_at_this_location">Also at this location</string>
+
+    <string name="graph_today">Today</string>
+    <string name="graph_this_week_day">%1$s this week</string>
+    <string name="graph_last_week_day">%1$s last week</string>
+    <string name="graph_previous_day_content_description">%1$s this week: at least %2$d and at most %3$d bikes</string>
+    <string name="graph_today_content_description">Today: at least %1$d and at most %2$d bikes. For the rest of the day, based on last week: at least %3$d and at most %4$d bikes.</string>
+    <string name="graph_next_day_content_description">%1$s last week: at least %2$d and at most %3$d bikes</string>
+
+    <string name="map_available">%1$s available</string>
+
+    <string name="open_state_closed">Closed</string>
+    <string name="open_state_opens_today_at">• Opens at %1$s</string>
+    <string name="open_state_opens_later_at">• Opens %1$s at %2$s</string>
+    <string name="open_state_closing_soon">Closing soon</string>
+    <string name="open_state_closes_at">• Closes at %1$s</string>
+    <string name="open_until">Open until %1$s</string>
+    <string name="open_state_open_247">Open 24/7</string>
+    <string name="capacity_graph_title">Availability</string>
+    <string name="location_title">Location</string>
+    <string name="opening_hours_title">Opening hours</string>
+
+    <string name="service_type_manned">Staffed</string>
+    <string name="service_type_lockers">Lockers</string>
+    <string name="service_type_box">Box</string>
+    <string name="service_type_key_box">Key dispenser</string>
+    <string name="service_type_key_selfservice">Self-service</string>
+
+    <string name="day_1">Monday</string>
+    <string name="day_2">Tuesday</string>
+    <string name="day_3">Wednesday</string>
+    <string name="day_4">Thursday</string>
+    <string name="day_5">Friday</string>
+    <string name="day_6">Saturday</string>
+    <string name="day_7">Sunday</string>
+    <string name="day_tomorrow">tomorrow</string>
+</resources>
