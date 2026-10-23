@@ -184,15 +184,8 @@ fun CapacityGraph(
                     Offset(x, y)
                 }
 
-                val path = Path().apply {
-                    moveTo(points.first().x, points.first().y)
-                    for (pt in points) {
-                        lineTo(pt.x, pt.y)
-                    }
-                }
-
                 drawPath(
-                    path = path,
+                    path = smoothPathThrough(points),
                     color = primaryColor,
                     style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round)
                 )
@@ -207,18 +200,11 @@ fun CapacityGraph(
                     Offset(x, y)
                 }
 
-                val predictionPath = Path().apply {
-                    moveTo(predictionPoints.first().x, predictionPoints.first().y)
-                    for (pt in predictionPoints) {
-                        lineTo(pt.x, pt.y)
-                    }
-                }
-
                 val dashLength = 4.dp.toPx()
                 val gapLength = 12.dp.toPx()
 
                 drawPath(
-                    path = predictionPath,
+                    path = smoothPathThrough(predictionPoints),
                     color = Grey40,
                     style = Stroke(
                         width = 4.dp.toPx(),
@@ -278,6 +264,15 @@ fun CapacityGraph(
                 )
             }
         }
+    }
+}
+
+private fun smoothPathThrough(points: List<Offset>) = Path().apply {
+    moveTo(points.first().x, points.first().y)
+    // A zero-length line, so the round stroke cap draws a lone point as a dot
+    lineTo(points.first().x, points.first().y)
+    monotoneCubicSegments(points).forEach { segment ->
+        cubicTo(segment.control1.x, segment.control1.y, segment.control2.x, segment.control2.y, segment.end.x, segment.end.y)
     }
 }
 
