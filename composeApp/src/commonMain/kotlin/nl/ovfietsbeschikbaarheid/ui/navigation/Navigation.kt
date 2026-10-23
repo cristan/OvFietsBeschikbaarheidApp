@@ -17,6 +17,7 @@ import kotlinx.serialization.modules.polymorphic
 import nl.ovfietsbeschikbaarheid.ui.screen.AboutScreen
 import nl.ovfietsbeschikbaarheid.ui.screen.DetailScreen
 import nl.ovfietsbeschikbaarheid.ui.screen.HomeScreen
+import nl.ovfietsbeschikbaarheid.ui.screen.LocationsMapScreen
 
 @Serializable
 object Home: NavKey
@@ -27,12 +28,16 @@ data class Details(val title: String, val locationCode: String, val fetchTime: L
 @Serializable
 data class About(val pricePer24Hours: String?): NavKey
 
+@Serializable
+object LocationsMap: NavKey
+
 private val config = SavedStateConfiguration {
     serializersModule = SerializersModule {
         polymorphic(NavKey::class) {
             subclass(Home::class, Home.serializer())
             subclass(Details::class, Details.serializer())
             subclass(About::class, About.serializer())
+            subclass(LocationsMap::class, LocationsMap.serializer())
         }
     }
 }
@@ -63,6 +68,9 @@ fun Navigation() {
                         onInfoClicked = { pricePer24Hours ->
                             backStack.add(About(pricePer24Hours))
                         },
+                        onMapClicked = {
+                            backStack.add(LocationsMap)
+                        },
                         onLocationClick = {
                             backStack.add(Details(it.title, it.locationCode, it.fetchTime))
                         }
@@ -76,7 +84,7 @@ fun Navigation() {
                             backStack.add(Details(alternative.title, alternative.locationCode, alternative.fetchTime))
                         },
                         onBackClicked = {
-                            backStack.removeAll { it != Home }
+                            backStack.removeAll { it is Details }
                         }
                     )
                 }
@@ -84,6 +92,17 @@ fun Navigation() {
                 is About -> NavEntry(key) {
                     AboutScreen(
                         pricePer24Hours = key.pricePer24Hours,
+                        onBackClicked = {
+                            backStack.removeAll { it != Home }
+                        }
+                    )
+                }
+
+                is LocationsMap -> NavEntry(key) {
+                    LocationsMapScreen(
+                        onLocationClick = {
+                            backStack.add(Details(it.title, it.locationCode, it.fetchTime))
+                        },
                         onBackClicked = {
                             backStack.removeAll { it != Home }
                         }

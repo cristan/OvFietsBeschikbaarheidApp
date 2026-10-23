@@ -71,6 +71,8 @@
     <string name="graph_next_day_content_description">Vorige week %1$s: minimaal %2$d en maximaal %3$d OV-fietsen</string>
 
     <string name="map_available">%1$s beschikbaar</string>
+    <string name="map_title">Kaart</string>
+    <string name="map_location_details">Meer details</string>
 
     <string name="open_state_closed">Gesloten</string>
     <string name="open_state_opens_today_at">• Gaat open om %1$s</string>
