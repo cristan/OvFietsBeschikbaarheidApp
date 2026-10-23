@@ -487,17 +487,20 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `cached locations aren't shown when the current capacities are already loaded`() = runTest {
+    fun `clearing the search after the current capacities loaded doesn't read the cached locations again`() = runTest {
         coEvery { overviewRepository.getCachedLocationsWithoutCapacities() } returns locationsMapper.mapWithoutCapacities(locationsResponse)
         coEvery { locationLoader.getLastKnownCoordinates() } returns amsterdamCentraal
         coEvery { findNearbyLocationsUseCase.invoke(any(), any()) } returns null // We're not testing nearby locations here
-        launchWithEverythingOk()
+        stubGpsOk()
+        stubLocationsOk(delay = 1000L)
+        viewModel.onScreenLaunched()
+        advanceTimeBy(1100L)
 
         viewModel.onSearchTermChanged("a")
         viewModel.onSearchTermChanged("")
 
         assertIs<HomeContent.GpsContent>(viewModel.content.value)
-        coVerify(exactly = 0) { overviewRepository.getCachedLocationsWithoutCapacities() }
+        coVerify(exactly = 1) { overviewRepository.getCachedLocationsWithoutCapacities() }
     }
 
     @Test
