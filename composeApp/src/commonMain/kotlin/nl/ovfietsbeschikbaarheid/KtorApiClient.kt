@@ -166,7 +166,7 @@ class KtorApiClient(
                 }
             }
         }
-        httpClient.post("https://firestore.googleapis.com/v1/$FIRESTORE_DOCUMENTS_PATH:commit") {
+        httpClient.post("http://localhost:8086/v1/$FIRESTORE_DOCUMENTS_PATH:commit") {
             contentType(ContentType.Application.Json)
             setBody(body)
         }
@@ -186,7 +186,7 @@ class KtorApiClient(
                 }
             }
         }
-        httpClient.post("https://firestore.googleapis.com/v1/$FIRESTORE_DOCUMENTS_PATH/warnings") {
+        httpClient.post("http://localhost:8086/v1/$FIRESTORE_DOCUMENTS_PATH/warnings") {
             parameter("documentId", randomDocumentId())
             contentType(ContentType.Application.Json)
             setBody(body)
