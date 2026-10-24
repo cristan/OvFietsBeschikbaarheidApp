@@ -9,30 +9,14 @@ class OverviewRepository(
     private val locationsMapper: LocationsMapper,
     private val httpClient: KtorApiClient
 ) {
-    private var lastResult: OverviewDataModel? = null
-
-    /**
-     * Returns the last cached result.
-     * In the off chance there is no cached result (which should only happen if the app ran out of memory),
-     * the data is loaded again. This will throw an exception when there is no internet for example.
-     */
-    suspend fun getCachedOrLoad(): OverviewDataModel {
-        lastResult?.let {
-            return it
-        }
-        return getOverviewData()
-    }
-
     suspend fun getOverviewData(): OverviewDataModel {
         val locations = httpClient.getLocations()
         val mappedLocations = locationsMapper.map(locations)
         val pricePer24Hours = locationsMapper.getPricePer24Hours(locations)
-        val result = OverviewDataModel(
+        return OverviewDataModel(
             locations = mappedLocations,
             pricePer24Hours = pricePer24Hours,
         )
-        lastResult = result
-        return result
     }
 
     fun filterLocations(allLocations: List<LocationOverviewModel>, searchTerm: String): List<LocationOverviewModel> {
