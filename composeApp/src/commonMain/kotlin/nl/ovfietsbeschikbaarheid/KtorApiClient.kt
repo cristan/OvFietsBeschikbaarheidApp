@@ -3,18 +3,17 @@ package nl.ovfietsbeschikbaarheid
 import co.touchlab.kermit.Logger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
-import io.ktor.client.request.header
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.serialization.json.Json
 import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
-import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
+import nl.ovfietsbeschikbaarheid.dto.LocationHistoryDTO
 import nl.ovfietsbeschikbaarheid.repository.APP_COMPATIBILITY
 import nl.ovfietsbeschikbaarheid.repository.AppCompatibilityRepository
 import kotlin.time.measureTimedValue
@@ -69,67 +68,23 @@ class KtorApiClient(
         return result.body<DetailsDTO>()
     }
 
-    suspend fun getHistory(code: String, startDate: String): List<HourlyLocationCapacityDto> {
-        Logger.i("Loading the history of $code since $startDate")
-        val body = """
-        {
-            "structuredQuery": {
-                "from": [
-                    {
-                        "collectionId": "hourly_location_capacity"
-                    }
-                ],
-                "select": {
-                    "fields": [
-                        {
-                            "fieldPath": "hour"
-                        },
-                        {
-                            "fieldPath": "first"
-                        }
-                    ]
-                },
-               "where": {
-                    "compositeFilter": {
-                        "op": "AND",
-                        "filters": [
-                            {
-                                "fieldFilter": {
-                                    "field": {
-                                        "fieldPath": "code"
-                                    },
-                                    "op": "EQUAL",
-                                    "value": {
-                                        "stringValue": "$code"
-                                    }
-                                }
-                            },
-                            {
-                                "fieldFilter": {
-                                    "field": {
-                                        "fieldPath": "timestamp"
-                                    },
-                                    "op": "GREATER_THAN_OR_EQUAL",
-                                    "value": {
-                                        "timestampValue": "$startDate"
-                                    }
-                                }
-                            }
-                        ]
-                    }
-                }
+    suspend fun getLocationHistory(locationCode: String): LocationHistoryDTO? = getHistoryFile("history/$locationCode.json")
+
+    suspend fun getRecentHistory(): Map<String, LocationHistoryDTO>? = getHistoryFile("recent_history.json")
+
+    private suspend inline fun <reified T> getHistoryFile(fileName: String): T? {
+        Logger.i("Loading $fileName")
+        return try {
+            val (history, timeTaken) = measureTimedValue {
+                httpClient.get("https://storage.googleapis.com/ov-fiets-updates/$fileName").body<T>()
             }
+            Logger.d("Loaded $fileName in $timeTaken")
+            history
+        } catch (e: ClientRequestException) {
+            if (e.response.status != HttpStatusCode.NotFound) throw e
+            Logger.w("$fileName doesn't exist")
+            null
         }
-        """.trimIndent()
-        val (history, timeTaken) = measureTimedValue {
-            val result = httpClient.post("https://firestore.googleapis.com/v1/projects/ov-fiets-app-427721/databases/(default)/documents:runQuery") {
-                header("Content-Type", "application/json")
-                setBody(body)
-            }
-            result.body<List<HourlyLocationCapacityDto>>()
-        }
-        Logger.d("Loaded the history of $code since $startDate in $timeTaken")
-        return history
     }
 
     fun close() {

@@ -10,19 +10,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.LocalTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.format
-import kotlinx.datetime.format.char
-import kotlinx.datetime.minus
-import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.io.IOException
 import nl.ovfietsbeschikbaarheid.KtorApiClient
-import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
 import nl.ovfietsbeschikbaarheid.ext.dutchTimeZone
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
@@ -96,21 +86,11 @@ class DetailsViewModel(
                     val allStationsDeferred = async {
                         stationRepository.getAllStations()
                     }
-                    val historyDeferred = async {
-                        val customFormat = LocalDateTime.Format {
-                            date(LocalDate.Formats.ISO)
-                            char('T')
-                            time(LocalTime.Formats.ISO)
-                            char('Z')
-                        }
-
-                        val startDate = Clock.System.now()
-                            .minus(7, DateTimeUnit.DAY, dutchTimeZone)
-                            .toLocalDateTime(dutchTimeZone).atStartOfDay()
-                            .toInstant(dutchTimeZone).toLocalDateTime(TimeZone.UTC)
-                            .format(customFormat)
-
-                        client.getHistory(data.locationCode, startDate)
+                    val locationHistoryDeferred = async {
+                        client.getLocationHistory(data.locationCode)
+                    }
+                    val recentHistoryDeferred = async {
+                        client.getRecentHistory()
                     }
 
                     val details = detailsDeferred.await()
@@ -128,7 +108,8 @@ class DetailsViewModel(
                         details,
                         allLocationsDeferred.await().locations,
                         allStationsDeferred.await(),
-                        historyDeferred.await()
+                        locationHistoryDeferred.await(),
+                        recentHistoryDeferred.await()?.get(data.locationCode)
                     )
                     val timeElapsed = Clock.System.now().toEpochMilliseconds() - before
                     if (timeElapsed < minDelay) {
