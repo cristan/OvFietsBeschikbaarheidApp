@@ -1,0 +1,70 @@
+:root {
+    --blue: #0D47A1;
+    --dark-blue: #072A5E;
+    --yellow: #FFEB3B;
+    --bezel: #121418;
+    --height: 2688px;
+    --headline-margin: 88px;
+    --phone-width: 1066px;
+    --phone-top: 600px;
+    --bezel-width: calc(var(--phone-width) * 0.026);
+    --camera-top: calc(var(--bezel-width) + var(--phone-width) * 0.027);
+    --camera-width: calc(var(--phone-width) * 0.28);
+    --camera-height: calc(var(--phone-width) * 0.082);
+}
+
+body {
+    position: relative;
+    width: 1242px;
+    height: var(--height);
+    margin: 0;
+    overflow: hidden;
+    background: linear-gradient(var(--blue), var(--dark-blue));
+    font-family: 'Bricolage Grotesque', sans-serif;
+}
+
+h1 {
+    position: absolute;
+    left: var(--headline-margin);
+    right: var(--headline-margin);
+    bottom: calc(var(--height) - var(--phone-top) + var(--headline-margin) * 0.8);
+    margin: 0;
+    color: var(--yellow);
+    font-size: 136px;
+    font-weight: 700;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+
+.phone-frame {
+    position: absolute;
+    top: var(--phone-top);
+    left: calc((100% - var(--phone-width)) / 2);
+    width: var(--phone-width);
+    padding: var(--bezel-width);
+    box-sizing: border-box;
+    border-radius: calc(var(--phone-width) * 0.13);
+    background: var(--bezel);
+    box-shadow:
+        inset 0 0 0 calc(var(--bezel-width) * 0.2) #2E323A,
+        0 60px 140px rgb(0 10 40 / 0.45);
+}
+
+.phone-frame img {
+    display: block;
+    width: 100%;
+    border-radius: calc(var(--phone-width) * 0.105);
+}
+
+.phone-frame::after {
+    content: '';
+    position: absolute;
+    top: var(--camera-top);
+    left: 50%;
+    translate: -50% 0;
+    width: var(--camera-width);
+    height: var(--camera-height);
+    border-radius: calc(var(--camera-height) / 2);
+    background: var(--bezel);
+}
