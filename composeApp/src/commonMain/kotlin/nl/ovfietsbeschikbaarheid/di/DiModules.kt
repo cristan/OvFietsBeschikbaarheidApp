@@ -12,6 +12,7 @@ import nl.ovfietsbeschikbaarheid.repository.RatingStorageRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
 import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
+import nl.ovfietsbeschikbaarheid.util.UsageStatisticsSender
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
 import org.koin.core.module.dsl.factoryOf
@@ -29,6 +30,7 @@ fun commonModule() = module {
     singleOf(::OverviewRepository)
     singleOf(::StationRepository)
     singleOf(::DetailsRepository)
+    singleOf(::UsageStatisticsSender)
     factoryOf(::DetailsMapper)
     factoryOf(::LocationsMapper)
     factoryOf(::FindNearbyLocationsUseCase)

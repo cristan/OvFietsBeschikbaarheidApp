@@ -5,6 +5,7 @@ import nl.ovfietsbeschikbaarheid.di.androidAppModule
 import nl.ovfietsbeschikbaarheid.ext.createActivityLifecycleObserver
 import nl.ovfietsbeschikbaarheid.util.AndroidInAppReviewProvider
 import nl.ovfietsbeschikbaarheid.util.AndroidPlatformLocationHelper
+import nl.ovfietsbeschikbaarheid.util.UsageStatisticsSender
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -15,6 +16,9 @@ class MyApplication : Application() {
         super.onCreate()
 
         setUpKoin()
+
+        val usageStatisticsSender: UsageStatisticsSender by inject()
+        usageStatisticsSender.onAppStarted()
 
         val locationHelper: AndroidPlatformLocationHelper by inject()
         val androidInAppReviewProvider: AndroidInAppReviewProvider by inject()

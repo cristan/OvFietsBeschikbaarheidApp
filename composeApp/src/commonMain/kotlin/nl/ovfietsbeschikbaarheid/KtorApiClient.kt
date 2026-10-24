@@ -9,15 +9,24 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.addJsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonArray
+import kotlinx.serialization.json.putJsonObject
 import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
 import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.repository.APP_COMPATIBILITY
 import nl.ovfietsbeschikbaarheid.repository.AppCompatibilityRepository
 import kotlin.time.measureTimedValue
+
+private const val FIRESTORE_DOCUMENTS_PATH = "projects/ov-fiets-app-427721/databases/(default)/documents"
 
 class KtorApiClient(
     private val appCompatibilityRepository: AppCompatibilityRepository
@@ -130,6 +139,34 @@ class KtorApiClient(
         }
         Logger.d("Loaded the history of $code since $startDate in $timeTaken")
         return history
+    }
+
+    suspend fun incrementUsageCount(usageCountId: String) {
+        val body = buildJsonObject {
+            putJsonArray("writes") {
+                addJsonObject {
+                    putJsonObject("update") {
+                        put("name", "$FIRESTORE_DOCUMENTS_PATH/usage_counts/$usageCountId")
+                    }
+                    // Without the empty mask, the update would replace the document and reset the count to 1
+                    putJsonObject("updateMask") {
+                        putJsonArray("fieldPaths") {}
+                    }
+                    putJsonArray("updateTransforms") {
+                        addJsonObject {
+                            put("fieldPath", "count")
+                            putJsonObject("increment") {
+                                put("integerValue", "1")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        httpClient.post("https://firestore.googleapis.com/v1/$FIRESTORE_DOCUMENTS_PATH:commit") {
+            contentType(ContentType.Application.Json)
+            setBody(body)
+        }
     }
 
     fun close() {

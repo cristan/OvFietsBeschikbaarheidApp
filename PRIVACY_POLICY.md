@@ -4,7 +4,17 @@ This is an open source app. See [the main page of this repo](https://github.com/
 
 ## Data collected by the app
 
-I hereby state, to the best of my knowledge and belief, that I have not programmed this app to collect any personally identifiable information. Anything that is remembered from the user is stored locally in your device only, and can be erased by clearing the app's data. No analytics software is present in the app either at the time of writing.
+I hereby state, to the best of my knowledge and belief, that I have not programmed this app to collect any personally identifiable information. Anything that is remembered from the user is stored locally in your device only, and can be erased by clearing the app's data.
+
+### Anonymous usage statistics
+
+To see how the app is used, the app sends the following to the app's own database (Google Cloud Firestore, region europe-west4 in the Netherlands):
+
+- A count when the app starts and when you open the details of a location, together with the platform (Android or iOS), the app version and the date.
+
+No identifier of you or your device is created, read or stored for this, so these counts cannot be linked to you or to each other. Your location and your search terms are never part of them. Google, which hosts the database, necessarily sees your IP address to receive the data, just like for all other data the app loads; the IP address is not stored with the statistics.
+
+The app does not ask permission for this, because the data is only used to improve the app and has no or only minor consequences for your privacy (article 11.7a, paragraph 3, sub b of the Dutch Telecommunicatiewet). For the IP address that Google briefly processes, the legal basis is my legitimate interest in improving the app (article 6, paragraph 1, sub f of the GDPR). Google processes it on my behalf as a processor.
 
 ### Explanation of permissions requested in the Android version of the app
 
