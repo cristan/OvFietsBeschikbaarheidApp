@@ -24,6 +24,7 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import nl.ovfietsbeschikbaarheid.ui.screen.AboutScreen
 import nl.ovfietsbeschikbaarheid.ui.screen.DetailScreen
+import nl.ovfietsbeschikbaarheid.ui.screen.FavouritesScreen
 import nl.ovfietsbeschikbaarheid.ui.screen.HomeScreen
 import nl.ovfietsbeschikbaarheid.ui.screen.LocationsMapScreen
 
@@ -39,6 +40,9 @@ data class About(val pricePer24Hours: String?): NavKey
 @Serializable
 object LocationsMap: NavKey
 
+@Serializable
+object Favourites: NavKey
+
 private val config = SavedStateConfiguration {
     serializersModule = SerializersModule {
         polymorphic(NavKey::class) {
@@ -46,6 +50,7 @@ private val config = SavedStateConfiguration {
             subclass(Details::class, Details.serializer())
             subclass(About::class, About.serializer())
             subclass(LocationsMap::class, LocationsMap.serializer())
+            subclass(Favourites::class, Favourites.serializer())
         }
     }
 }
@@ -60,18 +65,26 @@ fun Navigation() {
     var selectedTab by rememberSaveable { mutableStateOf(NavigationTab.Home) }
     val homeBackStack = rememberNavBackStack(config, Home)
     val locationsMapBackStack = rememberNavBackStack(config, LocationsMap)
+    val favouritesBackStack = rememberNavBackStack(config, Favourites)
     val homeEntries = rememberTabEntries(homeBackStack, onTabClick = { selectedTab = it })
     val locationsMapEntries = rememberTabEntries(locationsMapBackStack, onTabClick = { selectedTab = it })
+    val favouritesEntries = rememberTabEntries(favouritesBackStack, onTabClick = { selectedTab = it })
+    val selectedBackStack = when (selectedTab) {
+        NavigationTab.Home -> homeBackStack
+        NavigationTab.LocationsMap -> locationsMapBackStack
+        NavigationTab.Favourites -> favouritesBackStack
+    }
     NavDisplay(
         entries = when (selectedTab) {
             NavigationTab.Home -> homeEntries
             NavigationTab.LocationsMap -> homeEntries + locationsMapEntries
+            NavigationTab.Favourites -> homeEntries + favouritesEntries
         },
         onBack = {
-            when {
-                selectedTab == NavigationTab.Home -> homeBackStack.removeLastOrNull()
-                locationsMapBackStack.size > 1 -> locationsMapBackStack.removeLastOrNull()
-                else -> selectedTab = NavigationTab.Home
+            if (selectedBackStack.size > 1) {
+                selectedBackStack.removeLastOrNull()
+            } else {
+                selectedTab = NavigationTab.Home
             }
         },
         transitionSpec = {
@@ -133,6 +146,16 @@ private fun rememberTabEntries(backStack: NavBackStack<NavKey>, onTabClick: (Nav
                 is LocationsMap -> NavEntry(key, metadata = withoutTransitions) {
                     NavigationTabsLayout(selectedTab = NavigationTab.LocationsMap, onTabClick) {
                         LocationsMapScreen(
+                            onLocationClick = {
+                                backStack.add(Details(it.title, it.locationCode, it.fetchTime))
+                            }
+                        )
+                    }
+                }
+
+                is Favourites -> NavEntry(key, metadata = withoutTransitions) {
+                    NavigationTabsLayout(selectedTab = NavigationTab.Favourites, onTabClick) {
+                        FavouritesScreen(
                             onLocationClick = {
                                 backStack.add(Details(it.title, it.locationCode, it.fetchTime))
                             }

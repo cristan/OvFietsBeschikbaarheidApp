@@ -14,6 +14,7 @@ import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
 import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
+import nl.ovfietsbeschikbaarheid.viewmodel.FavouritesViewModel
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
 import nl.ovfietsbeschikbaarheid.viewmodel.LocationsMapViewModel
 import org.koin.core.module.dsl.factoryOf
@@ -39,4 +40,5 @@ fun commonModule() = module {
     viewModelOf(::DetailsViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::LocationsMapViewModel)
+    viewModelOf(::FavouritesViewModel)
 }

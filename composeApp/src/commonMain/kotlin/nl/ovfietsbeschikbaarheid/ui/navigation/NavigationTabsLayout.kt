@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.automirrored.outlined.List
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.window.core.layout.WindowSizeClass
 import nl.ovfietsbeschikbaarheid.resources.Res
+import nl.ovfietsbeschikbaarheid.resources.favourites_title
 import nl.ovfietsbeschikbaarheid.resources.home_tab_label
 import nl.ovfietsbeschikbaarheid.resources.map_title
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
@@ -41,6 +44,7 @@ import org.jetbrains.compose.resources.stringResource
 enum class NavigationTab(val label: StringResource, val icon: ImageVector, val selectedIcon: ImageVector) {
     Home(Res.string.home_tab_label, Icons.AutoMirrored.Outlined.List, Icons.AutoMirrored.Filled.List),
     LocationsMap(Res.string.map_title, Icons.Outlined.Map, Icons.Filled.Map),
+    Favourites(Res.string.favourites_title, Icons.Outlined.FavoriteBorder, Icons.Filled.Favorite),
 }
 
 @Composable

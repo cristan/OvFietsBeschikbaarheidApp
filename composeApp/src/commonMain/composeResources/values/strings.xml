@@ -3,6 +3,7 @@
 
     <string name="content_description_back">Terug</string>
     <string name="content_description_favourite">Favoriet</string>
+    <string name="content_description_remove_favourite">Verwijder uit favorieten</string>
     <string name="content_description_clear_location">Locatie opschonen</string>
     <string name="content_description_navigate">Navigeer</string>
 
@@ -75,6 +76,11 @@
     <string name="map_available">%1$s beschikbaar</string>
     <string name="map_title">Kaart</string>
     <string name="map_location_details">Meer details</string>
+
+    <string name="favourites_title">Favorieten</string>
+    <string name="favourites_empty_title">Nog geen favorieten</string>
+    <string name="favourites_empty_text">Tik bij een locatie bovenin op het hartje om die hier te zien.</string>
+    <string name="favourites_location_not_found">Locatie niet meer gevonden</string>
 
     <string name="open_state_closed">Gesloten</string>
     <string name="open_state_opens_today_at">• Gaat open om %1$s</string>

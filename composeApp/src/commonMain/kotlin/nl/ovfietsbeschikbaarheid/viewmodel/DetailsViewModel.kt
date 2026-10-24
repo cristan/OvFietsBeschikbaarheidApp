@@ -89,7 +89,7 @@ class DetailsViewModel(
 
     fun onFavouriteChanged(isFavourite: Boolean) {
         viewModelScope.launch {
-            favouritesRepository.setFavourite(Favourite(data.locationCode), isFavourite)
+            favouritesRepository.setFavourite(Favourite(data.locationCode, data.title), isFavourite)
         }
     }
 
