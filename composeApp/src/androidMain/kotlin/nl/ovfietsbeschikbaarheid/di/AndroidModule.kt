@@ -2,6 +2,7 @@ package nl.ovfietsbeschikbaarheid.di
 
 import android.content.Context
 import androidx.datastore.preferences.preferencesDataStore
+import nl.ovfietsbeschikbaarheid.model.AppRelease
 import nl.ovfietsbeschikbaarheid.util.AndroidInAppReviewProvider
 import nl.ovfietsbeschikbaarheid.util.AndroidLocationLoader
 import nl.ovfietsbeschikbaarheid.util.AndroidPlatformLocationHelper
@@ -26,6 +27,11 @@ fun androidAppModule() = module {
 
 fun androidOnlyModule() = module {
     single { androidContext().dataStore }
+    single {
+        val context = androidContext()
+        val versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        AppRelease(platform = "android", versionName = requireNotNull(versionName))
+    }
     single<AndroidInAppReviewProvider> { AndroidInAppReviewProvider(get()) }
     single<InAppReviewProvider> { get<AndroidInAppReviewProvider>() }
     single<AndroidPlatformLocationHelper> { AndroidPlatformLocationHelper(get()) }

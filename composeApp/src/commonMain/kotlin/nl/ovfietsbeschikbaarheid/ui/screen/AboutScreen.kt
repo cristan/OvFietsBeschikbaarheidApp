@@ -18,6 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,16 +44,22 @@ import nl.ovfietsbeschikbaarheid.resources.about_title
 import nl.ovfietsbeschikbaarheid.resources.content_description_back
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import nl.ovfietsbeschikbaarheid.ui.theme.Yellow50
+import nl.ovfietsbeschikbaarheid.viewmodel.AboutViewModel
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AboutScreen(
     pricePer24Hours: String?,
+    viewModel: AboutViewModel = koinViewModel(),
     onBackClicked: () -> Unit
 ) {
+    val loadedUsageStatisticsSetting by viewModel.isUsageStatisticsEnabled.collectAsState(initial = null)
     AboutView(
         pricePer24Hours,
-        onBackClicked
+        loadedUsageStatisticsSetting,
+        onBackClicked,
+        viewModel::onUsageStatisticsSwitched
     )
 }
 
@@ -59,7 +67,9 @@ fun AboutScreen(
 @Composable
 private fun AboutView(
     pricePer24Hours: String?,
-    onBackClicked: () -> Unit
+    loadedUsageStatisticsSetting: Boolean?,
+    onBackClicked: () -> Unit,
+    onUsageStatisticsSwitched: (Boolean) -> Unit
 ) {
     OVFietsBeschikbaarheidTheme {
         Scaffold(
@@ -159,6 +169,11 @@ private fun AboutView(
                     style = MaterialTheme.typography.bodyLarge
                 )
                 ReviewCallToAction()
+
+                if (loadedUsageStatisticsSetting != null) {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    AboutPrivacySection(loadedUsageStatisticsSetting, onUsageStatisticsSwitched)
+                }
             }
         }
     }
@@ -172,6 +187,8 @@ expect fun ReviewCallToAction()
 fun AboutPreview() {
     AboutView(
         "4,65",
-        onBackClicked = {}
+        loadedUsageStatisticsSetting = true,
+        onBackClicked = {},
+        onUsageStatisticsSwitched = {}
     )
 }
