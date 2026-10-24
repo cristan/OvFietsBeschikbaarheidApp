@@ -41,7 +41,7 @@ class LocationsMapViewModelTest {
             "4,65"
         )
 
-        viewModel.onReturnedToScreen()
+        viewModel.refreshIfOutdated()
 
         coVerify(exactly = 0) { overviewRepository.getOverviewData() }
 
@@ -49,7 +49,7 @@ class LocationsMapViewModelTest {
             .plus(5, DateTimeUnit.MINUTE)
             .plus(30, DateTimeUnit.SECOND)
 
-        viewModel.onReturnedToScreen(inFiveAndAHalfMinutes)
+        viewModel.refreshIfOutdated(inFiveAndAHalfMinutes)
 
         val screenState = viewModel.screenState.value
         assertIs<ScreenState.Loaded<LocationsMapContent>>(screenState)

@@ -39,7 +39,7 @@ class LocationsMapViewModel(
         load(Clock.System.now(), overviewRepository::getOverviewData)
     }
 
-    fun onReturnedToScreen(now: Instant = Clock.System.now()) {
+    fun refreshIfOutdated(now: Instant = Clock.System.now()) {
         val shownState = screenState.value
         if (shownState is ScreenState.Loaded && (now - shownState.data.loadTime).inWholeMinutes >= 5) {
             load(now, overviewRepository::getOverviewData)

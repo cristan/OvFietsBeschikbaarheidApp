@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,7 +70,10 @@ fun LocationsMapScreen(
     onLocationClick: (LocationOverviewModel) -> Unit,
     onBackClicked: () -> Unit,
 ) {
-    OnReturnToScreenEffect(viewModel::onReturnedToScreen)
+    LaunchedEffect(Unit) {
+        viewModel.refreshIfOutdated()
+    }
+    OnReturnToScreenEffect(viewModel::refreshIfOutdated)
 
     val screenState by viewModel.screenState
     LocationsMapView(screenState, viewModel::onRetryClick, onLocationClick, onBackClicked)
