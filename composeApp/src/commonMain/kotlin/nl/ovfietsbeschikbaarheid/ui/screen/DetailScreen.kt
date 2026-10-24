@@ -56,6 +56,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -579,6 +581,7 @@ fun MapView(
         Text(
             text = stringResource(Res.string.location_title),
             style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.semantics { heading() }
         )
         val onAddressClick = {
             if (location != null) {
@@ -689,7 +692,9 @@ private fun OpeningHours(details: DetailsModel) {
         Text(
             text = stringResource(Res.string.opening_hours_title),
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier
+                .padding(bottom = 8.dp)
+                .semantics { heading() }
         )
         details.openingHoursInfo?.let {
             Text(it, Modifier.padding(bottom = 8.dp))
@@ -715,7 +720,9 @@ private fun Alternatives(
                 details.stationName
             ) else stringResource(Res.string.details_alternatives_at_this_location),
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier
+                .padding(bottom = 8.dp)
+                .semantics { heading() }
         )
         details.alternatives.forEach {
             TextButton(
