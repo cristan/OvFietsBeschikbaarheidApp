@@ -12,8 +12,7 @@ class DetailsRepository(
     private val client: KtorApiClient,
 ) {
 
-    suspend fun getDetails(locationCode: String): LocationDTO? {
-        val allLocations = client.getLocations()
+    suspend fun getDetails(locationCode: String, allLocations: List<LocationDTO>): LocationDTO? {
         val location = allLocations.find { it.extra.locationCode == locationCode }
         if (location == null) {
             // Should be super duper rare, only when the location happens to disappear from the list in the meantime between loading the overview and going to the details
@@ -21,11 +20,7 @@ class DetailsRepository(
             return null
         }
 
-        val minutesSinceLastUpdate = allLocations.getMinutesSinceLastUpdate(Clock.System.now())
-        val lastUpdateTooLongAgo = minutesSinceLastUpdate > 15
-        if (lastUpdateTooLongAgo) {
-            Logger.e("The last update was $minutesSinceLastUpdate minutes ago")
-        }
+        val lastUpdateTooLongAgo = allLocations.getMinutesSinceLastUpdate(Clock.System.now()) > 15
 
         if (location.extra.rentalBikes == null || lastUpdateTooLongAgo) {
             val nsApiDetails = client.getNSApiDetails(location.link.uri)

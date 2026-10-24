@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -77,6 +78,7 @@ import nl.ovfietsbeschikbaarheid.model.AddressModel
 import nl.ovfietsbeschikbaarheid.model.CapacityModel
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.model.GraphDayModel
+import nl.ovfietsbeschikbaarheid.model.NearestOpenLocationWithBikesModel
 import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
@@ -98,6 +100,8 @@ import nl.ovfietsbeschikbaarheid.resources.details_amount_available
 import nl.ovfietsbeschikbaarheid.resources.details_amount_unknown
 import nl.ovfietsbeschikbaarheid.resources.details_capacity
 import nl.ovfietsbeschikbaarheid.resources.details_coordinates
+import nl.ovfietsbeschikbaarheid.resources.details_nearest_alternative
+import nl.ovfietsbeschikbaarheid.resources.details_nearest_alternative_amount
 import nl.ovfietsbeschikbaarheid.resources.details_no_data_message
 import nl.ovfietsbeschikbaarheid.resources.details_no_data_title
 import nl.ovfietsbeschikbaarheid.resources.location_title
@@ -125,6 +129,7 @@ import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsContent
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.ExperimentalTime
@@ -391,6 +396,9 @@ private fun ActualDetails(
                     Row {
                         Column(modifier = Modifier.weight(1f)) {
                             Gauge(details)
+                            details.nearestOpenLocationWithBikes?.let {
+                                NearestOpenLocationWithBikes(it, onAlternativeClicked)
+                            }
                             details.disruptions?.let {
                                 Disruptions(it)
                             }
@@ -425,6 +433,9 @@ private fun ActualDetails(
                     }
                 } else {
                     Gauge(details)
+                    details.nearestOpenLocationWithBikes?.let {
+                        NearestOpenLocationWithBikes(it, onAlternativeClicked)
+                    }
                     if (details.graphDays.isNotEmpty()) {
                         CapacityGraph(details.graphDays)
                     }
@@ -532,6 +543,49 @@ private fun Gauge(details: DetailsModel) {
                     OpenState.Open247 -> Text(stringResource(Res.string.open_state_open_247))
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun NearestOpenLocationWithBikes(
+    location: NearestOpenLocationWithBikesModel,
+    onAlternativeClicked: (Details) -> Unit
+) {
+    OvCard {
+        Text(stringResource(Res.string.details_nearest_alternative))
+        Row(
+            modifier = Modifier
+                .padding(top = 4.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
+                .clickable { onAlternativeClicked(Details(location.title, location.locationCode, location.fetchTime)) }
+                .padding(vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(Modifier.weight(1f)) {
+                Text(location.title, style = MaterialTheme.typography.titleMedium)
+                val amount = pluralStringResource(
+                    Res.plurals.details_nearest_alternative_amount,
+                    location.rentalBikesAvailable,
+                    location.rentalBikesAvailable
+                )
+                val openStateText = when (val openState = location.openState) {
+                    is OpenState.Open -> stringResource(Res.string.open_until, openState.closingTime)
+                    OpenState.Open247 -> stringResource(Res.string.open_state_open_247)
+                    is OpenState.Closed, is OpenState.Closing, null -> null
+                }
+                Text(
+                    text = listOfNotNull(amount, location.distance, openStateText).joinToString(" • "),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
+            }
+            Icon(
+                Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                tint = MaterialTheme.colorScheme.primary,
+                contentDescription = null
+            )
         }
     }
 }
@@ -816,6 +870,14 @@ fun DetailsPreview() {
                 locationCode = "amf001",
                 fetchTime = 1729539103
             ),
+        ),
+        NearestOpenLocationWithBikesModel(
+            title = "Amersfoort Centraal",
+            locationCode = "amf001",
+            fetchTime = 1729539103,
+            rentalBikesAvailable = 247,
+            distance = "196 m",
+            openState = OpenState.Open("01:20")
         ),
         listOf(graphDay)
     )

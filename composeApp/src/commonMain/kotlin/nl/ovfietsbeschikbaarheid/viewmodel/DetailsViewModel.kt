@@ -25,9 +25,9 @@ import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
 import nl.ovfietsbeschikbaarheid.ext.dutchTimeZone
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
+import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
 import nl.ovfietsbeschikbaarheid.repository.DetailsRepository
-import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.state.setRefreshing
@@ -42,7 +42,7 @@ private const val MIN_REFRESH_TIME = 350L
 class DetailsViewModel(
     private val client: KtorApiClient,
     private val detailsMapper: DetailsMapper,
-    private val overviewRepository: OverviewRepository,
+    private val locationsMapper: LocationsMapper,
     private val stationRepository: StationRepository,
     private val detailsRepository: DetailsRepository
 ) : ViewModel() {
@@ -86,12 +86,8 @@ class DetailsViewModel(
                 try {
                     val before = Clock.System.now().toEpochMilliseconds()
 
-                    val detailsDeferred = async {
-                        detailsRepository.getDetails(data.locationCode)
-                    }
                     val allLocationsDeferred = async {
-                        // No need to go for the non-cached locations: these are only for the alternatives, and these barely change at all
-                        overviewRepository.getCachedOrLoad()
+                        client.getLocations()
                     }
                     val allStationsDeferred = async {
                         stationRepository.getAllStations()
@@ -113,7 +109,8 @@ class DetailsViewModel(
                         client.getHistory(data.locationCode, startDate)
                     }
 
-                    val details = detailsDeferred.await()
+                    val allLocations = allLocationsDeferred.await()
+                    val details = detailsRepository.getDetails(data.locationCode, allLocations)
                     if (details == null) {
                         val fetchTimeInstant = Instant.fromEpochSeconds(data.fetchTime)
 
@@ -126,7 +123,7 @@ class DetailsViewModel(
 
                     val data = detailsMapper.convert(
                         details,
-                        allLocationsDeferred.await().locations,
+                        locationsMapper.map(allLocations),
                         allStationsDeferred.await(),
                         historyDeferred.await()
                     )
