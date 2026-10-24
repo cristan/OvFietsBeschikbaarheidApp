@@ -1,5 +1,6 @@
 package nl.ovfietsbeschikbaarheid.ui.screen
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.SpringSpec
 import androidx.compose.animation.core.animateFloatAsState
@@ -25,6 +26,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -47,7 +50,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -80,10 +85,13 @@ import nl.ovfietsbeschikbaarheid.model.GraphDayModel
 import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.model.OpeningHoursModel
 import nl.ovfietsbeschikbaarheid.model.ServiceType
+import nl.ovfietsbeschikbaarheid.model.StationFacility
 import nl.ovfietsbeschikbaarheid.resources.Res
 import nl.ovfietsbeschikbaarheid.resources.baseline_directions_24
 import nl.ovfietsbeschikbaarheid.resources.capacity_graph_title
 import nl.ovfietsbeschikbaarheid.resources.content_description_back
+import nl.ovfietsbeschikbaarheid.resources.content_description_collapse
+import nl.ovfietsbeschikbaarheid.resources.content_description_expand
 import nl.ovfietsbeschikbaarheid.resources.content_description_navigate
 import nl.ovfietsbeschikbaarheid.resources.day_1
 import nl.ovfietsbeschikbaarheid.resources.day_2
@@ -110,6 +118,7 @@ import nl.ovfietsbeschikbaarheid.resources.open_state_opens_today_at
 import nl.ovfietsbeschikbaarheid.resources.open_until
 import nl.ovfietsbeschikbaarheid.resources.opening_hours_title
 import nl.ovfietsbeschikbaarheid.resources.pedal_bike_24px
+import nl.ovfietsbeschikbaarheid.resources.station_facilities_title
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.NativeMap
@@ -146,9 +155,11 @@ fun DetailScreen(
     OnReturnToScreenEffect(viewModel::onReturnToScreenTriggered)
 
     val details by viewModel.screenState
+    val stationFacilities by viewModel.stationFacilities
     DetailsView(
         detailScreenData,
         details,
+        stationFacilities,
         viewModel::onRetryClick,
         viewModel::onPullToRefresh,
         onLocationClicked,
@@ -162,6 +173,7 @@ fun DetailScreen(
 private fun DetailsView(
     detailScreenData: Details,
     details: ScreenState<DetailsContent>,
+    stationFacilities: List<StationFacility>,
     onRetry: () -> Unit,
     onPullToRefresh: () -> Unit,
     onLocationClicked: (String) -> Unit,
@@ -203,7 +215,7 @@ private fun DetailsView(
                             isRefreshing = details.isRefreshing,
                             onRefresh = onPullToRefresh,
                         ) {
-                            ActualDetails(details.data.details, onLocationClicked, onAlternativeClicked)
+                            ActualDetails(details.data.details, stationFacilities, onLocationClicked, onAlternativeClicked)
                         }
 
                         is DetailsContent.NotFound -> {
@@ -367,6 +379,7 @@ private fun LoadingGauge(shimmerInstance: Shimmer) {
 @Composable
 private fun ActualDetails(
     details: DetailsModel,
+    stationFacilities: List<StationFacility>,
     onLocationClicked: (String) -> Unit,
     onAlternativeClicked: (Details) -> Unit
 ) {
@@ -403,6 +416,10 @@ private fun ActualDetails(
 
                             if (details.alternatives.isNotEmpty()) {
                                 Alternatives(details, onAlternativeClicked)
+                            }
+
+                            if (stationFacilities.isNotEmpty()) {
+                                StationFacilities(stationFacilities)
                             }
                         }
                         Spacer(Modifier.width(spacing))
@@ -451,6 +468,10 @@ private fun ActualDetails(
 
                     if (details.alternatives.isNotEmpty()) {
                         Alternatives(details, onAlternativeClicked)
+                    }
+
+                    if (stationFacilities.isNotEmpty()) {
+                        StationFacilities(stationFacilities)
                     }
                 }
 
@@ -717,6 +738,45 @@ private fun Alternatives(
 }
 
 @Composable
+private fun StationFacilities(stationFacilities: List<StationFacility>) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    OvCard {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { expanded = !expanded },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(Res.string.station_facilities_title),
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.weight(1f)
+            )
+            Icon(
+                imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                contentDescription = stringResource(
+                    if (expanded) Res.string.content_description_collapse else Res.string.content_description_expand
+                )
+            )
+        }
+        AnimatedVisibility(expanded) {
+            Column(Modifier.padding(top = 8.dp)) {
+                stationFacilities.forEach {
+                    Row(Modifier.padding(vertical = 4.dp)) {
+                        Icon(
+                            imageVector = it.icon,
+                            contentDescription = null,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Text(stringResource(it.textRes))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 expect fun onLocationClicked(): (String) -> Unit
 
 @Preview(heightDp = 1000)
@@ -725,6 +785,7 @@ fun DetailsLoadingPreview() {
     DetailsView(
         TestData.testDetails,
         ScreenState.Loading,
+        emptyList(),
         {},
         {},
         {},
@@ -819,9 +880,20 @@ fun DetailsPreview() {
         ),
         listOf(graphDay)
     )
+    val stationFacilities = listOf(
+        StationFacility.Toilet,
+        StationFacility.Lift,
+        StationFacility.Kaartautomaat,
+        StationFacility.Bagagekluizen,
+        StationFacility.Wachtruimte,
+        StationFacility.Watertappunt,
+        StationFacility.Reisassistentie,
+        StationFacility.AED,
+    )
     DetailsView(
         TestData.testDetails,
         ScreenState.Loaded(DetailsContent.Content(details)),
+        stationFacilities,
         {},
         {},
         {},
