@@ -101,18 +101,13 @@ import nl.ovfietsbeschikbaarheid.resources.details_coordinates
 import nl.ovfietsbeschikbaarheid.resources.details_no_data_message
 import nl.ovfietsbeschikbaarheid.resources.details_no_data_title
 import nl.ovfietsbeschikbaarheid.resources.location_title
-import nl.ovfietsbeschikbaarheid.resources.open_state_closed
-import nl.ovfietsbeschikbaarheid.resources.open_state_closes_at
-import nl.ovfietsbeschikbaarheid.resources.open_state_closing_soon
-import nl.ovfietsbeschikbaarheid.resources.open_state_open_247
-import nl.ovfietsbeschikbaarheid.resources.open_state_opens_later_at
-import nl.ovfietsbeschikbaarheid.resources.open_state_opens_today_at
 import nl.ovfietsbeschikbaarheid.resources.open_until
 import nl.ovfietsbeschikbaarheid.resources.opening_hours_title
 import nl.ovfietsbeschikbaarheid.resources.pedal_bike_24px
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.NativeMap
+import nl.ovfietsbeschikbaarheid.ui.components.OpenStateText
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
 import nl.ovfietsbeschikbaarheid.ui.navigation.Details
 import nl.ovfietsbeschikbaarheid.ui.navigation.LocalSpacing
@@ -508,30 +503,7 @@ private fun Gauge(details: DetailsModel) {
             )
         }
         details.openState?.let { openState ->
-            Row(Modifier.align(Alignment.End)) {
-                when (openState) {
-                    is OpenState.Closed -> {
-                        Text(text = stringResource(Res.string.open_state_closed), color = Red50)
-                        if (openState.openDay != null) {
-                            val openDay = stringResource(openState.openDay).lowercase()
-                            Text(text = " " + stringResource(Res.string.open_state_opens_later_at, openDay, openState.openTime))
-                        } else {
-                            Text(text = " " + stringResource(Res.string.open_state_opens_today_at, openState.openTime))
-                        }
-                    }
-
-                    is OpenState.Closing -> {
-                        Text(text = stringResource(Res.string.open_state_closing_soon), color = Orange50)
-                        Text(" " + stringResource(Res.string.open_state_closes_at, openState.closingTime))
-                    }
-
-                    is OpenState.Open -> {
-                        Text(stringResource(Res.string.open_until, openState.closingTime))
-                    }
-
-                    OpenState.Open247 -> Text(stringResource(Res.string.open_state_open_247))
-                }
-            }
+            OpenStateText(openState, Modifier.align(Alignment.End))
         }
     }
 }

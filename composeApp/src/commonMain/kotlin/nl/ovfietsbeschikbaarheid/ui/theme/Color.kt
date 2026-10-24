@@ -14,6 +14,7 @@ val Grey05 = Color(0xFFFAFAFA)
 val Grey10 = Color(0xFFF5F5F5)
 val Yellow05 = Color(0xFFFFFDE7)
 val Yellow50 = Color(0xFFFFEB3B)
+val OvFietsYellow = Color(0xFFFECA18)
 
 val BlueGrey40 = Color(0xFF78909C)
 val BlueGrey80 = Color(0xFF37474F)
