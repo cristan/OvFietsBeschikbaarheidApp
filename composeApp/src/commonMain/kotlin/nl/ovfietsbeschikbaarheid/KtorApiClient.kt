@@ -7,6 +7,7 @@ import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -22,11 +23,13 @@ import kotlinx.serialization.json.putJsonObject
 import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
 import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
+import nl.ovfietsbeschikbaarheid.model.AppRelease
 import nl.ovfietsbeschikbaarheid.repository.APP_COMPATIBILITY
 import nl.ovfietsbeschikbaarheid.repository.AppCompatibilityRepository
 import kotlin.time.measureTimedValue
 
 private const val FIRESTORE_DOCUMENTS_PATH = "projects/ov-fiets-app-427721/databases/(default)/documents"
+private const val DOCUMENT_ID_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 
 class KtorApiClient(
     private val appCompatibilityRepository: AppCompatibilityRepository
@@ -168,6 +171,29 @@ class KtorApiClient(
             setBody(body)
         }
     }
+
+    suspend fun addWarning(message: String, appRelease: AppRelease) {
+        val body = buildJsonObject {
+            putJsonObject("fields") {
+                putJsonObject("message") {
+                    put("stringValue", message)
+                }
+                putJsonObject("platform") {
+                    put("stringValue", appRelease.platform)
+                }
+                putJsonObject("appVersion") {
+                    put("stringValue", appRelease.versionName)
+                }
+            }
+        }
+        httpClient.post("https://firestore.googleapis.com/v1/$FIRESTORE_DOCUMENTS_PATH/warnings") {
+            parameter("documentId", randomDocumentId())
+            contentType(ContentType.Application.Json)
+            setBody(body)
+        }
+    }
+
+    private fun randomDocumentId() = (1..20).map { DOCUMENT_ID_CHARACTERS.random() }.joinToString("")
 
     fun close() {
         httpClient.close()
