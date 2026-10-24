@@ -26,7 +26,9 @@ import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
 import nl.ovfietsbeschikbaarheid.ext.dutchTimeZone
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
+import nl.ovfietsbeschikbaarheid.model.Favourite
 import nl.ovfietsbeschikbaarheid.repository.DetailsRepository
+import nl.ovfietsbeschikbaarheid.repository.FavouritesRepository
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.state.ScreenState
@@ -44,7 +46,8 @@ class DetailsViewModel(
     private val detailsMapper: DetailsMapper,
     private val overviewRepository: OverviewRepository,
     private val stationRepository: StationRepository,
-    private val detailsRepository: DetailsRepository
+    private val detailsRepository: DetailsRepository,
+    private val favouritesRepository: FavouritesRepository
 ) : ViewModel() {
 
     val screenState: State<ScreenState<DetailsContent>>
@@ -54,6 +57,17 @@ class DetailsViewModel(
 
     val title: State<String>
         field = mutableStateOf("")
+
+    val favouriteLocationCodes: State<Set<String>>
+        field = mutableStateOf(emptySet())
+
+    init {
+        viewModelScope.launch {
+            favouritesRepository.favourites.collect { favourites ->
+                favouriteLocationCodes.value = favourites.map { it.locationCode }.toSet()
+            }
+        }
+    }
 
     fun screenLaunched(data: Details) {
         this.data = data
@@ -71,6 +85,12 @@ class DetailsViewModel(
     fun onPullToRefresh() {
         screenState.setRefreshing()
         doRefresh(MIN_REFRESH_TIME)
+    }
+
+    fun onFavouriteChanged(isFavourite: Boolean) {
+        viewModelScope.launch {
+            favouritesRepository.setFavourite(Favourite(data.locationCode, data.title), isFavourite)
+        }
     }
 
     fun onRetryClick() {
