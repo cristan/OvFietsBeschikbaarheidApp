@@ -54,6 +54,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -110,6 +112,7 @@ import nl.ovfietsbeschikbaarheid.resources.open_state_opens_today_at
 import nl.ovfietsbeschikbaarheid.resources.open_until
 import nl.ovfietsbeschikbaarheid.resources.opening_hours_title
 import nl.ovfietsbeschikbaarheid.resources.pedal_bike_24px
+import nl.ovfietsbeschikbaarheid.resources.rental_bikes_available_content_description
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.NativeMap
@@ -125,6 +128,7 @@ import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsContent
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.ExperimentalTime
@@ -465,12 +469,19 @@ private fun ActualDetails(
 @Composable
 private fun Gauge(details: DetailsModel) {
     OvCard {
-        Text(stringResource(Res.string.details_amount_available))
         val rentalBikesAvailable = details.rentalBikesAvailable
+        Text(
+            text = stringResource(Res.string.details_amount_available),
+            modifier = if (rentalBikesAvailable == null) Modifier else Modifier.clearAndSetSemantics {}
+        )
         val amount = rentalBikesAvailable?.toString() ?: stringResource(Res.string.details_amount_unknown)
+        val amountDescription = rentalBikesAvailable?.let {
+            pluralStringResource(Res.plurals.rental_bikes_available_content_description, it, it)
+        } ?: amount
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .clearAndSetSemantics { contentDescription = amountDescription }
                 .padding(vertical = 24.dp),
             contentAlignment = Alignment.Center
         ) {
