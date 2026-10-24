@@ -5,7 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.onConsumedWindowInsetsChanged
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -14,8 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -62,12 +66,13 @@ actual fun NativeLocationsMap(
     val mapMarkers = remember(locations, zoomLevel) { MapMarkerMapper.getMapMarkers(locations, zoomLevel) }
     val coroutineScope = rememberCoroutineScope()
     val zoomInPadding = with(LocalDensity.current) { 64.dp.roundToPx() }
+    var consumedWindowInsets by remember { mutableStateOf(WindowInsets(0)) }
 
     GoogleMap(
-        modifier = modifier,
+        modifier = modifier.onConsumedWindowInsetsChanged { consumedWindowInsets = it },
         cameraPositionState = cameraPositionState,
         properties = MapProperties(isMyLocationEnabled = showsUserLocation),
-        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
+        contentPadding = WindowInsets.navigationBars.exclude(consumedWindowInsets).asPaddingValues(),
     ) {
         mapMarkers.groupBy { it.locations.size }.forEach { (locationCount, mapMarkersWithLocationCount) ->
             key(locationCount) {

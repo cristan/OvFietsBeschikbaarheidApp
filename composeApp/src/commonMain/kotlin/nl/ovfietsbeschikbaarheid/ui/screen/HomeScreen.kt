@@ -28,7 +28,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -79,7 +78,6 @@ import nl.ovfietsbeschikbaarheid.resources.home_no_gps_location
 import nl.ovfietsbeschikbaarheid.resources.home_no_search_results_for
 import nl.ovfietsbeschikbaarheid.resources.home_search_label
 import nl.ovfietsbeschikbaarheid.resources.home_search_results_for
-import nl.ovfietsbeschikbaarheid.resources.map_title
 import nl.ovfietsbeschikbaarheid.resources.map_white_background
 import nl.ovfietsbeschikbaarheid.resources.open_state_closed
 import nl.ovfietsbeschikbaarheid.resources.open_state_closes_at
@@ -108,7 +106,6 @@ import kotlin.time.Instant
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
     onInfoClicked: (pricePer24Hours: String?) -> Unit,
-    onMapClicked: () -> Unit,
     onLocationClick: (LocationOverviewModel) -> Unit
 ) {
     val searchTerm by viewModel.searchTerm
@@ -132,7 +129,6 @@ fun HomeScreen(
         viewModel::onTurnOnGpsClicked,
         viewModel::onPullToRefresh,
         { onInfoClicked(pricePer24Hours) },
-        onMapClicked,
         onLocationClick,
         viewModel::onRetryClicked,
     )
@@ -147,7 +143,6 @@ private fun HomeView(
     onTurnOnGpsClicked: () -> Unit,
     onPullToRefresh: () -> Unit,
     onInfoClicked: () -> Unit,
-    onMapClicked: () -> Unit,
     onLocationClick: (LocationOverviewModel) -> Unit,
     onRetryClick: () -> Unit
 ) {
@@ -155,7 +150,7 @@ private fun HomeView(
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                HomeTopAppBar(onMapClicked, onInfoClicked)
+                HomeTopAppBar(onInfoClicked)
             },
             contentWindowInsets = WindowInsets(0, 0, 0, 0)
         ) { innerPadding ->
@@ -302,7 +297,7 @@ private fun Loading() {
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun HomeTopAppBar(onMapClicked: () -> Unit, onInfoClicked: () -> Unit) {
+private fun HomeTopAppBar(onInfoClicked: () -> Unit) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -313,12 +308,6 @@ private fun HomeTopAppBar(onMapClicked: () -> Unit, onInfoClicked: () -> Unit) {
             Text(stringResource(Res.string.app_name))
         },
         actions = {
-            IconButton(onClick = onMapClicked) {
-                Icon(
-                    imageVector = Icons.Outlined.Map,
-                    contentDescription = stringResource(Res.string.map_title),
-                )
-            }
             IconButton(onClick = onInfoClicked) {
                 Icon(
                     imageVector = Icons.Outlined.Info,
@@ -567,7 +556,7 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
 
 @Composable
 fun TestHomeView(searchTerm: String, content: HomeContent) {
-    HomeView(searchTerm, content, {}, {}, {}, {}, {}, {}, {}, {})
+    HomeView(searchTerm, content, {}, {}, {}, {}, {}, {}, {})
 }
 
 @Preview

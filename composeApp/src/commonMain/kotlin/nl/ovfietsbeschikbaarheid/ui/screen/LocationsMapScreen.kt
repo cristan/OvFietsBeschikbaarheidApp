@@ -10,14 +10,11 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -44,7 +41,6 @@ import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
 import nl.ovfietsbeschikbaarheid.resources.Res
 import nl.ovfietsbeschikbaarheid.resources.baseline_electric_bike_24
-import nl.ovfietsbeschikbaarheid.resources.content_description_back
 import nl.ovfietsbeschikbaarheid.resources.details_amount_unknown
 import nl.ovfietsbeschikbaarheid.resources.map_available
 import nl.ovfietsbeschikbaarheid.resources.map_location_details
@@ -68,7 +64,6 @@ import kotlin.time.ExperimentalTime
 fun LocationsMapScreen(
     viewModel: LocationsMapViewModel = koinViewModel(),
     onLocationClick: (LocationOverviewModel) -> Unit,
-    onBackClicked: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         viewModel.refreshIfOutdated()
@@ -76,7 +71,7 @@ fun LocationsMapScreen(
     OnReturnToScreenEffect(viewModel::refreshIfOutdated)
 
     val screenState by viewModel.screenState
-    LocationsMapView(screenState, viewModel::onRetryClick, onLocationClick, onBackClicked)
+    LocationsMapView(screenState, viewModel::onRetryClick, onLocationClick)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,7 +80,6 @@ private fun LocationsMapView(
     screenState: ScreenState<LocationsMapContent>,
     onRetry: () -> Unit,
     onLocationClick: (LocationOverviewModel) -> Unit,
-    onBackClicked: () -> Unit,
 ) {
     OVFietsBeschikbaarheidTheme {
         Scaffold(
@@ -94,18 +88,9 @@ private fun LocationsMapView(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         titleContentColor = Yellow50,
-                        navigationIconContentColor = Yellow50
                     ),
                     title = {
                         Text(stringResource(Res.string.map_title))
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = onBackClicked) {
-                            Icon(
-                                Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(Res.string.content_description_back)
-                            )
-                        }
                     },
                 )
             },
