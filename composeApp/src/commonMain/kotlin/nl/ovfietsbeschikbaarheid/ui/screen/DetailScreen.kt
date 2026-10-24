@@ -54,6 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -62,7 +63,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.window.core.layout.WindowSizeClass
 import com.valentinilk.shimmer.Shimmer
 import com.valentinilk.shimmer.ShimmerBounds
@@ -515,9 +515,10 @@ private fun Gauge(details: DetailsModel) {
                 gapSize = 0.dp
             )
 
+            val amountFontSizeIgnoringFontScale = if (rentalBikesAvailable != null) 60.dp else 24.dp
             Text(
                 text = amount,
-                fontSize = if (rentalBikesAvailable != null) 60.sp else 24.sp
+                fontSize = with(LocalDensity.current) { amountFontSizeIgnoringFontScale.toSp() }
             )
         }
         details.openState?.let { openState ->
