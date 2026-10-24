@@ -7,6 +7,7 @@ import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.repository.AppCompatibilityRepository
 import nl.ovfietsbeschikbaarheid.repository.DetailsRepository
+import nl.ovfietsbeschikbaarheid.repository.FavouritesRepository
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.RatingStorageRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
@@ -26,6 +27,7 @@ fun commonModule() = module {
 
     singleOf(::AppCompatibilityRepository)
     singleOf(::RatingStorageRepository)
+    singleOf(::FavouritesRepository)
     singleOf(::RatingEligibilityService)
     singleOf(::OverviewRepository)
     singleOf(::StationRepository)

@@ -25,6 +25,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,6 +34,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
@@ -84,6 +88,7 @@ import nl.ovfietsbeschikbaarheid.resources.Res
 import nl.ovfietsbeschikbaarheid.resources.baseline_directions_24
 import nl.ovfietsbeschikbaarheid.resources.capacity_graph_title
 import nl.ovfietsbeschikbaarheid.resources.content_description_back
+import nl.ovfietsbeschikbaarheid.resources.content_description_favourite
 import nl.ovfietsbeschikbaarheid.resources.content_description_navigate
 import nl.ovfietsbeschikbaarheid.resources.day_1
 import nl.ovfietsbeschikbaarheid.resources.day_2
@@ -141,9 +146,12 @@ fun DetailScreen(
     OnReturnToScreenEffect(viewModel::onReturnToScreenTriggered)
 
     val details by viewModel.screenState
+    val favouriteLocationCodes by viewModel.favouriteLocationCodes
     DetailsView(
         detailScreenData,
         details,
+        detailScreenData.locationCode in favouriteLocationCodes,
+        viewModel::onFavouriteChanged,
         viewModel::onRetryClick,
         viewModel::onPullToRefresh,
         onLocationClicked,
@@ -157,6 +165,8 @@ fun DetailScreen(
 private fun DetailsView(
     detailScreenData: Details,
     details: ScreenState<DetailsContent>,
+    isFavourite: Boolean,
+    onFavouriteChanged: (Boolean) -> Unit,
     onRetry: () -> Unit,
     onPullToRefresh: () -> Unit,
     onLocationClicked: (String) -> Unit,
@@ -170,7 +180,8 @@ private fun DetailsView(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         titleContentColor = Yellow50,
-                        navigationIconContentColor = Yellow50
+                        navigationIconContentColor = Yellow50,
+                        actionIconContentColor = Yellow50,
                     ),
                     title = {
                         Text(detailScreenData.title)
@@ -180,6 +191,18 @@ private fun DetailsView(
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(Res.string.content_description_back)
+                            )
+                        }
+                    },
+                    actions = {
+                        IconToggleButton(
+                            checked = isFavourite,
+                            onCheckedChange = onFavouriteChanged,
+                            colors = IconButtonDefaults.iconToggleButtonColors(checkedContentColor = Yellow50)
+                        ) {
+                            Icon(
+                                imageVector = if (isFavourite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                contentDescription = stringResource(Res.string.content_description_favourite)
                             )
                         }
                     },
@@ -697,6 +720,8 @@ fun DetailsLoadingPreview() {
     DetailsView(
         TestData.testDetails,
         ScreenState.Loading,
+        false,
+        {},
         {},
         {},
         {},
@@ -794,6 +819,8 @@ fun DetailsPreview() {
     DetailsView(
         TestData.testDetails,
         ScreenState.Loaded(DetailsContent.Content(details)),
+        true,
+        {},
         {},
         {},
         {},

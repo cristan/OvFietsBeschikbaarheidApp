@@ -2,6 +2,7 @@
     <string name="app_name">OV-fiets Beschikbaarheid</string>
 
     <string name="content_description_back">Terug</string>
+    <string name="content_description_favourite">Favoriet</string>
     <string name="content_description_clear_location">Locatie opschonen</string>
     <string name="content_description_navigate">Navigeer</string>
 
