@@ -47,6 +47,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -78,12 +82,16 @@ import nl.ovfietsbeschikbaarheid.resources.home_no_gps_location
 import nl.ovfietsbeschikbaarheid.resources.home_no_search_results_for
 import nl.ovfietsbeschikbaarheid.resources.home_search_label
 import nl.ovfietsbeschikbaarheid.resources.home_search_results_for
+import nl.ovfietsbeschikbaarheid.resources.loading
 import nl.ovfietsbeschikbaarheid.resources.map_white_background
 import nl.ovfietsbeschikbaarheid.resources.open_state_closed
 import nl.ovfietsbeschikbaarheid.resources.open_state_closes_at
+import nl.ovfietsbeschikbaarheid.resources.open_state_closes_at_content_description
 import nl.ovfietsbeschikbaarheid.resources.open_state_closing_soon
 import nl.ovfietsbeschikbaarheid.resources.open_state_opens_today_at
+import nl.ovfietsbeschikbaarheid.resources.open_state_opens_today_at_content_description
 import nl.ovfietsbeschikbaarheid.resources.pedal_bike_24px
+import nl.ovfietsbeschikbaarheid.resources.rental_bikes_available_content_description
 import nl.ovfietsbeschikbaarheid.ui.theme.Grey80
 import nl.ovfietsbeschikbaarheid.ui.theme.Indigo05
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
@@ -95,6 +103,7 @@ import nl.ovfietsbeschikbaarheid.viewmodel.AskPermissionState
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeContent
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Clock
@@ -238,14 +247,20 @@ private fun HomeView(
 @Composable
 private fun Loading() {
     val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
+    val loadingDescription = stringResource(Res.string.loading)
     LazyColumn(userScrollEnabled = false) {
         item {
             HorizontalBar(stringResource(Res.string.home_nearby))
         }
-        items(count = 20) {
+        items(count = 20) { index ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clearAndSetSemantics {
+                        if (index == 0) {
+                            contentDescription = loadingDescription
+                        }
+                    }
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -360,6 +375,7 @@ private fun HorizontalBar(text: String) {
                 if (isSystemInDarkTheme()) Grey80 else Indigo05
             )
             .padding(horizontal = 16.dp, vertical = 8.dp)
+            .semantics { heading() }
     )
 }
 
@@ -460,15 +476,22 @@ private fun SearchField(
 }
 
 @Composable
-fun LocationCard(location: LocationOverviewModel, distance: String? = null, onClick: () -> Unit) {
+fun LocationCard(
+    location: LocationOverviewModel,
+    distance: String? = null,
+    now: Instant = Clock.System.now(),
+    onClick: () -> Unit
+) {
     val openState = if (location.openingHours == null) null else OpenStateMapper.getOpenState(
-        location.locationCode, location.openingHours, Clock.System.now().toLocalDateTime(dutchTimeZone)
+        location.locationCode, location.openingHours, now.toLocalDateTime(dutchTimeZone)
     )
     val hasDataInBottom = distance != null || openState is OpenState.Closed || openState is OpenState.Closing
+    val description = locationCardContentDescription(location, distance, openState)
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
+            .clearAndSetSemantics { contentDescription = description }
             .padding(horizontal = 16.dp, vertical = if (hasDataInBottom) 8.dp else 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -552,6 +575,36 @@ fun LocationCard(location: LocationOverviewModel, distance: String? = null, onCl
             }
         }
     }
+}
+
+@Composable
+private fun locationCardContentDescription(
+    location: LocationOverviewModel,
+    distance: String?,
+    openState: OpenState?
+): String {
+    val rentalBikesAvailableDescription = location.rentalBikesAvailable?.let {
+        pluralStringResource(Res.plurals.rental_bikes_available_content_description, it, it)
+    }
+    val openStateDescriptions = when (openState) {
+        is OpenState.Closed -> listOfNotNull(
+            stringResource(Res.string.open_state_closed),
+            if (openState.openDay == null) {
+                stringResource(Res.string.open_state_opens_today_at_content_description, openState.openTime)
+            } else {
+                null
+            }
+        )
+
+        is OpenState.Closing -> listOf(
+            stringResource(Res.string.open_state_closing_soon),
+            stringResource(Res.string.open_state_closes_at_content_description, openState.closingTime)
+        )
+
+        is OpenState.Open, OpenState.Open247, null -> emptyList()
+    }
+    return (listOfNotNull(location.title, distance, rentalBikesAvailableDescription) + openStateDescriptions)
+        .joinToString(", ")
 }
 
 @Composable
