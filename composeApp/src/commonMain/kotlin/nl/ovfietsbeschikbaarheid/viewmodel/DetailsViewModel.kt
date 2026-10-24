@@ -32,6 +32,7 @@ import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.state.setRefreshing
 import nl.ovfietsbeschikbaarheid.ui.navigation.Details
+import nl.ovfietsbeschikbaarheid.util.UsageStatisticsSender
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -44,8 +45,13 @@ class DetailsViewModel(
     private val detailsMapper: DetailsMapper,
     private val overviewRepository: OverviewRepository,
     private val stationRepository: StationRepository,
-    private val detailsRepository: DetailsRepository
+    private val detailsRepository: DetailsRepository,
+    usageStatisticsSender: UsageStatisticsSender
 ) : ViewModel() {
+
+    init {
+        usageStatisticsSender.onDetailsOpened()
+    }
 
     val screenState: State<ScreenState<DetailsContent>>
         field = mutableStateOf<ScreenState<DetailsContent>>(ScreenState.Loading)

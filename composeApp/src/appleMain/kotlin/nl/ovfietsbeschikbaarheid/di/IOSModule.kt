@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import dev.jordond.compass.geolocation.Locator
 import dev.jordond.compass.geolocation.mobile.mobile
 import kotlinx.cinterop.ExperimentalForeignApi
+import nl.ovfietsbeschikbaarheid.model.AppRelease
 import nl.ovfietsbeschikbaarheid.util.DecimalFormatter
 import nl.ovfietsbeschikbaarheid.util.IOSLocationLoader
 import nl.ovfietsbeschikbaarheid.util.IOSPlatformLocationHelper
@@ -18,6 +19,7 @@ import okio.Path.Companion.toPath
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+import platform.Foundation.NSBundle
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
@@ -32,6 +34,10 @@ fun iosAppModule() = module {
 
 fun iosOnlyModule() = module {
     single { createIosDataStore() }
+    single {
+        val versionName = NSBundle.mainBundle.objectForInfoDictionaryKey("CFBundleShortVersionString") as String
+        AppRelease(platform = "ios", versionName = versionName)
+    }
     single<Locator> { Locator.mobile() }
     single<InAppReviewProvider> { IosInAppReviewProvider(get()) }
     factoryOf<PlatformLocationHelper>(::IOSPlatformLocationHelper)
