@@ -4,6 +4,8 @@
     <string name="content_description_back">Terug</string>
     <string name="content_description_clear_location">Locatie opschonen</string>
     <string name="content_description_navigate">Navigeer</string>
+    <string name="content_description_expand">Uitklappen</string>
+    <string name="content_description_collapse">Inklappen</string>
 
     <string name="full_page_error_title">Ophalen gegevens mislukt</string>
     <string name="full_page_error_text">Controleer je verbinding en probeer opnieuw.</string>
@@ -62,6 +64,17 @@
 
     <string name="details_alternatives_at">Op %1$s</string>
     <string name="details_alternatives_at_this_location">Op deze locatie</string>
+
+    <string name="station_facilities_title">Voorzieningen op het station</string>
+    <string name="station_facility_toilet">Toilet</string>
+    <string name="station_facility_lift">Lift</string>
+    <string name="station_facility_kaartautomaat">Kaartautomaat</string>
+    <string name="station_facility_servicewinkel">OV-servicewinkel</string>
+    <string name="station_facility_bagagekluizen">Bagagekluizen</string>
+    <string name="station_facility_wachtruimte">Wachtruimte</string>
+    <string name="station_facility_watertappunt">Watertappunt</string>
+    <string name="station_facility_reisassistentie">Reisassistentie</string>
+    <string name="station_facility_aed">AED</string>
 
     <string name="graph_today">Vandaag</string>
     <string name="graph_this_week_day">Deze %1$s</string>
