@@ -3,8 +3,8 @@
     --dark-blue: #072A5E;
     --yellow: #FFEB3B;
     --bezel: #121418;
-    --height: 2688px;
     --headline-margin: 88px;
+    --headline-size: 136px;
     --phone-width: 1066px;
     --phone-top: 600px;
     --bezel-width: calc(var(--phone-width) * 0.026);
@@ -15,8 +15,8 @@
 
 body {
     position: relative;
-    width: 1242px;
-    height: var(--height);
+    width: 100vw;
+    height: 100vh;
     margin: 0;
     overflow: hidden;
     background: linear-gradient(var(--blue), var(--dark-blue));
@@ -27,10 +27,10 @@ h1 {
     position: absolute;
     left: var(--headline-margin);
     right: var(--headline-margin);
-    bottom: calc(var(--height) - var(--phone-top) + var(--headline-margin) * 0.8);
+    bottom: calc(100% - var(--phone-top) + var(--headline-margin) * 0.8);
     margin: 0;
     color: var(--yellow);
-    font-size: 136px;
+    font-size: var(--headline-size);
     font-weight: 700;
     line-height: 0.92;
     letter-spacing: -0.02em;
@@ -67,4 +67,16 @@ h1 {
     height: var(--camera-height);
     border-radius: calc(var(--camera-height) / 2);
     background: var(--bezel);
+}
+
+@media (aspect-ratio: 9 / 16) {
+    :root {
+        --headline-margin: 76px;
+        --headline-size: 124px;
+        --phone-width: 760px;
+        --phone-top: 480px;
+        --camera-top: calc(var(--bezel-width) + var(--phone-width) * 0.04);
+        --camera-width: var(--camera-height);
+        --camera-height: calc(var(--phone-width) * 0.04);
+    }
 }
