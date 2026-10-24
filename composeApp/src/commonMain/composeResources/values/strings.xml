@@ -35,6 +35,12 @@
     <string name="about_app_text_6_ios">in de App Store</string>
     <string name="about_app_text_7">\u0020🙂</string>
 
+    <string name="about_privacy_title">Privacy</string>
+    <string name="about_privacy_text_1">Om te zien hoe de app gebruikt wordt en om fouten op te sporen, verstuurt de app anonieme statistieken: hoe vaak de app wordt gestart, hoe vaak details worden bekeken en een korte technische melding als er iets onverwachts gebeurt. Daar zit niets in waarmee je herkend kunt worden, zoals je locatie of zoekopdrachten. Meer hierover staat in het\u0020</string>
+    <string name="about_privacy_text_2">privacybeleid</string>
+    <string name="about_privacy_text_3">.</string>
+    <string name="about_privacy_usage_statistics_switch">Anonieme statistieken versturen</string>
+
     <string name="gps_rationale_initial_button">OV-fiets locaties in je buurt</string>
     <string name="gps_rationale_denied_rationale">Toestemming is nodig om OV-fiets locaties in de buurt te tonen</string>
     <string name="gps_rationale_denied_button">Geef toestemming</string>

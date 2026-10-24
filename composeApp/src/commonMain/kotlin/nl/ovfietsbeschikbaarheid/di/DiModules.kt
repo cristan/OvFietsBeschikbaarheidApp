@@ -10,9 +10,11 @@ import nl.ovfietsbeschikbaarheid.repository.DetailsRepository
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.RatingStorageRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
+import nl.ovfietsbeschikbaarheid.repository.UsageStatisticsSettingRepository
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
 import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
 import nl.ovfietsbeschikbaarheid.util.UsageStatisticsSender
+import nl.ovfietsbeschikbaarheid.viewmodel.AboutViewModel
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
 import org.koin.core.module.dsl.factoryOf
@@ -30,6 +32,7 @@ fun commonModule() = module {
     singleOf(::OverviewRepository)
     singleOf(::StationRepository)
     singleOf(::DetailsRepository)
+    singleOf(::UsageStatisticsSettingRepository)
     singleOf(::UsageStatisticsSender)
     factoryOf(::DetailsMapper)
     factoryOf(::LocationsMapper)
@@ -37,4 +40,5 @@ fun commonModule() = module {
 
     viewModelOf(::DetailsViewModel)
     viewModelOf(::HomeViewModel)
+    viewModelOf(::AboutViewModel)
 }

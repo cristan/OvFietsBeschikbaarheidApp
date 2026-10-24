@@ -17,6 +17,8 @@ No identifier of you or your device is created, read or stored for this, so thes
 
 The app does not ask permission for this, because the data is only used to improve the app and has no or only minor consequences for your privacy (article 11.7a, paragraph 3, sub b of the Dutch Telecommunicatiewet). For the IP address that Google briefly processes, the legal basis is my legitimate interest in improving the app (article 6, paragraph 1, sub f of the GDPR). Google processes it on my behalf as a processor.
 
+You can turn this off at any time with the switch in the Info screen of the app.
+
 ### Explanation of permissions requested in the Android version of the app
 
 The list of permissions required by the Android version of the app can be found in the [AndroidManifest.xml](https://github.com/cristan/OvFietsBeschikbaarheidApp/blob/main/composeApp/src/androidMain/AndroidManifest.xml) file:

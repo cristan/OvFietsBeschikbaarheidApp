@@ -6,6 +6,7 @@ import co.touchlab.kermit.Severity
 import io.ktor.client.plugins.ResponseException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -14,6 +15,7 @@ import kotlinx.datetime.toLocalDateTime
 import kotlinx.io.IOException
 import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.model.AppRelease
+import nl.ovfietsbeschikbaarheid.repository.UsageStatisticsSettingRepository
 import kotlin.time.Clock
 import kotlin.time.Instant
 
@@ -30,6 +32,7 @@ fun usageCountId(now: Instant, appRelease: AppRelease, event: UsageEvent): Strin
 class UsageStatisticsSender(
     private val client: KtorApiClient,
     private val appRelease: AppRelease,
+    private val settingRepository: UsageStatisticsSettingRepository,
 ) {
     private val scope = CoroutineScope(SupervisorJob())
     private val sentWarnings = mutableSetOf<String>()
@@ -48,7 +51,7 @@ class UsageStatisticsSender(
     }
 
     fun onWarningLogged(message: String) {
-        send {
+        sendIfEnabled {
             val isFirstTime = sentWarningsMutex.withLock { sentWarnings.add(message) }
             if (isFirstTime) {
                 client.addWarning(message, appRelease)
@@ -57,13 +60,16 @@ class UsageStatisticsSender(
     }
 
     private fun count(event: UsageEvent) {
-        send {
+        sendIfEnabled {
             client.incrementUsageCount(usageCountId(Clock.System.now(), appRelease, event))
         }
     }
 
-    private fun send(request: suspend () -> Unit) {
+    private fun sendIfEnabled(request: suspend () -> Unit) {
         scope.launch {
+            if (!settingRepository.isEnabled.first()) {
+                return@launch
+            }
             try {
                 request()
             } catch (e: ResponseException) {
