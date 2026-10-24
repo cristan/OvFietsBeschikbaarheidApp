@@ -80,6 +80,7 @@ import nl.ovfietsbeschikbaarheid.resources.home_no_gps_location
 import nl.ovfietsbeschikbaarheid.resources.home_no_search_results_for
 import nl.ovfietsbeschikbaarheid.resources.home_search_label
 import nl.ovfietsbeschikbaarheid.resources.home_search_results_for
+import nl.ovfietsbeschikbaarheid.resources.loading
 import nl.ovfietsbeschikbaarheid.resources.map_white_background
 import nl.ovfietsbeschikbaarheid.resources.open_state_closed
 import nl.ovfietsbeschikbaarheid.resources.open_state_closes_at
@@ -244,14 +245,20 @@ private fun HomeView(
 @Composable
 private fun Loading() {
     val shimmerInstance = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
+    val loadingDescription = stringResource(Res.string.loading)
     LazyColumn(userScrollEnabled = false) {
         item {
             HorizontalBar(stringResource(Res.string.home_nearby))
         }
-        items(count = 20) {
+        items(count = 20) { index ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clearAndSetSemantics {
+                        if (index == 0) {
+                            contentDescription = loadingDescription
+                        }
+                    }
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
