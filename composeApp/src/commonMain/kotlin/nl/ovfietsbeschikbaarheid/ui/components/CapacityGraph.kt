@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalTime::class)
-
 package nl.ovfietsbeschikbaarheid.ui.components
 
 import androidx.compose.foundation.Canvas
@@ -64,7 +62,6 @@ import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.ceil
 import kotlin.math.max
-import kotlin.time.ExperimentalTime
 
 @Composable
 fun CapacityGraph(

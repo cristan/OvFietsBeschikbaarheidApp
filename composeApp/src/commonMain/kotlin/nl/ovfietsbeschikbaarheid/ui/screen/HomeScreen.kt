@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalTime::class)
-
 package nl.ovfietsbeschikbaarheid.ui.screen
 
 import androidx.compose.foundation.Image
@@ -99,7 +97,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @Composable
