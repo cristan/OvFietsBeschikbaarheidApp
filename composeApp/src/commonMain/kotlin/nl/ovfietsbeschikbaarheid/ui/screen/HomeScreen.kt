@@ -63,6 +63,7 @@ import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
 import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.resources.Res
+import nl.ovfietsbeschikbaarheid.resources.about_title
 import nl.ovfietsbeschikbaarheid.resources.app_name
 import nl.ovfietsbeschikbaarheid.resources.baseline_electric_bike_24
 import nl.ovfietsbeschikbaarheid.resources.content_description_clear_location
@@ -311,7 +312,7 @@ private fun HomeTopAppBar(onInfoClicked: () -> Unit) {
             IconButton(onClick = onInfoClicked) {
                 Icon(
                     imageVector = Icons.Outlined.Info,
-                    contentDescription = "Info",
+                    contentDescription = stringResource(Res.string.about_title),
                 )
             }
         }
