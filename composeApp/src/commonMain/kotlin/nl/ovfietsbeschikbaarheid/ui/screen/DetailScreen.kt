@@ -54,11 +54,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.window.core.layout.WindowSizeClass
 import com.valentinilk.shimmer.Shimmer
 import com.valentinilk.shimmer.ShimmerBounds
@@ -110,6 +114,7 @@ import nl.ovfietsbeschikbaarheid.resources.open_state_opens_today_at
 import nl.ovfietsbeschikbaarheid.resources.open_until
 import nl.ovfietsbeschikbaarheid.resources.opening_hours_title
 import nl.ovfietsbeschikbaarheid.resources.pedal_bike_24px
+import nl.ovfietsbeschikbaarheid.resources.rental_bikes_available_content_description
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.NativeMap
@@ -125,6 +130,7 @@ import nl.ovfietsbeschikbaarheid.ui.view.FullPageError
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsContent
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.ExperimentalTime
@@ -465,12 +471,19 @@ private fun ActualDetails(
 @Composable
 private fun Gauge(details: DetailsModel) {
     OvCard {
-        Text(stringResource(Res.string.details_amount_available))
         val rentalBikesAvailable = details.rentalBikesAvailable
+        Text(
+            text = stringResource(Res.string.details_amount_available),
+            modifier = if (rentalBikesAvailable == null) Modifier else Modifier.clearAndSetSemantics {}
+        )
         val amount = rentalBikesAvailable?.toString() ?: stringResource(Res.string.details_amount_unknown)
+        val amountDescription = rentalBikesAvailable?.let {
+            pluralStringResource(Res.plurals.rental_bikes_available_content_description, it, it)
+        } ?: amount
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .clearAndSetSemantics { contentDescription = amountDescription }
                 .padding(vertical = 24.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -502,9 +515,10 @@ private fun Gauge(details: DetailsModel) {
                 gapSize = 0.dp
             )
 
+            val amountFontSizeIgnoringFontScale = if (rentalBikesAvailable != null) 60.dp else 24.dp
             Text(
                 text = amount,
-                fontSize = if (rentalBikesAvailable != null) 60.sp else 24.sp
+                fontSize = with(LocalDensity.current) { amountFontSizeIgnoringFontScale.toSp() }
             )
         }
         details.openState?.let { openState ->
@@ -568,6 +582,7 @@ fun MapView(
         Text(
             text = stringResource(Res.string.location_title),
             style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.semantics { heading() }
         )
         val onAddressClick = {
             if (location != null) {
@@ -678,7 +693,9 @@ private fun OpeningHours(details: DetailsModel) {
         Text(
             text = stringResource(Res.string.opening_hours_title),
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier
+                .padding(bottom = 8.dp)
+                .semantics { heading() }
         )
         details.openingHoursInfo?.let {
             Text(it, Modifier.padding(bottom = 8.dp))
@@ -704,7 +721,9 @@ private fun Alternatives(
                 details.stationName
             ) else stringResource(Res.string.details_alternatives_at_this_location),
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier
+                .padding(bottom = 8.dp)
+                .semantics { heading() }
         )
         details.alternatives.forEach {
             TextButton(
