@@ -54,7 +54,7 @@ kotlin {
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.android)
 
-            implementation(libs.ktor.client.android)
+            implementation(libs.ktor.client.okhttp)
 
             implementation(libs.play.services.location)
             implementation(libs.play.services.coroutines)
