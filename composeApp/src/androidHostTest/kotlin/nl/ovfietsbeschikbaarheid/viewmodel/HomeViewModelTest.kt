@@ -37,6 +37,7 @@ import kotlin.test.assertIs
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalTime::class)
@@ -60,7 +61,7 @@ class HomeViewModelTest {
         every { locationPermissionHelper.isGpsTurnedOn() } returns true
         every { locationPermissionHelper.hasGpsPermission() } returns true
         coEvery { locationLoader.loadCurrentCoordinates() } coAnswers {
-            delay(500L)
+            delay(500L.milliseconds)
             Coordinates(51.46, 6.16)
         }
 
@@ -68,11 +69,11 @@ class HomeViewModelTest {
 
         assertSame(viewModel.content.value, HomeContent.Loading)
 
-        advanceTimeBy(700L)
+        advanceTimeBy(700L.milliseconds)
         // The GPS is loaded now, but we're still waiting on the backend
         assertSame(viewModel.content.value, HomeContent.Loading)
 
-        advanceTimeBy(400L)
+        advanceTimeBy(400L.milliseconds)
         // All data is now loaded
 
         assertIs<HomeContent.GpsContent>(viewModel.content.value)
@@ -88,7 +89,7 @@ class HomeViewModelTest {
         every { locationPermissionHelper.isGpsTurnedOn() } returns true
         every { locationPermissionHelper.hasGpsPermission() } returns true
         coEvery { locationLoader.loadCurrentCoordinates() } coAnswers {
-            delay(1000L)
+            delay(1000L.milliseconds)
             Coordinates(51.46, 6.16)
         }
         coEvery { locationLoader.getLastKnownCoordinates() }.returns(Coordinates(52.46, 6.16))
@@ -97,7 +98,7 @@ class HomeViewModelTest {
 
         assertSame(viewModel.content.value, HomeContent.Loading)
 
-        advanceTimeBy(700L)
+        advanceTimeBy(700L.milliseconds)
         // The locations are loaded now from the backend, but we're still waiting on the GPS. The distance based on the last known coordinates is shown.
 
         val initialViewModelContentValue = viewModel.content.value
@@ -105,7 +106,7 @@ class HomeViewModelTest {
         assertTrue(initialViewModelContentValue.isRefreshing)
         assertEquals(initialViewModelContentValue.locations[0].distance, "23,5 km")
 
-        advanceTimeBy(400L)
+        advanceTimeBy(400L.milliseconds)
         // All data is now loaded
 
         val finalViewModelContentValue = viewModel.content.value
@@ -127,7 +128,7 @@ class HomeViewModelTest {
             LocationOverviewWithDistanceModel("10 km", utrechtTerwijde)
         )
         coEvery { findNearbyLocationsUseCase.invoke("utrecht", allLocations) } coAnswers {
-            delay(1000L)
+            delay(1000L.milliseconds)
 
             nearbyUtrecht
         }
@@ -138,7 +139,7 @@ class HomeViewModelTest {
             LocationOverviewWithDistanceModel("10 km", utrecht)
         )
         coEvery { findNearbyLocationsUseCase.invoke("utrecht terwijde", allLocations) } coAnswers {
-            delay(500L)
+            delay(500L.milliseconds)
 
             nearbyUtrechtTerwijde
         }
@@ -167,7 +168,7 @@ class HomeViewModelTest {
 
         val searchTerm = allLocations[0].title
         coEvery { findNearbyLocationsUseCase.invoke(searchTerm, allLocations) } coAnswers {
-            delay(1000L)
+            delay(1000L.milliseconds)
 
             listOf(LocationOverviewWithDistanceModel("0 km", TestData.testLocationOverviewModel))
         }
@@ -248,7 +249,7 @@ class HomeViewModelTest {
         every { overviewRepository.filterLocations(any(), any()) } answers { callOriginal() }
 
         coEvery { overviewRepository.getOverviewData() } coAnswers {
-            delay(1000L)
+            delay(1000L.milliseconds)
             OverviewDataModel(listOf(TestData.testLocationOverviewModel), "4,65")
         }
 
@@ -407,7 +408,7 @@ class HomeViewModelTest {
     ) {
         coEvery { overviewRepository.getOverviewData() } coAnswers {
             if (delay != 0L) {
-                delay(delay)
+                delay(delay.milliseconds)
             }
             OverviewDataModel(allLocations, "4,65")
         }
