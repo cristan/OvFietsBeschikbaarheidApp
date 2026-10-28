@@ -315,7 +315,6 @@ private fun HomeTopAppBar(onInfoClicked: () -> Unit) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun GpsContent(
     gpsContent: HomeContent.GpsContent,
