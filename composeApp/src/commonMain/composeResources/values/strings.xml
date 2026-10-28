@@ -62,6 +62,11 @@
 
     <string name="details_alternatives_at">Op %1$s</string>
     <string name="details_alternatives_at_this_location">Op deze locatie</string>
+    <string name="details_nearest_alternative">Dichtstbijzijnde alternatief</string>
+    <plurals name="details_nearest_alternative_amount">
+        <item quantity="one">%1$d OV-fiets</item>
+        <item quantity="other">%1$d OV-fietsen</item>
+    </plurals>
 
     <string name="graph_today">Vandaag</string>
     <string name="graph_this_week_day">Deze %1$s</string>

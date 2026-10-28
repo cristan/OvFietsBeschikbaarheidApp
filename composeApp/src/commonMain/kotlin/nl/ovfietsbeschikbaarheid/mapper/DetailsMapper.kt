@@ -43,7 +43,9 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-class DetailsMapper() {
+class DetailsMapper(
+    private val nearestOpenLocationWithBikesMapper: NearestOpenLocationWithBikesMapper
+) {
     suspend fun convert(
         locationDTO: LocationDTO,
         allLocations: List<LocationOverviewModel>,
@@ -91,7 +93,10 @@ class DetailsMapper() {
         val rentalBikesAvailable = locationDTO.extra.rentalBikes
 
         val now = Clock.System.now()
+        val nowInNL = now.toLocalDateTime(dutchTimeZone)
         val graphDays = getGraphDays(rentalBikesAvailable, hourlyLocationCapacityDtos, now)
+
+        val openedLocation = allLocations.first { it.locationCode == locationDTO.extra.locationCode }
 
         return DetailsModel(
             description = locationDTO.description,
@@ -108,9 +113,14 @@ class DetailsMapper() {
             longitude = locationDTO.lng,
             stationName = allStations[locationDTO.stationCode],
             alternatives = alternatives,
+            nearestOpenLocationWithBikes = nearestOpenLocationWithBikesMapper.getNearestOpenLocationWithBikes(
+                openedLocation = openedLocation,
+                allLocations = allLocations,
+                dateTime = nowInNL
+            ),
             openState = locationDTO.openingHours?.let {
                 OpenStateMapper.getOpenState(
-                    locationDTO.extra.locationCode, it, now.toLocalDateTime(dutchTimeZone)
+                    locationDTO.extra.locationCode, it, nowInNL
                 )
             },
             graphDays = graphDays

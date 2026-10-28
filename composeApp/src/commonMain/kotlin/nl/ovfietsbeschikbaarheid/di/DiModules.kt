@@ -5,6 +5,7 @@ import dev.jordond.compass.geocoder.mobile
 import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
+import nl.ovfietsbeschikbaarheid.mapper.NearestOpenLocationWithBikesMapper
 import nl.ovfietsbeschikbaarheid.repository.AppCompatibilityRepository
 import nl.ovfietsbeschikbaarheid.repository.DetailsRepository
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
@@ -30,6 +31,7 @@ fun commonModule() = module {
     singleOf(::StationRepository)
     singleOf(::DetailsRepository)
     factoryOf(::DetailsMapper)
+    factoryOf(::NearestOpenLocationWithBikesMapper)
     factoryOf(::LocationsMapper)
     factoryOf(::FindNearbyLocationsUseCase)
 

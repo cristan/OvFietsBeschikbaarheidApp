@@ -32,7 +32,17 @@ data class DetailsModel(
     val longitude: Double,
     val stationName: String?,
     val alternatives: List<Details>,
+    val nearestOpenLocationWithBikes: NearestOpenLocationWithBikesModel?,
     val graphDays: List<GraphDayModel>,
+)
+
+data class NearestOpenLocationWithBikesModel(
+    val title: String,
+    val locationCode: String,
+    val fetchTime: Long,
+    val rentalBikesAvailable: Int,
+    val distance: String,
+    val openState: OpenState?,
 )
 
 data class GraphDayModel (
