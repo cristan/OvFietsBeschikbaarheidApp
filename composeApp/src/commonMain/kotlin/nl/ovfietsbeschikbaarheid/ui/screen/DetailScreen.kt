@@ -127,7 +127,6 @@ import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.time.ExperimentalTime
 
 @Composable
 fun DetailScreen(
@@ -733,7 +732,6 @@ fun DetailsLoadingPreview() {
     )
 }
 
-@OptIn(ExperimentalTime::class)
 @Preview(heightDp = 2000)
 @Preview(widthDp = 1483, heightDp = 928)
 @Composable

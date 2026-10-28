@@ -5,10 +5,8 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import nl.ovfietsbeschikbaarheid.repository.RatingStorageRepository
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-@OptIn(ExperimentalTime::class)
 class RatingEligibilityService(
     private val ratingStorageRepository: RatingStorageRepository
 ) {

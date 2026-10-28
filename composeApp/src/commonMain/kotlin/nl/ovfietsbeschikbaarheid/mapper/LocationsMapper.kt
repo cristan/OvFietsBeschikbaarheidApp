@@ -11,7 +11,6 @@ import nl.ovfietsbeschikbaarheid.model.LocationType
 import nl.ovfietsbeschikbaarheid.util.DecimalFormatter
 import kotlin.math.roundToInt
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 class LocationsMapper(
     private val decimalFormatter: DecimalFormatter
@@ -38,7 +37,6 @@ class LocationsMapper(
         Pair("OV-ebike Maastricht", "Maastricht - OV-ebike"),
     )
 
-    @OptIn(ExperimentalTime::class)
     fun map(locations: List<LocationDTO>): List<LocationOverviewModel> {
         val minutesSinceLastUpdate = locations.getMinutesSinceLastUpdate(Clock.System.now())
         val lastUpdateTooLongAgo = minutesSinceLastUpdate > 15

@@ -39,10 +39,8 @@ import nl.ovfietsbeschikbaarheid.ui.navigation.Details
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-@OptIn(ExperimentalTime::class)
 class DetailsMapper() {
     suspend fun convert(
         locationDTO: LocationDTO,

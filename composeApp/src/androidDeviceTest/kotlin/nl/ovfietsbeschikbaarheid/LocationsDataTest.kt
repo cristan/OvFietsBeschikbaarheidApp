@@ -7,10 +7,8 @@ import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.util.DecimalFormatter
 import org.junit.Test
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-@OptIn(ExperimentalTime::class)
 class LocationsDataTest {
 
     @Test

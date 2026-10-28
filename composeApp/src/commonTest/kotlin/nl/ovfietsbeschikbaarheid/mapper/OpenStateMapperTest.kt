@@ -11,9 +11,7 @@ import nl.ovfietsbeschikbaarheid.resources.day_tomorrow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 class OpenStateMapperTest {
 
     @Test
