@@ -27,8 +27,6 @@ import nl.ovfietsbeschikbaarheid.resources.Res
 import nl.ovfietsbeschikbaarheid.resources.about_app_text_1
 import nl.ovfietsbeschikbaarheid.resources.about_app_text_1_on_github
 import nl.ovfietsbeschikbaarheid.resources.about_app_text_2
-import nl.ovfietsbeschikbaarheid.resources.about_app_text_3
-import nl.ovfietsbeschikbaarheid.resources.about_app_text_4
 import nl.ovfietsbeschikbaarheid.resources.about_app_title
 import nl.ovfietsbeschikbaarheid.resources.about_lock_text_1
 import nl.ovfietsbeschikbaarheid.resources.about_lock_text_2
@@ -149,11 +147,6 @@ private fun AboutView(
                         )
 
                         append(stringResource(Res.string.about_app_text_2))
-                        withStyledLink(
-                            url = "https://www.freepik.com/free-vector/map-white-background_4485469.htm",
-                            text = stringResource(Res.string.about_app_text_3)
-                        )
-                        append(stringResource(Res.string.about_app_text_4))
                     },
                     modifier = Modifier.padding(top = 8.dp),
                     style = MaterialTheme.typography.bodyLarge

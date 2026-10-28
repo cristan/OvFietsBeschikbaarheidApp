@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -79,7 +78,7 @@ import nl.ovfietsbeschikbaarheid.resources.home_no_gps_location
 import nl.ovfietsbeschikbaarheid.resources.home_no_search_results_for
 import nl.ovfietsbeschikbaarheid.resources.home_search_label
 import nl.ovfietsbeschikbaarheid.resources.home_search_results_for
-import nl.ovfietsbeschikbaarheid.resources.map_white_background
+import nl.ovfietsbeschikbaarheid.resources.map_with_pin
 import nl.ovfietsbeschikbaarheid.resources.open_state_closed
 import nl.ovfietsbeschikbaarheid.resources.open_state_closes_at
 import nl.ovfietsbeschikbaarheid.resources.open_state_closing_soon
@@ -397,11 +396,9 @@ private fun GpsRequestSomething(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            painter = painterResource(Res.drawable.map_white_background),
+            painter = painterResource(Res.drawable.map_with_pin),
             contentDescription = null,
-            modifier = Modifier
-                .padding(bottom = 16.dp)
-                .width(260.dp)
+            modifier = Modifier.padding(bottom = 16.dp)
         )
 
         if (rationaleText != null) {
