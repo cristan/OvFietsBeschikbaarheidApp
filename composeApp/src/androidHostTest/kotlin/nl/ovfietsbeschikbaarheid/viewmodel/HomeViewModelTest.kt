@@ -67,11 +67,11 @@ class HomeViewModelTest {
 
         viewModel.onScreenLaunched()
 
-        assertSame(viewModel.content.value, HomeContent.Loading)
+        assertSame(HomeContent.Loading, viewModel.content.value)
 
         advanceTimeBy(700L.milliseconds)
         // The GPS is loaded now, but we're still waiting on the backend
-        assertSame(viewModel.content.value, HomeContent.Loading)
+        assertSame(HomeContent.Loading, viewModel.content.value)
 
         advanceTimeBy(400L.milliseconds)
         // All data is now loaded
@@ -96,7 +96,7 @@ class HomeViewModelTest {
 
         viewModel.onScreenLaunched()
 
-        assertSame(viewModel.content.value, HomeContent.Loading)
+        assertSame(HomeContent.Loading, viewModel.content.value)
 
         advanceTimeBy(700L.milliseconds)
         // The locations are loaded now from the backend, but we're still waiting on the GPS. The distance based on the last known coordinates is shown.
