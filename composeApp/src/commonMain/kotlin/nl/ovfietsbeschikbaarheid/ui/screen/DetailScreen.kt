@@ -513,7 +513,7 @@ private fun Gauge(details: DetailsModel) {
                     is OpenState.Closed -> {
                         Text(text = stringResource(Res.string.open_state_closed), color = Red50)
                         if (openState.openDay != null) {
-                            val openDay = stringResource(openState.openDay).lowercase()
+                            val openDay = stringResource(openState.openDay)
                             Text(text = " " + stringResource(Res.string.open_state_opens_later_at, openDay, openState.openTime))
                         } else {
                             Text(text = " " + stringResource(Res.string.open_state_opens_today_at, openState.openTime))
@@ -685,7 +685,7 @@ private fun OpeningHours(details: DetailsModel) {
         }
         details.openingHours.forEach {
             Row(Modifier.fillMaxWidth()) {
-                Text(stringResource(it.dayOfWeek), Modifier.weight(1f))
+                Text(stringResource(it.dayOfWeek).replaceFirstChar { char -> char.titlecase() }, Modifier.weight(1f))
                 Text("${it.startTime} - ${it.endTime}", Modifier.weight(1f))
             }
         }
@@ -789,7 +789,7 @@ fun DetailsPreview() {
     val graphDay = GraphDayModel(
         isToday = true,
         "M",
-        "Maandag",
+        "maandag",
         history,
         prediction,
         "",
