@@ -104,7 +104,7 @@ class HomeViewModelTest {
         val initialViewModelContentValue = viewModel.content.value
         assertIs<HomeContent.GpsContent>(initialViewModelContentValue)
         assertTrue(initialViewModelContentValue.isRefreshing)
-        assertEquals(initialViewModelContentValue.locations[0].distance, "23,5 km")
+        assertEquals("23,5 km", initialViewModelContentValue.locations[0].distance)
 
         advanceTimeBy(400L.milliseconds)
         // All data is now loaded
@@ -112,7 +112,7 @@ class HomeViewModelTest {
         val finalViewModelContentValue = viewModel.content.value
         assertIs<HomeContent.GpsContent>(finalViewModelContentValue)
         assertFalse(finalViewModelContentValue.isRefreshing)
-        assertEquals(finalViewModelContentValue.locations[0].distance, "103,1 km")
+        assertEquals("103,1 km", finalViewModelContentValue.locations[0].distance)
     }
 
     @Test
