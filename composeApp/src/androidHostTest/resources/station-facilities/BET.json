@@ -1,0 +1,1141 @@
+{
+  "links": {},
+  "payload": [
+    {
+      "type": "stationfacility",
+      "name": "Lift",
+      "stationFacilityType": "ASSISTANCE",
+      "nearbyMeMarkerIconName": "elevator",
+      "identifiers": [
+        "lift"
+      ],
+      "categories": [
+        "Services",
+        "station-service",
+        "stationfacility",
+        "station-assistance"
+      ],
+      "locations": [
+        {
+          "distance": 5.816962692584781,
+          "name": "Lift Spoor 2/3 eilandperron",
+          "stationCode": "BET",
+          "lat": 51.509872578457184,
+          "lng": 5.389171136745301,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/NL:CHB:LiftEquipment:8400112_002"
+          },
+          "description": "Lift Spoor 2/3 eilandperron",
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "NL:CHB:LiftEquipment:8400112_002",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Beschikbaar"
+        },
+        {
+          "distance": 22.030807398290907,
+          "name": "Lift Spoor 4 nabij bew. stalling",
+          "stationCode": "BET",
+          "lat": 51.50975808622408,
+          "lng": 5.388878571517307,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/NL:CHB:LiftEquipment:8400112_003"
+          },
+          "description": "Lift Spoor 4 nabij bew. stalling",
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "NL:CHB:LiftEquipment:8400112_003",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Beschikbaar"
+        },
+        {
+          "distance": 25.946740125965285,
+          "name": "Lift Spoor 1 centrumzijde",
+          "stationCode": "BET",
+          "lat": 51.509963052366714,
+          "lng": 5.389461858353824,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/NL:CHB:LiftEquipment:8400112_001"
+          },
+          "description": "Lift Spoor 1 centrumzijde",
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "NL:CHB:LiftEquipment:8400112_001",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Beschikbaar"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Lift_logo_20170615-151930.png"
+      },
+      "primaryColor": "000000",
+      "open": "Yes",
+      "keywords": [],
+      "stationBound": true,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Lift_Header_20180802-111438.JPG"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "Toilet",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "toilet",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "distance": 6.671705022953113,
+          "name": "Toilet station Best",
+          "stationCode": "BET",
+          "lat": 51.50984,
+          "lng": 5.3891,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Toilet-37"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/51.50984,5.3891"
+          },
+          "description": "station Best",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "05:00",
+              "endTime": "01:15",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "05:00",
+              "endTime": "01:15",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "05:00",
+              "endTime": "01:15",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "05:00",
+              "endTime": "01:15",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "05:00",
+              "endTime": "02:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "06:00",
+              "endTime": "02:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "06:45",
+              "endTime": "01:15",
+              "closesNextDay": true
+            }
+          ],
+          "extra": {},
+          "infoImages": [
+            {
+              "name": "locationInfo_Toilet-37_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Toilet_Header_20240325-102138.jpg"
+              },
+              "title": "Memo",
+              "body": "Op dit station kunt u gebruik maken van onze toiletfaciliteiten. U betaalt hiervoor € 0,50."
+            },
+            {
+              "name": "locationInfo_Toilet-37_TariefToelichting",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Toilet_Header_20240325-102138.jpg"
+              },
+              "title": "Tarief Toelichting",
+              "body": "Op dit station kunt u gebruik maken van onze toiletfaciliteiten. U betaalt hiervoor € 0,50."
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Toilet-37",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Open - tot 01:15 uur",
+          "sapId": "//"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Toilet_logo_20190813-115728.png"
+      },
+      "primaryColor": "000000",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "05:00",
+          "endTime": "01:15",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "05:00",
+          "endTime": "01:15",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "05:00",
+          "endTime": "01:15",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "05:00",
+          "endTime": "01:15",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "05:00",
+          "endTime": "02:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "06:00",
+          "endTime": "02:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "06:45",
+          "endTime": "01:15",
+          "closesNextDay": true
+        }
+      ],
+      "keywords": [],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Toilet_Header_20240325-102138.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": "Open - tot 01:15 uur"
+    },
+    {
+      "type": "stationfacility",
+      "name": "Geleidelijnen",
+      "stationFacilityType": "ASSISTANCE",
+      "nearbyMeMarkerIconName": "info",
+      "identifiers": [
+        "stationinfoBlacklist"
+      ],
+      "categories": [
+        "Services",
+        "station-service",
+        "stationfacility",
+        "station-service",
+        "station-assistance"
+      ],
+      "locations": [
+        {
+          "name": "Geleidelijnen station Best",
+          "stationCode": "BET",
+          "location": {},
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Geleidelijnen-42"
+          },
+          "infoUrl": "http://www.ns.nl/geleidelijnen/",
+          "description": "Best",
+          "extra": {},
+          "infoImages": [
+            {
+              "name": "locationInfo_Geleidelijnen-42_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Geleidelijnen_Header_20180410-151744.JPG"
+              },
+              "title": "Memo",
+              "body": "Op dit station zijn geleidelijnen aanwezig.\r\n\r\nWilt u meer informatie over het reizen met een visuele beperking , klik dan hier. \r\n\r\nhttps://www.ns.nl/reisinformatie/reizen-met-een-beperking/visuele-beperking\r\n"
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Geleidelijnen-42",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "sapId": "//"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Geleidelijnen_logo_20230420-131716.png"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": true,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Geleidelijnen_Header_20180410-151744.JPG"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "Wachtruimte",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "waiting-room",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service",
+        "stationfacility",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "name": "Wachtruimte station Best",
+          "stationCode": "BET",
+          "location": {},
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Wachtruimte-79"
+          },
+          "description": "Best",
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Wachtruimte-79",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "sapId": "//"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Wachtruimte_logo_20180813-153115.JPG"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": true,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Wachtruimte_Header_20240325-102239.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "P+R gratis",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "info",
+      "identifiers": [
+        "park_ride_free"
+      ],
+      "categories": [
+        "Services",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "distance": 59.3634879044787,
+          "name": "Parkeer+Reis gratis Spoorstraat",
+          "stationCode": "BET",
+          "lat": 51.51017,
+          "lng": 5.38836,
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/P+R%20gratis-28"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/51.51017,5.38836"
+          },
+          "infoUrl": "http://www.ns.nl/deur-tot-deur/consumenten/q-park-p-r.html",
+          "description": "Spoorstraat",
+          "extra": {
+            "type": "PARK_RIDE_FREE"
+          },
+          "infoImages": [
+            {
+              "name": "locationInfo_P+R gratis-28_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-PRgratis_Header_20240318-183939.jpg"
+              },
+              "title": "Memo",
+              "body": "U kunt uw auto hier gratis parkeren op het parkeerterrein op loopafstand van het station."
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "P+R gratis-28",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "street": "Spoorstraat",
+          "houseNumber": "",
+          "postalCode": "",
+          "city": "Best"
+        },
+        {
+          "distance": 69.24043700636335,
+          "name": "Parkeer+Reis gratis Vincent van Goghstraat",
+          "stationCode": "BET",
+          "lat": 51.50999,
+          "lng": 5.38811,
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/P+R%20gratis-29"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/51.50999,5.38811"
+          },
+          "infoUrl": "http://www.ns.nl/deur-tot-deur/consumenten/q-park-p-r.html",
+          "description": "Vincent van Goghstraat",
+          "extra": {
+            "type": "PARK_RIDE_FREE"
+          },
+          "infoImages": [
+            {
+              "name": "locationInfo_P+R gratis-29_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-PRgratis_Header_20240318-183939.jpg"
+              },
+              "title": "Memo",
+              "body": "U kunt uw auto hier gratis parkeren op het parkeerterrein op loopafstand van het station."
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "P+R gratis-29",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "street": "Vincent van Goghstraat",
+          "houseNumber": "",
+          "postalCode": "",
+          "city": "Best"
+        },
+        {
+          "distance": 98.15517538716044,
+          "name": "Parkeer+Reis gratis Hoofdstraat",
+          "stationCode": "BET",
+          "lat": 51.51077,
+          "lng": 5.38934,
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/P+R%20gratis-27"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/51.51077,5.38934"
+          },
+          "infoUrl": "http://www.ns.nl/deur-tot-deur/consumenten/q-park-p-r.html",
+          "description": "Hoofdstraat",
+          "extra": {
+            "type": "PARK_RIDE_FREE"
+          },
+          "infoImages": [
+            {
+              "name": "locationInfo_P+R gratis-27_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-PRgratis_Header_20240318-183939.jpg"
+              },
+              "title": "Memo",
+              "body": "U kunt uw auto hier gratis parkeren op het parkeerterrein op loopafstand van het station."
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "P+R gratis-27",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "street": "Hoofdstraat",
+          "houseNumber": "",
+          "postalCode": "",
+          "city": "Best"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-ParkeerReisgratis_logo_20170915-085439.png"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-PRgratis_Header_20240318-183939.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [
+        {
+          "name": "info_4",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-PRgratis_info_4_20240318-184003.jpg"
+          },
+          "title": "Parkeren bij het station ",
+          "subtitle": "",
+          "body": "<p><span style='color: rgb(7, 7, 33); text-transform: none; text-indent: 0px; letter-spacing: normal; font-family: \"NS Sans\", \"Segoe UI\", Myriad, Verdana, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; word-spacing: 0px; float: none; display: inline !important; white-space: normal; orphans: 2; widows: 2; background-color: rgb(230, 230, 233); font-variant-ligatures: normal; font-variant-caps: normal; -webkit-text-stroke-width: 0px; text-decoration-style: initial; text-decoration-color: initial;'><span style='color: rgb(6, 9, 34); line-height: 107%; font-family: \"Calibri\",sans-serif; font-size: 11pt; mso-ascii-theme-font: minor-latin; mso-fareast-font-family: Calibri; mso-fareast-theme-font: minor-latin; mso-hansi-theme-font: minor-latin; mso-bidi-font-family: Arial; mso-ansi-language: NL; mso-fareast-language: EN-US; mso-bidi-language: AR-SA;'>U kunt uw auto hier gratis parkeren op het parkeerterrein op loopafstand van het station.</span></span></p>",
+          "buttonText": "Meer informatie",
+          "buttonLink": "https://www.ns.nl/deur-tot-deur/consumenten/q-park-p-r.html"
+        }
+      ],
+      "nextOpeningTime": "0/3 locaties geopend"
+    },
+    {
+      "type": "stationfacility",
+      "name": "Onbemenst fietsparkeren",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "bike",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "distance": 46.18953949545248,
+          "name": "Onbewaakt fietsparkeren Station Best",
+          "stationCode": "BET",
+          "lat": 51.5095,
+          "lng": 5.38892,
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Onbemenst%20fietsparkeren-50"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/51.5095,5.38892"
+          },
+          "infoUrl": "http://www.ns.nl/deur-tot-deur/ns-fietsenstalling/onbewaakte-fietsplaatsen.html",
+          "description": "Station Best",
+          "extra": {},
+          "infoImages": [
+            {
+              "name": "locationInfo_Onbemenst fietsparkeren-50_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Onbemenstfietsparkeren_Header_20240327-154250.jpg"
+              },
+              "title": "Memo",
+              "body": "Op dit station kunt u  gebruikmaken van onbewaakte fietsplaatsen.\r\n"
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Onbemenst fietsparkeren-50",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "street": "",
+          "houseNumber": "",
+          "postalCode": "",
+          "city": ""
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Onbewaaktfietsparkeren_logo_20170926-134846.png"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Onbemenstfietsparkeren_Header_20240327-154250.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "Kaartautomaat NS",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "tickets",
+      "identifiers": [
+        "stationinfoBlacklist"
+      ],
+      "categories": [
+        "Services",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "name": "Kaartautomaat NS Station Best",
+          "stationCode": "BET",
+          "location": {},
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Kaartautomaat%20NS-33"
+          },
+          "extra": {},
+          "infoImages": [
+            {
+              "name": "locationInfo_Kaartautomaat NS-33_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-KaartautomaatNS_Header_20180326-114058.JPG"
+              },
+              "title": "Memo",
+              "body": "Bij een kaartautomaat kunt u saldo en producten laden voor op uw OV-chipkaart. Daarnaast kunt u eenmalige chipkaarten met en zonder toeslag laden. Treinkaartjes naar België, het westelijk deel van Duitsland en Luxemburg zijn hier ook verkrijgbaar.\r\n\r\nU kunt bij elke kaartautomaat betalen met PIN en de meest voorkomende credit cards.\r\nOp elk station is minimaal één kaartautomaat beschikbaar waar u met muntgeld kunt betalen.\r\n\r\nVoor meer informatie over de NS kaartautomaat, bezoek onderstaande pagina:\r\n\r\n<a href=\"\r\nhttps://www.ns.nl/reisinformatie/reizen-met-ov-chipkaart/ns-kaartautomaten.html/\">ns-kaartautomaten</a>"
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Kaartautomaat NS-33",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "sapId": "//"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-KaartautomaatNS_logo_20230316-165143.png"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-KaartautomaatNS_Header_20180326-114058.JPG"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "OV-chipkaart poorten",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "info",
+      "identifiers": [
+        "stationinfoBlacklist"
+      ],
+      "categories": [
+        "Services",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "name": "OV-chipkaart poorten Station Best",
+          "stationCode": "BET",
+          "location": {},
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/OV-chipkaart%20poorten-19"
+          },
+          "extra": {},
+          "infoImages": [
+            {
+              "name": "locationInfo_OV-chipkaart poorten-19_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-OVchipkaartpoorten_Header_20180320-103355.png"
+              },
+              "title": "Memo",
+              "body": "Gebruik de In- en Uitcheckpoorten om toegang te krijgen tot het station.\r\n\r\nZie voor meer informatie over In- en Uitcheckpalen:\r\nhttps://www.ns.nl/reisinformatie/reizen-met-ov-chipkaart/in-en-uitchecken-poortjes-en-paaltjes.html en https://www.ns.nl/reisinformatie/inchecken-uitchecken/betaalpas "
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "OV-chipkaart poorten-19",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "sapId": "//"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-OVchipkaartpoorten_logo_20230316-171313.png"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-OVchipkaartpoorten_Header_20180320-103355.png"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "Service- en alarmzuil",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "info",
+      "identifiers": [
+        "stationinfoBlacklist"
+      ],
+      "categories": [
+        "Services",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "name": "Service- en alarmzuil Station Best",
+          "stationCode": "BET",
+          "location": {},
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Service-%20en%20alarmzuil-37"
+          },
+          "extra": {},
+          "infoImages": [
+            {
+              "name": "locationInfo_Service- en alarmzuil-37_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Serviceenalarmzuil_Header_20180411-135215.JPG"
+              },
+              "title": "Memo",
+              "body": "Bij de NS-Servicezuil kunt u 24 uur per dag vragen\r\nstellen aan NS-medewerkers. Dit werkt als volgt: u\r\ndrukt op de ‘info-knop’ en krijgt een medewerker\r\nvan NS aan de lijn die u kan helpen met vragen of\r\ninformatie over uw trein, uw reisproduct en\r\noverige reisinformatie.\r\n\r\nVoor noodgevallen gebruikt u de alarmknop om contact te krijgen met een NS-medewerker."
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Service- en alarmzuil-37",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "sapId": "//"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Serviceenalarmzuil_logo_20230316-171812.png"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Serviceenalarmzuil_Header_20180411-135215.JPG"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "Reisassistentie NS",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "info",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "Station-assistance",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "name": "Perron",
+          "stationCode": "BET",
+          "location": {},
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Reisassistentie%20NS-22"
+          },
+          "extra": {},
+          "infoImages": [
+            {
+              "name": "locationInfo_Reisassistentie NS-22_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-ReisassistentieNS_Header_20240813-134009.png"
+              },
+              "title": "Memo",
+              "body": "Reis je met een beperking en heb je hulp nodig bij het in-, over- of uitstappen? Of heb je een visuele beperking en iemand nodig om je door het station te begeleiden? Dan kun je gratis gebruikmaken van NS Reisassistentie. Met NS Reisassistentie helpt een opgeleide assistentieverlener je op het station en bij het in-, over- of uitstappen.\r\nhttps://www.ns.nl/reisinformatie/reizen-met-een-beperking/ns-reisassistentie.html"
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Reisassistentie NS-22",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "street": "",
+          "houseNumber": "",
+          "postalCode": "",
+          "city": ""
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-ReisassistentieNS_logo_20230315-175546.png"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-ReisassistentieNS_Header_20240813-134009.png"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "Watertappunt",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "water-tap",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service",
+        "stationfacility",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "distance": 40.86689137664641,
+          "name": "Watertappunt",
+          "stationCode": "BET",
+          "lat": 51.509538,
+          "lng": 5.388998,
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Watertappunt-216"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/51.509538,5.388998"
+          },
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Watertappunt-216",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "sapId": "6000/BET000/17"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Watertappunt_logo_20181128-143422.JPG"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": true,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Watertappunt_Header_20181122-141840.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "AED",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "aed",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service",
+        "stationfacility",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "distance": 28.678664292415352,
+          "name": "AED",
+          "stationCode": "BET",
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/AED-51"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/51.509651,5.388992"
+          },
+          "description": "AED Met rug naar OVCP barrier",
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "AED-51",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Open - tot 23:59 uur",
+          "sapId": "//"
+        }
+      ],
+      "primaryColor": "000000",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "00:00",
+          "endTime": "23:59",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "00:00",
+          "endTime": "23:59",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "00:00",
+          "endTime": "23:59",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "00:00",
+          "endTime": "23:59",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "00:00",
+          "endTime": "23:59",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "00:00",
+          "endTime": "23:59",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "00:00",
+          "endTime": "23:59",
+          "closesNextDay": false
+        }
+      ],
+      "keywords": [],
+      "stationBound": true,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-AED_Header_20220317-103455.png"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "OV-fiets",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "bike",
+      "identifiers": [
+        "ovfiets"
+      ],
+      "categories": [
+        "Services",
+        "station-service",
+        "Services",
+        "stationfacility",
+        "servicerich",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "distance": 168.84341926010575,
+          "name": "BET - OV-fiets - Best",
+          "stationCode": "BET",
+          "lat": 51.50841,
+          "lng": 5.38957,
+          "open": "No",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-bet001"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/51.50841,5.38957"
+          },
+          "description": "Best",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "06:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "06:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "06:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "06:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "06:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "06:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "06:00",
+              "endTime": "22:00",
+              "closesNextDay": false
+            }
+          ],
+          "extra": {
+            "serviceType": "Bemenst",
+            "rentalBikes": "36",
+            "locationCode": "bet001",
+            "type": "OV_FIETS"
+          },
+          "infoImages": [
+            {
+              "name": "locationInfo_Bemenst OV-fiets uitgiftepunt-bet001_Bijzonderheden",
+              "title": "Bijzonderheden",
+              "body": ""
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Bemenst OV-fiets uitgiftepunt-bet001",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Gesloten - opent 06:00 uur",
+          "street": "Spoorstraat ",
+          "houseNumber": "3",
+          "postalCode": "5684 AA",
+          "city": "Best"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-OVfiets_logo_20151211-111333.jpg"
+      },
+      "primaryColor": "000066",
+      "open": "No",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "06:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "06:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "06:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "06:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "06:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "06:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "06:00",
+          "endTime": "22:00",
+          "closesNextDay": false
+        }
+      ],
+      "keywords": [
+        "Fiets & Service",
+        "fietsenstalling",
+        "fietsverhuur",
+        "kluis",
+        "OV-producten",
+        "fiets"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-ZelfserviceOVfietsuitgiftepunt_Header_20240327-154654.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": "Gesloten - opent 06:00 uur"
+    }
+  ],
+  "meta": {}
+}
