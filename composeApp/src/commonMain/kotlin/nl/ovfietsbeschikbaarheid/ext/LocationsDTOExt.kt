@@ -26,3 +26,24 @@ fun LocationDTO.getServiceType(): ServiceType? {
         }
     }
 }
+
+fun LocationDTO.getDirections(): String? {
+    val directions = infoImages.find { it.title == "Routebeschrijving" }?.body?.trimEnd()
+    return if (directions != "") directions else null
+}
+
+fun LocationDTO.getAbout(): String? = infoImages.find { it.title == "Bijzonderheden" }?.body?.trimEnd()
+
+// Filled in for example at Leiden Centraal, Centrumzijde
+fun LocationDTO.getOpeningHoursInfo(): String? = infoImages.find { it.title == "Info openingstijden" }?.body
+
+fun LocationDTO.getDisruptions(): String? = infoImages.find { it.title == "Storing" }?.body
+
+fun LocationDTO.isAlternativeTo(otherStationCode: String, otherLocationCode: String): Boolean {
+    return otherStationCode == stationCode &&
+
+            // Except BSLC. This isn't a station, these are self service stations
+            otherStationCode != "BSLC" &&
+
+            otherLocationCode != extra.locationCode
+}

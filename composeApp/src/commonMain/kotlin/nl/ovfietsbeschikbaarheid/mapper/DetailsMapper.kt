@@ -13,7 +13,12 @@ import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.ext.atEndOfDayIn
 import nl.ovfietsbeschikbaarheid.ext.dutchTimeZone
+import nl.ovfietsbeschikbaarheid.ext.getAbout
+import nl.ovfietsbeschikbaarheid.ext.getDirections
+import nl.ovfietsbeschikbaarheid.ext.getDisruptions
+import nl.ovfietsbeschikbaarheid.ext.getOpeningHoursInfo
 import nl.ovfietsbeschikbaarheid.ext.getServiceType
+import nl.ovfietsbeschikbaarheid.ext.isAlternativeTo
 import nl.ovfietsbeschikbaarheid.ext.toFullDayOfWeek
 import nl.ovfietsbeschikbaarheid.ext.toIsoDayNumber
 import nl.ovfietsbeschikbaarheid.ext.toNarrowDayOfWeek
@@ -51,11 +56,10 @@ class DetailsMapper() {
         hourlyLocationCapacityDtos: List<HourlyLocationCapacityDto>
     ): DetailsModel {
 
-        val directions = locationDTO.infoImages.find { it.title == "Routebeschrijving" }?.body?.trimEnd()
-        val about = locationDTO.infoImages.find { it.title == "Bijzonderheden" }?.body?.trimEnd()
-        // Filled in for example at Leiden Centraal, Centrumzijde
-        val openingHoursInfo = locationDTO.infoImages.find { it.title == "Info openingstijden" }?.body
-        val disruptions = locationDTO.infoImages.find { it.title == "Storing" }?.body
+        val directions = locationDTO.getDirections()
+        val about = locationDTO.getAbout()
+        val openingHoursInfo = locationDTO.getOpeningHoursInfo()
+        val disruptions = locationDTO.getDisruptions()
 
         val location =
             if (locationDTO.city == "" || locationDTO.city == null || locationDTO.street == null || locationDTO.houseNumber == null || locationDTO.postalCode == null) {
@@ -78,14 +82,7 @@ class DetailsMapper() {
         }
 
         val alternatives = allLocations.filter {
-            // Find others with the same station code
-            it.stationCode == locationDTO.stationCode &&
-
-                    // Except BSLC. This isn't a station, these are self service stations
-                    it.stationCode != "BSLC" &&
-
-                    // Don't pick yourself
-                    it.locationCode != locationDTO.extra.locationCode
+            locationDTO.isAlternativeTo(it.stationCode, it.locationCode)
         }.map { Details(it.title, it.locationCode, it.fetchTime) }
 
         val rentalBikesAvailable = locationDTO.extra.rentalBikes
@@ -100,7 +97,7 @@ class DetailsMapper() {
             rentalBikesAvailable = rentalBikesAvailable,
             capacity = locationDTO.maxCapacity,
             serviceType = locationDTO.getServiceType(),
-            directions = if (directions != "") directions else null,
+            directions = directions,
             about = about,
             disruptions = disruptions,
             location = location,
