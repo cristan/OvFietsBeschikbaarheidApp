@@ -1,5 +1,10 @@
 package nl.ovfietsbeschikbaarheid.repository
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
@@ -7,9 +12,12 @@ import nl.ovfietsbeschikbaarheid.model.OverviewDataModel
 
 class OverviewRepository(
     private val locationsMapper: LocationsMapper,
-    private val httpClient: KtorApiClient
+    private val httpClient: KtorApiClient,
+    private val locationsCacheRepository: LocationsCacheRepository,
 ) {
     private var lastResult: OverviewDataModel? = null
+
+    private val storeScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     /**
      * Returns the last cached result.
@@ -25,6 +33,7 @@ class OverviewRepository(
 
     suspend fun getOverviewData(): OverviewDataModel {
         val locations = httpClient.getLocations()
+        storeScope.launch { locationsCacheRepository.store(locations) }
         val mappedLocations = locationsMapper.map(locations)
         val pricePer24Hours = locationsMapper.getPricePer24Hours(locations)
         val result = OverviewDataModel(
@@ -33,6 +42,10 @@ class OverviewRepository(
         )
         lastResult = result
         return result
+    }
+
+    suspend fun getStoredLocationsWithoutRentalBikesAvailable(): List<LocationOverviewModel>? {
+        return locationsCacheRepository.getLocations()?.let { locationsMapper.mapWithoutRentalBikesAvailable(it) }
     }
 
     fun filterLocations(allLocations: List<LocationOverviewModel>, searchTerm: String): List<LocationOverviewModel> {
