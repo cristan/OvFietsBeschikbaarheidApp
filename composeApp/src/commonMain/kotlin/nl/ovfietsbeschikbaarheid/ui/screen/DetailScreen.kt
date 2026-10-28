@@ -25,6 +25,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,6 +34,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
@@ -84,6 +88,7 @@ import nl.ovfietsbeschikbaarheid.resources.Res
 import nl.ovfietsbeschikbaarheid.resources.baseline_directions_24
 import nl.ovfietsbeschikbaarheid.resources.capacity_graph_title
 import nl.ovfietsbeschikbaarheid.resources.content_description_back
+import nl.ovfietsbeschikbaarheid.resources.content_description_favourite
 import nl.ovfietsbeschikbaarheid.resources.content_description_navigate
 import nl.ovfietsbeschikbaarheid.resources.day_1
 import nl.ovfietsbeschikbaarheid.resources.day_2
@@ -101,18 +106,13 @@ import nl.ovfietsbeschikbaarheid.resources.details_coordinates
 import nl.ovfietsbeschikbaarheid.resources.details_no_data_message
 import nl.ovfietsbeschikbaarheid.resources.details_no_data_title
 import nl.ovfietsbeschikbaarheid.resources.location_title
-import nl.ovfietsbeschikbaarheid.resources.open_state_closed
-import nl.ovfietsbeschikbaarheid.resources.open_state_closes_at
-import nl.ovfietsbeschikbaarheid.resources.open_state_closing_soon
-import nl.ovfietsbeschikbaarheid.resources.open_state_open_247
-import nl.ovfietsbeschikbaarheid.resources.open_state_opens_later_at
-import nl.ovfietsbeschikbaarheid.resources.open_state_opens_today_at
 import nl.ovfietsbeschikbaarheid.resources.open_until
 import nl.ovfietsbeschikbaarheid.resources.opening_hours_title
 import nl.ovfietsbeschikbaarheid.resources.pedal_bike_24px
 import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.ui.components.CapacityGraph
 import nl.ovfietsbeschikbaarheid.ui.components.NativeMap
+import nl.ovfietsbeschikbaarheid.ui.components.OpenStateText
 import nl.ovfietsbeschikbaarheid.ui.components.OvCard
 import nl.ovfietsbeschikbaarheid.ui.navigation.Details
 import nl.ovfietsbeschikbaarheid.ui.navigation.LocalSpacing
@@ -146,9 +146,12 @@ fun DetailScreen(
     OnReturnToScreenEffect(viewModel::onReturnToScreenTriggered)
 
     val details by viewModel.screenState
+    val favouriteLocationCodes by viewModel.favouriteLocationCodes
     DetailsView(
         detailScreenData,
         details,
+        detailScreenData.locationCode in favouriteLocationCodes,
+        viewModel::onFavouriteChanged,
         viewModel::onRetryClick,
         viewModel::onPullToRefresh,
         onLocationClicked,
@@ -162,6 +165,8 @@ fun DetailScreen(
 private fun DetailsView(
     detailScreenData: Details,
     details: ScreenState<DetailsContent>,
+    isFavourite: Boolean,
+    onFavouriteChanged: (Boolean) -> Unit,
     onRetry: () -> Unit,
     onPullToRefresh: () -> Unit,
     onLocationClicked: (String) -> Unit,
@@ -175,7 +180,8 @@ private fun DetailsView(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         titleContentColor = Yellow50,
-                        navigationIconContentColor = Yellow50
+                        navigationIconContentColor = Yellow50,
+                        actionIconContentColor = Yellow50,
                     ),
                     title = {
                         Text(detailScreenData.title)
@@ -185,6 +191,18 @@ private fun DetailsView(
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = stringResource(Res.string.content_description_back)
+                            )
+                        }
+                    },
+                    actions = {
+                        IconToggleButton(
+                            checked = isFavourite,
+                            onCheckedChange = onFavouriteChanged,
+                            colors = IconButtonDefaults.iconToggleButtonColors(checkedContentColor = Yellow50)
+                        ) {
+                            Icon(
+                                imageVector = if (isFavourite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                contentDescription = stringResource(Res.string.content_description_favourite)
                             )
                         }
                     },
@@ -508,30 +526,7 @@ private fun Gauge(details: DetailsModel) {
             )
         }
         details.openState?.let { openState ->
-            Row(Modifier.align(Alignment.End)) {
-                when (openState) {
-                    is OpenState.Closed -> {
-                        Text(text = stringResource(Res.string.open_state_closed), color = Red50)
-                        if (openState.openDay != null) {
-                            val openDay = stringResource(openState.openDay).lowercase()
-                            Text(text = " " + stringResource(Res.string.open_state_opens_later_at, openDay, openState.openTime))
-                        } else {
-                            Text(text = " " + stringResource(Res.string.open_state_opens_today_at, openState.openTime))
-                        }
-                    }
-
-                    is OpenState.Closing -> {
-                        Text(text = stringResource(Res.string.open_state_closing_soon), color = Orange50)
-                        Text(" " + stringResource(Res.string.open_state_closes_at, openState.closingTime))
-                    }
-
-                    is OpenState.Open -> {
-                        Text(stringResource(Res.string.open_until, openState.closingTime))
-                    }
-
-                    OpenState.Open247 -> Text(stringResource(Res.string.open_state_open_247))
-                }
-            }
+            OpenStateText(openState, Modifier.align(Alignment.End))
         }
     }
 }
@@ -725,6 +720,8 @@ fun DetailsLoadingPreview() {
     DetailsView(
         TestData.testDetails,
         ScreenState.Loading,
+        false,
+        {},
         {},
         {},
         {},
@@ -822,6 +819,8 @@ fun DetailsPreview() {
     DetailsView(
         TestData.testDetails,
         ScreenState.Loaded(DetailsContent.Content(details)),
+        true,
+        {},
         {},
         {},
         {},

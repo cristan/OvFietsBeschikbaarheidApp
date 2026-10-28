@@ -7,13 +7,16 @@ import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.repository.AppCompatibilityRepository
 import nl.ovfietsbeschikbaarheid.repository.DetailsRepository
+import nl.ovfietsbeschikbaarheid.repository.FavouritesRepository
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.RatingStorageRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
 import nl.ovfietsbeschikbaarheid.usecase.FindNearbyLocationsUseCase
 import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
 import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
+import nl.ovfietsbeschikbaarheid.viewmodel.FavouritesViewModel
 import nl.ovfietsbeschikbaarheid.viewmodel.HomeViewModel
+import nl.ovfietsbeschikbaarheid.viewmodel.LocationsMapViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -25,6 +28,7 @@ fun commonModule() = module {
 
     singleOf(::AppCompatibilityRepository)
     singleOf(::RatingStorageRepository)
+    singleOf(::FavouritesRepository)
     singleOf(::RatingEligibilityService)
     singleOf(::OverviewRepository)
     singleOf(::StationRepository)
@@ -35,4 +39,6 @@ fun commonModule() = module {
 
     viewModelOf(::DetailsViewModel)
     viewModelOf(::HomeViewModel)
+    viewModelOf(::LocationsMapViewModel)
+    viewModelOf(::FavouritesViewModel)
 }
