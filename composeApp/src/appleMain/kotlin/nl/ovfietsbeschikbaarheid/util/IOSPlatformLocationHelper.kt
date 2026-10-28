@@ -1,7 +1,6 @@
 package nl.ovfietsbeschikbaarheid.util
 
 import co.touchlab.kermit.Logger
-import kotlinx.cinterop.ExperimentalForeignApi
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedAlways
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedWhenInUse
@@ -12,7 +11,6 @@ import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
 import platform.UIKit.UIApplicationOpenSettingsURLString
 
-@OptIn(ExperimentalForeignApi::class)
 class IOSPlatformLocationHelper : PlatformLocationHelper {
     
     private val locationManager = CLLocationManager()
