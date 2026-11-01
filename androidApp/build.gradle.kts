@@ -13,8 +13,8 @@ android {
         applicationId = "nl.ovfietsbeschikbaarheid"
         minSdk = 26
         targetSdk = 37
-        versionCode = 30
-        versionName = "3.7.2"
+        versionCode = 31
+        versionName = "3.8.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
