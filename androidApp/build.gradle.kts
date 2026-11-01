@@ -13,8 +13,8 @@ android {
         applicationId = "nl.ovfietsbeschikbaarheid"
         minSdk = 26
         targetSdk = 37
-        versionCode = 30
-        versionName = "3.7.2"
+        versionCode = 31
+        versionName = "3.8.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -44,21 +44,20 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
 kotlin {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_11)
+        jvmTarget.set(JvmTarget.JVM_17)
     }
 }
 
 dependencies {
     implementation(projects.composeApp)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.compose.ui.tooling.preview)
     debugImplementation(libs.ui.tooling)
 
     // MyApplication wires up Koin and pulls AndroidPlatformLocationHelper / AndroidInAppReviewProvider

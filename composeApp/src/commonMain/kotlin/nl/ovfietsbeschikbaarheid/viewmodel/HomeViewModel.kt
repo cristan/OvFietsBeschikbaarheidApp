@@ -25,10 +25,8 @@ import nl.ovfietsbeschikbaarheid.util.LocationPermissionHelper
 import nl.ovfietsbeschikbaarheid.util.RatingEligibilityService
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-@OptIn(ExperimentalTime::class)
 class HomeViewModel(
     private val findNearbyLocationsUseCase: FindNearbyLocationsUseCase,
     private val overviewRepository: OverviewRepository,

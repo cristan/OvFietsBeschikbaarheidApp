@@ -7,7 +7,6 @@ import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toInstant
-import kotlin.time.ExperimentalTime
 
 val dutchTimeZone = TimeZone.of("Europe/Amsterdam")
 
@@ -15,18 +14,14 @@ fun LocalDateTime.atStartOfDay() = LocalDateTime(year, month.number, day, 0, 0, 
 
 fun LocalDateTime.atEndOfDay() = LocalDateTime(year, month.number, day, 23, 59, 59, 0)
 
-@OptIn(ExperimentalTime::class)
 fun LocalDateTime.atEndOfDayIn(timeZone: TimeZone) = this.atEndOfDay().toInstant(timeZone)
 
 fun LocalDateTime.truncateToHour() = LocalDateTime(year, month.number, day, hour, 0, 0, 0)
 
 fun LocalDateTime.truncateToDay() = LocalDateTime(year, month.number, day, 0, 0, 0, 0)
 
-fun LocalDateTime.millisecondsUntil(other: LocalDateTime): Int {
-    val milliseconds = this.hour * 24000 + this.hour * 3600000 + this.minute * 60000 + this.second * 1000 + (this.nanosecond / 1000)
-    val otherMillis = other.hour * 24000 + other.hour * 3600000 + other.minute * 60000 + other.second * 1000 + (other.nanosecond / 1000)
-    return otherMillis - milliseconds
-}
+fun LocalDateTime.millisecondsUntil(other: LocalDateTime, timeZone: TimeZone): Long =
+    (other.toInstant(timeZone) - this.toInstant(timeZone)).inWholeMilliseconds
 
 fun LocalTime.minutesUntil(other: LocalTime): Int {
     val otherMinutes = other.hour * 60 + other.minute

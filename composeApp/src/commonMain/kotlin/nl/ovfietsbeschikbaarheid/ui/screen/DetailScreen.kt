@@ -40,7 +40,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -127,7 +127,6 @@ import nl.ovfietsbeschikbaarheid.viewmodel.DetailsViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.time.ExperimentalTime
 
 @Composable
 fun DetailScreen(
@@ -193,7 +192,7 @@ private fun DetailsView(
             contentWindowInsets = WindowInsets(0, 0, 0, 0)
         ) { innerPadding ->
             when (details) {
-                ScreenState.FullPageError -> FullPageError(onRetry = onRetry)
+                ScreenState.FullPageError -> FullPageError(modifier = Modifier.padding(innerPadding), onClick = onRetry)
                 ScreenState.Loading -> DetailsLoader(modifier = Modifier.padding(innerPadding))
                 is ScreenState.Loaded<DetailsContent> -> {
                     when (details.data) {
@@ -208,13 +207,14 @@ private fun DetailsView(
 
                         is DetailsContent.NotFound -> {
                             FullPageError(
+                                modifier = Modifier.padding(innerPadding),
                                 title = stringResource(Res.string.details_no_data_title),
                                 message = stringResource(
                                     Res.string.details_no_data_message,
                                     details.data.locationTitle,
                                     details.data.formattedLastFetchedDate
                                 ),
-                                onRetry = onRetry
+                                onClick = onRetry
                             )
                         }
                     }
@@ -241,7 +241,7 @@ fun DetailsLoader(
                 .wrapContentWidth(Alignment.CenterHorizontally)
                 .widthIn(max = 1600.dp)
         ) {
-            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+            val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
             val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)
             if (hasTabletWidth) {
                 Row {
@@ -378,7 +378,7 @@ private fun ActualDetails(
                 .wrapContentWidth(Alignment.CenterHorizontally)
                 .widthIn(max = 1600.dp)
         ) {
-            val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+            val windowSizeClass = currentWindowAdaptiveInfoV2().windowSizeClass
             val hasTabletWidth = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND)
             val isTabletSized = windowSizeClass.isAtLeastBreakpoint(
                 WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND,
@@ -732,7 +732,6 @@ fun DetailsLoadingPreview() {
     )
 }
 
-@OptIn(ExperimentalTime::class)
 @Preview(heightDp = 2000)
 @Preview(widthDp = 1483, heightDp = 928)
 @Composable

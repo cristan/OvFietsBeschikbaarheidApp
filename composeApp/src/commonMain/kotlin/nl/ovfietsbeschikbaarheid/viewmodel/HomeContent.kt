@@ -2,10 +2,8 @@ package nl.ovfietsbeschikbaarheid.viewmodel
 
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-@OptIn(ExperimentalTime::class)
 sealed class HomeContent {
     // Initial empty state while we set things up.
     data object InitialEmpty : HomeContent()

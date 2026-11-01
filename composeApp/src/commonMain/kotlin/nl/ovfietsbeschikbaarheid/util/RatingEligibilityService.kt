@@ -5,10 +5,8 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import nl.ovfietsbeschikbaarheid.repository.RatingStorageRepository
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-@OptIn(ExperimentalTime::class)
 class RatingEligibilityService(
     private val ratingStorageRepository: RatingStorageRepository
 ) {
@@ -30,7 +28,7 @@ class RatingEligibilityService(
         }
 
         val daysSinceLastPrompt = (now - Instant.fromEpochMilliseconds(lastRatingPromptTimestamp)).inWholeDays
-        return daysSinceLastPrompt < DAYS_BETWEEN_REQUESTS
+        return daysSinceLastPrompt >= DAYS_BETWEEN_REQUESTS
     }
 
     suspend fun onGpsContentViewed() {

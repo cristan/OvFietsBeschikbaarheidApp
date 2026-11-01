@@ -5,9 +5,7 @@ import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.ext.getMinutesSinceLastUpdate
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 class DetailsRepository(
     private val client: KtorApiClient,
 ) {

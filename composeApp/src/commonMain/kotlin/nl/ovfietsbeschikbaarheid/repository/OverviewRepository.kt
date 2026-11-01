@@ -6,11 +6,10 @@ import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OverviewDataModel
 
 class OverviewRepository(
-    private val locationsMapper: LocationsMapper
+    private val locationsMapper: LocationsMapper,
+    private val httpClient: KtorApiClient
 ) {
     private var lastResult: OverviewDataModel? = null
-
-    private val httpClient = KtorApiClient()
 
     /**
      * Returns the last cached result.

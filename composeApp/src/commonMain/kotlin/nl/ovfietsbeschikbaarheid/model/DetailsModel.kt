@@ -13,7 +13,6 @@ import nl.ovfietsbeschikbaarheid.resources.service_type_manned
 import nl.ovfietsbeschikbaarheid.ui.navigation.Details
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 data class DetailsModel(
@@ -44,7 +43,6 @@ data class GraphDayModel (
     val contentDescription: String,
 )
 
-@OptIn(ExperimentalTime::class)
 data class CapacityModel(
     val capacity: Int,
     val createTime: Instant

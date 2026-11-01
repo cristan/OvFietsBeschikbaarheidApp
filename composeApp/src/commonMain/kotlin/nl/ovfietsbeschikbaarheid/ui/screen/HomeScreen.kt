@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalTime::class)
-
 package nl.ovfietsbeschikbaarheid.ui.screen
 
 import androidx.compose.foundation.Image
@@ -63,6 +61,7 @@ import nl.ovfietsbeschikbaarheid.model.LocationOverviewWithDistanceModel
 import nl.ovfietsbeschikbaarheid.model.LocationType
 import nl.ovfietsbeschikbaarheid.model.OpenState
 import nl.ovfietsbeschikbaarheid.resources.Res
+import nl.ovfietsbeschikbaarheid.resources.about_title
 import nl.ovfietsbeschikbaarheid.resources.app_name
 import nl.ovfietsbeschikbaarheid.resources.baseline_electric_bike_24
 import nl.ovfietsbeschikbaarheid.resources.content_description_clear_location
@@ -98,10 +97,8 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-@OptIn(ExperimentalTime::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
@@ -110,7 +107,7 @@ fun HomeScreen(
 ) {
     val searchTerm by viewModel.searchTerm
     val screen by viewModel.content
-    val pricePer20Hours by viewModel.pricePer24Hours
+    val pricePer24Hours by viewModel.pricePer24Hours
 
     LaunchedEffect(Unit) {
         viewModel.onScreenLaunched()
@@ -128,7 +125,7 @@ fun HomeScreen(
         viewModel::onRequestPermissionsClicked,
         viewModel::onTurnOnGpsClicked,
         viewModel::onPullToRefresh,
-        { onInfoClicked(pricePer20Hours) },
+        { onInfoClicked(pricePer24Hours) },
         onLocationClick,
         viewModel::onRetryClicked,
     )
@@ -190,7 +187,7 @@ private fun HomeView(
                     }
 
                     HomeContent.NetworkError -> {
-                        FullPageError(onRetry = onRetryClick)
+                        FullPageError(onClick = onRetryClick)
                     }
 
                     is HomeContent.GpsContent -> {
@@ -311,14 +308,13 @@ private fun HomeTopAppBar(onInfoClicked: () -> Unit) {
             IconButton(onClick = onInfoClicked) {
                 Icon(
                     imageVector = Icons.Outlined.Info,
-                    contentDescription = "Info",
+                    contentDescription = stringResource(Res.string.about_title),
                 )
             }
         }
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun GpsContent(
     gpsContent: HomeContent.GpsContent,

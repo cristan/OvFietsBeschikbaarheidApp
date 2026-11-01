@@ -1,7 +1,6 @@
 package nl.ovfietsbeschikbaarheid.util
 
 import co.touchlab.kermit.Logger
-import kotlinx.cinterop.ExperimentalForeignApi
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedAlways
 import platform.CoreLocation.kCLAuthorizationStatusAuthorizedWhenInUse
@@ -10,8 +9,8 @@ import platform.CoreLocation.kCLAuthorizationStatusNotDetermined
 import platform.CoreLocation.kCLAuthorizationStatusRestricted
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
+import platform.UIKit.UIApplicationOpenSettingsURLString
 
-@OptIn(ExperimentalForeignApi::class)
 class IOSPlatformLocationHelper : PlatformLocationHelper {
     
     private val locationManager = CLLocationManager()
@@ -22,8 +21,7 @@ class IOSPlatformLocationHelper : PlatformLocationHelper {
     }
 
     override fun turnOnGps() {
-        // Open iOS Settings app to location settings
-        val settingsUrl = NSURL.URLWithString("App-Prefs:Privacy&path=LOCATION")
+        val settingsUrl = NSURL.URLWithString(UIApplicationOpenSettingsURLString)
         settingsUrl?.let { url ->
             UIApplication.sharedApplication.openURL(url)
         }
@@ -31,7 +29,7 @@ class IOSPlatformLocationHelper : PlatformLocationHelper {
 
     override fun shouldShowLocationRationale() = isGpsAuthorizationDenied()
 
-    // On iOS, there is no distinction between denied and denied permanently like in iOS.
+    // On iOS, there is no distinction between denied and denied permanently like in Android.
     // Once you asked and the user said no, there's nothing we can do except send them to the settings.
     override fun isDeniedPermanently(): Boolean = isGpsAuthorizationDenied()
 

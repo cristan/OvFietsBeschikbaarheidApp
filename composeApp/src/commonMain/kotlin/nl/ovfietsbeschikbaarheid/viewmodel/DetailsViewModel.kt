@@ -33,12 +33,11 @@ import nl.ovfietsbeschikbaarheid.state.ScreenState
 import nl.ovfietsbeschikbaarheid.state.setRefreshing
 import nl.ovfietsbeschikbaarheid.ui.navigation.Details
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Instant
 
 private const val MIN_REFRESH_TIME = 350L
 
-@OptIn(ExperimentalTime::class)
 class DetailsViewModel(
     private val client: KtorApiClient,
     private val detailsMapper: DetailsMapper,
@@ -132,7 +131,7 @@ class DetailsViewModel(
                     )
                     val timeElapsed = Clock.System.now().toEpochMilliseconds() - before
                     if (timeElapsed < minDelay) {
-                        delay(minDelay - timeElapsed)
+                        delay((minDelay - timeElapsed).milliseconds)
                     }
                     screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
                 } catch (e: ResponseException) {

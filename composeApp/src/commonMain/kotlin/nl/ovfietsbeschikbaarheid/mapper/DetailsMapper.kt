@@ -39,13 +39,9 @@ import nl.ovfietsbeschikbaarheid.ui.navigation.Details
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.getString
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-@OptIn(ExperimentalTime::class)
 class DetailsMapper() {
-    private val newLinesAtEnd = Regex("[\\\\n\\s]*\$")
-
     suspend fun convert(
         locationDTO: LocationDTO,
         allLocations: List<LocationOverviewModel>,
@@ -53,9 +49,8 @@ class DetailsMapper() {
         hourlyLocationCapacityDtos: List<HourlyLocationCapacityDto>
     ): DetailsModel {
 
-        val directions = locationDTO.infoImages.find { it.title == "Routebeschrijving" }?.body
-            ?.replace(newLinesAtEnd, "")
-        val about = locationDTO.infoImages.find { it.title == "Bijzonderheden" }?.body?.replace(newLinesAtEnd, "")
+        val directions = locationDTO.infoImages.find { it.title == "Routebeschrijving" }?.body?.trimEnd()
+        val about = locationDTO.infoImages.find { it.title == "Bijzonderheden" }?.body?.trimEnd()
         // Filled in for example at Leiden Centraal, Centrumzijde
         val openingHoursInfo = locationDTO.infoImages.find { it.title == "Info openingstijden" }?.body
         val disruptions = locationDTO.infoImages.find { it.title == "Storing" }?.body

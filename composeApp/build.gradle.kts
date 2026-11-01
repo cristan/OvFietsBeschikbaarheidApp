@@ -5,8 +5,7 @@ plugins {
     alias(libs.plugins.androidKmpLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-
-    kotlin("plugin.serialization") version "2.0.0"
+    alias(libs.plugins.kotlinSerialization)
 }
 
 compose.resources {
@@ -20,7 +19,7 @@ kotlin {
         minSdk = 26
 
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
 
         // Carries Compose Multiplatform resources (.cvr files) through the AAR's Android resource pipeline
