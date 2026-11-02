@@ -2,6 +2,8 @@
     <string name="app_name">OV-fiets Beschikbaarheid</string>
 
     <string name="content_description_back">Terug</string>
+    <string name="content_description_favourite">Favoriet</string>
+    <string name="content_description_remove_favourite">Verwijder uit favorieten</string>
     <string name="content_description_clear_location">Locatie opschonen</string>
     <string name="content_description_navigate">Navigeer</string>
 
@@ -51,6 +53,7 @@
     <string name="home_no_search_results_for">Geen zoekresultaten voor "%1$s"</string>
     <string name="home_search_results_for">In de buurt van "%1$s"</string>
     <string name="home_no_gps_location">Geen locatie gevonden</string>
+    <string name="home_tab_label">Lijst</string>
 
     <string name="details_amount_available">OV-fietsen beschikbaar</string>
     <string name="details_amount_unknown">Onbekend</string>
@@ -71,6 +74,13 @@
     <string name="graph_next_day_content_description">Vorige week %1$s: minimaal %2$d en maximaal %3$d OV-fietsen</string>
 
     <string name="map_available">%1$s beschikbaar</string>
+    <string name="map_title">Kaart</string>
+    <string name="map_location_details">Meer details</string>
+
+    <string name="favourites_title">Favorieten</string>
+    <string name="favourites_empty_title">Nog geen favorieten</string>
+    <string name="favourites_empty_text">Tik bij een locatie bovenin op het hartje om die hier te zien.</string>
+    <string name="favourites_location_not_found">Locatie niet meer gevonden</string>
 
     <string name="open_state_closed">Gesloten</string>
     <string name="open_state_opens_today_at">• Gaat open om %1$s</string>
