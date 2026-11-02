@@ -1,6 +1,7 @@
 package nl.ovfietsbeschikbaarheid.di
 
 import android.content.Context
+import okio.Path
 import org.junit.Test
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.test.KoinTest
@@ -16,6 +17,8 @@ class CheckModulesTest : KoinTest {
                 listOf(
                     // Added in MyApplication.setupKoin()
                     Context::class,
+                    // The cache directory, passed in androidOnlyModule()
+                    Path::class,
                 )
         )
     }

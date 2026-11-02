@@ -12,6 +12,8 @@ sealed class HomeContent {
 
     data object Loading : HomeContent()
 
+    data class LoadingWithCachedLocations(val locations: List<LocationOverviewWithDistanceModel>) : HomeContent()
+
     data object NetworkError : HomeContent()
 
     data object GpsTurnedOff : HomeContent()
