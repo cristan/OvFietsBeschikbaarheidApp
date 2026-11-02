@@ -15,10 +15,10 @@
 
     <string name="about_title">Info</string>
     <string name="about_ov_fiets_title">De OV-fiets huren</string>
-    <string name="about_ov_fiets_text_1_with_amount">Huur een OV-fiets op meer dan 300 locaties voor €%1$s per 24 uur.\u0020</string>
-    <string name="about_ov_fiets_text_1_without_amount">Huur een OV-fiets op meer dan 300 locaties.\u0020</string>
-    <string name="about_ov_fiets_text_2">Activeer hiervoor gratis een abonnement met je OV-chipkaart via\u0020</string>
-    <string name="about_ov_fiets_text_3">.\n\nJe kan maximaal 2 fietsen huren met 1 abonnement.</string>
+    <string name="about_ov_fiets_subtitle_with_amount">Huur een OV-fiets op meer dan 300 locaties voor €%1$s per 24 uur.</string>
+    <string name="about_ov_fiets_subtitle_without_amount">Huur een OV-fiets op meer dan 300 locaties.</string>
+    <string name="about_ov_fiets_text_1">Activeer hiervoor gratis een abonnement met je OV-chipkaart via\u0020</string>
+    <string name="about_ov_fiets_text_2">.\n\nJe kan maximaal 2 fietsen huren met 1 abonnement.</string>
 
     <string name="about_lock_title">Het slot gebruiken</string>
     <string name="about_lock_text_1">Op de meeste locaties gebruik je je OV-chipkaart als sleutel. De instructies vind je op de bagagedrager of via\u0020</string>
@@ -30,10 +30,8 @@
     <string name="about_app_text_2">. De data komt via OpenOV. Het kaarticoon is gemaakt door\u0020</string>
     <string name="about_app_text_3">brgfx op Freepik</string>
     <string name="about_app_text_4">.</string>
-    <string name="about_app_text_5">Feedback? Tevreden? Laat een review achter\u0020</string>
-    <string name="about_app_text_6">in de Play Store</string>
-    <string name="about_app_text_6_ios">in de App Store</string>
-    <string name="about_app_text_7">\u0020🙂</string>
+    <string name="about_app_review_play_store">Feedback? Tevreden? Laat een review achter in de Play Store 🙂</string>
+    <string name="about_app_review_app_store">Feedback? Tevreden? Laat een review achter in de App Store 🙂</string>
 
     <string name="gps_rationale_initial_button">OV-fiets locaties in je buurt</string>
     <string name="gps_rationale_denied_rationale">Toestemming is nodig om OV-fiets locaties in de buurt te tonen</string>
