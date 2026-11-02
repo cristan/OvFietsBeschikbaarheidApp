@@ -48,6 +48,19 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+
+      # Technically not needed: android-emulator-runner also installs the emulator and system image.
+      # However, it fails when a download gets cut off, which sometimes happens for some reason.
+      # So we install them first here with a retry, and the action then skips its own download.
+      - name: Install emulator and system image
+        run: |
+          for attempt in 1 2 3; do
+            if "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install emulator 'system-images;android-36;default;x86_64'; then
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1
       - name: AVD cache
         uses: actions/cache@v5
         id: avd-cache
