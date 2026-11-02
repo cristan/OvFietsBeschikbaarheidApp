@@ -112,4 +112,10 @@ jobs:
           echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> "$GITHUB_ENV"
           xcrun simctl bootstatus "$SIMULATOR_UDID" -b
       - name: Run iOS UI tests
-        run: xcodebuild test -project iosApp/iosApp.xcodeproj -scheme iosApp -destination "id=$SIMULATOR_UDID"
+        run: xcodebuild test -project iosApp/iosApp.xcodeproj -scheme iosApp -destination "id=$SIMULATOR_UDID" -resultBundlePath ios-ui-test-results/iosApp.xcresult
+      - name: Upload iOS UI test results
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-ui-test-results
+          path: ios-ui-test-results
