@@ -59,6 +59,7 @@ dependencies {
     implementation(projects.composeApp)
     implementation(libs.androidx.activity.compose)
     debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 
     // MyApplication wires up Koin and pulls AndroidPlatformLocationHelper / AndroidInAppReviewProvider
     implementation(platform(libs.koin.bom))

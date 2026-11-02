@@ -54,6 +54,10 @@
 
     <string name="details_amount_available">OV-fietsen beschikbaar</string>
     <string name="details_amount_unknown">Onbekend</string>
+    <plurals name="rental_bikes_available_content_description">
+        <item quantity="one">%1$d OV-fiets beschikbaar</item>
+        <item quantity="other">%1$d OV-fietsen beschikbaar</item>
+    </plurals>
     <string name="details_capacity">Max aantal: %1$d</string>
     <string name="details_coordinates">Coördinaten: %1$d, %2$d</string>
 
@@ -74,9 +78,11 @@
 
     <string name="open_state_closed">Gesloten</string>
     <string name="open_state_opens_today_at">• Gaat open om %1$s</string>
+    <string name="open_state_opens_today_at_content_description">Gaat open om %1$s</string>
     <string name="open_state_opens_later_at">• Gaat %1$s open om %2$s</string>
     <string name="open_state_closing_soon">Sluit snel</string>
     <string name="open_state_closes_at">• Sluit om %1$s</string>
+    <string name="open_state_closes_at_content_description">Sluit om %1$s</string>
     <string name="open_until">Open tot %1$s</string>
     <string name="open_state_open_247">24/7 open</string>
     <string name="capacity_graph_title">Beschikbaarheid</string>
