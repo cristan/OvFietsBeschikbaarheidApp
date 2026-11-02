@@ -1,0 +1,394 @@
+[
+  {
+    "description": "Amersfoort Centraal",
+    "stationCode": "AMF",
+    "city": "Amersfoort",
+    "postalCode": "3818 LE",
+    "street": "Stationsplein",
+    "houseNumber": "29",
+    "lat": 52.15293,
+    "lng": 5.37481,
+    "link": {
+      "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-amf001"
+    },
+    "extra": {
+      "locationCode": "amf001",
+      "fetchTime": 1792718109,
+      "rentalBikes": "246",
+      "serviceType": "Bemenst"
+    },
+    "infoImages": [
+      {
+        "title": "Bijzonderheden",
+        "body": "Een OV-fiets huur je met je OV-pas. Zien hoe dit werkt? Ga naar ov-fiets.nl/slot."
+      },
+      {
+        "title": "Routebeschrijving",
+        "body": "Neem de uitgang Stationsplein. Links bij de taxistandplaats gaat u de trap af \nen vindt u de fietsenstalling."
+      },
+      {
+        "title": "ov-fietsLocationHeaderImage",
+        "body": ""
+      }
+    ],
+    "openingHours": [
+      {
+        "dayOfWeek": 1,
+        "endTime": "01:20",
+        "closesNextDay": true,
+        "startTime": "04:30"
+      },
+      {
+        "dayOfWeek": 2,
+        "endTime": "01:20",
+        "closesNextDay": true,
+        "startTime": "04:30"
+      },
+      {
+        "dayOfWeek": 3,
+        "endTime": "01:45",
+        "closesNextDay": true,
+        "startTime": "04:30"
+      },
+      {
+        "dayOfWeek": 4,
+        "endTime": "01:45",
+        "closesNextDay": true,
+        "startTime": "04:30"
+      },
+      {
+        "dayOfWeek": 5,
+        "endTime": "02:45",
+        "closesNextDay": true,
+        "startTime": "04:30"
+      },
+      {
+        "dayOfWeek": 6,
+        "endTime": "02:45",
+        "closesNextDay": true,
+        "startTime": "04:30"
+      },
+      {
+        "dayOfWeek": 7,
+        "endTime": "01:20",
+        "closesNextDay": true,
+        "startTime": "04:30"
+      }
+    ],
+    "maxCapacity": 367
+  },
+  {
+    "description": "Amersfoort Mondriaanplein",
+    "stationCode": "AMF",
+    "city": "Amersfoort",
+    "postalCode": "3812 GZ",
+    "street": "Piet Mondriaanplein ",
+    "houseNumber": "1",
+    "lat": 52.15446,
+    "lng": 5.37339,
+    "link": {
+      "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-amf002"
+    },
+    "extra": {
+      "locationCode": "amf002",
+      "fetchTime": 1792718109,
+      "rentalBikes": "91",
+      "serviceType": "Sleutelautomaat"
+    },
+    "infoImages": [
+      {
+        "title": "Bijzonderheden",
+        "body": "Je huurt hier een OV-fiets met het nieuwe slot, waarbij je OV-chipkaart de sleutel is. Meer informatie vind je op ov-fiets.nl/slot.\r\n\r\nAan de andere kant van het station vind je de bemenste fietsenstalling. Ook hier kun je een OV-fiets huren. \r\n\r\n"
+      },
+      {
+        "title": "Info openingstijden",
+        "body": "Dit OV-fiets uitgiftepunt is open van een kwartier voor vertrek van de eerste trein tot een kwartier na aankomst van de laatste trein."
+      },
+      {
+        "title": "Routebeschrijving",
+        "body": "Volg vanaf het station de borden Mondriaanplein. U vindt de stalling recht voor de uitgang van het station."
+      }
+    ],
+    "openingHours": [
+      {
+        "dayOfWeek": 1,
+        "endTime": "01:20",
+        "closesNextDay": true,
+        "startTime": "04:30"
+      },
+      {
+        "dayOfWeek": 2,
+        "endTime": "01:20",
+        "closesNextDay": true,
+        "startTime": "04:30"
+      },
+      {
+        "dayOfWeek": 3,
+        "endTime": "01:45",
+        "closesNextDay": true,
+        "startTime": "04:30"
+      },
+      {
+        "dayOfWeek": 4,
+        "endTime": "01:45",
+        "closesNextDay": true,
+        "startTime": "04:30"
+      },
+      {
+        "dayOfWeek": 5,
+        "endTime": "02:45",
+        "closesNextDay": true,
+        "startTime": "04:30"
+      },
+      {
+        "dayOfWeek": 6,
+        "endTime": "02:45",
+        "closesNextDay": true,
+        "startTime": "04:30"
+      },
+      {
+        "dayOfWeek": 7,
+        "endTime": "01:20",
+        "closesNextDay": true,
+        "startTime": "04:30"
+      }
+    ],
+    "maxCapacity": 108
+  },
+  {
+    "description": "Naarden-Bussum",
+    "stationCode": "NDB",
+    "city": "Bussum",
+    "postalCode": "1404 AM",
+    "street": "Stationsplein",
+    "houseNumber": "1A",
+    "lat": 52.28132,
+    "lng": 5.15793,
+    "link": {
+      "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-ndb003"
+    },
+    "extra": {
+      "locationCode": "ndb003",
+      "fetchTime": 1792718109,
+      "rentalBikes": "49"
+    },
+    "infoImages": [
+      {
+        "title": "Bijzonderheden",
+        "body": "Je huurt hier een OV-fiets met het nieuwe OV-fietsslot, waarbij je met je OV-chipkaart het slot opent. Meer informatie vind je op ov-fiets.nl/slot."
+      },
+      {
+        "title": "Storing",
+        "body": "Vrijdag 18 oktober kunt u van 9 tot 13 uur géén OV-fiets huren in de fietsenstalling Naarden-Bussum i.v.m. werkzaamheden."
+      }
+    ],
+    "openingHours": [
+      {
+        "dayOfWeek": 1,
+        "endTime": "00:50",
+        "closesNextDay": true,
+        "startTime": "04:55"
+      },
+      {
+        "dayOfWeek": 2,
+        "endTime": "00:50",
+        "closesNextDay": true,
+        "startTime": "04:55"
+      },
+      {
+        "dayOfWeek": 3,
+        "endTime": "01:20",
+        "closesNextDay": true,
+        "startTime": "04:55"
+      },
+      {
+        "dayOfWeek": 4,
+        "endTime": "01:20",
+        "closesNextDay": true,
+        "startTime": "04:55"
+      },
+      {
+        "dayOfWeek": 5,
+        "endTime": "02:25",
+        "closesNextDay": true,
+        "startTime": "04:55"
+      },
+      {
+        "dayOfWeek": 6,
+        "endTime": "02:25",
+        "closesNextDay": true,
+        "startTime": "04:55"
+      },
+      {
+        "dayOfWeek": 7,
+        "endTime": "00:50",
+        "closesNextDay": true,
+        "startTime": "04:55"
+      }
+    ],
+    "maxCapacity": 57
+  },
+  {
+    "description": "Ermelo",
+    "stationCode": "EML",
+    "city": "Ermelo",
+    "postalCode": "3851 JB",
+    "street": "Dr. van Dalenlaan",
+    "houseNumber": "46A",
+    "lat": 52.300583,
+    "lng": 5.614362,
+    "link": {
+      "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-eml001"
+    },
+    "extra": {
+      "locationCode": "eml001",
+      "fetchTime": 1792718109,
+      "rentalBikes": "7"
+    },
+    "infoImages": [
+      {
+        "title": "Bijzonderheden",
+        "body": "Je huurt hier een OV-fiets met het nieuwe OV-fietsslot, waarbij je OV-chipkaart de sleutel is. Meer informatie vind je op ov-fiets.nl/slot."
+      },
+      {
+        "title": "Routebeschrijving",
+        "body": "Als je het perron afloopt en spoor 1 oversteekt ga je rechtsaf de\n fietsenstalling in. OV-fiets vind je vooraan in de fietsenstalling."
+      }
+    ],
+    "openingHours": null,
+    "maxCapacity": 32
+  },
+  {
+    "description": "Amsterdam Noord",
+    "stationCode": "BSLC",
+    "city": "Amsterdam",
+    "postalCode": "1022 LB",
+    "street": "Termini",
+    "houseNumber": "23",
+    "lat": 52.402374,
+    "lng": 4.931019,
+    "link": {
+      "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Bemenst%20OV-fiets%20uitgiftepunt-asd009"
+    },
+    "extra": {
+      "locationCode": "asd009",
+      "fetchTime": 1792718109,
+      "rentalBikes": "0"
+    },
+    "infoImages": [
+      {
+        "title": "Bijzonderheden",
+        "body": "Met je OV-chipkaart kun je een OV-fiets huren. Je hebt een abonnement nodig dat je GRATIS online kunt afsluiten. Je betaalt € 4,80 per 24 uur. Meer weten? Ga naar ns.nl/ov-fiets."
+      }
+    ],
+    "openingHours": [
+      {
+        "dayOfWeek": 1,
+        "endTime": "01:25",
+        "closesNextDay": true,
+        "startTime": "05:15"
+      },
+      {
+        "dayOfWeek": 2,
+        "endTime": "01:25",
+        "closesNextDay": true,
+        "startTime": "05:15"
+      },
+      {
+        "dayOfWeek": 3,
+        "endTime": "01:25",
+        "closesNextDay": true,
+        "startTime": "05:15"
+      },
+      {
+        "dayOfWeek": 4,
+        "endTime": "01:25",
+        "closesNextDay": true,
+        "startTime": "05:15"
+      },
+      {
+        "dayOfWeek": 5,
+        "endTime": "01:25",
+        "closesNextDay": true,
+        "startTime": "05:15"
+      },
+      {
+        "dayOfWeek": 6,
+        "endTime": "01:25",
+        "closesNextDay": true,
+        "startTime": "06:15"
+      },
+      {
+        "dayOfWeek": 7,
+        "endTime": "01:25",
+        "closesNextDay": true,
+        "startTime": "07:15"
+      }
+    ],
+    "maxCapacity": 23
+  },
+  {
+    "description": "Maassluis",
+    "stationCode": "BSLC",
+    "city": "Maassluis",
+    "postalCode": "3143 LA",
+    "street": "Pr. Beatrixlaan",
+    "houseNumber": "1",
+    "lat": 51.9168,
+    "lng": 4.2534,
+    "link": {
+      "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-mss001"
+    },
+    "extra": {
+      "locationCode": "mss001",
+      "fetchTime": 1792718109,
+      "rentalBikes": "4"
+    },
+    "infoImages": [],
+    "openingHours": [
+      {
+        "dayOfWeek": 1,
+        "endTime": "24:00",
+        "closesNextDay": false,
+        "startTime": "06:30"
+      },
+      {
+        "dayOfWeek": 2,
+        "endTime": "24:00",
+        "closesNextDay": false,
+        "startTime": "06:30"
+      },
+      {
+        "dayOfWeek": 3,
+        "endTime": "24:00",
+        "closesNextDay": false,
+        "startTime": "06:30"
+      },
+      {
+        "dayOfWeek": 4,
+        "endTime": "24:00",
+        "closesNextDay": false,
+        "startTime": "06:30"
+      },
+      {
+        "dayOfWeek": 5,
+        "endTime": "24:00",
+        "closesNextDay": false,
+        "startTime": "06:30"
+      },
+      {
+        "dayOfWeek": 6,
+        "endTime": "24:00",
+        "closesNextDay": false,
+        "startTime": "09:00"
+      },
+      {
+        "dayOfWeek": 7,
+        "endTime": "24:00",
+        "closesNextDay": false,
+        "startTime": "09:00"
+      }
+    ],
+    "maxCapacity": 10
+  }
+]

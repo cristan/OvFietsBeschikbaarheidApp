@@ -1,6 +1,7 @@
 package nl.ovfietsbeschikbaarheid.repository
 
 import nl.ovfietsbeschikbaarheid.KtorApiClient
+import nl.ovfietsbeschikbaarheid.dto.LocationDTO
 import nl.ovfietsbeschikbaarheid.mapper.LocationsMapper
 import nl.ovfietsbeschikbaarheid.model.LocationOverviewModel
 import nl.ovfietsbeschikbaarheid.model.OverviewDataModel
@@ -9,7 +10,7 @@ class OverviewRepository(
     private val locationsMapper: LocationsMapper,
     private val httpClient: KtorApiClient
 ) {
-    private var lastResult: OverviewDataModel? = null
+    private var lastResult: LoadedOverview? = null
 
     /**
      * Returns the last cached result.
@@ -18,10 +19,12 @@ class OverviewRepository(
      */
     suspend fun getCachedOrLoad(): OverviewDataModel {
         lastResult?.let {
-            return it
+            return it.overviewData
         }
         return getOverviewData()
     }
+
+    fun getCachedLocations(): List<LocationDTO>? = lastResult?.locations
 
     suspend fun getOverviewData(): OverviewDataModel {
         val locations = httpClient.getLocations()
@@ -31,7 +34,7 @@ class OverviewRepository(
             locations = mappedLocations,
             pricePer24Hours = pricePer24Hours,
         )
-        lastResult = result
+        lastResult = LoadedOverview(locations, result)
         return result
     }
 
@@ -39,3 +42,8 @@ class OverviewRepository(
         return allLocations.filter { it.title.contains(searchTerm, ignoreCase = true) }
     }
 }
+
+private class LoadedOverview(
+    val locations: List<LocationDTO>,
+    val overviewData: OverviewDataModel,
+)
