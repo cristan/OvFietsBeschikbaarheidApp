@@ -1,0 +1,633 @@
+{
+  "links": {},
+  "payload": [
+    {
+      "type": "stationfacility",
+      "name": "Geleidelijnen",
+      "stationFacilityType": "ASSISTANCE",
+      "nearbyMeMarkerIconName": "info",
+      "identifiers": [
+        "stationinfoBlacklist"
+      ],
+      "categories": [
+        "Services",
+        "station-service",
+        "stationfacility",
+        "station-service",
+        "station-assistance"
+      ],
+      "locations": [
+        {
+          "name": "Geleidelijnen station Mook Molenhoek",
+          "stationCode": "MMLH",
+          "location": {},
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Geleidelijnen-228"
+          },
+          "infoUrl": "http://www.ns.nl/geleidelijnen/",
+          "description": "Mook Molenhoek",
+          "extra": {},
+          "infoImages": [
+            {
+              "name": "locationInfo_Geleidelijnen-228_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Geleidelijnen_Header_20180410-151744.JPG"
+              },
+              "title": "Memo",
+              "body": "Op dit station zijn geleidelijnen aanwezig.\r\n\r\nWilt u meer informatie over het reizen met een visuele beperking , klik dan hier. \r\n\r\nhttps://www.ns.nl/reisinformatie/reizen-met-een-beperking/visuele-beperking\r\n"
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Geleidelijnen-228",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "sapId": "//"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Geleidelijnen_logo_20230420-131716.png"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": true,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Geleidelijnen_Header_20180410-151744.JPG"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "Hellingbaan",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "info",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service",
+        "stationfacility",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "name": "Hellingbaan station Mook Molenhoek",
+          "stationCode": "MMLH",
+          "location": {},
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Hellingbaan-141"
+          },
+          "description": "Mook Molenhoek",
+          "extra": {},
+          "infoImages": [
+            {
+              "name": "locationInfo_Hellingbaan-141_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Hellingbaan_Header_20180802-110619.JPG"
+              },
+              "title": "Memo",
+              "body": "Op dit station zijn perrons met een hellingbaan bereikbaar"
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Hellingbaan-141",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "sapId": "//"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Hellingbaan_logo_20180813-152945.JPG"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": true,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Hellingbaan_Header_20180802-110619.JPG"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "Fietskluis",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "bike",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "distance": 104.54376415344362,
+          "name": "Fietskluis Station Mook Molenhoek-Lindelaantje",
+          "stationCode": "MMLH",
+          "lat": 51.76714,
+          "lng": 5.87907,
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Fietskluis-Mmlh001"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/51.76714,5.87907"
+          },
+          "infoUrl": "https://www.ns.nl/deur-tot-deur/ns-fietsenstalling/veilig-en-comfortabel-stallen/fietskluizen.html",
+          "description": "Station Mook Molenhoek",
+          "extra": {
+            "regime": "Betaald",
+            "locationCode": "Mmlh001"
+          },
+          "infoImages": [
+            {
+              "name": "locationInfo_Fietskluis-Mmlh001_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Fietskluis_Header_20240325-101806.jpg"
+              },
+              "title": "Memo",
+              "body": "Op dit station kunt u een fietskluis huren om uw fiets droog en veilig te stallen. Een jaarabonnement voor een privé fietskluis kost € 129 per jaar."
+            },
+            {
+              "name": "locationInfo_Fietskluis-Mmlh001_TariefToelichting",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Fietskluis_Header_20240325-101806.jpg"
+              },
+              "title": "Tarief Toelichting",
+              "body": "Een jaarabonnement voor een privé fietskluis kost € 129  per jaar."
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Fietskluis-Mmlh001",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "sapId": "//"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Fietskluis_logo_20170915-084850.png"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Fietskluis_Header_20240325-101806.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "Onbemenst fietsparkeren",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "bike",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "name": "Onbewaakt fietsparkeren Station Mook Molenhoek",
+          "stationCode": "MMLH",
+          "location": {},
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Onbemenst%20fietsparkeren-241"
+          },
+          "infoUrl": "http://www.ns.nl/deur-tot-deur/ns-fietsenstalling/onbewaakte-fietsplaatsen.html",
+          "description": "Station Mook Molenhoek",
+          "extra": {},
+          "infoImages": [
+            {
+              "name": "locationInfo_Onbemenst fietsparkeren-241_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Onbemenstfietsparkeren_Header_20240327-154250.jpg"
+              },
+              "title": "Memo",
+              "body": "Op dit station kunt u  gebruikmaken van onbewaakte fietsplaatsen.\r\n"
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Onbemenst fietsparkeren-241",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "street": "",
+          "houseNumber": "",
+          "postalCode": "",
+          "city": ""
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Onbewaaktfietsparkeren_logo_20170926-134846.png"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-Onbemenstfietsparkeren_Header_20240327-154250.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "Reisassistentie Arriva",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "info",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "Station-assistance",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "name": "Perron",
+          "stationCode": "MMLH",
+          "location": {},
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Reisassistentie%20Arriva-66"
+          },
+          "extra": {},
+          "infoImages": [
+            {
+              "name": "locationInfo_Reisassistentie Arriva-66_Memo",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-ReisassistentieArriva_Header_20240130-214314.png"
+              },
+              "title": "Memo",
+              "body": "Reis je met een beperking en heb je hulp nodig bij het in-, over- of uitstappen? Of heb je een visuele beperking en iemand nodig om je door het station te begeleiden? Dan kun je gratis gebruikmaken van reisassistentie. Een opgeleide assistentieverlener helpt je op het station en bij het in-, over- of uitstappen.Kijk voor meer informatie op:https://www.arriva.nl"
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Reisassistentie Arriva-66",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "sapId": "//"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-ReisassistentieArriva_logo_20240131-082919.png"
+      },
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-ReisassistentieArriva_Header_20240130-214314.png"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "Kaartautomaat Arriva",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "tickets",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "name": "Kaartautomaat Arriva Mook Molenhoek",
+          "stationCode": "MMLH",
+          "location": {},
+          "open": "Unknown",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Kaartautomaat%20Arriva-36"
+          },
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Kaartautomaat Arriva-36",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Openingstijden onbekend",
+          "sapId": "//"
+        }
+      ],
+      "primaryColor": "000000",
+      "open": "Unknown",
+      "keywords": [],
+      "stationBound": false,
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "AED",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "aed",
+      "identifiers": [],
+      "categories": [
+        "Services",
+        "station-service",
+        "stationfacility",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "distance": 56.65295463459668,
+          "name": "AED",
+          "stationCode": "MMLH",
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/AED-240"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/51.766703,5.878969"
+          },
+          "description": "AED Links van bord reisinformatie",
+          "extra": {},
+          "infoImages": [],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "AED-240",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Open - tot 23:59 uur",
+          "sapId": "//"
+        }
+      ],
+      "primaryColor": "000000",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "00:00",
+          "endTime": "23:59",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "00:00",
+          "endTime": "23:59",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "00:00",
+          "endTime": "23:59",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "00:00",
+          "endTime": "23:59",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "00:00",
+          "endTime": "23:59",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "00:00",
+          "endTime": "23:59",
+          "closesNextDay": false
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "00:00",
+          "endTime": "23:59",
+          "closesNextDay": false
+        }
+      ],
+      "keywords": [],
+      "stationBound": true,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-AED_Header_20220317-103455.png"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": ""
+    },
+    {
+      "type": "stationfacility",
+      "name": "OV-fiets",
+      "stationFacilityType": "SERVICE",
+      "nearbyMeMarkerIconName": "bike",
+      "identifiers": [
+        "ovfiets"
+      ],
+      "categories": [
+        "Services",
+        "station-service",
+        "Services",
+        "stationfacility",
+        "servicerich",
+        "station-service"
+      ],
+      "locations": [
+        {
+          "distance": 15.285531448629875,
+          "name": "Mmlh002 - OV-fiets - Mook Molenhoek",
+          "stationCode": "MMLH",
+          "lat": 51.766328,
+          "lng": 5.879019,
+          "open": "Yes",
+          "link": {
+            "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/Zelfservice%20OV-fiets%20uitgiftepunt-Mmlh002"
+          },
+          "thumbnail": {
+            "uri": "/api/v1/location/thumbnail/51.766328,5.879019"
+          },
+          "description": "Mook-Molenhoek",
+          "openingHours": [
+            {
+              "dayOfWeek": 1,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 2,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 3,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 4,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 5,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 6,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            },
+            {
+              "dayOfWeek": 7,
+              "startTime": "00:00",
+              "endTime": "24:00",
+              "closesNextDay": true
+            }
+          ],
+          "extra": {
+            "rentalBikes": "6",
+            "locationCode": "Mmlh002",
+            "type": "OV_FIETS"
+          },
+          "infoImages": [
+            {
+              "name": "locationInfo_Zelfservice OV-fiets uitgiftepunt-Mmlh002_Bijzonderheden",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-ZelfserviceOVfietsuitgiftepunt_Header_20240327-154654.jpg"
+              },
+              "title": "Bijzonderheden",
+              "body": "Je huurt hier een OV-fiets met het nieuwe slot, waarbij je OV-chipkaart de sleutel is. Meer informatie vind je op ov-fiets.nl/slot."
+            },
+            {
+              "name": "locationInfo_Zelfservice OV-fiets uitgiftepunt-Mmlh002_Routebeschrijving",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-ZelfserviceOVfietsuitgiftepunt_Header_20240327-154654.jpg"
+              },
+              "title": "Routebeschrijving",
+              "body": "Je vindt OV-fiets vooraan in de fietsenstalling."
+            },
+            {
+              "name": "locationInfo_Zelfservice OV-fiets uitgiftepunt-Mmlh002_Zelfservicehuurlocatie",
+              "link": {
+                "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-ZelfserviceOVfietsuitgiftepunt_Header_20240327-154654.jpg"
+              },
+              "title": "Zelfservice huurlocatie",
+              "body": "Met je OV-chipkaart kun je een OV-fiets huren. Je hebt een abonnement nodig dat je GRATIS online kunt afsluiten. Je betaalt € 4,80  per 24 uur. Meer weten? Ga naar ns.nl/ov-fiets.\r\n\r\n\r\n\r\n"
+            }
+          ],
+          "apps": [],
+          "sites": [],
+          "extraInfo": [],
+          "nearbyMeLocationId": {
+            "value": "Zelfservice OV-fiets uitgiftepunt-Mmlh002",
+            "type": "stationfacility"
+          },
+          "nextOpeningTime": "Geopend: gehele dag (24 uur)",
+          "street": "Lindenlaan ",
+          "houseNumber": "31b",
+          "postalCode": "6584 AC",
+          "city": "Mook-Molenhoek"
+        }
+      ],
+      "listLogoImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-OVfiets_logo_20151211-111333.jpg"
+      },
+      "primaryColor": "000066",
+      "open": "Yes",
+      "openingHours": [
+        {
+          "dayOfWeek": 1,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 2,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 3,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 4,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 5,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 6,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        },
+        {
+          "dayOfWeek": 7,
+          "startTime": "00:00",
+          "endTime": "00:00",
+          "closesNextDay": true
+        }
+      ],
+      "keywords": [
+        "Fiets & Service",
+        "fietsenstalling",
+        "fietsverhuur",
+        "kluis",
+        "OV-producten",
+        "fiets"
+      ],
+      "stationBound": false,
+      "headerImage": {
+        "uri": "https://places.ns-mlab.nl/api/v2/places/stationfacility/resource/img-2.0-ZelfserviceOVfietsuitgiftepunt_Header_20240327-154654.jpg"
+      },
+      "advertImages": [],
+      "infoImages": [],
+      "nextOpeningTime": "Geopend: gehele dag (24 uur)"
+    }
+  ],
+  "meta": {}
+}

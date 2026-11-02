@@ -15,6 +15,7 @@ import kotlinx.serialization.json.Json
 import nl.ovfietsbeschikbaarheid.dto.DetailsDTO
 import nl.ovfietsbeschikbaarheid.dto.HourlyLocationCapacityDto
 import nl.ovfietsbeschikbaarheid.dto.LocationDTO
+import nl.ovfietsbeschikbaarheid.dto.StationFacilitiesDTO
 import nl.ovfietsbeschikbaarheid.repository.APP_COMPATIBILITY
 import nl.ovfietsbeschikbaarheid.repository.AppCompatibilityRepository
 import kotlin.time.measureTimedValue
@@ -67,6 +68,16 @@ class KtorApiClient(
             return null
         }
         return result.body<DetailsDTO>()
+    }
+
+    suspend fun getStationFacilities(stationCode: String): StationFacilitiesDTO {
+        Logger.i("Loading the facilities of station $stationCode")
+        val (stationFacilities, timeTaken) = measureTimedValue {
+            httpClient.get("https://places.ns-mlab.nl/api/v2/places?type=stationfacility&station_code=$stationCode")
+                .body<StationFacilitiesDTO>()
+        }
+        Logger.d("Loaded the facilities of station $stationCode in $timeTaken")
+        return stationFacilities
     }
 
     suspend fun getHistory(code: String, startDate: String): List<HourlyLocationCapacityDto> {

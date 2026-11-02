@@ -25,7 +25,9 @@ import nl.ovfietsbeschikbaarheid.KtorApiClient
 import nl.ovfietsbeschikbaarheid.ext.atStartOfDay
 import nl.ovfietsbeschikbaarheid.ext.dutchTimeZone
 import nl.ovfietsbeschikbaarheid.mapper.DetailsMapper
+import nl.ovfietsbeschikbaarheid.mapper.StationFacilitiesMapper
 import nl.ovfietsbeschikbaarheid.model.DetailsModel
+import nl.ovfietsbeschikbaarheid.model.StationFacility
 import nl.ovfietsbeschikbaarheid.repository.DetailsRepository
 import nl.ovfietsbeschikbaarheid.repository.OverviewRepository
 import nl.ovfietsbeschikbaarheid.repository.StationRepository
@@ -53,6 +55,9 @@ class DetailsViewModel(
 
     val title: State<String>
         field = mutableStateOf("")
+
+    val stationFacilities: State<List<StationFacility>>
+        field = mutableStateOf(emptyList())
 
     fun screenLaunched(data: Details) {
         this.data = data
@@ -123,10 +128,11 @@ class DetailsViewModel(
                         return@supervisorScope
                     }
 
+                    val allStations = allStationsDeferred.await()
                     val data = detailsMapper.convert(
                         details,
                         allLocationsDeferred.await().locations,
-                        allStationsDeferred.await(),
+                        allStations,
                         historyDeferred.await()
                     )
                     val timeElapsed = Clock.System.now().toEpochMilliseconds() - before
@@ -134,6 +140,9 @@ class DetailsViewModel(
                         delay((minDelay - timeElapsed).milliseconds)
                     }
                     screenState.value = ScreenState.Loaded(DetailsContent.Content(data))
+                    if (details.stationCode in allStations) {
+                        loadStationFacilities(details.stationCode)
+                    }
                 } catch (e: ResponseException) {
                     Logger.e(e) { "Error fetching details" }
                     screenState.value = ScreenState.FullPageError
@@ -141,6 +150,18 @@ class DetailsViewModel(
                     Logger.e(e) { "Error fetching details" }
                     screenState.value = ScreenState.FullPageError
                 }
+            }
+        }
+    }
+
+    private fun loadStationFacilities(stationCode: String) {
+        viewModelScope.launch {
+            try {
+                stationFacilities.value = StationFacilitiesMapper.convert(client.getStationFacilities(stationCode))
+            } catch (e: ResponseException) {
+                Logger.w(e) { "Error fetching station facilities" }
+            } catch (e: IOException) {
+                Logger.w(e) { "Error fetching station facilities" }
             }
         }
     }
