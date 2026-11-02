@@ -6,13 +6,13 @@ final class AppLaunchSmokeTest: XCTestCase {
         app.resetAuthorizationStatus(for: .location)
         app.launch()
 
-        app.buttons["OV-fiets locaties in je buurt"].tap()
+        app.buttons["OV-fiets locations near you"].tap()
 
         let allowButton = XCUIApplication(bundleIdentifier: "com.apple.springboard").alerts.buttons["Allow While Using App"]
         XCTAssertTrue(allowButton.waitForExistence(timeout: 10))
         allowButton.tap()
 
-        XCTAssertTrue(app.staticTexts["Bij jou in de buurt"].waitForExistence(timeout: 30))
+        XCTAssertTrue(app.staticTexts["Near you"].waitForExistence(timeout: 30))
         XCTAssertFalse(app.wait(for: .notRunning, timeout: 5))
     }
 }

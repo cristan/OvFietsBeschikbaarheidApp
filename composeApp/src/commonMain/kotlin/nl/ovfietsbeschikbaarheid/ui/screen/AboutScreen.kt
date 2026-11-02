@@ -33,11 +33,15 @@ import nl.ovfietsbeschikbaarheid.resources.about_app_title
 import nl.ovfietsbeschikbaarheid.resources.about_lock_text_1
 import nl.ovfietsbeschikbaarheid.resources.about_lock_text_2
 import nl.ovfietsbeschikbaarheid.resources.about_lock_title
+import nl.ovfietsbeschikbaarheid.resources.about_lock_url
+import nl.ovfietsbeschikbaarheid.resources.about_lock_url_text
 import nl.ovfietsbeschikbaarheid.resources.about_ov_fiets_text_1_with_amount
 import nl.ovfietsbeschikbaarheid.resources.about_ov_fiets_text_1_without_amount
 import nl.ovfietsbeschikbaarheid.resources.about_ov_fiets_text_2
 import nl.ovfietsbeschikbaarheid.resources.about_ov_fiets_text_3
 import nl.ovfietsbeschikbaarheid.resources.about_ov_fiets_title
+import nl.ovfietsbeschikbaarheid.resources.about_ov_fiets_url
+import nl.ovfietsbeschikbaarheid.resources.about_ov_fiets_url_text
 import nl.ovfietsbeschikbaarheid.resources.about_title
 import nl.ovfietsbeschikbaarheid.resources.content_description_back
 import nl.ovfietsbeschikbaarheid.ui.theme.OVFietsBeschikbaarheidTheme
@@ -105,7 +109,10 @@ private fun AboutView(
                         }
                         append(stringResource(Res.string.about_ov_fiets_text_2))
 
-                        withStyledLink("https://ns.nl/ov-fiets", "ns.nl/ov-fiets")
+                        withStyledLink(
+                            url = stringResource(Res.string.about_ov_fiets_url),
+                            text = stringResource(Res.string.about_ov_fiets_url_text)
+                        )
 
                         append(stringResource(Res.string.about_ov_fiets_text_3))
                     },
@@ -124,7 +131,10 @@ private fun AboutView(
                     text = buildAnnotatedString {
                         append(stringResource(Res.string.about_lock_text_1))
 
-                        withStyledLink("https://ov-fiets.nl/slot", "ov-fiets.nl/slot")
+                        withStyledLink(
+                            url = stringResource(Res.string.about_lock_url),
+                            text = stringResource(Res.string.about_lock_url_text)
+                        )
 
                         append(stringResource(Res.string.about_lock_text_2))
                     },

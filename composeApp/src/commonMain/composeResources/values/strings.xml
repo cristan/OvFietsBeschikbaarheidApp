@@ -18,10 +18,14 @@
     <string name="about_ov_fiets_text_1_with_amount">Huur een OV-fiets op meer dan 300 locaties voor €%1$s per 24 uur.\u0020</string>
     <string name="about_ov_fiets_text_1_without_amount">Huur een OV-fiets op meer dan 300 locaties.\u0020</string>
     <string name="about_ov_fiets_text_2">Activeer hiervoor gratis een abonnement met je OV-chipkaart via\u0020</string>
+    <string name="about_ov_fiets_url">https://ns.nl/ov-fiets</string>
+    <string name="about_ov_fiets_url_text">ns.nl/ov-fiets</string>
     <string name="about_ov_fiets_text_3">.\n\nJe kan maximaal 2 fietsen huren met 1 abonnement.</string>
 
     <string name="about_lock_title">Het slot gebruiken</string>
     <string name="about_lock_text_1">Op de meeste locaties gebruik je je OV-chipkaart als sleutel. De instructies vind je op de bagagedrager of via\u0020</string>
+    <string name="about_lock_url">https://ov-fiets.nl/slot</string>
+    <string name="about_lock_url_text">ov-fiets.nl/slot</string>
     <string name="about_lock_text_2">.</string>
 
     <string name="about_app_title">Over deze app</string>
@@ -89,12 +93,12 @@
     <string name="service_type_key_box">Sleutelautomaat</string>
     <string name="service_type_key_selfservice">Zelfservice</string>
 
-    <string name="day_1">Maandag</string>
-    <string name="day_2">Dinsdag</string>
-    <string name="day_3">Woensdag</string>
-    <string name="day_4">Donderdag</string>
-    <string name="day_5">Vrijdag</string>
-    <string name="day_6">Zaterdag</string>
-    <string name="day_7">Zondag</string>
+    <string name="day_1">maandag</string>
+    <string name="day_2">dinsdag</string>
+    <string name="day_3">woensdag</string>
+    <string name="day_4">donderdag</string>
+    <string name="day_5">vrijdag</string>
+    <string name="day_6">zaterdag</string>
+    <string name="day_7">zondag</string>
     <string name="day_tomorrow">morgen</string>
 </resources>
